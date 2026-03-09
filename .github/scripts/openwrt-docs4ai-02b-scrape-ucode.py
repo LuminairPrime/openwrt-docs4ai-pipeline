@@ -183,9 +183,12 @@ def fix_known_ucode_example_issues(markdown):
     if named_const_import in cleaned:
         cleaned = cleaned.replace(
             named_const_import,
-            "import { error, request, listener, waitfor, const as nl80211const } from 'nl80211';",
+            "import * as nl80211 from 'nl80211';",
         )
-        cleaned = cleaned.replace("const.", "nl80211const.")
+        cleaned = cleaned.replace("let response = request(", "let response = nl80211.request(")
+        cleaned = cleaned.replace("let wifiListener = listener(", "let wifiListener = nl80211.listener(")
+        cleaned = cleaned.replace("let event = waitfor(", "let event = nl80211.waitfor(")
+        cleaned = re.sub(r'(?<!nl80211\.)const\.', 'nl80211.const.', cleaned)
 
     return cleaned
 

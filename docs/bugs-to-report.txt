@@ -1,0 +1,148 @@
+External bug reports to submit
+
+Purpose
+- Track format and syntax defects found in upstream or third-party source checked out under `tmp/`.
+- Only add issues reproduced directly from the repository state in this workspace.
+- Keep confirmed reports separate from candidates that still need runtime or upstream-context confirmation.
+- This file is a local courtesy tracker for upstream reporting, not part of the project specification or output contract.
+
+Repository issue-template notes
+- `jow-/ucode`: no repository issue template was found in `.github/`; use a normal GitHub issue with the ready-to-paste title and body below.
+- `openwrt/luci`: the repo uses `.github/ISSUE_TEMPLATE/01-bug.yml`, which asks for `Actual behaviour`, `Expected behaviour`, `Steps to reproduce`, `Additional Information`, and `Relevant log output`.
+
+Confirmed reports
+
+1. jow-/ucode: socket module example contains a stray asterisk
+Ready to file: yes
+Target repo: https://github.com/jow-/ucode
+Upstream path: `lib/socket.c` line 4183
+
+Title
+socket module documentation example contains a stray asterisk and does not parse
+
+Body
+Summary
+The socket module documentation example in `lib/socket.c` contains a trailing `*` that makes the example invalid.
+
+Location
+`lib/socket.c` line 4183
+
+Current example
+```text
+const msg = sk.recvmsg(1024, 1024); *
+```
+
+Actual behaviour
+The example does not parse. Downstream validation reports:
+```text
+Syntax error: Expecting expression
+```
+
+Expected behaviour
+The example should parse as valid ucode and be safe to copy from the published docs.
+
+Expected example
+```text
+const msg = sk.recvmsg(1024, 1024);
+```
+
+Additional information
+- This is human-visible in generated documentation, not just an internal tooling issue.
+- The trailing asterisk appears to be a plain typo.
+
+2. jow-/ucode: io module example uses destructuring syntax that current validation rejects
+Ready to file: yes
+Target repo: https://github.com/jow-/ucode
+Upstream path: `lib/io.c` line 1243
+
+Title
+io module documentation example uses destructuring syntax that current ucode parser rejects
+
+Body
+Summary
+The io module documentation includes an example that does not parse under current ucode validation.
+
+Location
+`lib/io.c` line 1243
+
+Current example
+```text
+const [reader, writer] = io.pipe();
+```
+
+Actual behaviour
+The example fails validation with:
+```text
+Syntax error: Expecting variable name
+```
+
+Expected behaviour
+The published example should use syntax accepted by the current interpreter or parser.
+
+Possible replacement
+```text
+const pipe_handles = io.pipe();
+const reader = pipe_handles[0];
+const writer = pipe_handles[1];
+```
+
+Additional information
+- This is visible in generated docs and gives readers a copy-paste example that fails immediately.
+- If destructuring is intended to be supported, then the parser or documentation versioning may need clarification instead.
+
+3. jow-/ucode: nl80211 named import example uses reserved word const
+Ready to file: yes
+Target repo: https://github.com/jow-/ucode
+Upstream path: `lib/nl80211.c` lines 28, 31, 36, 39
+
+Title
+nl80211 documentation example uses reserved word const in a named import and does not parse
+
+Body
+Summary
+The nl80211 module documentation uses `const` as a named import binding, which makes the example invalid.
+
+Location
+`lib/nl80211.c` lines 28, 31, 36, 39
+
+Current example
+```text
+import { error, request, listener, waitfor, const } from 'nl80211';
+let response = request(const.NL80211_CMD_GET_WIPHY, 0, { wiphy: 0 });
+let event = waitfor([const.NL80211_CMD_NEW_SCAN_RESULTS], 5000);
+```
+
+Actual behaviour
+The example fails validation with:
+```text
+Syntax error: Unexpected token
+Expecting Label, String or 'default'
+```
+
+Expected behaviour
+The example should avoid reserved-word bindings and remain valid when copied from the docs.
+
+Additional information
+- Follow-on parse errors also occur on later `const.NL80211_...` references.
+- A namespace import example appears to be a safer way to document the constants.
+
+Items not recommended for filing at this time
+
+4. openwrt/luci: `luci-app-dockerman` likely reflects intentional dual-mode script behavior, not a clear upstream bug
+Ready to file: no
+Target repo: https://github.com/openwrt/luci
+Upstream path: `applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc`
+
+Current assessment
+- Do not file this as a LuCI bug based on current evidence.
+- The file is script-shaped as well as module-shaped: it has a shebang, inspects `/proc/self/comm`, exposes a CLI test mode when `caller != 'rpcd'`, and only returns `methods` after that direct-execution branch.
+- The earlier warning is more likely a downstream validator context problem caused by compiling a module-shaped snippet in script mode.
+
+Why it is not reportable right now
+- The script appears intentionally dual-purpose, not obviously malformed.
+- The local validator has now been updated to retry ucode compilation in module mode when top-level `return` is the only failure signal.
+- This makes the LuCI item look like a pipeline validation-context issue, not a confirmed upstream defect.
+
+Maintenance note
+- Append newly verified upstream format or syntax issues below this file.
+- Keep candidate items separate from confirmed reports so confirmed issues can be submitted without re-triage.

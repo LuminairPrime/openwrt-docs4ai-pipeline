@@ -77,6 +77,13 @@ During the current stabilization pass, these test entry points are being repaire
 | `GITHUB_TOKEN` | empty | Remote-only integrations and telemetry fallback retrieval |
 | `LOCAL_DEV_TOKEN` | empty | Local override token for optional AI enrichment |
 
+## Documentation And Reporting Conventions
+
+- Use relative Markdown links for navigational cross-references between maintainer documents and generated outputs.
+- When a file or path reference is meant to be opened by the reader, prefer a Markdown link instead of an inline code span.
+- Keep inline code for commands, environment variables, symbol names, filenames used as literals, and short syntax fragments.
+- Do not inject or rewrite cross-links inside code fences or inline code spans.
+
 ## Adding or Changing a Scraper
 
 If a new extractor is added or a current extractor is materially changed:

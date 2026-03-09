@@ -40,7 +40,12 @@ The exact output set is defined in `docs/ARCHITECTURE.md` and `docs/specs/v12/`.
 
 ## Status
 
-The repository contains a substantial v12 implementation, but remote GitHub Actions behavior is not yet treated as verified. Local smoke test repair, deterministic fixture coverage, and L1/L2 output characterization are the active priorities.
+The repository now has both local and remote v12 verification from the 2026-03-09 stabilization pass.
+
+- local deterministic smoke coverage is passing
+- the sequential local runner is passing
+- remote GitHub Actions runs are verified through the latest checked run, with `0` hard failures and the warning count reduced to `2`
+- the remaining work is concentrated in final ucode warning cleanup and wiki-conversion cleanliness, not in broad pipeline breakage
 
 ## License
 

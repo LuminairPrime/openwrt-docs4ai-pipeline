@@ -233,10 +233,21 @@ def check_ast(code, lang, rel_path):
         if UCODE_EXPORT_RE.search(code):
             compile_flags.append("module")
         compile_flags.extend(f"dynlink={module}" for module in extract_ucode_imports(code))
-        compile_arg = "-c"
-        if compile_flags:
-            compile_arg += "," + ",".join(compile_flags)
-        res = subprocess.run([UCODE_BINARY, compile_arg, tmp_path], capture_output=True, text=True)
+
+        def run_ucode_check(flags):
+            compile_arg = "-c"
+            if flags:
+                compile_arg += "," + ",".join(flags)
+            return subprocess.run([UCODE_BINARY, compile_arg, tmp_path], capture_output=True, text=True)
+
+        res = run_ucode_check(compile_flags)
+        if (
+            res.returncode != 0
+            and "module" not in compile_flags
+            and "return must be inside function body" in res.stderr
+        ):
+            res = run_ucode_check(["module", *compile_flags])
+
         os.unlink(tmp_path)
         if res.returncode != 0:
             soft_warn(f"uCode Syntax Error in {rel_path}: {res.stderr.strip()}")

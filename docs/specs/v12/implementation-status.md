@@ -2,16 +2,17 @@
 
 ## Current State
 
-v12 now has fresh local and remote verification from the 2026-03-09 stabilization pass, but it is not treated as fully finished.
+v12 now has fresh local and remote verification from the 2026-03-09 stabilization pass, but it is still in a final hardening phase rather than declared fully finished.
 
 The current authoritative position is:
 
 - code exists for the numbered pipeline stages
 - documentation and test surfaces were realigned with the current script layout on 2026-03-09
-- local smoke and cache-backed AI verification paths are passing
-- GitHub Actions behavior is verified through run `22864304564`, including `initialize`, all `extract` jobs, `process`, and `deploy`
+- local smoke, sequential local verification, and cache-backed AI verification paths are passing
+- GitHub Actions behavior is verified through run `22869216338`, including `initialize`, all `extract` jobs, `process`, and `deploy`
+- the latest fully verified remote run completed with `0` hard failures and `2` soft warnings
 - L1 and L2 are intentionally retained under `openwrt-condensed-docs`; only L0 remains transient
-- remaining risk is concentrated in the remaining 48 non-blocking AST warnings and wiki-conversion cleanliness
+- remaining risk is concentrated in the final ucode warning cleanup and wiki-conversion cleanliness, not in broad pipeline instability
 
 ## Verification Matrix
 
@@ -24,10 +25,12 @@ The current authoritative position is:
 | Deterministic local smoke test | verified | `python tests/00-smoke-test.py` passes locally |
 | Sequential local smoke runner | verified | `python tests/openwrt-docs4ai-00-smoke-test.py` passes locally |
 | Local AI-summary integration | verified | Cache-backed local AI path passes via `--run-ai` without requiring a live token |
-| GitHub Actions remote verification | verified | Run `22864304564` passed end to end on 2026-03-09 |
+| GitHub Actions remote verification | verified | Latest fully checked run `22869216338` passed end to end on 2026-03-09 |
 | Remote output measurement | verified | Successful staging artifact contained 151 L1 markdown docs, 151 L2 markdown docs, and 397 indexed symbols |
 | Generated output promotion | verified | Deploy produced commit `3d3e6d3` (`docs: v12 auto-update 2026-03-09`) |
 | L1/L2 retention policy | decided | L1 and L2 remain committed under `openwrt-condensed-docs`; L0 remains transient only |
+| Remote warning reduction | verified | Remote soft warnings were reduced from 48 to 2 across the 2026-03-09 hardening passes |
+| Latest local follow-up patch | pending remote verification | Local fixes now target the final `nl80211` example rewrite and module-mode retry for top-level `return` validation |
 
 ## Historical Note
 
@@ -58,6 +61,14 @@ Older status claims from early March 2026 described the pipeline as fully comple
 - Verified successful run `22864304564`, which completed `initialize`, all extractor jobs, `process`, and `deploy`.
 - Confirmed that the deploy stage promoted generated outputs into `openwrt-condensed-docs/` via commit `3d3e6d3`.
 
+### Milestone 4: ucode warning hardening
+
+- Introduced real CI-backed `ucode` validation and treated the resulting warning spike as a truthfulness problem to investigate, not something to suppress.
+- Fixed false positives caused by missing ucode module context, naive unlabeled fence relabeling, and regex-only parsing of indented fenced blocks.
+- Reclassified non-runnable pseudocode and bare response-shape examples so prose and structural examples are no longer misvalidated as executable ucode.
+- Added targeted cleanup for clearly invalid upstream examples that leaked into generated docs.
+- Verified warning reduction across remote runs from `67` to `10`, then `4`, then `2` while keeping hard failures at `0`.
+
 ## Remote Output Snapshot
 
 Measured from the `final-staging` artifact produced by run `22864304564`.
@@ -78,5 +89,5 @@ A random slice audit of 10 generated files on 2026-03-09 found that the outputs 
 
 ### Next Priority
 
-Triage the remaining 48 non-blocking AST warnings inside canonical L2 ucode docs, then decide how aggressively to normalize wiki-conversion artifacts without losing useful source detail.
+Re-run remote verification for the latest local follow-up patch that addresses the final two ucode-related warnings, then decide how aggressively to normalize wiki-conversion artifacts without losing useful source detail.
 

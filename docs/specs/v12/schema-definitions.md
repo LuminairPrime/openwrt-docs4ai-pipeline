@@ -58,6 +58,9 @@ Recommended fields when known:
 - Rules:
   - YAML must be parsed and written safely
   - cross-links must not be injected inside code fences or inline code
+  - cross-links must remain relative Markdown links that resolve within the published output tree
+  - file or path references intended as navigation aids should be emitted as Markdown links rather than inline code spans
+  - inline code remains appropriate for commands, environment variables, symbol names, and syntax literals
   - token counts describe body content, not frontmatter
 
 #### Required L2 frontmatter fields
