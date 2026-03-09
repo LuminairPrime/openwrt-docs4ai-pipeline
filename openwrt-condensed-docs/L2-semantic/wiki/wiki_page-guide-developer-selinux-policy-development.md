@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 8662
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-selinux-policy-development.md
-last_pipeline_run: '2026-03-09T21:41:54.181814+00:00'
+last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
 language: text
 ---
 # OpenWrt SELinux policy development, customization, and testing

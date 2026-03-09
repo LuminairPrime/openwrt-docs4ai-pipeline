@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 387
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-build-mpd-full.md
-last_pipeline_run: '2026-03-09T21:41:54.181814+00:00'
+last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
 language: text
 ---
 # MPD-full building from source
