@@ -1,0 +1,10 @@
+# openwrt-core module
+> **Total Context:** ~23140 tokens
+
+- [makefile_meta-category-boot.md](../L2-semantic/openwrt-core/makefile_meta-category-boot.md) (3710 tokens) - No description
+- [makefile_meta-category-firmware.md](../L2-semantic/openwrt-core/makefile_meta-category-firmware.md) (1435 tokens) - No description
+- [makefile_meta-category-kernel.md](../L2-semantic/openwrt-core/makefile_meta-category-kernel.md) (2744 tokens) - No description
+- [makefile_meta-category-libs.md](../L2-semantic/openwrt-core/makefile_meta-category-libs.md) (5273 tokens) - No description
+- [makefile_meta-category-system.md](../L2-semantic/openwrt-core/makefile_meta-category-system.md) (2031 tokens) - No description
+- [makefile_meta-category-utils.md](../L2-semantic/openwrt-core/makefile_meta-category-utils.md) (5864 tokens) - No description
+- [makefile_meta-include-mk.md](../L2-semantic/openwrt-core/makefile_meta-include-mk.md) (2083 tokens) - No description
