@@ -2,10 +2,10 @@
 title: 'ucode module: io'
 module: ucode
 origin_type: c_source
-token_count: 4045
+token_count: 4058
 version: unknown
 source_file: L1-raw/ucode/c_source-api-module-io.md
-last_pipeline_run: '2026-03-09T18:39:45.812572+00:00'
+last_pipeline_run: '2026-03-09T18:48:36.746267+00:00'
 upstream_path: lib/io.c
 language: c
 ---
@@ -124,7 +124,9 @@ Returns `null` if an error occurred.
 **Kind**: instance method of [`io`](#module_io)  
 **Example**  
 ```ucode
-const [reader, writer] = io.pipe();
+const pipe_handles = io.pipe();
+const reader = pipe_handles[0];
+const writer = pipe_handles[1];
 writer.write('Hello from pipe!');
 const data = reader.read(100);
 print(data, "\n");  // Prints: Hello from pipe!

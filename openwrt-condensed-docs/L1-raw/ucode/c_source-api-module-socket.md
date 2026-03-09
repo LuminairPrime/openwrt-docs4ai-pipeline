@@ -604,7 +604,7 @@ and the sender's address.
 const sk = socket.listen({ family: socket.AF_UNIX, path: "/tmp/socket" });
 sk.setopt(socket.SOL_SOCKET, socket.SO_PASSCRED, true);
 
-const msg = sk.recvmsg(1024, 1024); *
+const msg = sk.recvmsg(1024, 1024);
 for (let cmsg in msg.ancillary)
   if (cmsg.level == socket.SOL_SOCKET && cmsg.type == socket.SCM_RIGHTS)
     print(`Got some descriptors: ${cmsg.data}!\n`);

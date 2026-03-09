@@ -2,10 +2,10 @@
 title: 'ucode module: socket'
 module: ucode
 origin_type: c_source
-token_count: 13518
+token_count: 13517
 version: unknown
 source_file: L1-raw/ucode/c_source-api-module-socket.md
-last_pipeline_run: '2026-03-09T18:39:45.812572+00:00'
+last_pipeline_run: '2026-03-09T18:48:36.746267+00:00'
 upstream_path: lib/socket.c
 language: c
 ---
@@ -615,7 +615,7 @@ and the sender's address.
 const sk = socket.listen({ family: socket.AF_UNIX, path: "/tmp/socket" });
 sk.setopt(socket.SOL_SOCKET, socket.SO_PASSCRED, true);
 
-const msg = sk.recvmsg(1024, 1024); *
+const msg = sk.recvmsg(1024, 1024);
 for (let cmsg in msg.ancillary)
   if (cmsg.level == socket.SOL_SOCKET && cmsg.type == socket.SCM_RIGHTS)
     print(`Got some descriptors: ${cmsg.data}!\n`);

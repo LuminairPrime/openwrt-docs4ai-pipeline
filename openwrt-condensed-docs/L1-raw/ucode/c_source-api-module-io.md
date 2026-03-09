@@ -113,7 +113,9 @@ Returns `null` if an error occurred.
 **Kind**: instance method of [`io`](#module_io)  
 **Example**  
 ```ucode
-const [reader, writer] = io.pipe();
+const pipe_handles = io.pipe();
+const reader = pipe_handles[0];
+const writer = pipe_handles[1];
 writer.write('Hello from pipe!');
 const data = reader.read(100);
 print(data, "\n");  // Prints: Hello from pipe!

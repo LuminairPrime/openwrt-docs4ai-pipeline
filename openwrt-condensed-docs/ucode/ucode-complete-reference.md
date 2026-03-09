@@ -1,15 +1,15 @@
 ---
 module: "ucode"
-total_token_count: 79910
+total_token_count: 79949
 section_count: 14
 is_monolithic: true
-generated: "2026-03-09T18:40:00.265889+00:00"
+generated: "2026-03-09T18:48:51.275546+00:00"
 ---
 
 # ucode Complete Reference
 
 > **Contains:** 14 documents concatenated
-> **Tokens:** ~79910 (cl100k_base)
+> **Tokens:** ~79949 (cl100k_base)
 
 ---
 
@@ -1947,7 +1947,9 @@ Returns `null` if an error occurred.
 **Kind**: instance method of [`io`](#module_io)  
 **Example**  
 ```ucode
-const [reader, writer] = io.pipe();
+const pipe_handles = io.pipe();
+const reader = pipe_handles[0];
+const writer = pipe_handles[1];
 writer.write('Hello from pipe!');
 const data = reader.read(100);
 print(data, "\n");  // Prints: Hello from pipe!
@@ -3177,18 +3179,18 @@ Functions can be individually imported and directly accessed using the
 syntax:
 
   ```ucode
-  import { error, request, listener, waitfor, const } from 'nl80211';
+  import { error, request, listener, waitfor, const as nl80211const } from 'nl80211';
 
   // Send a nl80211 request
-  let response = request(const.NL80211_CMD_GET_WIPHY, 0, { wiphy: 0 });
+  let response = request(nl80211const.NL80211_CMD_GET_WIPHY, 0, { wiphy: 0 });
 
   // Create a listener for wireless events
   let wifiListener = listener((msg) => {
       print('Received wireless event:', msg, '\n');
-  }, [const.NL80211_CMD_NEW_INTERFACE, const.NL80211_CMD_DEL_INTERFACE]);
+  }, [nl80211const.NL80211_CMD_NEW_INTERFACE, nl80211const.NL80211_CMD_DEL_INTERFACE]);
 
   // Wait for a specific nl80211 event
-  let event = waitfor([const.NL80211_CMD_NEW_SCAN_RESULTS], 5000);
+  let event = waitfor([nl80211const.NL80211_CMD_NEW_SCAN_RESULTS], 5000);
   if (event)
       print('Received scan results:', event.msg, '\n');
   ```
@@ -3200,12 +3202,12 @@ using a wildcard import statement:
   import * as nl80211 from 'nl80211';
 
   // Send a nl80211 request
-  let response = nl80211.request(nl80211.const.NL80211_CMD_GET_WIPHY, 0, { wiphy: 0 });
+  let response = nl80211.request(nl80211.nl80211const.NL80211_CMD_GET_WIPHY, 0, { wiphy: 0 });
 
   // Create a listener for wireless events
   let listener = nl80211.listener((msg) => {
       print('Received wireless event:', msg, '\n');
-  }, [nl80211.const.NL80211_CMD_NEW_INTERFACE, nl80211.const.NL80211_CMD_DEL_INTERFACE]);
+  }, [nl80211.nl80211const.NL80211_CMD_NEW_INTERFACE, nl80211.nl80211const.NL80211_CMD_DEL_INTERFACE]);
   ```
 
 Additionally, the nl80211 module namespace may also be imported by invoking
@@ -5130,7 +5132,7 @@ and the sender's address.
 const sk = socket.listen({ family: socket.AF_UNIX, path: "/tmp/socket" });
 sk.setopt(socket.SOL_SOCKET, socket.SO_PASSCRED, true);
 
-const msg = sk.recvmsg(1024, 1024); *
+const msg = sk.recvmsg(1024, 1024);
 for (let cmsg in msg.ancillary)
   if (cmsg.level == socket.SOL_SOCKET && cmsg.type == socket.SCM_RIGHTS)
     print(`Got some descriptors: ${cmsg.data}!\n`);
