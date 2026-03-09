@@ -34,6 +34,11 @@ print(f"[08] Security & Quality Validation ({OUTDIR}) [Mode: {VALIDATE_MODE}]")
 hard_failures = []
 soft_warnings = []
 
+RELATIVE_MD_LINK_RE = re.compile(
+    r'\[[^\]\n]+\]\(((?!https?:\/\/|mailto:|[a-z0-9]+:)[^)\s]+?\.md(?:#[^)\s]+)?)\)',
+    re.IGNORECASE,
+)
+
 def hard_fail(msg):
     hard_failures.append(msg)
     print(f"[08] FAIL: {msg}")
@@ -132,9 +137,10 @@ for fpath in all_md:
     with open(fpath, "r", encoding="utf-8") as f:
         content = f.read()
     
-    links = re.findall(r'\[.*?\]\(((?!https?:\/\/|mailto:|[a-z0-9]+:).*?\.md)\)', content)
-    for link in links:
-        target_path = os.path.normpath(os.path.join(rel_dir, link))
+    for match in RELATIVE_MD_LINK_RE.finditer(content):
+        link = match.group(1)
+        target_file = link.split("#", 1)[0]
+        target_path = os.path.normpath(os.path.join(rel_dir, target_file))
         if not os.path.isfile(target_path):
             hard_fail(f"Broken relative link in {os.path.relpath(fpath, OUTDIR)}: {link}")
 
