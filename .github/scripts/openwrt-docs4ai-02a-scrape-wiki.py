@@ -17,8 +17,10 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import time
 from email.utils import format_datetime, parsedate_to_datetime
+from urllib.parse import unquote, urlparse
 
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -46,6 +48,7 @@ USER_AGENT = (
     "openwrt-docs4ai-v12-copilot/1.0 "
     "(+https://github.com/LuminairPrime/openwrt-docs4ai-v12-copilot)"
 )
+BASE_HOST = (urlparse(BASE_URL).hostname or "").lower()
 
 # Namespaces to crawl.
 NAMESPACES = [
@@ -162,6 +165,7 @@ def normalize_cache_entry(url, value):
             "last_modified_http": None,
             "raw_hash": None,
             "content_hash": None,
+            "skip_reason": None,
         }
 
     if not isinstance(value, dict):
@@ -180,6 +184,7 @@ def normalize_cache_entry(url, value):
         "last_modified_http": last_modified_http,
         "raw_hash": value.get("raw_hash"),
         "content_hash": value.get("content_hash"),
+        "skip_reason": value.get("skip_reason"),
     }
 
 
@@ -211,9 +216,42 @@ def load_cache(cache_file=None):
 
 def save_cache(cache, cache_file=None):
     cache_file = cache_file or get_cache_file()
-    os.makedirs(os.path.dirname(cache_file), exist_ok=True)
-    with open(cache_file, "w", encoding="utf-8") as handle:
-        json.dump(cache, handle, indent=2, sort_keys=True)
+    cache_dir = os.path.dirname(cache_file)
+    os.makedirs(cache_dir, exist_ok=True)
+
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            dir=cache_dir,
+            prefix="wiki-lastmod-",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temp_path = handle.name
+            json.dump(cache, handle, indent=2, sort_keys=True)
+        os.replace(temp_path, cache_file)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
+
+
+def is_expected_openwrt_url(url):
+    parsed = urlparse(url)
+    return parsed.scheme in {"http", "https"} and (parsed.hostname or "").lower() == BASE_HOST
+
+
+def normalize_wiki_href(href):
+    if href.startswith("/docs/"):
+        return unquote(href)
+    if not href.startswith(("http://", "https://")):
+        return None
+    if not is_expected_openwrt_url(href):
+        return None
+
+    path = unquote(urlparse(href).path or "")
+    return path if path.startswith("/docs/") else None
 
 
 def get_existing_output_info(slug):
@@ -221,18 +259,23 @@ def get_existing_output_info(slug):
     if not (os.path.isfile(md_path) and os.path.isfile(meta_path)):
         return None
 
-    content_hash = None
     try:
         with open(meta_path, "r", encoding="utf-8") as handle:
             meta = json.load(handle)
-        content_hash = meta.get("content_hash")
+        with open(md_path, "r", encoding="utf-8") as handle:
+            content = handle.read()
     except Exception:
-        content_hash = None
+        return None
+
+    computed_content_hash = content_hash_prefix(content)
+    stored_content_hash = meta.get("content_hash") or computed_content_hash
 
     return {
         "md_path": md_path,
         "meta_path": meta_path,
-        "content_hash": content_hash,
+        "content_hash": stored_content_hash,
+        "computed_content_hash": computed_content_hash,
+        "is_consistent": stored_content_hash == computed_content_hash,
     }
 
 
@@ -316,11 +359,8 @@ def discover_pages(session):
         before = len(discovered_pages)
         for match in re.finditer(r'href=["\']([^"\'#?]+)["\']', html):
             href = match.group(1)
-            if href.startswith(BASE_URL):
-                path = href.replace(BASE_URL, "")
-            elif href.startswith("/docs/"):
-                path = href
-            else:
+            path = normalize_wiki_href(href)
+            if not path:
                 continue
 
             if not path.startswith(prefix):
@@ -357,8 +397,8 @@ def fetch_raw_page(session, url, cache_entry=None):
         }
 
     response.raise_for_status()
-    final_url = getattr(response, "url", raw_url)
-    if not final_url.startswith(BASE_URL):
+    final_url = getattr(response, "url", None) or raw_url
+    if not is_expected_openwrt_url(final_url):
         raise RuntimeError(f"Unexpected redirect target for wiki fetch: {final_url}")
     parsed_last_modified = parse_last_modified(response.headers.get("Last-Modified"))
     return {
@@ -515,13 +555,14 @@ def get_cutoff_date():
     return datetime.datetime.now(datetime.UTC).replace(tzinfo=None) - datetime.timedelta(days=730)
 
 
-def update_cache_entry(cache, url, path, last_modified, last_modified_http, raw_hash, content_hash):
+def update_cache_entry(cache, url, path, last_modified, last_modified_http, raw_hash, content_hash, skip_reason=None):
     cache[url] = {
         "path": path,
         "last_modified": last_modified,
         "last_modified_http": last_modified_http,
         "raw_hash": raw_hash,
         "content_hash": content_hash,
+        "skip_reason": skip_reason,
     }
 
 
@@ -530,6 +571,10 @@ def process_page(session, path, cache, stats, cutoff):
     slug = path_to_filename(path)
     cache_entry = cache.get(url)
     existing_output = get_existing_output_info(slug)
+    if existing_output and not existing_output["is_consistent"]:
+        log("WARN", f"Discarding inconsistent cached wiki output for {slug}; metadata hash does not match markdown content.")
+        remove_output(slug)
+        existing_output = None
 
     sleep_with_rate_limit(f"raw-export {path}")
     try:
@@ -593,10 +638,25 @@ def process_page(session, path, cache, stats, cutoff):
             effective_last_modified,
             effective_last_modified_http,
             raw_hash,
-            cache_entry.get("content_hash") if cache_entry else None,
+            existing_output["computed_content_hash"] if existing_output else None,
         )
         stats["skipped_old"] += 1
         return "skipped_old"
+
+    if cache_entry and cache_entry.get("raw_hash") == raw_hash and cache_entry.get("skip_reason") == "short":
+        update_cache_entry(
+            cache,
+            url,
+            path,
+            effective_last_modified,
+            effective_last_modified_http,
+            raw_hash,
+            None,
+            skip_reason="short",
+        )
+        stats["skipped_short"] += 1
+        log("INFO", f"Cache hit for {slug}: raw wiki source still resolves to a short page.")
+        return "skipped_short"
 
     if cache_entry and cache_entry.get("raw_hash") == raw_hash and existing_output:
         update_cache_entry(
@@ -606,29 +666,13 @@ def process_page(session, path, cache, stats, cutoff):
             effective_last_modified,
             effective_last_modified_http,
             raw_hash,
-            cache_entry.get("content_hash"),
+            existing_output["computed_content_hash"],
         )
         stats["skipped_unchanged"] += 1
         log("INFO", f"Cache hit for {slug}: raw wiki source hash unchanged.")
         return "skipped_unchanged"
 
     last_modified = effective_last_modified
-    if parsed_last_modified is not None and path not in MANDATORY_PAGES:
-        if parsed_last_modified < cutoff:
-            if remove_output(slug):
-                log("INFO", f"Removed cached output for old wiki page {slug}.")
-            update_cache_entry(
-                cache,
-                url,
-                path,
-                effective_last_modified,
-                effective_last_modified_http,
-                raw_hash,
-                cache_entry.get("content_hash") if cache_entry else None,
-            )
-            stats["skipped_old"] += 1
-            return "skipped_old"
-
     converted = convert_raw_to_markdown(path, raw_content)
     if converted["error"] and converted["mode"] == "fallback-raw":
         log("WARN", f"Pandoc failed for {path}; using raw wiki fallback. {converted['error']}")
@@ -638,6 +682,16 @@ def process_page(session, path, cache, stats, cutoff):
             stats["reused_cached"] += 1
             log("WARN", f"Reusing cached wiki page {slug} after short conversion result ({len(converted['content'])} chars).")
             return "reused_cached"
+        update_cache_entry(
+            cache,
+            url,
+            path,
+            last_modified,
+            effective_last_modified_http,
+            raw_hash,
+            None,
+            skip_reason="short",
+        )
         stats["skipped_short"] += 1
         log("INFO", f"Skipping short wiki page {slug} ({len(converted['content'])} chars).")
         return "skipped_short"
@@ -659,6 +713,7 @@ def process_page(session, path, cache, stats, cutoff):
         effective_last_modified_http,
         raw_hash,
         content_hash,
+        skip_reason=None,
     )
 
     stats["saved"] += 1

@@ -27,10 +27,11 @@ def configure_tmp_workdir(module, tmp_path):
 
 
 class FakeResponse:
-    def __init__(self, status_code=200, text="", headers=None):
+    def __init__(self, status_code=200, text="", headers=None, url=None):
         self.status_code = status_code
         self.text = text
         self.headers = headers or {}
+        self.url = url
 
     def raise_for_status(self):
         if self.status_code >= 400:
@@ -75,6 +76,16 @@ def test_load_cache_normalizes_legacy_and_structured_entries(tmp_path):
     assert cache["https://openwrt.org/docs/techref/ubus"]["last_modified"] == "2025-03-08T12:00:00"
     assert cache["https://openwrt.org/docs/techref/procd"]["raw_hash"] == "abc"
     assert cache["https://openwrt.org/docs/techref/procd"]["last_modified_http"] == "Sat, 08 Mar 2025 12:00:00 GMT"
+
+
+def test_load_cache_ignores_invalid_json(tmp_path):
+    wiki = load_wiki_module()
+    cache_file = tmp_path / "wiki-lastmod.json"
+    cache_file.write_text("{not valid json", encoding="utf-8")
+
+    cache = wiki.load_cache(str(cache_file))
+
+    assert cache == {}
 
 
 def test_process_page_uses_conditional_get_for_not_modified(tmp_path, monkeypatch):
@@ -210,6 +221,49 @@ def test_discover_pages_ignores_bot_page_links_and_disables_cleanup(monkeypatch)
     assert allow_cleanup is False
 
 
+def test_discover_pages_ignores_offsite_absolute_urls(monkeypatch):
+    wiki = load_wiki_module()
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    responses = {
+        "docs%3Atechref": "<html><body><a href=\"https://evil.example/docs/techref/pwned\">bad</a><a href=\"https://openwrt.org/docs/techref/valid.page\">good</a></body></html>",
+        "docs%3Aguide-developer": "<html><body></body></html>",
+        "docs%3Aguide-user%3Abase-system%3Auci": "<html><body></body></html>",
+    }
+
+    class NamespaceSession:
+        def get(self, url, timeout=None):
+            for key, value in responses.items():
+                if key in url:
+                    return FakeResponse(text=value)
+            raise AssertionError(url)
+
+    pages, allow_cleanup = wiki.discover_pages(NamespaceSession())
+
+    assert "/docs/techref/valid.page" in pages
+    assert "/docs/techref/pwned" not in pages
+    assert allow_cleanup is True
+
+
+def test_fetch_raw_page_rejects_unexpected_redirect_target(monkeypatch):
+    wiki = load_wiki_module()
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    session = FakeSession(
+        [
+            FakeResponse(
+                status_code=200,
+                text="====== ubus ======\n\ncontent\n" * 5,
+                headers={},
+                url="https://evil.example/docs/techref/ubus?do=export_raw",
+            )
+        ]
+    )
+
+    with pytest.raises(RuntimeError, match="Unexpected redirect target"):
+        wiki.fetch_raw_page(session, "https://openwrt.org/docs/techref/ubus")
+
+
 def test_convert_raw_to_markdown_falls_back_when_pandoc_fails(monkeypatch):
     wiki = load_wiki_module()
 
@@ -228,6 +282,182 @@ def test_convert_raw_to_markdown_falls_back_when_pandoc_fails(monkeypatch):
     assert converted["mode"] == "fallback-raw"
     assert converted["content"].startswith("# Init Scripts")
     assert "raw DokuWiki syntax" in converted["content"]
+
+
+def test_process_page_reuses_cached_output_after_fetch_failure(tmp_path, monkeypatch):
+    wiki = load_wiki_module()
+    configure_tmp_workdir(wiki, tmp_path)
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    slug = "techref-ubus"
+    wiki.extractor.write_l1_markdown(
+        "wiki",
+        "wiki_page",
+        slug,
+        "# Cached Ubus\n\nStill valid.\n",
+        {"module": "wiki", "origin_type": "wiki_page", "slug": slug},
+    )
+
+    class FailingSession:
+        def get(self, url, timeout=None, headers=None, allow_redirects=True):
+            raise RuntimeError("network down")
+
+    cache = {
+        "https://openwrt.org/docs/techref/ubus": {
+            "path": "/docs/techref/ubus",
+            "last_modified": "unknown",
+            "last_modified_http": None,
+            "raw_hash": None,
+            "content_hash": None,
+            "skip_reason": None,
+        }
+    }
+    stats = wiki.build_stats()
+
+    outcome = wiki.process_page(FailingSession(), "/docs/techref/ubus", cache, stats, wiki.get_cutoff_date())
+
+    assert outcome == "reused_cached"
+    assert stats["reused_cached"] == 1
+
+
+def test_process_page_reuses_cached_output_after_html_error(tmp_path, monkeypatch):
+    wiki = load_wiki_module()
+    configure_tmp_workdir(wiki, tmp_path)
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    slug = "techref-ubus"
+    wiki.extractor.write_l1_markdown(
+        "wiki",
+        "wiki_page",
+        slug,
+        "# Cached Ubus\n\nStill valid.\n",
+        {"module": "wiki", "origin_type": "wiki_page", "slug": slug},
+    )
+
+    session = FakeSession(
+        [
+            FakeResponse(
+                status_code=200,
+                text="<!doctype html><html><body><h1>Just a moment...</h1></body></html>",
+                headers={},
+                url="https://openwrt.org/docs/techref/ubus?do=export_raw",
+            )
+        ]
+    )
+    cache = {
+        "https://openwrt.org/docs/techref/ubus": {
+            "path": "/docs/techref/ubus",
+            "last_modified": "unknown",
+            "last_modified_http": None,
+            "raw_hash": None,
+            "content_hash": None,
+            "skip_reason": None,
+        }
+    }
+    stats = wiki.build_stats()
+
+    outcome = wiki.process_page(session, "/docs/techref/ubus", cache, stats, wiki.get_cutoff_date())
+
+    assert outcome == "reused_cached"
+    assert stats["reused_cached"] == 1
+
+
+def test_process_page_discards_inconsistent_cached_output_and_refetches(tmp_path, monkeypatch):
+    wiki = load_wiki_module()
+    configure_tmp_workdir(wiki, tmp_path)
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    slug = "techref-ubus"
+    wiki.extractor.write_l1_markdown(
+        "wiki",
+        "wiki_page",
+        slug,
+        "# Cached Ubus\n\nOriginal content.\n",
+        {"module": "wiki", "origin_type": "wiki_page", "slug": slug},
+    )
+    md_path = tmp_path / "work" / "L1-raw" / "wiki" / f"wiki_page-{slug}.md"
+    md_path.write_text("# Corrupted\n\nThis content no longer matches metadata.\n", encoding="utf-8")
+
+    raw_content = "====== ubus ======\n\nEnough text to trigger a fresh rewrite after corruption.\n" * 5
+    session = FakeSession([
+        FakeResponse(status_code=200, text=raw_content, headers={}, url="https://openwrt.org/docs/techref/ubus?do=export_raw")
+    ])
+    cache = {
+        "https://openwrt.org/docs/techref/ubus": {
+            "path": "/docs/techref/ubus",
+            "last_modified": "unknown",
+            "last_modified_http": None,
+            "raw_hash": "stale-raw-hash",
+            "content_hash": "stale-content-hash",
+            "skip_reason": None,
+        }
+    }
+    stats = wiki.build_stats()
+
+    outcome = wiki.process_page(session, "/docs/techref/ubus", cache, stats, wiki.get_cutoff_date())
+
+    assert outcome == "saved"
+    assert stats["saved"] == 1
+    assert "Corrupted" not in md_path.read_text(encoding="utf-8")
+
+
+def test_process_page_skips_short_result_when_cached_short_hash_matches(tmp_path, monkeypatch):
+    wiki = load_wiki_module()
+    configure_tmp_workdir(wiki, tmp_path)
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    raw_content = "====== Tiny ======\n\nshort\n"
+    raw_hash = wiki.compute_hash(raw_content)
+    cache = {
+        "https://openwrt.org/docs/techref/tiny-page": {
+            "path": "/docs/techref/tiny-page",
+            "last_modified": "unknown",
+            "last_modified_http": None,
+            "raw_hash": raw_hash,
+            "content_hash": None,
+            "skip_reason": "short",
+        }
+    }
+    session = FakeSession([
+        FakeResponse(status_code=200, text=raw_content, headers={}, url="https://openwrt.org/docs/techref/tiny-page?do=export_raw")
+    ])
+    stats = wiki.build_stats()
+
+    monkeypatch.setattr(
+        wiki,
+        "convert_raw_to_markdown",
+        lambda path, raw_content: pytest.fail("Conversion should be skipped when cached short hash matches."),
+    )
+
+    outcome = wiki.process_page(session, "/docs/techref/tiny-page", cache, stats, wiki.get_cutoff_date())
+
+    assert outcome == "skipped_short"
+    assert stats["skipped_short"] == 1
+
+
+def test_process_page_records_short_skip_reason_when_no_output_exists(tmp_path, monkeypatch):
+    wiki = load_wiki_module()
+    configure_tmp_workdir(wiki, tmp_path)
+    monkeypatch.setattr(wiki, "sleep_with_rate_limit", lambda reason: None)
+
+    raw_content = "====== Tiny ======\n\nshort\n"
+    session = FakeSession([
+        FakeResponse(status_code=200, text=raw_content, headers={}, url="https://openwrt.org/docs/techref/tiny-page?do=export_raw")
+    ])
+    cache = {}
+    stats = wiki.build_stats()
+
+    monkeypatch.setattr(
+        wiki,
+        "convert_raw_to_markdown",
+        lambda path, raw_content: {"title": "Tiny", "content": "too short", "mode": "pandoc", "error": None},
+    )
+
+    outcome = wiki.process_page(session, "/docs/techref/tiny-page", cache, stats, wiki.get_cutoff_date())
+
+    assert outcome == "skipped_short"
+    assert stats["skipped_short"] == 1
+    assert cache["https://openwrt.org/docs/techref/tiny-page"]["skip_reason"] == "short"
 
 
 def test_cleanup_orphaned_outputs_removes_stale_cached_files(tmp_path):
