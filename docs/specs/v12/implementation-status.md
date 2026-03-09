@@ -11,7 +11,7 @@ The current authoritative position is:
 - local smoke and cache-backed AI verification paths are passing
 - GitHub Actions behavior is verified through run `22864304564`, including `initialize`, all `extract` jobs, `process`, and `deploy`
 - L1 and L2 are intentionally retained under `openwrt-condensed-docs`; only L0 remains transient
-- remaining risk is concentrated in non-blocking AST warning volume and wiki-conversion cleanliness
+- remaining risk is concentrated in the remaining 48 non-blocking AST warnings and wiki-conversion cleanliness
 
 ## Verification Matrix
 
@@ -78,5 +78,5 @@ A random slice audit of 10 generated files on 2026-03-09 found that the outputs 
 
 ### Next Priority
 
-Reduce non-blocking AST warning noise to the canonical layer, then decide how aggressively to normalize wiki-conversion artifacts without losing useful source detail.
+Triage the remaining 48 non-blocking AST warnings inside canonical L2 ucode docs, then decide how aggressively to normalize wiki-conversion artifacts without losing useful source detail.
 

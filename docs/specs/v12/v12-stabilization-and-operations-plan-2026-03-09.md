@@ -11,7 +11,7 @@ Stabilize v12 as an engineering system that is locally correct, documented, test
 - Deploy promoted generated outputs into `openwrt-condensed-docs/` via commit `3d3e6d3`.
 - The successful `final-staging` artifact contained 151 L1 markdown docs, 151 L2 markdown docs, and 397 indexed symbols.
 - L1 and L2 are now explicitly retained as durable generated outputs; only L0 remains transient.
-- The next operational focus is warning reduction and content cleanliness, not first-pass remote bring-up.
+- The next operational focus is the remaining 48 canonical-layer AST warnings and content cleanliness, not first-pass remote bring-up.
 
 ## Primary Decisions
 
