@@ -38,6 +38,10 @@ RELATIVE_MD_LINK_RE = re.compile(
     r'\[[^\]\n]+\]\(((?!https?:\/\/|mailto:|[a-z0-9]+:)[^)\s]+?\.md(?:#[^)\s]+)?)\)',
     re.IGNORECASE,
 )
+UCODE_IMPORT_RE = re.compile(
+    r"^\s*import(?:\s+(?:\*\s+as\s+[A-Za-z_][\w$]*|\{[^}]+\}|[A-Za-z_][\w$]*)(?:\s*,\s*(?:\{[^}]+\}|\*\s+as\s+[A-Za-z_][\w$]*))?\s+from)?\s+['\"]([^'\"]+)['\"]\s*;",
+    re.MULTILINE,
+)
 
 def hard_fail(msg):
     hard_failures.append(msg)
@@ -46,6 +50,10 @@ def hard_fail(msg):
 def soft_warn(msg):
     soft_warnings.append(msg)
     print(f"[08] WARN: {msg}")
+
+
+def extract_ucode_imports(code):
+    return sorted(set(UCODE_IMPORT_RE.findall(code)))
 
 # ============================================================
 # Check 1: Structural Integrity (L3 Entry Points)
@@ -181,7 +189,11 @@ def check_ast(code, lang, rel_path):
         with tempfile.NamedTemporaryFile(suffix=".uc", delete=False, mode="w", encoding="utf-8") as tmp:
             tmp.write(code)
             tmp_path = tmp.name
-        res = subprocess.run([UCODE_BINARY, "-c", tmp_path], capture_output=True, text=True)
+        compile_flags = [f"dynlink={module}" for module in extract_ucode_imports(code)]
+        compile_arg = "-c"
+        if compile_flags:
+            compile_arg += "," + ",".join(compile_flags)
+        res = subprocess.run([UCODE_BINARY, compile_arg, tmp_path], capture_output=True, text=True)
         os.unlink(tmp_path)
         if res.returncode != 0:
             soft_warn(f"uCode Syntax Error in {rel_path}: {res.stderr.strip()}")

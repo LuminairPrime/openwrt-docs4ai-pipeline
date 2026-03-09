@@ -51,6 +51,13 @@ saved = 0
 JSDOC_ANCHOR_RE = re.compile(r'^\s*<a name=["\'][^"\']+["\']></a>\s*$', re.MULTILINE)
 JSDOC_TOC_START_RE = re.compile(r'^\s*\* \[[^\]]+\]\(#module_[^)]+\)\s*$')
 JSDOC_TOC_LINE_RE = re.compile(r'^\s*\* ')
+FENCE_RE = re.compile(r'^(\s*)```([^\s`]*)?\s*$')
+JSON_LIKE_BLOCK_RE = re.compile(r'^\s*[\[{]')
+JSON_KEY_RE = re.compile(r'^\s*"[^"]+"\s*:', re.MULTILINE)
+CODE_KEYWORD_RE = re.compile(r'^\s*(?:import|const|let|local|function|export|if|for|while|switch|return|try)\b', re.MULTILINE)
+PSEUDOCODE_ELLIPSIS_CALL_RE = re.compile(r'\(\s*…\s*(?:[,)]|$)')
+PSEUDOCODE_ELLIPSIS_ASSIGN_RE = re.compile(r'=\s*…\s*;?$')
+PSEUDOCODE_ELLIPSIS_ARG_RE = re.compile(r',\s*…\s*[)\]}]?\s*;?$')
 
 
 def strip_jsdoc_toc(markdown):
@@ -76,20 +83,93 @@ def strip_jsdoc_toc(markdown):
     return "\n".join(cleaned)
 
 
-def relabel_untyped_fences(markdown, language):
+def strip_inline_ucode_comment(line):
+    return re.sub(r'(?<!:)//.*$', '', line)
+
+
+def looks_like_shell_block(lines):
+    non_empty = [line.strip() for line in lines if line.strip()]
+    return bool(non_empty) and non_empty[0].startswith('$ ')
+
+
+def looks_like_json_example(lines):
+    body = "\n".join(lines).strip()
+    if not body or not JSON_LIKE_BLOCK_RE.match(body):
+        return False
+    if CODE_KEYWORD_RE.search(body):
+        return False
+    if re.search(r'\b[A-Za-z_]\w*\s*\(', body):
+        return False
+    return bool(JSON_KEY_RE.search(body))
+
+
+def looks_like_pseudocode(lines):
+    for raw_line in lines:
+        line = strip_inline_ucode_comment(raw_line).strip()
+        if not line or '…' not in line:
+            continue
+        if line == '…':
+            return True
+        if PSEUDOCODE_ELLIPSIS_CALL_RE.search(line):
+            return True
+        if PSEUDOCODE_ELLIPSIS_ASSIGN_RE.search(line):
+            return True
+        if PSEUDOCODE_ELLIPSIS_ARG_RE.search(line):
+            return True
+    return False
+
+
+def normalize_fenced_blocks(markdown, default_language):
     lines = markdown.splitlines()
+    output = []
+    block_lines = []
+    fence_indent = ''
+    fence_language = ''
     in_fence = False
 
-    for index, line in enumerate(lines):
-        match = re.match(r'^(\s*)```\s*$', line)
-        if match:
-            if not in_fence:
-                lines[index] = f"{match.group(1)}```{language}"
-                in_fence = True
-            else:
-                in_fence = False
+    def flush_block():
+        nonlocal block_lines, fence_indent, fence_language
+        language = fence_language or default_language
+        if not fence_language and looks_like_shell_block(block_lines):
+            language = 'bash'
+        elif language in {'uc', 'ucode'}:
+            language = 'ucode'
+            if looks_like_json_example(block_lines):
+                language = 'json'
+            elif looks_like_pseudocode(block_lines):
+                language = 'text'
 
-    return "\n".join(lines)
+        output.append(f"{fence_indent}```{language}".rstrip())
+        output.extend(block_lines)
+        output.append(f"{fence_indent}```")
+        block_lines = []
+        fence_indent = ''
+        fence_language = ''
+
+    for line in lines:
+        match = FENCE_RE.match(line)
+        if not in_fence:
+            if not match:
+                output.append(line)
+                continue
+
+            in_fence = True
+            fence_indent = match.group(1)
+            fence_language = (match.group(2) or '').strip().lower()
+            block_lines = []
+            continue
+
+        if match and match.group(1) == fence_indent:
+            flush_block()
+            in_fence = False
+            continue
+
+        block_lines.append(line)
+
+    if in_fence:
+        flush_block()
+
+    return "\n".join(output)
 
 
 def cleanup_ucode_jsdoc_output(markdown, is_c):
@@ -103,7 +183,7 @@ def cleanup_ucode_jsdoc_output(markdown, is_c):
     cleaned = strip_jsdoc_toc(cleaned)
     cleaned = re.sub(r'^\s*##\s+[^\n]+\n#\s+([^\n]+)', r'## \1', cleaned, count=1, flags=re.MULTILINE)
     cleaned = re.sub(r'```(?:javascript|js)\r?\n', '```ucode\n', cleaned, flags=re.IGNORECASE)
-    cleaned = relabel_untyped_fences(cleaned, 'ucode')
+    cleaned = normalize_fenced_blocks(cleaned, 'ucode')
     cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
     return cleaned.strip()
 
