@@ -2,14 +2,15 @@
 
 ## Current State
 
-v12 contains substantial implementation work, but the repository is not yet treated as fully verified.
+v12 now has fresh local and remote verification from the 2026-03-09 stabilization pass, but it is not treated as fully finished.
 
 The current authoritative position is:
 
 - code exists for the numbered pipeline stages
-- documentation and local test surfaces had drifted out of sync with the current script layout
-- local-first stabilization is now the active development strategy
-- GitHub Actions behavior is not yet treated as verified for release automation
+- documentation and test surfaces were realigned with the current script layout on 2026-03-09
+- local smoke and cache-backed AI verification paths are passing
+- GitHub Actions behavior is verified through run `22864304564`, including `initialize`, all `extract` jobs, `process`, and `deploy`
+- remaining risk is concentrated in non-blocking AST warning volume and long-term generated-artifact policy
 
 ## Verification Matrix
 
@@ -22,7 +23,9 @@ The current authoritative position is:
 | Deterministic local smoke test | verified | `python tests/00-smoke-test.py` passes locally |
 | Sequential local smoke runner | verified | `python tests/openwrt-docs4ai-00-smoke-test.py` passes locally |
 | Local AI-summary integration | verified | Cache-backed local AI path passes via `--run-ai` without requiring a live token |
-| GitHub Actions remote verification | not yet verified | Deferred until a remote test repository exists |
+| GitHub Actions remote verification | verified | Run `22864304564` passed end to end on 2026-03-09 |
+| Remote output measurement | verified | Successful staging artifact contained 151 L1 markdown docs, 151 L2 markdown docs, and 397 indexed symbols |
+| Generated output promotion | verified | Deploy produced commit `3d3e6d3` (`docs: v12 auto-update 2026-03-09`) |
 
 ## Historical Note
 
@@ -45,7 +48,25 @@ Older status claims from early March 2026 described the pipeline as fully comple
 - Repaired runtime issues in `03`, `04`, `05`, `06b`, and `06c` that were surfaced by the local smoke path.
 - Verified local AI enrichment in cache-backed mode without external model calls.
 
+### Milestone 3: Remote GitHub Actions verification
+
+- Fixed a missing `datetime` import in `01-clone-repos.py` that blocked the `initialize` job in the first remote run.
+- Restored the broken `load_cache()` function in `02a-scrape-wiki.py`, allowing the full extract matrix to complete remotely.
+- Tightened relative markdown link validation in `08-validate.py` so it no longer over-matches across adjacent links and prose.
+- Verified successful run `22864304564`, which completed `initialize`, all extractor jobs, `process`, and `deploy`.
+- Confirmed that the deploy stage promoted generated outputs into `openwrt-condensed-docs/` via commit `3d3e6d3`.
+
+## Remote Output Snapshot
+
+Measured from the `final-staging` artifact produced by run `22864304564`.
+
+| Layer | Markdown docs | Metadata files | Total bytes | Notes |
+| --- | --- | --- | --- | --- |
+| L1 | 151 | 151 | 1,799,704 | Largest module by document count is `wiki` with 90 docs |
+| L2 | 151 | 0 | 1,796,690 | Mirrors L1 document count after normalization |
+| Registry | 397 symbols | n/a | n/a | Count taken from `cross-link-registry.json` |
+
 ### Next Priority
 
-Generate and measure persistent local L1 and L2 outputs, then use those measurements to decide the long-term storage policy for those layers.
+Triage the remaining non-blocking AST warnings and use the measured remote output sizes to decide the long-term storage and retention policy for L1 and L2.
 

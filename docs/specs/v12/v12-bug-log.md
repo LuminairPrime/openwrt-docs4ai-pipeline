@@ -19,6 +19,10 @@ Rules:
 | LOCAL-005 | fixed-and-verified | normalization | `03-normalize-semantic.py` over-protected document bodies during cross-link injection and over-broadened deprecation detection across sections | Fixed by narrowing header protection, protecting frontmatter explicitly, and limiting deprecation scans to the current section. Verified by both smoke runners. |
 | LOCAL-006 | fixed-and-verified | assembly-indexing | `05-assemble-references.py`, `06b-generate-agents-md.py`, and `06c-generate-ide-schemas.py` contained runtime or output-shape defects surfaced by fixture tests | Fixed by correcting monolith assembly, rebuilding AGENTS summary generation, and repairing the ucode `.d.ts` generator. Verified by both smoke runners. |
 | LOCAL-007 | fixed-and-verified | ai-enrichment | `04-generate-ai-summaries.py` only worked safely in skip mode and could not be exercised locally without external tokens | Fixed by adding a cache-backed local enrichment path and verifying it with `python tests/00-smoke-test.py --run-ai` and `python tests/openwrt-docs4ai-00-smoke-test.py --run-ai`. |
+| REMOTE-001 | fixed-and-verified | initialize | `01-clone-repos.py` referenced `datetime` without importing it, causing the first remote `initialize` job to fail | Fixed in commit `75892ee`. Verified by the next run progressing past `initialize`. |
+| REMOTE-002 | fixed-and-verified | extract-wiki | `02a-scrape-wiki.py` had a broken `load_cache()` block that raised `IndentationError` remotely | Fixed in commit `ed9b9be`. Verified by the next run completing the full extract matrix. |
+| REMOTE-003 | fixed-and-verified | validation | `08-validate.py` over-matched relative `.md` links across adjacent markdown links and prose, creating 14 false blocking failures | Fixed in commit `f6a16f2`. Verified by successful remote run `22864304564`. |
+| REMOTE-004 | open | validation-warnings | Successful remote validation still emitted 143 soft AST warnings from extracted JS and ucode blocks | Non-blocking in run `22864304564`, but should be triaged before making validation stricter. |
 
 ## Verification Notes
 

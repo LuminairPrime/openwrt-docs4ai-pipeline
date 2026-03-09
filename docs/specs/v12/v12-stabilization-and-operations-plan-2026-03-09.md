@@ -2,7 +2,15 @@
 
 ## Goal
 
-Stabilize v12 as an engineering system that is locally correct, documented, testable, and maintainable before attempting full GitHub Actions verification. The near-term objective is not remote automation at any cost. The near-term objective is a trustworthy Windows development path, a coherent filesystem contract, and local smoke tests that exercise the actual numbered scripts.
+Stabilize v12 as an engineering system that is locally correct, documented, testable, and maintainable, then carry that state through real GitHub Actions verification. The near-term objective is not remote automation at any cost. The near-term objective is a trustworthy Windows development path, a coherent filesystem contract, and smoke tests that exercise the actual numbered scripts.
+
+## 2026-03-09 Status Update
+
+- Phases A through D are now far enough complete to support successful end-to-end GitHub Actions verification.
+- Remote run `22864304564` completed `initialize`, the full `extract` matrix, `process`, and `deploy`.
+- Deploy promoted generated outputs into `openwrt-condensed-docs/` via commit `3d3e6d3`.
+- The successful `final-staging` artifact contained 151 L1 markdown docs, 151 L2 markdown docs, and 397 indexed symbols.
+- The next operational focus is warning reduction and generated-artifact retention policy, not first-pass remote bring-up.
 
 ## Primary Decisions
 
@@ -10,7 +18,7 @@ Stabilize v12 as an engineering system that is locally correct, documented, test
 - Standardize on `L1-raw` and `L2-semantic` without leading dots.
 - Keep the numbered `00` through `08` script family and document that numbering means execution order while letter suffixes mean deployment-time parallelizability.
 - Treat old March 9 Opus bug reports as archive material, not as the live bug ledger.
-- Prioritize local-first verification. Defer GitHub-only conclusions until a remote test repository exists.
+- Prioritize local-first verification, then confirm conclusions with real GitHub Actions runs and artifacts.
 - Keep AI summaries optional during development, but verify their pipeline position locally with seeded test files.
 
 ## Phases
@@ -43,6 +51,12 @@ Stabilize v12 as an engineering system that is locally correct, documented, test
 2. Document what still requires GitHub-only verification.
 3. Prepare a later remote staging and promotion model that validates generated outputs before overwrite.
 
+### Phase E: Post-verification hardening
+
+1. Triage the remaining soft AST warnings from generated JS and ucode docs.
+2. Decide whether L1 and L2 should remain committed to `openwrt-condensed-docs/`, move to releases, or remain CI artifacts only.
+3. Document the operating policy for auto-promoted output commits to `main`.
+
 ## Expected Deliverables for the First Stage
 
 - Clean active spec directory under `docs/specs/v12/`
@@ -52,3 +66,9 @@ Stabilize v12 as an engineering system that is locally correct, documented, test
 - Active local bug log
 - Measured L1 and L2 output characteristics from real local runs
 - Advice on whether L1 and L2 should be committed, released, or kept as debug artifacts
+
+## Current Outcome
+
+- Active specs, local smoke tests, and remote GitHub Actions verification are all in place.
+- Output measurement is now based on a successful remote artifact, not on estimates.
+- Remaining work is operational tightening rather than first-pass stabilization.
