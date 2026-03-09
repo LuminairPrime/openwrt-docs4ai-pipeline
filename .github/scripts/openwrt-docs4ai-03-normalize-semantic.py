@@ -173,6 +173,10 @@ def pass_2_link_all(l2_files, registry):
             prot.update(range(m.start(), m.end()))
         for m in re.finditer(r'^\s*#+ .+$', content, re.MULTILINE):
             prot.update(range(m.start(), m.end()))
+        for m in re.finditer(r'<[^>\n]+>', content):
+            prot.update(range(m.start(), m.end()))
+        for m in re.finditer(r'^\s*[*-]\s+\[.*\]\(#.*\).*$' , content, re.MULTILINE):
+            prot.update(range(m.start(), m.end()))
         for m in re.finditer(r'`[^`\n]+`|\[[^\]]+\]\([^)]+\)', content):
             prot.update(range(m.start(), m.end()))
             

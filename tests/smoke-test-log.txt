@@ -1,53 +1,109 @@
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-03-normalize-L2.py ---
+--- openwrt-docs4ai-03-normalize-semantic.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-03-normalize-semantic.py
+
+STDOUT:
 [03] Pass 1: YAML Schema Injection & Link Registry Build
 [03] Pass 2: Injecting Cross-Links
+[03] Pass 3: Injecting Deprecation Warnings
 [03] Promoting to staging OUTDIR
 [03] Complete.
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-04-generate-summaries.py ---
-[04] SKIP: AI summarization disabled (SKIP_AI=true)
+STDERR:
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-05-assemble-references.py ---
+EXIT CODE: 0
+
+--- openwrt-docs4ai-05-assemble-references.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-05-assemble-references.py
+
+STDOUT:
 [05] Assemble L4 monolithic files and L3 skeletons
 [05] Processing module: procd (1 files)
-[05] OK: procd L4 (21 tokens) and L3 skeleton
+[05] OK: procd L4 (26 tokens) and L3 skeleton
 [05] Processing module: uci (1 files)
-[05] OK: uci L4 (24 tokens) and L3 skeleton
+[05] OK: uci L4 (37 tokens) and L3 skeleton
 [05] Processing module: ucode (2 files)
-[05] OK: ucode L4 (62 tokens) and L3 skeleton
-[05] Complete: 6 artifacts generated.
+[05] OK: ucode L4 (67 tokens) and L3 skeleton
+[05] Processing module: wiki (1 files)
+[05] OK: wiki L4 (26 tokens) and L3 skeleton
+[05] Complete: 8 artifacts generated.
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-06a-generate-llms-txt.py ---
+STDERR:
+
+EXIT CODE: 0
+
+--- openwrt-docs4ai-06a-generate-llms-txt.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06a-generate-llms-txt.py
+
+STDOUT:
 [06a] Generating L3 Navigational Maps (llms.txt)
-[06a] Indexed 4 files totaling ~107 tokens.
+[06a] Indexed 13 files totaling ~156 tokens.
 [06a] Complete: Generated llms.txt, llms-full.txt, and module-level indexes.
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-06b-generate-agents-md.py ---
+STDERR:
+
+EXIT CODE: 0
+
+--- openwrt-docs4ai-06b-generate-agents-md.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06b-generate-agents-md.py
+
+STDOUT:
 [06b] Generating AGENTS.md and README.md
 [06b] Complete.
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-06c-generate-ide-schemas.py ---
-[06c] Generating ucode.d.ts IDE schemas
-[06c] OK: C:\Users\MC\AppData\Local\Temp\tmphqeao03x\out\ucode\ucode.d.ts (2 symbols)
+STDERR:
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-06d-generate-changelog.py ---
+EXIT CODE: 0
+
+--- openwrt-docs4ai-06c-generate-ide-schemas.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06c-generate-ide-schemas.py
+
+STDOUT:
+[06c] Generating ucode.d.ts IDE schemas
+[06c] OK: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\tmp\fixture-smoke-3zigtxu1\out\ucode\ucode.d.ts (4 symbols)
+
+STDERR:
+
+EXIT CODE: 0
+
+--- openwrt-docs4ai-06d-generate-changelog.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06d-generate-changelog.py
+
+STDOUT:
 [06d] Generating L5 Changelog and Telemetry
 [06d] INFO: No baseline inventory found. This is likely the first run.
 [06d] OK: changelog.json, CHANGES.md, signature-inventory.json
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-07-generate-index-html.py ---
+STDERR:
+
+EXIT CODE: 0
+
+--- openwrt-docs4ai-07-generate-index-html.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-07-generate-index-html.py
+
+STDOUT:
 [07] Generating index.html web landing page
 [07] OK: index.html generated successfully.
 
---- Running C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-antigravity\.github\scripts\openwrt-docs4ai-08-validate.py ---
-[08] Security & Quality Validation (C:\Users\MC\AppData\Local\Temp\tmphqeao03x\out)
+STDERR:
+
+EXIT CODE: 0
+
+--- openwrt-docs4ai-08-validate.py ---
+COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-08-validate.py --warn-only
+
+STDOUT:
+[08] Security & Quality Validation (C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\tmp\fixture-smoke-3zigtxu1\out) [Mode: soft]
 
 [08] ----------------------------------------------
 [08] Validation Results
-[08]   Files Checked: 9
+[08]   Files Checked: 21
 [08]   Hard Failures: 0
 [08]   Soft Warnings: 0
 [08] ----------------------------------------------
 
 [08] Validation pass complete.
+
+STDERR:
+
+EXIT CODE: 0

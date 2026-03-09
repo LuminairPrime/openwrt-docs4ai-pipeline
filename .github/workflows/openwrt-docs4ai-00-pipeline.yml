@@ -129,7 +129,10 @@ jobs:
           python-version: "3.12"
           cache: 'pip'
       - name: Install dependencies
-        run: pip install -r .github/scripts/requirements.txt
+        run: |
+          pip install -r .github/scripts/requirements.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential cmake libjson-c-dev pkg-config
       - name: Download L0 (for manifest/registry)
         uses: actions/download-artifact@v4
         with:
@@ -157,6 +160,31 @@ jobs:
           else
             echo "No baseline inventory found in $PUBLISH_DIR."
           fi
+      - name: Build ucode validation binary
+        run: |
+          cmake -S "$WORKDIR/repo-ucode" -B "$WORKDIR/repo-ucode/build-host" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$WORKDIR/repo-ucode/build-install" \
+            -DDEBUG_SUPPORT=OFF \
+            -DFS_SUPPORT=OFF \
+            -DIO_SUPPORT=OFF \
+            -DMATH_SUPPORT=OFF \
+            -DUBUS_SUPPORT=OFF \
+            -DUCI_SUPPORT=OFF \
+            -DRTNL_SUPPORT=OFF \
+            -DNL80211_SUPPORT=OFF \
+            -DRESOLV_SUPPORT=OFF \
+            -DSTRUCT_SUPPORT=OFF \
+            -DULOOP_SUPPORT=OFF \
+            -DLOG_SUPPORT=OFF \
+            -DSOCKET_SUPPORT=OFF \
+            -DZLIB_SUPPORT=OFF \
+            -DDIGEST_SUPPORT=OFF \
+            -DDIGEST_SUPPORT_EXTENDED=OFF
+          cmake --build "$WORKDIR/repo-ucode/build-host" --parallel
+          cmake --install "$WORKDIR/repo-ucode/build-host"
+          echo "$WORKDIR/repo-ucode/build-install/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$WORKDIR/repo-ucode/build-install/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
       - name: Normalize L2
         run: python .github/scripts/openwrt-docs4ai-03-normalize-semantic.py
       - name: "AI summaries (Optional)"

@@ -79,6 +79,7 @@ MAX_FILE_SIZE_MB = 2.0
 
 all_md = glob.glob(os.path.join(OUTDIR, "**", "*.md"), recursive=True)
 checked_count = 0
+skipped_ucode_ast_files = {}
 
 for fpath in all_md:
     rel = os.path.relpath(fpath, OUTDIR)
@@ -125,6 +126,9 @@ for fpath in all_md:
                             hard_fail(f"L2 YAML missing required field '{field}': {rel}")
             except Exception as e:
                 hard_fail(f"Malformed YAML in L2: {rel} ({e})")
+
+        if '<a name="' in content:
+            soft_warn(f"Raw HTML anchor tag leaked into L2: {rel}")
 
 # ============================================================
 # Check 3: Link Integrity (L2 Relative Links)
@@ -198,7 +202,18 @@ if JS_BINARY or UCODE_BINARY:
         for lang, code in blocks:
             # Normalize lang names
             l = "javascript" if lang in ["js", "javascript"] else "ucode"
+            if l == "ucode" and not UCODE_BINARY:
+                skipped_ucode_ast_files[rel] = skipped_ucode_ast_files.get(rel, 0) + 1
+                continue
             check_ast(code, l, rel)
+
+if skipped_ucode_ast_files:
+    skipped_blocks = sum(skipped_ucode_ast_files.values())
+    soft_warn(
+        "uCode syntax validation skipped for "
+        f"{skipped_blocks} code block(s) across {len(skipped_ucode_ast_files)} file(s): "
+        "'ucode' binary not found in PATH"
+    )
 
 # ============================================================
 # Summary

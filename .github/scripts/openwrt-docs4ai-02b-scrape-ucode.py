@@ -48,6 +48,65 @@ repo_url = "https://github.com/jow-/ucode"
 
 saved = 0
 
+JSDOC_ANCHOR_RE = re.compile(r'^\s*<a name=["\'][^"\']+["\']></a>\s*$', re.MULTILINE)
+JSDOC_TOC_START_RE = re.compile(r'^\s*\* \[[^\]]+\]\(#module_[^)]+\)\s*$')
+JSDOC_TOC_LINE_RE = re.compile(r'^\s*\* ')
+
+
+def strip_jsdoc_toc(markdown):
+    lines = markdown.splitlines()
+    cleaned = []
+    index = 0
+    removed = False
+
+    while index < len(lines):
+        line = lines[index]
+        if not removed and JSDOC_TOC_START_RE.match(line):
+            removed = True
+            index += 1
+            while index < len(lines) and JSDOC_TOC_LINE_RE.match(lines[index]):
+                index += 1
+            while index < len(lines) and not lines[index].strip():
+                index += 1
+            continue
+
+        cleaned.append(line)
+        index += 1
+
+    return "\n".join(cleaned)
+
+
+def relabel_untyped_fences(markdown, language):
+    lines = markdown.splitlines()
+    in_fence = False
+
+    for index, line in enumerate(lines):
+        match = re.match(r'^(\s*)```\s*$', line)
+        if match:
+            if not in_fence:
+                lines[index] = f"{match.group(1)}```{language}"
+                in_fence = True
+            else:
+                in_fence = False
+
+    return "\n".join(lines)
+
+
+def cleanup_ucode_jsdoc_output(markdown, is_c):
+    cleaned = re.sub(r'<pre class="prettyprint[^"]*"><code>', '```c\n' if is_c else '```ucode\n', markdown)
+    cleaned = cleaned.replace('</code></pre>', '\n```')
+    cleaned = re.sub(r'</?code>', '`', cleaned)
+    cleaned = re.sub(r'</?p>', '', cleaned)
+    cleaned = re.sub(r'</?(?:dl|dt|dd|ul|li|table|thead|tbody|tr|th|td|h[1-6])[^>]*>', '', cleaned)
+    cleaned = html.unescape(cleaned)
+    cleaned = JSDOC_ANCHOR_RE.sub('', cleaned)
+    cleaned = strip_jsdoc_toc(cleaned)
+    cleaned = re.sub(r'^\s*##\s+[^\n]+\n#\s+([^\n]+)', r'## \1', cleaned, count=1, flags=re.MULTILINE)
+    cleaned = re.sub(r'```(?:javascript|js)\r?\n', '```ucode\n', cleaned, flags=re.IGNORECASE)
+    cleaned = relabel_untyped_fences(cleaned, 'ucode')
+    cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
+    return cleaned.strip()
+
 # --- Process tutorials ---
 print("[02b] Processing tutorials...")
 for src in sorted(glob.glob(os.path.join(repo_ucode, "docs", "tutorial-*.md"))):
@@ -133,14 +192,7 @@ for src in srcs:
         print(f"[02b] SKIP: {mod} (too short, {word_count} words)")
         continue
 
-    # Post-process html out of markdown
-    output = re.sub(r'<pre class="prettyprint[^"]*"><code>', '```c\n' if is_c else '```javascript\n', output)
-    output = output.replace('</code></pre>', '\n```')
-    output = re.sub(r'</?code>', '`', output)
-    output = re.sub(r'</?p>', '', output)
-    output = re.sub(r'</?(?:dl|dt|dd|ul|li|table|thead|tbody|tr|th|td|h[1-6])[^>]*>', '', output)
-    output = html.unescape(output)
-    output = re.sub(r'\n{3,}', '\n\n', output)
+    output = cleanup_ucode_jsdoc_output(output, is_c)
 
     slug = f"api-module-{mod}"
     title = f"ucode module: {mod}"
