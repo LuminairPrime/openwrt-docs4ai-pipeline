@@ -3,7 +3,7 @@ Purpose: Scrape the openwrt procd shell API documentation from procd.sh comments
 Phase: Extraction
 Layers: L0 -> L1
 Inputs: tmp/repo-openwrt/package/system/procd/files/procd.sh
-Outputs: tmp/.L1-raw/procd/header_api-procd-api.md and .meta.json
+Outputs: tmp/L1-raw/procd/header_api-procd-api.md and .meta.json
 Environment Variables: WORKDIR
 Dependencies: lib.config, lib.extractor
 Notes: Extracts the header block comments from the procd setup script.

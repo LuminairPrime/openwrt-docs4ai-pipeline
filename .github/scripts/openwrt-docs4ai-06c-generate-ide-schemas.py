@@ -2,15 +2,16 @@
 Purpose: Generates TypeScript declaration files (.d.ts) for ucode.
 Phase: Indexing
 Layers: L3
-Inputs: OUTDIR/cross-link-registry.json or OUTDIR/.L2-semantic/ucode/
+Inputs: OUTDIR/cross-link-registry.json
 Outputs: OUTDIR/ucode/ucode.d.ts
 Environment Variables: OUTDIR
 Dependencies: lib.config
 Notes: Strictly for the ucode module. Groups symbols by their base module (e.g. fs, uloop).
 """
 
-import os
 import json
+import os
+import re
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -61,7 +62,7 @@ for sym, meta in ucode_symbols.items():
         "name": func_name,
         "sig": meta.get("signature", f"{func_name}()"),
         "returns": meta.get("returns", "any"),
-        "desc": meta.get("ai_summary") or meta.get("description")
+        "desc": meta.get("ai_summary") or meta.get("description"),
     })
 
 def generate_ts_sig(f, is_global=False):
@@ -128,13 +129,6 @@ for mod_name, funcs in sorted(modules.items()):
                 dts_lines.append(f"     * {f['desc']}")
                 dts_lines.append("     */")
             dts_lines.append(f"    {generate_ts_sig(f, is_global=False)}")
-        dts_lines.append("}")
-            
-            if f.get("desc"):
-                dts_lines.append("    /**")
-                dts_lines.append(f"     * {f['desc']}")
-                dts_lines.append("     */")
-            dts_lines.append(f"    {sig_ts}")
         dts_lines.append("}")
     dts_lines.append("")
 

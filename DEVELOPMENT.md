@@ -1,130 +1,112 @@
 # Development Guide
 
+## Purpose
+
+This file is the maintainer quick start for local development. The current engineering priority is to make the local Windows development path and the sequential smoke-test path reliable before remote GitHub Actions verification is treated as authoritative.
+
 ## Prerequisites
 
 | Tool | Version | Purpose |
-|------|---------|---------|
-| Python | 3.11+ (3.12 recommended) | All pipeline scripts |
-| Node.js | 20+ | jsdoc2md for API doc generation |
-| pandoc | 3.0+ | Wiki dokuwiki→markdown conversion |
-| git | 2.25+ | Repo cloning, sparse checkout |
-| jsdoc2md | (npm global) | JSDoc to markdown conversion |
+| --- | --- | --- |
+| Python | 3.11+ | All pipeline scripts and local tests |
+| Node.js | 20+ | `jsdoc-to-markdown` and JavaScript syntax checks |
+| pandoc | 3.0+ | Wiki conversion |
+| git | 2.25+ | Repo cloning and versioned refactors |
+| jsdoc-to-markdown | current npm release | API doc extraction |
 
-## Quick Start (Windows)
+## Quick Start on Windows
 
 ```powershell
-# 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/openwrt-docs4ai.git
-cd openwrt-docs4ai
-
-# 2. Install Python dependencies
 pip install -r .github/scripts/requirements.txt
-
-# 3. Install jsdoc2md globally
 npm install -g jsdoc-to-markdown
-
-# 4. Install pandoc (download from https://pandoc.org/installing.html)
-#    Or via winget:
 winget install --id JohnMacFarlane.Pandoc
-
-# 5. Run the smoke test
-python tests/openwrt-docs4ai-00-smoke-test.py
 ```
 
-### Smoke Test Options
+After dependencies are installed, use the local tests in `tests/` rather than relying on GitHub Actions behavior.
+
+## Recommended Local Commands
 
 ```powershell
-# Run with AI summarization (requires API token)
+python tests/00-smoke-test.py
+python tests/00-smoke-test.py --run-ai
+python tests/openwrt-docs4ai-00-smoke-test.py
 python tests/openwrt-docs4ai-00-smoke-test.py --run-ai
-
-# Keep temp directory for inspection after run
-# (preserves files in ./tmp/smoke-test-*/ instead of deleting them)
-python tests/openwrt-docs4ai-00-smoke-test.py --keep-temp
 ```
 
-Results are logged to `tests/openwrt-docs4ai-00-smoke-test-log.txt`.
+The `--run-ai` path is cache-backed for local verification, so it can validate the placement and mutation behavior of script `04` without requiring a live model token.
+
+## Repository Rules
+
+- `openwrt-condensed-docs/` is the stable generated output root.
+- `tmp/` is ephemeral and never authoritative.
+- `L1-raw` and `L2-semantic` are the standard intermediate layer names.
+- Script numbering denotes run order. Letter suffixes denote scripts that are parallelizable in deployment.
+- Local smoke runs may still execute the lettered scripts sequentially.
+
+## Script Families
+
+| Script | Role |
+| --- | --- |
+| `openwrt-docs4ai-01-clone-repos.py` | Prepare L0 source inputs and manifests |
+| `openwrt-docs4ai-02a` through `02h` | Source-specific extraction into L1 |
+| `openwrt-docs4ai-03-normalize-semantic.py` | L1 to L2 normalization and promotion |
+| `openwrt-docs4ai-04-generate-ai-summaries.py` | Optional AI summary enrichment |
+| `openwrt-docs4ai-05-assemble-references.py` | L3 skeleton and L4 monolith assembly |
+| `openwrt-docs4ai-06a` through `06d` | Maps, agent guidance, IDE schemas, telemetry |
+| `openwrt-docs4ai-07-generate-index-html.py` | HTML landing page generation |
+| `openwrt-docs4ai-08-validate.py` | Whole-output validation gate |
+
+## Local Tests
+
+- `tests/00-smoke-test.py` is the deterministic fixture-heavy smoke path.
+- `tests/openwrt-docs4ai-00-smoke-test.py` is the sequential local runner intended to exercise the numbered scripts more directly.
+
+During the current stabilization pass, these test entry points are being repaired and treated as first-class engineering assets.
 
 ## Environment Variables
 
-| Variable | Default | Used By | Purpose |
-|----------|---------|---------|---------|
-| `OUTDIR` | `./openwrt-condensed-docs` | All scripts | Where generated docs are written |
-| `WORKDIR` | `./tmp` | 01, 02a–02e | Where source repos are cloned |
-| `SKIP_WIKI` | `false` | 02a, 05 | Skip wiki scraping |
-| `SKIP_BUILDROOT` | `false` | 01, 02d, 02e, 05 | Skip buildroot/examples |
-| `SKIP_AI` | `true` | 04 | Skip AI summarization (default: skipped, see note below) |
-| `WIKI_MAX_PAGES` | `300` | 02a | Cap on wiki pages fetched |
-| `MAX_AI_FILES` | `40` | 04 | Cap on files to send to AI |
-| `GITHUB_TOKEN` | *(none)* | 04 | GitHub Models API auth (CI) |
-| `LOCAL_DEV_TOKEN` | *(none)* | 04 | Local development API auth |
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `WORKDIR` | `tmp` | Scratch area for cloned repos and intermediate layers |
+| `OUTDIR` | `openwrt-condensed-docs` | Stable output root for generated artifacts |
+| `SKIP_WIKI` | `false` | Skip wiki extraction |
+| `SKIP_AI` | `true` | Disable optional AI enrichment by default |
+| `WIKI_MAX_PAGES` | `300` | Limit wiki traversal depth |
+| `MAX_AI_FILES` | `40` | Limit local or remote AI summary volume |
+| `VALIDATE_MODE` | `hard` | Validation severity mode |
+| `GITHUB_TOKEN` | empty | Remote-only integrations and telemetry fallback retrieval |
+| `LOCAL_DEV_TOKEN` | empty | Local override token for optional AI enrichment |
 
-## Pipeline Architecture
+## Adding or Changing a Scraper
 
-```
-WORKDIR/repo-*  →  OUTDIR/  →  validate  →  promote  →  git commit
-(source repos)     (staging)    (07)        (rsync)     (only openwrt-condensed-docs/)
-```
+If a new extractor is added or a current extractor is materially changed:
 
-In CI, `OUTDIR` points to `$GITHUB_WORKSPACE/staging` so nothing touches the repo until validation passes. Locally, `OUTDIR` defaults to `./openwrt-condensed-docs`.
-
-> **Note on AI Summaries (script 04):** GitHub's free account tier provides only ~50 AI model
-> requests per month, making automated summarization impractical for regular pipeline runs.
-> The `SKIP_AI` flag defaults to `true` and the pipeline produces fully valid output without
-> AI summaries. To manually generate summaries, see the copy-paste prompt in
-> `.github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py` — paste it into any AI chatbot
-> along with the `.md` file content you want summarized.
-
-## Script Reference
-
-| Script | Phase | Purpose |
-|--------|-------|---------|
-| `01-clone-repos.py` | 1 | Clone upstream repos into WORKDIR |
-| `02a-scrape-wiki.py` | 2 | Scrape OpenWrt wiki (incremental) |
-| `02b-scrape-ucode.py` | 2 | Generate ucode API docs (jsdoc2md) |
-| `02c-scrape-jsdoc.py` | 2 | Generate LuCI JS API docs (jsdoc2md) |
-| `02d-scrape-core-packages.py` | 2 | Extract buildroot package metadata |
-| `02e-scrape-example-packages.py` | 2 | Copy curated LuCI examples |
-| `02f-scrape-procd-api.py` | 2 | Scrape `procd` init script blocks |
-| `02h-scrape-hotplug-events.py` | 2 | Extract network and subsystem hotplug env variables |
-| `03-normalize-semantic.py` | 3 | Inject cross-references between docs |
-| `04-generate-ai-summaries.py` | 3 | AI-generated module summaries |
-| `05-assemble-references.py` | 4 | Build complete reference mega-files & `*-skeleton.md` maps |
-| `06-generate-index.py` | 4 | Generate llms.txt, CHANGES.md, index.md |
-| `07-validate.py` | 5 | Validation gate (staging check + 2MB size cap) |
-
-## Adding a New Scraper
-
-1. Create `.github/scripts/openwrt-docs4ai-02f-scrape-<name>.py`
-2. Follow the header block template (copy from any existing 02x script)
-3. Read sources from `WORKDIR`, write output to `OUTDIR/<name>-docs/`
-4. Generate a per-folder `llms.txt` index in your output directory
-5. Add your script to the Phase 2 parallel block in `pipeline.yml`
-6. Add validation rules for your output in `07-validate.py`
-7. Add assembly logic in `05-assemble-references.py`
-8. Add your index entry to `06-generate-index.py`
-9. Add your step to `tests/openwrt-docs4ai-00-smoke-test.py`
+1. Keep it in `.github/scripts/` with the numbered naming convention.
+2. Make sure it writes only to `WORKDIR/L1-raw/{module}/`.
+3. Write `.meta.json` sidecars through shared helper logic instead of ad hoc metadata code.
+4. Update the deterministic tests and the sequential smoke runner.
+5. Update `docs/ARCHITECTURE.md` and active v12 specs if the contract changed.
 
 ## Logging Convention
 
-All scripts use a standardized prefix for log output:
+Scripts should emit concise line-buffered messages using the numbered prefix convention, for example:
 
-```
-[01]  OK: ucode @ abc123               # Success with detail
-[02a] SKIP: page too short (45 words)   # Skipped with reason
-[02b] WARN: jsdoc2md not found          # Warning, non-fatal
-[07] FAIL: llms.txt missing            # Hard failure
+```text
+[02a] OK: scraped 15 pages
+[04] SKIP: AI enrichment disabled
+[08] FAIL: missing llms.txt
 ```
 
 ## Windows Notes
 
-- All scripts are Python — no bash/shell dependency
-- Line endings: `.gitattributes` enforces LF for `.py` files
-- Path handling: all scripts use `os.path.join()`, no hardcoded `/`
-- `jsdoc2md` on Windows: the tool resolves via `shutil.which("jsdoc2md.cmd")`
+- Windows is a required development environment for this project.
+- Path logic must remain cross-platform, but local development is the first validation target.
+- A small number of Linux-only checks may exist later for remote workflow validation, but they must be documented explicitly.
 
-## Toolchain Gotchas
+## Current Focus
 
-- **jsdoc underscore exclusion**: The `jsdoc` engine silently excludes any file or directory
-  whose path contains an underscore (e.g., `_temp`, `_build`). This bit the CI pipeline when
-  `WORKDIR` was set to `$RUNNER_TEMP/work` (which resolved to `/home/runner/work/_temp/work`).
-  Always use paths without leading underscores for `OUTDIR` and `WORKDIR`.
+The immediate next engineering tasks are:
+
+1. generate and measure persistent local L1 and L2 outputs
+2. use those measurements to decide the long-term storage policy for L1 and L2
+3. prepare the later remote GitHub verification checklist from a stable local baseline

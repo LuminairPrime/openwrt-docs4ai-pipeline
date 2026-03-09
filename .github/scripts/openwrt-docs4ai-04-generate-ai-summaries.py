@@ -2,8 +2,8 @@
 Purpose: Generate AI summaries for API documentation files using AI.
 Phase: AI Enrichment (Optional)
 Layers: L2 -> L2 (In-place modification)
-Inputs: OUTDIR/.L2-semantic/ucode/ and OUTDIR/.L2-semantic/luci/
-Outputs: OUTDIR/.L2-semantic/ucode/ and OUTDIR/.L2-semantic/luci/ (Mutated)
+Inputs: OUTDIR/L2-semantic/
+Outputs: OUTDIR/L2-semantic/ (Mutated)
 Environment Variables: OUTDIR, SKIP_AI, GITHUB_TOKEN, LOCAL_DEV_TOKEN
 Dependencies: requests
 Notes: Appends ai_summary tags to the L2 YAML frontmatter. Skipped by default.
@@ -46,6 +46,9 @@ import os
 import re
 import glob
 import time
+import json
+import yaml
+import hashlib
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -56,6 +59,31 @@ sys.stdout.reconfigure(line_buffering=True)
 OUTDIR = config.OUTDIR
 SKIP_AI = os.environ.get("SKIP_AI", "false").lower() == "true" # BUG-019: Default to false
 MAX_FILES = int(os.environ.get("MAX_AI_FILES", "40"))
+CACHE_PATH = os.environ.get(
+    "AI_CACHE_PATH",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "ai-summaries-cache.json")),
+)
+
+
+def load_cache():
+    if not os.path.isfile(CACHE_PATH):
+        return {}
+    try:
+        with open(CACHE_PATH, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except Exception as exc:
+        print(f"[04] WARN: Could not read AI cache at {CACHE_PATH}: {exc}")
+        return {}
+
+
+def split_frontmatter(content):
+    fm_match = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n?(.*)', content, re.DOTALL)
+    if not fm_match:
+        return None, None
+    return fm_match.group(1).strip(), fm_match.group(2)
+
+
+ai_cache = load_cache()
 
 if SKIP_AI:
     print("[04] SKIP: AI summarization disabled (SKIP_AI=true)")
@@ -63,22 +91,21 @@ if SKIP_AI:
 
 print("[04] Generate AI summaries for API documentation")
 
-try:
-    import requests
-except ImportError:
-    print("[04] FAIL: 'requests' package not installed")
-    sys.exit(1)
-
 TOKEN = os.environ.get("GITHUB_TOKEN") or os.environ.get("LOCAL_DEV_TOKEN")
-if not TOKEN:
-    print("[04] SKIP: No API token (GITHUB_TOKEN or LOCAL_DEV_TOKEN not set)")
-    sys.exit(0)
-
 API_URL = "https://models.inference.ai.azure.com/chat/completions"
 # ... existing constants ...
 
 API_URL = "https://models.inference.ai.azure.com/chat/completions"
 MODEL = "gpt-4o-mini"
+
+requests = None
+if TOKEN:
+    try:
+        import requests as requests_module
+        requests = requests_module
+    except ImportError:
+        print("[04] FAIL: 'requests' package not installed")
+        sys.exit(1)
 
 SYSTEM_PROMPT = """You are a technical documentation assistant for OpenWrt — a Linux-based
 operating system for embedded network devices. You write clear, accurate,
@@ -138,7 +165,6 @@ def summarize(content, fname):
     return None
 
 l2_dir = os.path.join(config.OUTDIR, "L2-semantic") # FIX BUG-005: Use promote path
-l1_raw_dir = config.L1_RAW_WORKDIR # We need hashes from L1 meta
 
 targets = [] # FIX BUG-003: Initialize targets
 for module in ["ucode", "luci", "procd", "uci"]:
@@ -167,17 +193,20 @@ cache_updated = False
 
 for fpath in to_process[:MAX_FILES]:
     fname = os.path.basename(fpath)
-    mod_name = os.path.basename(os.path.dirname(fpath))
     
     # 1. Lookup Cache
     with open(fpath, encoding="utf-8") as f:
         full_content = f.read()
     
     # Extract body for hash (excluding frontmatter)
-    body_for_hash = full_content
-    fm_match_hash = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n?(.*)', full_content, re.DOTALL)
-    if fm_match_hash:
-        body_for_hash = fm_match_hash.group(2)
+    _, body_for_hash = split_frontmatter(full_content)
+    if body_for_hash is None:
+        print(f"[04] WARN: Skipping {fname} because it is missing valid L2 frontmatter")
+        continue
+
+    if len(body_for_hash.split()) < 15:
+        print(f"[04] SKIP: {fname} body too short for AI enrichment")
+        continue
         
     # FIX BUG-007: Compute LOCAL content hash
     content_hash = hashlib.sha256(body_for_hash.encode("utf-8")).hexdigest()[:12]
@@ -186,6 +215,9 @@ for fpath in to_process[:MAX_FILES]:
         res = ai_cache[content_hash]
         cached += 1
     else:
+        if not TOKEN:
+            print(f"[04] SKIP: No API token available for uncached file {fname}")
+            continue
         # 2. Call LLM
         with open(fpath, encoding="utf-8") as f:
             content = f.read()
@@ -204,12 +236,9 @@ for fpath in to_process[:MAX_FILES]:
             continue
 
     # 3. Inject Enriched YAML (FIX BUG-022: Safe YAML)
-    fm_match = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n?(.*)', full_content, re.DOTALL)
-    if fm_match and res:
+    fm_text, body_text = split_frontmatter(full_content)
+    if fm_text is not None and res:
         try:
-            fm_text = fm_match.group(1).strip()
-            body_text = fm_match.group(2)
-            
             fm_data = yaml.safe_load(fm_text) or {}
             fm_data["ai_summary"] = res.get("summary", "")
             fm_data["ai_when_to_use"] = res.get("when_to_use", "")

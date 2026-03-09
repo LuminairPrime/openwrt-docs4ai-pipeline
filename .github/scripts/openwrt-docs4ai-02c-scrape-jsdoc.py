@@ -3,7 +3,7 @@ Purpose: Generate LuCI JavaScript API documentation using jsdoc2md into L1.
 Phase: Extraction
 Layers: L0 -> L1
 Inputs: tmp/repo-luci/modules/luci-base/htdocs/luci-static/resources/
-Outputs: tmp/.L1-raw/luci/*.md and .meta.json
+Outputs: tmp/L1-raw/luci/*.md and .meta.json
 Environment Variables: WORKDIR
 Dependencies: jsdoc2md (npm global install), Node.js, lib.config, lib.extractor
 Notes: Processes all .js files. Falls back to whole-directory mode if needed.

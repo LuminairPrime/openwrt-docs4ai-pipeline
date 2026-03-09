@@ -2,7 +2,7 @@
 Purpose: Assemble L4 monolithic references and L3 skeletons from L2 semantics.
 Phase: Assembly
 Layers: L2 -> L3/L4
-Inputs: OUTDIR/.L2-semantic/
+Inputs: OUTDIR/L2-semantic/
 Outputs: OUTDIR/{module}/{module}-complete-reference.md
          OUTDIR/{module}/{module}-skeleton.md
 Environment Variables: OUTDIR
@@ -37,6 +37,20 @@ if not os.path.isdir(L2_DIR):
 TS = datetime.datetime.now(datetime.UTC).isoformat()
 
 print("[05] Assemble L4 monolithic files and L3 skeletons")
+
+
+def rewrite_relative_links(module, body_text):
+    body_with_fixed_links = re.sub(
+        r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+/.*?\.md)\)',
+        r'[\1](../L2-semantic/\2)',
+        body_text,
+    )
+    body_with_fixed_links = re.sub(
+        r'\[(.*?)\]\(\./(.*?\.md)\)',
+        f'[\\1](../L2-semantic/{module}/\\2)',
+        body_with_fixed_links,
+    )
+    return body_with_fixed_links
 
 modules = [d for d in os.listdir(L2_DIR) if os.path.isdir(os.path.join(L2_DIR, d))]
 
@@ -95,7 +109,7 @@ for module in sorted(modules):
         total_tokens += fm.get("token_count", 0)
         
         # Prepare L4 section body
-        concatenated_bodies.append(body_text)
+        concatenated_bodies.append(rewrite_relative_links(module, body_text))
         concatenated_bodies.append("\n\n---\n\n")
         
         # Extract skeleton lines (Summary, Headers, and function signatures)
@@ -137,21 +151,8 @@ for module in sorted(modules):
         l4.write(f"> **Contains:** {len(md_files)} documents concatenated\n")
         l4.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n\n---\n\n")
         
-        # FIX BUG-015: Rewrite relative links in L4 monoliths
-        # links like [text](../luci/api.md) -> [text](../L2-semantic/luci/api.md)
-        body_with_fixed_links = re.sub(
-            r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+/.*?\.md)\)',
-            r'[\1](../L2-semantic/\2)',
-            body_text
-        )
-        # links like [text](./api.md) -> [text](../L2-semantic/{module}/api.md)
-        body_with_fixed_links = re.sub(
-            r'\[(.*?)\]\(\./(.*?\.md)\)',
-            f'[\\1](../L2-semantic/{module}/\\2)',
-            body_with_fixed_links
-        )
-        
-        l4.write(body_with_fixed_links)
+        l4.write("".join(concatenated_bodies).rstrip())
+        l4.write("\n")
         
     outputs_generated += 1
         

@@ -129,15 +129,18 @@ def pass_1_normalize_all(ts_now):
                 symbol = re.split(r'\(', raw_node)[0].strip()
                 if not is_code_symbol(symbol): continue
                 
-                # Check for deprecation in the following 1000 chars
+                # Check for deprecation only inside the current section.
                 is_dep = False
-                dep_window = content[m.end():m.end()+1000]
+                section_tail = content[m.end():]
+                next_heading = re.search(r'^#{2,4}\s+', section_tail, re.MULTILINE)
+                dep_window = section_tail[:next_heading.start()] if next_heading else section_tail[:1000]
                 if re.search(r'\*\*[Dd]eprecated\*\*', dep_window):
                     is_dep = True
 
                 sig = raw_node if "(" in raw_node else f"{symbol}()"
                 payload = {
-                    "signature": sig, "file": l1_rel, 
+                    "signature": sig, "file": l1_rel,
+                    "module": module,
                     "relative_target": f"../{module}/{f}", 
                     "returns": "any", "parameters": [],
                     "deprecated": is_dep
@@ -161,9 +164,14 @@ def pass_2_link_all(l2_files, registry):
     for info in l2_files:
         with open(info["path"], "r", encoding="utf-8") as f: content = f.read()
         
-        # Protection: Skip blocks, code, links, frontmatter, and HEADERS (new)
+        # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
         prot = set()
-        for m in re.finditer(r'```.*?```|~~~.*?~~~|^\s*#+ .*$', content, re.DOTALL | re.MULTILINE):
+        fm_match = re.match(r'^---\r?\n.*?\r?\n---\r?\n?', content, re.DOTALL)
+        if fm_match:
+            prot.update(range(fm_match.start(), fm_match.end()))
+        for m in re.finditer(r'```.*?```|~~~.*?~~~', content, re.DOTALL):
+            prot.update(range(m.start(), m.end()))
+        for m in re.finditer(r'^\s*#+ .+$', content, re.MULTILINE):
             prot.update(range(m.start(), m.end()))
         for m in re.finditer(r'`[^`\n]+`|\[[^\]]+\]\([^)]+\)', content):
             prot.update(range(m.start(), m.end()))

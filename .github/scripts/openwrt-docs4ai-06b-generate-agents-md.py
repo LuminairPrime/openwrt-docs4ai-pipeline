@@ -2,15 +2,17 @@
 Purpose: Generates the repository interaction map (AGENTS.md) and human README.md.
 Phase: Indexing
 Layers: L3
-Inputs: OUTDIR/
+Inputs: OUTDIR/L2-semantic/, OUTDIR/cross-link-registry.json
 Outputs: OUTDIR/AGENTS.md, OUTDIR/README.md
 Environment Variables: OUTDIR
-Dependencies: lib.config
+Dependencies: lib.config, pyyaml
 Notes: Provides machine-readable guidelines for AI agents and human-readable docs.
 """
 
-import os
 import datetime
+import json
+import os
+import re
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -20,27 +22,67 @@ sys.stdout.reconfigure(line_buffering=True)
 
 OUTDIR = config.OUTDIR
 REGISTRY_PATH = os.path.join(OUTDIR, "cross-link-registry.json")
+L2_DIR = os.path.join(OUTDIR, "L2-semantic")
 TS = datetime.datetime.now(datetime.UTC).isoformat()
 
 print("[06b] Generating AGENTS.md and README.md")
 
-module_count = 0
-total_tokens = 0
-if os.path.isfile(REGISTRY_PATH):
+try:
+    import yaml
+except ImportError:
+    print("[06b] FAIL: 'pyyaml' package not installed")
+    sys.exit(1)
+
+
+def load_registry_summary():
+    symbol_count = 0
+    if not os.path.isfile(REGISTRY_PATH):
+        return symbol_count
     try:
-        with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
-            registry = json.load(f)
-            total_tokens = sum(meta.get("token_count", 0) for meta in registry.get("symbols", {}).values())
-            # Count modules by checking L2 directory or registry symbols
-            modules = set()
-            for meta in registry.get("symbols", {}).values():
-                if "module" in meta: modules.add(meta["module"])
-            module_count = len(modules)
-    except: pass
+        with open(REGISTRY_PATH, "r", encoding="utf-8") as handle:
+            registry = json.load(handle)
+        return len(registry.get("symbols", {}))
+    except Exception as exc:
+        print(f"[06b] WARN: Could not parse cross-link-registry.json: {exc}")
+        return symbol_count
+
+
+def load_l2_summary():
+    modules = set()
+    total_tokens = 0
+    if not os.path.isdir(L2_DIR):
+        return modules, total_tokens
+
+    for module in sorted(os.listdir(L2_DIR)):
+        mod_dir = os.path.join(L2_DIR, module)
+        if not os.path.isdir(mod_dir):
+            continue
+        modules.add(module)
+        for name in sorted(os.listdir(mod_dir)):
+            if not name.endswith(".md"):
+                continue
+            file_path = os.path.join(mod_dir, name)
+            try:
+                with open(file_path, "r", encoding="utf-8") as handle:
+                    content = handle.read()
+                fm_match = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n?(.*)', content, re.DOTALL)
+                if not fm_match:
+                    continue
+                fm_data = yaml.safe_load(fm_match.group(1)) or {}
+                total_tokens += int(fm_data.get("token_count", 0))
+            except Exception as exc:
+                print(f"[06b] WARN: Could not inspect {file_path}: {exc}")
+
+    return modules, total_tokens
+
+
+modules, total_tokens = load_l2_summary()
+module_count = len(modules)
+symbol_count = load_registry_summary()
 
 os.makedirs(OUTDIR, exist_ok=True)
 
-agents_content = """# AGENTS.md — AI Agent Instructions for openwrt-docs4ai
+agents_content = f"""# AGENTS.md — AI Agent Instructions for openwrt-docs4ai
 
 ## Repository Structure
 - `llms.txt` — Start here. Hierarchical index linking to each target subsystem.
@@ -63,6 +105,7 @@ agents_content = """# AGENTS.md — AI Agent Instructions for openwrt-docs4ai
 ## Current Context
 - **Module Count:** {module_count}
 - **Total Token Count:** ~{total_tokens}
+- **Indexed Symbols:** {symbol_count}
 """
 
 readme_content = f"""# openwrt-docs4ai Generated Pipeline Output

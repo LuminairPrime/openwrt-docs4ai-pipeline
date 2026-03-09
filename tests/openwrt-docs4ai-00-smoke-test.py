@@ -1,201 +1,156 @@
 """
 openwrt-docs4ai-00-smoke-test.py
 
-Purpose  : Local smoke test runner -- executes the full pipeline in a temp directory.
-Env Vars : None required (creates its own temp environment)
-Flags    : --keep-temp   -- don't delete the temp dir after run (for inspection)
-           --run-ai      -- include AI summarization step (off by default)
-Outputs  : Test log appended to tests/openwrt-docs4ai-00-smoke-test-log.txt
-Deps     : All pipeline dependencies (Python, Node.js, pandoc, git, jsdoc2md)
-Notes    : Runs each script sequentially, reports PASS/FAIL per step.
-           Sets OUTDIR and WORKDIR to temp subdirectories so the repo is untouched.
-           The validate script (07) acts as the real pass/fail gate.
+Purpose  : Sequential local smoke runner for the numbered pipeline scripts.
+Flags    : --keep-temp         keep the temp tree for inspection
+           --run-ai            include the optional AI stage
+           --include-extractors run 01 and 02* before the fixture-backed stages
+           --only <id>         run only scripts matching a partial identifier such as 03 or 06c
+Outputs  : Appends step logs to tests/openwrt-docs4ai-00-smoke-test-log.txt
+Notes    : Default mode is fixture-backed and offline-friendly. The extractor path is optional.
 """
 
-import os
-import sys
-import subprocess
-import tempfile
-import shutil
+import argparse
 import datetime
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
 import time
 
-# --- Configuration ---
-SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "..", ".github", "scripts")
-SCRIPT_DIR = os.path.normpath(SCRIPT_DIR)
-TEST_DIR   = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE   = os.path.join(TEST_DIR, "openwrt-docs4ai-00-smoke-test-log.txt")
+from smoke_support import (
+    FULL_PIPELINE,
+    POST_EXTRACT_PIPELINE,
+    PROJECT_ROOT,
+    assert_fixture_outputs,
+    build_env,
+    run_named_script,
+    seed_ai_cache,
+    seed_l1_fixtures,
+)
 
-KEEP_TEMP = "--keep-temp" in sys.argv
-RUN_AI    = "--run-ai" in sys.argv
-
-# Steps to run in order. Format: (label, script_basename, can_skip)
-STEPS = [
-    ("Clone repos",         "openwrt-docs4ai-01-clone-repos.py",             False),
-    ("Scrape wiki",         "openwrt-docs4ai-02a-scrape-wiki.py",            False),
-    ("Scrape ucode",        "openwrt-docs4ai-02b-scrape-ucode.py",           False),
-    ("Scrape LuCI JSDoc",   "openwrt-docs4ai-02c-scrape-jsdoc.py",           False),
-    ("Scrape packages",     "openwrt-docs4ai-02d-scrape-core-packages.py",   False),
-    ("Scrape examples",     "openwrt-docs4ai-02e-scrape-example-packages.py", False),
-    ("Cross-references",    "openwrt-docs4ai-03-add-links.py",               False),
-    ("AI summaries",        "openwrt-docs4ai-04-generate-summaries.py",      True),
-    ("Assemble references", "openwrt-docs4ai-05-assemble-references.py",    False),
-    ("Generate indexes",    "openwrt-docs4ai-06-generate-index.py",         False),
-    ("Validate",            "openwrt-docs4ai-07-validate.py",               False),
-]
+TEST_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(TEST_DIR, "openwrt-docs4ai-00-smoke-test-log.txt")
 
 
-def run_step(label, script, env, temp_dir):
-    """Run a single step. Returns (status, duration_seconds)."""
-    script_path = os.path.join(SCRIPT_DIR, script)
-    if not os.path.isfile(script_path):
-        return "MISSING", 0
-
-    start = time.time()
-
-    # Add --warn-only for validate in smoke test mode
-    cmd = [sys.executable, script_path]
-    if "07-validate" in script:
-        cmd.append("--warn-only")
-
-    try:
-        result = subprocess.run(
-            cmd,
-            env=env,
-            cwd=temp_dir,
-            capture_output=True,
-            text=True,
-            timeout=300  # 5 minute timeout per step
-        )
-        duration = time.time() - start
-
-        # Print stdout for visibility
-        if result.stdout.strip():
-            for line in result.stdout.strip().split("\n"):
-                print(f"  {line}")
-
-        if result.returncode != 0:
-            if result.stderr.strip():
-                print(f"  STDERR: {result.stderr.strip()[:500]}")
-            return "FAIL", duration
-
-        return "PASS", duration
-
-    except subprocess.TimeoutExpired:
-        duration = time.time() - start
-        return "TIMEOUT", duration
-    except Exception as e:
-        duration = time.time() - start
-        print(f"  ERROR: {e}")
-        return "ERROR", duration
+def parse_args():
+    parser = argparse.ArgumentParser(description="Sequential local smoke runner for openwrt-docs4ai")
+    parser.add_argument("--keep-temp", action="store_true", help="Keep the temp directory after completion")
+    parser.add_argument("--run-ai", action="store_true", help="Include the optional AI stage")
+    parser.add_argument("--include-extractors", action="store_true", help="Run 01 and 02* before the fixture-backed processing stages")
+    parser.add_argument("--only", type=str, default=None, help="Run only scripts matching a partial identifier such as 03 or 06c")
+    return parser.parse_args()
 
 
 def main():
+    args = parse_args()
+
     print("=" * 60)
-    print("openwrt-docs4ai Smoke Test")
+    print("openwrt-docs4ai Sequential Smoke Test")
     print("=" * 60)
 
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"Time: {ts}")
-    print(f"Keep temp: {KEEP_TEMP}")
-    print(f"Run AI: {RUN_AI}")
+    print(f"Keep temp: {args.keep_temp}")
+    print(f"Run AI: {args.run_ai}")
+    print(f"Include extractors: {args.include_extractors}")
     print()
 
-    # Create temp directory inside the project's tmp/ folder
-    project_root = os.path.dirname(TEST_DIR)
-    base_tmp = os.path.join(project_root, "tmp")
+    if os.path.exists(LOG_FILE):
+        os.remove(LOG_FILE)
+
+    base_tmp = os.path.join(PROJECT_ROOT, "tmp")
     os.makedirs(base_tmp, exist_ok=True)
-    
-    # Use mkdtemp but forced into our local tmp directory
+
     temp_dir = tempfile.mkdtemp(prefix="smoke-test-", dir=base_tmp)
-    
-    out_dir  = os.path.join(temp_dir, "openwrt-condensed-docs")
     work_dir = os.path.join(temp_dir, "work")
-    os.makedirs(out_dir, exist_ok=True)
+    out_dir = os.path.join(temp_dir, "openwrt-condensed-docs")
     os.makedirs(work_dir, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
+
     print(f"Temp dir: {temp_dir}")
-    print(f"OUTDIR:   {out_dir}")
     print(f"WORKDIR:  {work_dir}")
+    print(f"OUTDIR:   {out_dir}")
     print()
 
-    # Build environment for subprocesses
-    env = os.environ.copy()
-    env["OUTDIR"]  = out_dir
-    env["WORKDIR"] = work_dir
-    env["SKIP_AI"] = "true"  # Default: skip AI
+    seed_l1_fixtures(work_dir)
+    extra_env = None
+    if args.run_ai:
+        cache_path = os.path.join(temp_dir, "ai-summaries-cache.json")
+        seed_ai_cache(cache_path)
+        extra_env = {"AI_CACHE_PATH": cache_path}
+    env = build_env(work_dir, out_dir, run_ai=args.run_ai, extra_env=extra_env)
 
-    if RUN_AI:
-        env["SKIP_AI"] = "false"
-        if not (env.get("GITHUB_TOKEN") or env.get("LOCAL_DEV_TOKEN")):
-            print("WARNING: --run-ai specified but no API token set.")
-            print("  Set GITHUB_TOKEN or LOCAL_DEV_TOKEN to enable AI summaries.")
+    pipeline = list(FULL_PIPELINE if args.include_extractors else POST_EXTRACT_PIPELINE)
+    if not args.run_ai:
+        pipeline = [script for script in pipeline if "04-generate-ai-summaries" not in script]
+    if args.only:
+        pipeline = [script for script in pipeline if args.only in script]
 
-    # Run steps
     results = []
     total_start = time.time()
 
-    for label, script, can_skip in STEPS:
-        if can_skip and not RUN_AI and "04-generate" in script:
-            print(f"[{len(results)+1:2d}/{len(STEPS)}] {label:25s} ... SKIPPED (use --run-ai)")
-            results.append((label, "SKIPPED", 0))
-            continue
+    for index, script in enumerate(pipeline, start=1):
+        extra_args = ["--warn-only"] if script.endswith("08-validate.py") else []
+        print(f"[{index:2d}/{len(pipeline)}] {script:45s} ... ", end="", flush=True)
+        start = time.time()
+        try:
+            result = run_named_script(script, env, PROJECT_ROOT, log_file=LOG_FILE, extra_args=extra_args)
+            duration = time.time() - start
+            if result.stdout.strip():
+                for line in result.stdout.strip().splitlines():
+                    print(f"\n  {line}", end="")
+            if result.stderr.strip():
+                for line in result.stderr.strip().splitlines():
+                    print(f"\n  STDERR: {line}", end="")
+            status = "PASS" if result.returncode == 0 else "FAIL"
+        except subprocess.TimeoutExpired:
+            duration = time.time() - start
+            status = "TIMEOUT"
+        except Exception as exc:
+            duration = time.time() - start
+            print(f"\n  ERROR: {exc}", end="")
+            status = "ERROR"
 
-        print(f"[{len(results)+1:2d}/{len(STEPS)}] {label:25s} ... ", end="", flush=True)
-        status, duration = run_step(label, script, env, temp_dir)
-        print(f"{status} ({duration:.1f}s)")
-        results.append((label, status, duration))
-
-        if status in ("FAIL", "ERROR", "TIMEOUT", "MISSING"):
-            print(f"\n  *** Step failed: {label} ***")
-            # Continue running remaining steps for diagnostic purposes
+        print(f" {status} ({duration:.1f}s)")
+        results.append((script, status, duration))
 
     total_time = time.time() - total_start
+
+    overall = "PASS"
+    if args.only is None:
+        try:
+            assert_fixture_outputs(out_dir, expect_ai=args.run_ai)
+        except AssertionError as exc:
+            overall = "FAIL"
+            results.append(("fixture assertions", "FAIL", 0.0))
+            print(f"\nFixture assertions failed: {exc}")
+
+    if any(status != "PASS" for _, status, _ in results):
+        overall = "FAIL"
+
     print()
     print("=" * 60)
     print("Results:")
     print("-" * 60)
-
-    pass_count = 0
-    fail_count = 0
-    skip_count = 0
-
-    for label, status, duration in results:
-        icon = {"PASS": "+", "FAIL": "X", "SKIPPED": "--",
-                "TIMEOUT": "T", "ERROR": "!", "MISSING": "?"}
-        print(f"  {icon.get(status, '?')} {label:25s} {status:8s} ({duration:.1f}s)")
-        if status == "PASS":
-            pass_count += 1
-        elif status == "SKIPPED":
-            skip_count += 1
-        else:
-            fail_count += 1
-
+    for script, status, duration in results:
+        print(f"  {script:45s} {status:8s} ({duration:.1f}s)")
     print("-" * 60)
-    overall = "PASS" if fail_count == 0 else "FAIL"
-    print(f"  Overall: {overall} ({pass_count} pass, {fail_count} fail, "
-          f"{skip_count} skip) in {total_time:.1f}s")
+    print(f"  Overall: {overall} in {total_time:.1f}s")
     print("=" * 60)
 
-    # Log results
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(f"\n{ts} | {overall} | "
-                f"{pass_count}P/{fail_count}F/{skip_count}S | "
-                f"{total_time:.0f}s")
-        if fail_count > 0:
-            failed = [r[0] for r in results if r[1] not in ("PASS", "SKIPPED")]
-            f.write(f" | FAILED: {', '.join(failed)}")
-        f.write("\n")
+    with open(LOG_FILE, "a", encoding="utf-8") as handle:
+        handle.write(f"\n{ts} | {overall} | {total_time:.0f}s\n")
 
-    # Cleanup
-    if KEEP_TEMP:
+    if args.keep_temp:
         print(f"\nTemp directory preserved: {temp_dir}")
         print(f"  Output: {out_dir}")
     else:
-        print(f"\nCleaning up temp directory...")
+        print("\nCleaning up temp directory...")
         shutil.rmtree(temp_dir, ignore_errors=True)
 
-    return 0 if fail_count == 0 else 1
+    return 0 if overall == "PASS" else 1
 
 
 if __name__ == "__main__":

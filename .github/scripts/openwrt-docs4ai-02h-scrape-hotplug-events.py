@@ -3,7 +3,7 @@ Purpose: Scrape OpenWrt netifd and core hotplug.d event handlers.
 Phase: Extraction
 Layers: L0 -> L1
 Inputs: tmp/repo-openwrt/package/**/etc/hotplug.d/*
-Outputs: tmp/.L1-raw/openwrt-hotplug/*.md and .meta.json
+Outputs: tmp/L1-raw/openwrt-hotplug/*.md and .meta.json
 Environment Variables: WORKDIR
 Dependencies: lib.config, lib.extractor
 Notes: Concatenates all discovered hotplug scripts into one reference document.

@@ -3,7 +3,7 @@ Purpose: Copy and wrap curated LuCI application examples from the LuCI repo to L
 Phase: Extraction
 Layers: L0 -> L1
 Inputs: tmp/repo-luci/applications/
-Outputs: tmp/.L1-raw/luci-examples/*.md and .meta.json
+Outputs: tmp/L1-raw/luci-examples/*.md and .meta.json
 Environment Variables: WORKDIR, SKIP_BUILDROOT
 Dependencies: lib.config, lib.extractor
 Notes: Wraps .uc and .js files from 4 curated apps in Markdown blocks.

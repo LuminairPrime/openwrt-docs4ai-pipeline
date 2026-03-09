@@ -3,7 +3,7 @@ Purpose: Scrape the openwrt UCI configuration schemas from package defaults.
 Phase: Extraction
 Layers: L0 -> L1
 Inputs: tmp/repo-openwrt/package/**/etc/config/*
-Outputs: tmp/.L1-raw/uci/*.md and .meta.json
+Outputs: tmp/L1-raw/uci/*.md and .meta.json
 Environment Variables: WORKDIR
 Dependencies: lib.config, lib.extractor
 Notes: Parses default configuration files to serve as UCI schemas.

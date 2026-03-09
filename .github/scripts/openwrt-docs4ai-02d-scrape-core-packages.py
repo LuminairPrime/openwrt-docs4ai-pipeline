@@ -3,7 +3,7 @@ Purpose: Extract package documentation from the OpenWrt buildroot source tree.
 Phase: Extraction
 Layers: L0 -> L1
 Inputs: tmp/repo-openwrt/package/ and include/
-Outputs: tmp/.L1-raw/openwrt-core/*.md and .meta.json
+Outputs: tmp/L1-raw/openwrt-core/*.md and .meta.json
 Environment Variables: WORKDIR, SKIP_BUILDROOT
 Dependencies: lib.config, lib.extractor
 Notes: Parses PKG_* variables from Makefiles and extracts READMEs.
