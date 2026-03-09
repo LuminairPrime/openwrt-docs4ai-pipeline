@@ -41,6 +41,7 @@ CUTOFF = datetime.datetime.now(datetime.UTC).replace(tzinfo=None) - datetime.tim
 RUN_START = time.perf_counter()
 TIMINGS = defaultdict(float)
 COUNTS = defaultdict(int)
+HEAD_DISCOVERY_LIMIT = 5
 
 # Namespaces to crawl.
 NAMESPACES = [
@@ -141,6 +142,9 @@ def fetch_page_lastmod(url):
 
 cache = load_cache()
 discovered_pages = set(MANDATORY_PAGES)
+head_lastmod_probe_count = 0
+head_lastmod_success_count = 0
+head_lastmod_supported = None
 
 for prefix, idx_param in NAMESPACES:
     index_url = f"https://openwrt.org{prefix}start?do=index&idx={idx_param}"
@@ -196,8 +200,22 @@ for path in sorted(discovered_pages):
     url = f"https://openwrt.org{path}"
     slug = path_to_filename(path)
 
-    # time.sleep(DELAY) # BUG-039: Removed first delay
-    last_mod = fetch_page_lastmod(url)
+    # Probe a small sample of HEAD responses first; disable the extra request path
+    # for the rest of the run if OpenWrt is not publishing Last-Modified headers.
+    if head_lastmod_supported is not False:
+        head_lastmod_probe_count += 1
+        last_mod = fetch_page_lastmod(url)
+        if last_mod is not None:
+            head_lastmod_success_count += 1
+            head_lastmod_supported = True
+        elif head_lastmod_supported is None and head_lastmod_probe_count >= HEAD_DISCOVERY_LIMIT:
+            head_lastmod_supported = False
+            print(
+                f"[02a] INFO: Disabling per-page HEAD last-modified probes after "
+                f"{head_lastmod_probe_count} misses."
+            )
+    else:
+        last_mod = None
 
     if last_mod and last_mod < CUTOFF and path not in MANDATORY_PAGES:
         skipped_old += 1
@@ -305,6 +323,10 @@ for path in sorted(discovered_pages):
 save_cache(cache)
 run_elapsed = time.perf_counter() - RUN_START
 print(f"[02a][TIMER] SUMMARY total-runtime={run_elapsed:.3f}s")
+print(
+    f"[02a][TIMER] SUMMARY head-lastmod-support: probes={head_lastmod_probe_count} "
+    f"hits={head_lastmod_success_count} state={head_lastmod_supported}"
+)
 for name in sorted(TIMINGS):
     total = TIMINGS[name]
     count = COUNTS[name]
