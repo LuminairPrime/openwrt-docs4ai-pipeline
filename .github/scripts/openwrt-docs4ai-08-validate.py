@@ -42,6 +42,9 @@ UCODE_IMPORT_RE = re.compile(
     r"^\s*import(?:\s+(?:\*\s+as\s+[A-Za-z_][\w$]*|\{[^}]+\}|[A-Za-z_][\w$]*)(?:\s*,\s*(?:\{[^}]+\}|\*\s+as\s+[A-Za-z_][\w$]*))?\s+from)?\s+['\"]([^'\"]+)['\"]\s*;",
     re.MULTILINE,
 )
+UCODE_EXPORT_RE = re.compile(r'^\s*export\b', re.MULTILINE)
+CODE_FENCE_START_RE = re.compile(r'^(\s*)```(javascript|ucode|js|uc)\s*$')
+CODE_FENCE_END_RE = re.compile(r'^(\s*)```\s*$')
 
 def hard_fail(msg):
     hard_failures.append(msg)
@@ -54,6 +57,43 @@ def soft_warn(msg):
 
 def extract_ucode_imports(code):
     return sorted(set(UCODE_IMPORT_RE.findall(code)))
+
+
+def extract_markdown_code_blocks(content):
+    blocks = []
+    lines = content.splitlines()
+    in_fence = False
+    fence_indent = ''
+    fence_language = ''
+    block_lines = []
+
+    for line in lines:
+        if not in_fence:
+            match = CODE_FENCE_START_RE.match(line)
+            if not match:
+                continue
+
+            in_fence = True
+            fence_indent = match.group(1)
+            fence_language = match.group(2)
+            block_lines = []
+            continue
+
+        match = CODE_FENCE_END_RE.match(line)
+        if match and match.group(1) == fence_indent:
+            blocks.append((fence_language, "\n".join(block_lines)))
+            in_fence = False
+            fence_indent = ''
+            fence_language = ''
+            block_lines = []
+            continue
+
+        if fence_indent and line.startswith(fence_indent):
+            block_lines.append(line[len(fence_indent):])
+        else:
+            block_lines.append(line)
+
+    return blocks
 
 # ============================================================
 # Check 1: Structural Integrity (L3 Entry Points)
@@ -189,7 +229,10 @@ def check_ast(code, lang, rel_path):
         with tempfile.NamedTemporaryFile(suffix=".uc", delete=False, mode="w", encoding="utf-8") as tmp:
             tmp.write(code)
             tmp_path = tmp.name
-        compile_flags = [f"dynlink={module}" for module in extract_ucode_imports(code)]
+        compile_flags = []
+        if UCODE_EXPORT_RE.search(code):
+            compile_flags.append("module")
+        compile_flags.extend(f"dynlink={module}" for module in extract_ucode_imports(code))
         compile_arg = "-c"
         if compile_flags:
             compile_arg += "," + ",".join(compile_flags)
@@ -209,8 +252,7 @@ if JS_BINARY or UCODE_BINARY:
         with open(fpath, "r", encoding="utf-8") as f:
             content = f.read()
         
-        # Extract code blocks
-        blocks = re.findall(r'```(javascript|ucode|js|uc)\n(.*?)\n```', content, re.DOTALL)
+        blocks = extract_markdown_code_blocks(content)
         for lang, code in blocks:
             # Normalize lang names
             l = "javascript" if lang in ["js", "javascript"] else "ucode"
