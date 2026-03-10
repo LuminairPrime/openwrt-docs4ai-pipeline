@@ -2,10 +2,10 @@
 title: Adding new elements to LuCI
 module: wiki
 origin_type: wiki_page
-token_count: 905
+token_count: 833
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-luci.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Adding new elements to LuCI
@@ -35,7 +35,7 @@ One can do this by adding a file to the controller directory in your `<luci-path
 
 We will call this file `new_tab.lua`
 
-The content is as follows: \<WRAP prewrap 1000px\>
+The content is as follows:
 
 ``` lua
 module("luci.controller.myapp.new_tab", package.seeall)  --notice that new_tab is the name of the file new_tab.lua
@@ -46,8 +46,6 @@ module("luci.controller.myapp.new_tab", package.seeall)  --notice that new_tab i
 end
 ```
 
-\</WRAP\>
-
 ------------------------------------------------------------------------
 
 ## Adding the cbi_tab code
@@ -56,8 +54,6 @@ As specified above, we need to create a file called `cbi_tab.lua` in `<luci-path
 
 We will include the following code:
 
-\<WRAP prewrap 1000px\>
-
 ``` lua
 m = Map("cbi_file", translate("First Tab Form"), translate("Please fill out the form below")) -- cbi_file is the config file in /etc/config
 d = m:section(TypedSection, "info", "Part A of the form")  -- info is the section called info in cbi_file
@@ -65,20 +61,14 @@ a = d:option(Value, "name", "Name"); a.optional=false; a.rmempty = false;  -- na
 return m
 ```
 
-\</WRAP\>
-
 ------------------------------------------------------------------------
 
 ## Adding the cbi_file
 
 From the code above, we know we need a config file that has the appropriate sections and options. In our case, we will create the file *cbi_file* in `/etc/config` which looks like this:
 
-\<WRAP prewrap 1000px\>
-
     config 'info' 'A'
         option 'name' 'OpenWRT'
-
-\</WRAP\>
 
 ------------------------------------------------------------------------
 
@@ -88,10 +78,6 @@ The *view_tab.htm* file needs to go in `<luci-path>/applications/luci-myapplicat
 
 Here are the contents of the file:
 
-\<WRAP prewrap 1000px\>
-
-    <%+header%>                                                                    
-    <h1><%:Hello World%></h1>                                                      
+    <%+header%>
+    <h1><%:Hello World%></h1>
     <%+footer%>
-
-\</WRAP\>

@@ -2,32 +2,32 @@
 title: embedding-files-in-image
 module: wiki
 origin_type: wiki_page
-token_count: 504
+token_count: 484
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-embedding-files-in-image.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # embedding-files-in-image
 
-\<WRAP center round help 90%\> UPDATE: This functionality was [removed in April 2017](https://git.lede-project.org/?p=source.git;a=commit;h=b044bd5921e9644c9df9655bef10cee0af730724).
+ UPDATE: This functionality was [removed in April 2017](https://git.lede-project.org/?p=source.git;a=commit;h=b044bd5921e9644c9df9655bef10cee0af730724).
 
-The easy way is to include the files as [custom files](/docs/guide-developer/toolchain/use-buildsystem#custom_files) \</WRAP\>
+The easy way is to include the files as [custom files](/docs/guide-developer/toolchain/use-buildsystem#custom_files)
 
 This is a plain copy-paste from mailing list, if you have some time to turn it in a proper wiki article please do so.
 
-Hi Karl,  
-let me introduce a not strictly new way but another heavily under documented buildroot feature which you can use to implement custom modifications to packages which do not require source code edits.  
-For every processed package Makefile, the buildroot tries to include a a Makefile fragment in \$(TOPDIR)/overlay/\*/\$(PKG_DIR_NAME).mk which one can use to monkey-patch internals without directly touching the package recipes.  
-For example to amend "base-files" to include a custom banner and inittab, you could create an overlay file called  
+Hi Karl,
+let me introduce a not strictly new way but another heavily under documented buildroot feature which you can use to implement custom modifications to packages which do not require source code edits.
+For every processed package Makefile, the buildroot tries to include a a Makefile fragment in \$(TOPDIR)/overlay/\*/\$(PKG_DIR_NAME).mk which one can use to monkey-patch internals without directly touching the package recipes.
+For example to amend "base-files" to include a custom banner and inittab, you could create an overlay file called
 
     "overlay/my-example-organization/base-files.mk"\\
 
-which extends the default Package/base-files/install recipe to copy your custom files in the end.  
-Assuming a directory structure like this  
-\* overlay/my-example-organization/banner  
-\* overlay/my-example-organization/inittab  
-\* overlay/my-example-organization/base-files.mk  
+which extends the default Package/base-files/install recipe to copy your custom files in the end.
+Assuming a directory structure like this
+\* overlay/my-example-organization/banner
+\* overlay/my-example-organization/inittab
+\* overlay/my-example-organization/base-files.mk
 the base-files.mk would need to include something like the following code to splicy your custom files into the packaging procedure:
 
     --- 8< ---

@@ -2,10 +2,10 @@
 title: Adding a new device
 module: wiki
 origin_type: wiki_page
-token_count: 3048
+token_count: 3029
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-adding-new-device.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Adding a new device
@@ -93,26 +93,24 @@ After edit the files above, you need to touch the makefiles
 
 ## Patches
 
-The patches-\* subdirectories contain the kernel patches applied for every target.  
+The patches-\* subdirectories contain the kernel patches applied for every target.
 All patches should be named 'NNN-lowercase_shortname.patch' and sorted into the following categories:
 
-**0xx** - upstream backports  
-**1xx** - code awaiting upstream merge  
-**2xx** - kernel build / config / header patches  
-**3xx** - architecture specific patches  
-**4xx** - mtd related patches (subsystem and drivers)  
-**5xx** - filesystem related patches  
-**6xx** - generic network patches  
-**7xx** - network / phy driver patches  
-**8xx** - other drivers  
-**9xx** - uncategorized other patches  
-\<WRAP center round tip 80%\> All patches must be written in a way that they are potentially upstreamable, meaning:
+**0xx** - upstream backports
+**1xx** - code awaiting upstream merge
+**2xx** - kernel build / config / header patches
+**3xx** - architecture specific patches
+**4xx** - mtd related patches (subsystem and drivers)
+**5xx** - filesystem related patches
+**6xx** - generic network patches
+**7xx** - network / phy driver patches
+**8xx** - other drivers
+**9xx** - uncategorized other patches
+ All patches must be written in a way that they are potentially upstreamable, meaning:
 
 1.  they must contain a **proper subject**
 2.  they must contain a **proper commit message** explaining what they change
 3.  they must contain a **valid Signed-off-by line**
-
-\</WRAP\>
 
 ## Testing images
 
@@ -241,7 +239,7 @@ python -m pyftpdlib -w -p 21
 ##### Sender
 
 ``` bash
-busybox ftpput 192.168.0.123 important-data.txt /tmp/important-data.txt 
+busybox ftpput 192.168.0.123 important-data.txt /tmp/important-data.txt
 ```
 
 #### netcat by `busybox nc`
@@ -249,13 +247,13 @@ busybox ftpput 192.168.0.123 important-data.txt /tmp/important-data.txt
 ##### Receiver
 
 ``` bash
-busybox nc -l -p 12345 > important-data.txt 
+busybox nc -l -p 12345 > important-data.txt
 ```
 
 ##### Sender
 
 ``` bash
-cat /tmp/important-data.txt | busybox nc 192.168.0.123:12345 
+cat /tmp/important-data.txt | busybox nc 192.168.0.123:12345
 ```
 
 #### TFTP by `busybox tftp`
@@ -277,7 +275,7 @@ Depending on what is compiled into your curl binary if available you may also be
     It supports these protocols: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS,
            HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, POP3, POP3S, RTMP, RTMPS, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET,  TFTP,  WS
            and WSS. The command is designed to work without user interaction.
-                
+
            curl  offers  a busload of useful tricks like proxy support, user authentication, FTP upload, HTTP post, SSL connections, cookies,
            file transfer resume and more. As you will see below, the number of features will make your head spin.
 

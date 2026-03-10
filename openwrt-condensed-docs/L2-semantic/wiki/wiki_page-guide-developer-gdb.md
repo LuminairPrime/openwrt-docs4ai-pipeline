@@ -2,15 +2,15 @@
 title: GNU Debugger
 module: wiki
 origin_type: wiki_page
-token_count: 431
+token_count: 430
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-gdb.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # GNU Debugger
 
-- **`Note:`** This guide is by no means a Howto, just some short instructions to use GDB on OpenWrt.  
+- **`Note:`** This guide is by no means a Howto, just some short instructions to use GDB on OpenWrt.
   Please look upstream for multilingual instructions and manuals, like e.g. here: <https://sourceware.org/gdb/documentation/>
 
 ## Compiling Tools

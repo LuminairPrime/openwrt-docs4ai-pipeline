@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 1314
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-creating-a-meson-based-package.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Create Meson-based packages in OpenWrt
@@ -114,7 +114,7 @@ endef
 define Package/helloworld/install
     $(INSTALL_DIR) $(1)/usr/bin/
     $(INSTALL_BIN)  $(PKG_BUILD_DIR)/openwrt-build/helloworld $(1)/usr/bin
-    
+
 endef
 
 $(eval $(call BuildPackage,helloworld))

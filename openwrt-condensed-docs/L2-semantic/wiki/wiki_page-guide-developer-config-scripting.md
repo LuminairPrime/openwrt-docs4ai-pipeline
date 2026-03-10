@@ -2,10 +2,10 @@
 title: Configuration in scripts
 module: wiki
 origin_type: wiki_page
-token_count: 2804
+token_count: 2800
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-config-scripting.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Configuration in scripts
@@ -257,9 +257,9 @@ config_cb() {
     local name="$2"
     if [ "$type" = "mysection" ]
     then
-        option_cb() {                                            
-            local option="$1"                                
-            local value="$2"                                 
+        option_cb() {
+            local option="$1"
+            local value="$2"
             echo "${option//_/-} $value" >> /var/etc/myfile.conf
         }
     else {

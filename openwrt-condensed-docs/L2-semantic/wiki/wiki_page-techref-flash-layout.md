@@ -2,15 +2,15 @@
 title: The OpenWrt Flash Layout
 module: wiki
 origin_type: wiki_page
-token_count: 10954
+token_count: 10870
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-flash-layout.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # The OpenWrt Flash Layout
 
-The embedded devices (routers and such) OpenWrt/LEDE (Linux Embedded Development Environment) has mainly targeted since its inception, use flash memory as the form of non-volatile memory for the persistent storage of the firmware and its configuration.  
+The embedded devices (routers and such) OpenWrt/LEDE (Linux Embedded Development Environment) has mainly targeted since its inception, use flash memory as the form of non-volatile memory for the persistent storage of the firmware and its configuration.
 
 ## Types of flash memory
 
@@ -47,7 +47,7 @@ Based on how the flash memory chip is connected with the [SoC](/docs/techref/har
 
 ### NOR flash vs NAND flash
 
-Additionally we at OpenWrt distinguish between the two basic types of flash memory: [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) and [NAND flash](https://en.wikipedia.org/wiki/Flash_memory#NAND_flash).  
+Additionally we at OpenWrt distinguish between the two basic types of flash memory: [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) and [NAND flash](https://en.wikipedia.org/wiki/Flash_memory#NAND_flash).
 "Raw NOR flash" in typical routers is generally small (4 MiB – 16 MiB) and <u>error-free</u>: all data blocks are guaranteed to work correctly. Because raw NOR flash is error-free, the installed file system(s) do not need to take bad blocks into account, and neither SquashFS nor JFFS2 do. The combination of OverlayFS with SquashFS and JFFS2 has been the default OpenWrt setup since the beginning, and it works flawlessly on "raw NOR flash". Older routers typically use NOR flash.
 
 "Raw [NAND](../wiki/wiki_page-techref-flash.md) flash" in typical routers is generally much larger (32 MiB – 1 GiB) and <u>not error-free</u>: in general the flash contains bad blocks when new and may develop more at any time. Newer routers use [NAND](../wiki/wiki_page-techref-flash.md) flash because it is much cheaper for a given capacity and is also faster for bulk access (disk emulation), but at the cost of the increased complexity required to handle flash defects.
@@ -164,12 +164,12 @@ SquashFS-Images are suitable for devices with *"raw NOR flash memory"*-chips and
 |                Layer0                 | raw NOR flash memory chip (m25p80 [spi](https://en.wikipedia.org/wiki/Serial Peripheral Interface Bus)0.0: m25p64) 8192 KiB |                              |                                                            |                                                      |                       |
 |                Layer1                 | mtd0 ***u-boot*** 128 KiB                                                                                                   | mtd5 ***firmware*** 8000 KiB |                                                            |                                                      | mtd4 ***art*** 64 KiB |
 |                Layer2                 |                                                                                                                             | mtd1 ***kernel*** 1280 KiB   | mtd2 ***rootfs*** 6720 KiB                                 |                                                      |                       |
-| \<color magenta\>mountpoint\</color\> |                                                                                                                             |                              | \<color magenta\>`/`\</color\>                             |                                                      |                       |
+| mountpoint |                                                                                                                             |                              | `/`                             |                                                      |                       |
 |              filesystem               |                                                                                                                             |                              | [OverlayFS](/docs/techref/filesystems#overlayfs)           |                                                      |                       |
 |                Layer3                 |                                                                                                                             |                              |                                                            | mtd3 ***rootfs_data*** 5184 KiB                      |                       |
 |              Size in KiB              | 128 KiB                                                                                                                     | 1280 KiB                     | 1536 KiB                                                   | 5184 KiB                                             | 64 KiB                |
 |                 Name                  | ***u-boot***                                                                                                                | ***kernel***                 |                                                            | ***rootfs_data***                                    | ***art***             |
-| \<color magenta\>mountpoint\</color\> | *none*                                                                                                                      | *none*                       | \<color magenta\>`/rom`\</color\>                          | \<color magenta\>`/overlay`\</color\>                | *none*                |
+| mountpoint | *none*                                                                                                                      | *none*                       | `/rom`                          | `/overlay`                | *none*                |
 |              filesystem               | *none*                                                                                                                      | *none*                       | [filesystems#SquashFS](/docs/techref/filesystems#SquashFS) | [filesystems#JFFS2](/docs/techref/filesystems#JFFS2) | *none*                |
 
 #### Another Flash layout example
@@ -189,9 +189,9 @@ Since the partitions are nested we look at this whole thing in layers:
 
 #### Mount Points
 
-- \<color magenta\>`/`\</color\> this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
-- \<color magenta\>`/rom`\</color\> contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SquashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
-- \<color magenta\>`/overlay`\</color\> is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formatted with JFFS2.
+- `/` this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
+- `/rom` contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SquashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
+- `/overlay` is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formatted with JFFS2.
 
 Whenever the system is asked to look for an existing file in `/`, it first looks in `/overlay`, and if not there, then in `/rom`. In this way `/overlay` overrides `/rom` and creates the effect of a writable `/` while much of the content is safely and efficiently stored in the read-only `/rom`.
 
@@ -480,7 +480,7 @@ Create and enable the `extra` volume using `uvol`:
 
 You do not like the default mount path (`/tmp/run/uvol/extra`), so you change it to `/extra` using you text editor:
 
-    root@router:~# nano /etc/config/fstab 
+    root@router:~# nano /etc/config/fstab
 
 Finally reboot and check that your new volume is mounted where you want it:
 

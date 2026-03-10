@@ -1,15 +1,15 @@
 ---
 module: "wiki"
-total_token_count: 209112
+total_token_count: 207956
 section_count: 92
 is_monolithic: true
-generated: "2026-03-09T22:23:57.692638+00:00"
+generated: "2026-03-10T06:39:07.985313+00:00"
 ---
 
 # wiki Complete Reference
 
 > **Contains:** 92 documents concatenated
-> **Tokens:** ~209112 (cl100k_base)
+> **Tokens:** ~207956 (cl100k_base)
 
 ---
 
@@ -334,10 +334,10 @@ For creating the OpenWrt firmware your [bcm63xx](/docs/techref/hardware/soc/soc.
 
 1.  Obtain the [source and follow the compile procedure](/docs/guide-developer/toolchain/start) with the make menuconfig as last step.
 2.  During **menuconfig** select the correct target system.
-3.  Next generate the board_bcm963xx.c file for the selected platform with all board parameters execute the following command:  
+3.  Next generate the board_bcm963xx.c file for the selected platform with all board parameters execute the following command:
     `make kernel_menuconfig`
-4.  Add the board-id to the ./target/linux/brcm63xx/image/Makefile.  
-    **Example**  
+4.  Add the board-id to the ./target/linux/brcm63xx/image/Makefile.
+    **Example**
     \<code\> \# Davolink DV2020
 
 <!-- -->
@@ -356,11 +356,11 @@ For creating the OpenWrt firmware your [bcm63xx](/docs/techref/hardware/soc/soc.
           .enet0 = {
                   .has_phy                = 1,
                   .use_internal_phy       = 1,
-          },  
-          .enet1 = {  
-                  .force_speed_100        = 1,    
-                  .force_duplex_full      = 1,    
-          },  
+          },
+          .enet1 = {
+                  .force_speed_100        = 1,
+                  .force_duplex_full      = 1,
+          },
 
 };
 
@@ -448,19 +448,19 @@ A large bunch of tools over the Internet exists in order to let you do OS finger
 
 |                                                                      |
 |----------------------------------------------------------------------|
-| `nmap -P0 -O //IP address//                                          
- Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET    
- Interesting ports on 192.168.2.1:                                     
- Not shown: 1693 closed ports                                          
- PORT   STATE SERVICE                                                  
- 22/tcp open  ssh                                                      
- 23/tcp open  telnet                                                   
- 53/tcp open  domain                                                   
- 80/tcp open  http                                                     
- MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)                        
- Device type: broadband router                                         
- Running: Linksys embedded                                             
- OS details: Linksys WRT54GS v4 running OpenWrt w/Linux kernel 2.4.30  
+| `nmap -P0 -O //IP address//
+ Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET
+ Interesting ports on 192.168.2.1:
+ Not shown: 1693 closed ports
+ PORT   STATE SERVICE
+ 22/tcp open  ssh
+ 23/tcp open  telnet
+ 53/tcp open  domain
+ 80/tcp open  http
+ MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
+ Device type: broadband router
+ Running: Linksys embedded
+ OS details: Linksys WRT54GS v4 running OpenWrt w/Linux kernel 2.4.30
  Network Distance: 1 hop`                                              |
 
 The *nmap* utility is able to report whether your device uses a Linux TCP/IP stack, and if so, will show you which Linux kernel version is probably runs. This report is quite reliable and it can make the distinction between BSD and Linux TCP/IP stacks and others.
@@ -469,16 +469,16 @@ Using the same tool, you can also do port scanning and service version discovery
 
 |                                                                      |
 |----------------------------------------------------------------------|
-| `nmap -P0 -sV //IP address//                                         
- Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET    
- Interesting ports on 192.168.2.1:                                     
- Not shown: 1693 closed ports                                          
- PORT   STATE SERVICE VERSION                                          
- 22/tcp open  ssh     Dropbear sshd 0.48 (protocol 2.0)                
- 23/tcp open  telnet  Busybox telnetd                                  
- 53/tcp open  domain  ISC Bind dnsmasq-2.35                            
- 80/tcp open  http    OpenWrt BusyBox httpd                            
- MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)                        
+| `nmap -P0 -sV //IP address//
+ Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET
+ Interesting ports on 192.168.2.1:
+ Not shown: 1693 closed ports
+ PORT   STATE SERVICE VERSION
+ 22/tcp open  ssh     Dropbear sshd 0.48 (protocol 2.0)
+ 23/tcp open  telnet  Busybox telnetd
+ 53/tcp open  domain  ISC Bind dnsmasq-2.35
+ 80/tcp open  http    OpenWrt BusyBox httpd
+ MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
  Service Info: Device: WAP`                                            |
 
 The web server version, if identified, can be determining in knowing the Operating System. For instance, the BOA web server is typical from devices running an open-source Unix or Unix-like.
@@ -503,12 +503,12 @@ Some Unix tools like `hexdump` or `strings` can be used to analyze the firmware.
 
 |                                                                                  |
 |----------------------------------------------------------------------------------|
-| `hexdump -C <binary image.extension> | less                                      
- 00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|    
- 00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|    
- 00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|    
- 00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|    
- 00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|    
+| `hexdump -C <binary image.extension> | less
+ 00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|
+ 00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|
+ 00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|
+ 00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|
+ 00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|
  00000050  da ff f3 9b f7 39 7b ef  73 f6 19 3b 53 67 ea 44  |???.?9{?s?.;Sg?D|`   |
 
 Scroll over the firmware to find printable words that can be significant.
@@ -535,19 +535,19 @@ You will find below a sample letter that can be sent to the manufacturer:
 
 |                                                                                                               |
 |---------------------------------------------------------------------------------------------------------------|
-| `Miss, Mister,                                                                                                
-                                                                                                                
- I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM                      
- the open source software used to build or modify the firmware.                                                 
-                                                                                                                
- In conformance to the GPL license, you have to release the following sources:                                  
-                                                                                                                
-  * complete toolchain that made the kernel and applications be compiled (gcc, binutils, libc)                  
-  * tools to build a custom firmware (mksquashfs, mkcramfs ...)                                                 
-  * kernel sources with patches to make it run on this specific hardware, this does not include binary drivers  
-                                                                                                                
- Thank you very much in advance for your answer.                                                                
-                                                                                                                
+| `Miss, Mister,
+
+ I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM
+ the open source software used to build or modify the firmware.
+
+ In conformance to the GPL license, you have to release the following sources:
+
+  * complete toolchain that made the kernel and applications be compiled (gcc, binutils, libc)
+  * tools to build a custom firmware (mksquashfs, mkcramfs ...)
+  * kernel sources with patches to make it run on this specific hardware, this does not include binary drivers
+
+ Thank you very much in advance for your answer.
+
  Best regards, //Your Name//`                                                                                   |
 
 ### Using the SDK
@@ -577,11 +577,11 @@ Some directories are very likely to have local modifications needed to make your
 
 |                                 |
 |---------------------------------|
-| `head -5 linux-2.x.x/Makefile   
- VERSION = 2                      
- PATCHLEVEL = x                   
- SUBLEVEL = y                     
- EXTRAVERSION = z                 
+| `head -5 linux-2.x.x/Makefile
+ VERSION = 2
+ PATCHLEVEL = x
+ SUBLEVEL = y
+ EXTRAVERSION = z
  NAME=A fancy name`               |
 
 So now, you know that you have to download a standard kernel tarball at kernel.org that matches the version being used by your hardware.
@@ -590,8 +590,8 @@ Then you can create a diff file between the two trees, especially for the follow
 
 |                                                                                                                           |
 |---------------------------------------------------------------------------------------------------------------------------|
-| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch   
- diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch                                            
+| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch
+ diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch
  diff -urN linux-2.x.x/drivers/ linux-2.x.x-modified/drivers > 03-drivers.patch`                                            |
 
 This will constitute a basic set of three patches that are very likely to contain any needed modifications that has been made to the stock Linux kernel to run on your specific device. Of course, the content produced by the diff -urN may not always be relevant, so that you have to clean up those patches to only let the "must have" code into them.
@@ -665,11 +665,11 @@ First of all, you need to make your flash map driver be visible in the kernel co
 
 |                                                                            |
 |----------------------------------------------------------------------------|
-| `config MTD_DEVICE_FLASH                                                   
-         tristate "Device Flash device"                                      
-         depends on ARCHITECTURE && DEVICE                                   
-         help                                                                
-          Flash memory access on DEVICE boards. Currently only works with    
+| `config MTD_DEVICE_FLASH
+         tristate "Device Flash device"
+         depends on ARCHITECTURE && DEVICE
+         help
+          Flash memory access on DEVICE boards. Currently only works with
           Bootloader Foo and Bootloader Bar.`                                |
 
 Then add your source file to the linux/drivers/mtd/maps/Makefile, so that it will be compiled along with the kernel.
@@ -682,104 +682,104 @@ You can then write the kernel driver itself, by creating a `linux/drivers/mtd/ma
 
 |                                                                                               |
 |-----------------------------------------------------------------------------------------------|
-| `// Includes that are required for the flash map driver to know of the prototypes:            
- #include <asm/io.h>                                                                            
- #include <linux/init.h>                                                                        
- #include <linux/kernel.h>                                                                      
- #include <linux/mtd/map.h>                                                                     
- #include <linux/mtd/mtd.h>                                                                     
- #include <linux/mtd/partitions.h>                                                              
- #include <linux/vmalloc.h>                                                                     
-                                                                                                
- // Put some flash map definitions here:                                                        
- #define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */                                
- #define WINDOW_SIZE 0x400000    /* Size of flash */                                            
- #define BUSWIDTH 2      /* Buswidth */                                                         
-                                                                                                
- static void __exit device_mtd_cleanup(void);                                                   
-                                                                                                
- static struct mtd_info *device_mtd_info;                                                       
-                                                                                                
- static struct map_info devicd_map = {                                                          
-     .name = "device",                                                                          
-     .size = WINDOW_SIZE,                                                                       
-     .bankwidth = BUSWIDTH,                                                                     
-     .phys = WINDOW_ADDR,                                                                       
- };                                                                                             
-                                                                                                
- static int __init device_mtd_init(void)                                                        
- {                                                                                              
-     // Display that we found a flash map device                                                
-     printk("device: 0x\%08x at 0x\%08x\n", WINDOW_SIZE, WINDOW_ADDR);                          
-                                                                                                
-     // Remap the device address to a kernel address                                            
-     device_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);                                       
-                                                                                                
-     // If impossible to remap, exit with the EIO error                                         
-     if (!device_map.virt) {                                                                    
-         printk("device: Failed to ioremap\n");                                                 
-         return -EIO;                                                                           
-     }                                                                                          
-     // Initialize the device map                                                               
-     simple_map_init(&device_map);                                                              
-                                                                                                
-     /* MTD informations are closely linked to the flash map device                             
-        you might also use "jedec_probe" "amd_probe" or "intel_probe" */                        
-     device_mtd_info = do_map_probe("cfi_probe", &device_map);                                  
-                                                                                                
-     if (device_mtd_info) {                                                                     
-         device_mtd_info->owner = THIS_MODULE;                                                  
-                                                                                                
-         int parsed_nr_parts = 0;                                                               
-                                                                                                
-         // We try here to use the partition schema provided by the bootloader specific code    
-         if (parsed_nr_parts == 0) {                                                            
-             int ret =                                                                          
-                 parse_bootloader_partitions(device_mtd_info,                                   
-                             &parsed_parts, 0);                                                 
-             if (ret > 0) {                                                                     
-                 part_type = "BootLoader";                                                      
-                 parsed_nr_parts = ret;                                                         
-             }                                                                                  
-         }                                                                                      
-                                                                                                
-         add_mtd_partitions(devicd_mtd_info, parsed_parts,                                      
-                    parsed_nr_parts);                                                           
-                                                                                                
-         return 0;                                                                              
-     }                                                                                          
-     iounmap(device_map.virt);                                                                  
-                                                                                                
-     return -ENXIO;                                                                             
- }                                                                                              
-                                                                                                
- // This function will make the driver clean up the MTD device mapping                          
- static void __exit device_mtd_cleanup(void)                                                    
- {                                                                                              
-     // If we found a MTD device before                                                         
-     if (device_mtd_info) {                                                                     
-         // Delete every partitions                                                             
-         del_mtd_partitions(device_mtd_info);                                                   
-         // Delete the associated map                                                           
-         map_destroy(device_mtd_info);                                                          
-     }                                                                                          
-                                                                                                
-     // If the virtual address is already in use                                                
-     if (device_map.virt) {                                                                     
-         // Unmap the physical address to a kernel space address                                
-         iounmap(device_map.virt);                                                              
-                                                                                                
-         // Reset the structure field                                                           
-         device_map.virt = 0;                                                                   
-     }                                                                                          
- }                                                                                              
-                                                                                                
- // Macros that indicate which function is called on loading/unloading the module               
- module_init(device_mtd_init);                                                                  
- module_exit(device_mtd_cleanup);                                                               
-                                                                                                
- // Macros defining license and author, parameters can be defined here too.                     
- MODULE_LICENSE("GPL");                                                                         
+| `// Includes that are required for the flash map driver to know of the prototypes:
+ #include <asm/io.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/vmalloc.h>
+
+ // Put some flash map definitions here:
+ #define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */
+ #define WINDOW_SIZE 0x400000    /* Size of flash */
+ #define BUSWIDTH 2      /* Buswidth */
+
+ static void __exit device_mtd_cleanup(void);
+
+ static struct mtd_info *device_mtd_info;
+
+ static struct map_info devicd_map = {
+     .name = "device",
+     .size = WINDOW_SIZE,
+     .bankwidth = BUSWIDTH,
+     .phys = WINDOW_ADDR,
+ };
+
+ static int __init device_mtd_init(void)
+ {
+     // Display that we found a flash map device
+     printk("device: 0x\%08x at 0x\%08x\n", WINDOW_SIZE, WINDOW_ADDR);
+
+     // Remap the device address to a kernel address
+     device_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
+
+     // If impossible to remap, exit with the EIO error
+     if (!device_map.virt) {
+         printk("device: Failed to ioremap\n");
+         return -EIO;
+     }
+     // Initialize the device map
+     simple_map_init(&device_map);
+
+     /* MTD informations are closely linked to the flash map device
+        you might also use "jedec_probe" "amd_probe" or "intel_probe" */
+     device_mtd_info = do_map_probe("cfi_probe", &device_map);
+
+     if (device_mtd_info) {
+         device_mtd_info->owner = THIS_MODULE;
+
+         int parsed_nr_parts = 0;
+
+         // We try here to use the partition schema provided by the bootloader specific code
+         if (parsed_nr_parts == 0) {
+             int ret =
+                 parse_bootloader_partitions(device_mtd_info,
+                             &parsed_parts, 0);
+             if (ret > 0) {
+                 part_type = "BootLoader";
+                 parsed_nr_parts = ret;
+             }
+         }
+
+         add_mtd_partitions(devicd_mtd_info, parsed_parts,
+                    parsed_nr_parts);
+
+         return 0;
+     }
+     iounmap(device_map.virt);
+
+     return -ENXIO;
+ }
+
+ // This function will make the driver clean up the MTD device mapping
+ static void __exit device_mtd_cleanup(void)
+ {
+     // If we found a MTD device before
+     if (device_mtd_info) {
+         // Delete every partitions
+         del_mtd_partitions(device_mtd_info);
+         // Delete the associated map
+         map_destroy(device_mtd_info);
+     }
+
+     // If the virtual address is already in use
+     if (device_map.virt) {
+         // Unmap the physical address to a kernel space address
+         iounmap(device_map.virt);
+
+         // Reset the structure field
+         device_map.virt = 0;
+     }
+ }
+
+ // Macros that indicate which function is called on loading/unloading the module
+ module_init(device_mtd_init);
+ module_exit(device_mtd_cleanup);
+
+ // Macros defining license and author, parameters can be defined here too.
+ MODULE_LICENSE("GPL");
  MODULE_AUTHOR("Me, myself and I <memyselfandi@domain.tld>");`                                  |
 
 ---
@@ -869,26 +869,24 @@ After edit the files above, you need to touch the makefiles
 
 ## Patches
 
-The patches-\* subdirectories contain the kernel patches applied for every target.  
+The patches-\* subdirectories contain the kernel patches applied for every target.
 All patches should be named 'NNN-lowercase_shortname.patch' and sorted into the following categories:
 
-**0xx** - upstream backports  
-**1xx** - code awaiting upstream merge  
-**2xx** - kernel build / config / header patches  
-**3xx** - architecture specific patches  
-**4xx** - mtd related patches (subsystem and drivers)  
-**5xx** - filesystem related patches  
-**6xx** - generic network patches  
-**7xx** - network / phy driver patches  
-**8xx** - other drivers  
-**9xx** - uncategorized other patches  
-\<WRAP center round tip 80%\> All patches must be written in a way that they are potentially upstreamable, meaning:
+**0xx** - upstream backports
+**1xx** - code awaiting upstream merge
+**2xx** - kernel build / config / header patches
+**3xx** - architecture specific patches
+**4xx** - mtd related patches (subsystem and drivers)
+**5xx** - filesystem related patches
+**6xx** - generic network patches
+**7xx** - network / phy driver patches
+**8xx** - other drivers
+**9xx** - uncategorized other patches
+ All patches must be written in a way that they are potentially upstreamable, meaning:
 
 1.  they must contain a **proper subject**
 2.  they must contain a **proper commit message** explaining what they change
 3.  they must contain a **valid Signed-off-by line**
-
-\</WRAP\>
 
 ## Testing images
 
@@ -1017,7 +1015,7 @@ python -m pyftpdlib -w -p 21
 ##### Sender
 
 ``` bash
-busybox ftpput 192.168.0.123 important-data.txt /tmp/important-data.txt 
+busybox ftpput 192.168.0.123 important-data.txt /tmp/important-data.txt
 ```
 
 #### netcat by `busybox nc`
@@ -1025,13 +1023,13 @@ busybox ftpput 192.168.0.123 important-data.txt /tmp/important-data.txt
 ##### Receiver
 
 ``` bash
-busybox nc -l -p 12345 > important-data.txt 
+busybox nc -l -p 12345 > important-data.txt
 ```
 
 ##### Sender
 
 ``` bash
-cat /tmp/important-data.txt | busybox nc 192.168.0.123:12345 
+cat /tmp/important-data.txt | busybox nc 192.168.0.123:12345
 ```
 
 #### TFTP by `busybox tftp`
@@ -1053,7 +1051,7 @@ Depending on what is compiled into your curl binary if available you may also be
     It supports these protocols: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS,
            HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, POP3, POP3S, RTMP, RTMPS, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET,  TFTP,  WS
            and WSS. The command is designed to work without user interaction.
-                
+
            curl  offers  a busload of useful tricks like proxy support, user authentication, FTP upload, HTTP post, SSL connections, cookies,
            file transfer resume and more. As you will see below, the number of features will make your head spin.
 
@@ -1139,50 +1137,48 @@ Select the following modules by pressing `y` to include the modules within the c
 Select all subsets if you want perfect support for usb network interfaces, including Android and iPhone tethering. Some newer 4g dongles use usb network interface (rndis) instead of legacy serial protocol.
 
     <*> kmod-usb-net............... Kernel modules for USB-to-Ethernet convertors
-      <*>   kmod-usb-net-asix...... Kernel module for USB-to-Ethernet Asix convertors  
-      <*>   kmod-usb-net-cdc-eem..................... Support for CDC EEM connections  
-      -*-   kmod-usb-net-cdc-ether.............. Support for cdc ethernet connections  
-      <*>   kmod-usb-net-cdc-mbim..................... Kernel module for MBIM Devices  
-      -*-   kmod-usb-net-cdc-ncm..................... Support for CDC NCM connections  
-      <*>   kmod-usb-net-cdc-subset...... Support for CDC Ethernet subset connections  
-      <*>   kmod-usb-net-dm9601-ether........ Support for DM9601 ethernet connections  
-      <*>   kmod-usb-net-hso.. Kernel module for Option USB High Speed Mobile Devices  
-      <*>   kmod-usb-net-ipheth..................... Apple iPhone USB Ethernet driver  
-      <*>   kmod-usb-net-kalmia................... Samsung Kalmia based LTE USB modem  
-      <*>   kmod-usb-net-kaweth.. Kernel module for USB-to-Ethernet Kaweth convertors  
-      <*>   kmod-usb-net-mcs7830                                                       
-      <*>   kmod-usb-net-pegasus                                                       
-      <*>   kmod-usb-net-qmi-wwan.................................... QMI WWAN driver  
-      <*>   kmod-usb-net-rndis......................... Support for RNDIS connections  
-      <*>   kmod-usb-net-sierrawireless.......... Support for Sierra Wireless devices  
+      <*>   kmod-usb-net-asix...... Kernel module for USB-to-Ethernet Asix convertors
+      <*>   kmod-usb-net-cdc-eem..................... Support for CDC EEM connections
+      -*-   kmod-usb-net-cdc-ether.............. Support for cdc ethernet connections
+      <*>   kmod-usb-net-cdc-mbim..................... Kernel module for MBIM Devices
+      -*-   kmod-usb-net-cdc-ncm..................... Support for CDC NCM connections
+      <*>   kmod-usb-net-cdc-subset...... Support for CDC Ethernet subset connections
+      <*>   kmod-usb-net-dm9601-ether........ Support for DM9601 ethernet connections
+      <*>   kmod-usb-net-hso.. Kernel module for Option USB High Speed Mobile Devices
+      <*>   kmod-usb-net-ipheth..................... Apple iPhone USB Ethernet driver
+      <*>   kmod-usb-net-kalmia................... Samsung Kalmia based LTE USB modem
+      <*>   kmod-usb-net-kaweth.. Kernel module for USB-to-Ethernet Kaweth convertors
+      <*>   kmod-usb-net-mcs7830
+      <*>   kmod-usb-net-pegasus
+      <*>   kmod-usb-net-qmi-wwan.................................... QMI WWAN driver
+      <*>   kmod-usb-net-rndis......................... Support for RNDIS connections
+      <*>   kmod-usb-net-sierrawireless.......... Support for Sierra Wireless devices
       <*>   kmod-usb-net-smsc95xx. SMSC LAN95XX based USB 2.0 10/100 ethernet devices
-      
 
 **kmod-usb-serial** -\> to support legacy 3g dongles.
 
 Select all subsets to ensure that your dongle works. Most 3g dongles use the option driver or generic serial driver to work. Note that option driver has better capability of distinguishing between modem serial interfaces and storage interface than generic usb serial driver.
 
-    <*> kmod-usb-serial..................... Support for USB-to-Serial converters    
-      <*>   kmod-usb-serial-ark3116........ Support for ArkMicroChips ARK3116 devices  
-      <*>   kmod-usb-serial-belkin........................ Support for Belkin devices  
-      <*>   kmod-usb-serial-ch341.......................... Support for CH341 devices  
-      <*>   kmod-usb-serial-cp210x........... Support for Silicon Labs cp210x devices  
-      <*>   kmod-usb-serial-cypress-m8.............. Support for CypressM8 USB-Serial  
-      <*>   kmod-usb-serial-ftdi............................ Support for FTDI devices  
-      <*> kmod-usb-serial-ipw.................... Support for IPWireless 3G devices    
-      <*> kmod-usb-serial-keyspan........ Support for Keyspan USB-to-Serial devices    
-      <*> kmod-usb-serial-mct.............. Support for Magic Control Tech. devices    
-      <*> kmod-usb-serial-mos7720.............. Support for Moschip MOS7720 devices    
-      <*> kmod-usb-serial-motorola-phone............ Support for Motorola usb phone    
-      <*> kmod-usb-serial-option................... Support for Option HSDPA modems    
-      <*> kmod-usb-serial-oti6858...... Support for Ours Technology OTI6858 devices    
-      <*> kmod-usb-serial-pl2303............... Support for Prolific PL2303 devices    
-      <*> kmod-usb-serial-qualcomm................. Support for Qualcomm USB serial    
-      <*> kmod-usb-serial-sierrawireless....... Support for Sierra Wireless devices    
-      <*> kmod-usb-serial-ti-usb...................... Support for TI USB 3410/5052    
-      <*> kmod-usb-serial-visor............... Support for Handspring Visor devices    
+    <*> kmod-usb-serial..................... Support for USB-to-Serial converters
+      <*>   kmod-usb-serial-ark3116........ Support for ArkMicroChips ARK3116 devices
+      <*>   kmod-usb-serial-belkin........................ Support for Belkin devices
+      <*>   kmod-usb-serial-ch341.......................... Support for CH341 devices
+      <*>   kmod-usb-serial-cp210x........... Support for Silicon Labs cp210x devices
+      <*>   kmod-usb-serial-cypress-m8.............. Support for CypressM8 USB-Serial
+      <*>   kmod-usb-serial-ftdi............................ Support for FTDI devices
+      <*> kmod-usb-serial-ipw.................... Support for IPWireless 3G devices
+      <*> kmod-usb-serial-keyspan........ Support for Keyspan USB-to-Serial devices
+      <*> kmod-usb-serial-mct.............. Support for Magic Control Tech. devices
+      <*> kmod-usb-serial-mos7720.............. Support for Moschip MOS7720 devices
+      <*> kmod-usb-serial-motorola-phone............ Support for Motorola usb phone
+      <*> kmod-usb-serial-option................... Support for Option HSDPA modems
+      <*> kmod-usb-serial-oti6858...... Support for Ours Technology OTI6858 devices
+      <*> kmod-usb-serial-pl2303............... Support for Prolific PL2303 devices
+      <*> kmod-usb-serial-qualcomm................. Support for Qualcomm USB serial
+      <*> kmod-usb-serial-sierrawireless....... Support for Sierra Wireless devices
+      <*> kmod-usb-serial-ti-usb...................... Support for TI USB 3410/5052
+      <*> kmod-usb-serial-visor............... Support for Handspring Visor devices
       -*- kmod-usb-serial-wwan..................... Support for GSM and CDMA modems
-      
 
 ### Additional packages required for 3g functionality
 
@@ -1261,7 +1257,7 @@ More information about building from source: [OpenWrt Buildroot - Usage](/docs/g
 
 First you need to follow the HowtoBuild [MPD-full building from source](/docs/guide-developer/build.mpd-full)
 
-Based on the following reference: [BB + MPD-full + PulseAudio, unable to build](https://forum.openwrt.org/viewtopic.php?pid=287809#p287809)  
+Based on the following reference: [BB + MPD-full + PulseAudio, unable to build](https://forum.openwrt.org/viewtopic.php?pid=287809#p287809)
 
 ### 18.06.02
 
@@ -1288,7 +1284,7 @@ Edit the --disable-pulse to **--enable-pulse**
 
 Edit the EXTRA_LDFLAGS and add
 
-    -Wl,-rpath-link=$(STAGING_DIR)/usr/lib/pulseaudio 
+    -Wl,-rpath-link=$(STAGING_DIR)/usr/lib/pulseaudio
 
 The complete line looks like that:
 
@@ -1302,14 +1298,14 @@ Maybe the path has to be adapted to \$(STAGING_DIR)/opt/lib/pulseaudio.
 
 More information about building from source: [OpenWrt Buildroot - Usage](/docs/guide-developer/toolchain/start)
 
-Based on the following reference:  
-[Help on compiling MPD full](https://forum.openwrt.org/viewtopic.php?pid=158385#p158385)  
-If you build from source you will only be able to select the MPD-mini from the make menuconfig interface.  
+Based on the following reference:
+[Help on compiling MPD full](https://forum.openwrt.org/viewtopic.php?pid=158385#p158385)
+If you build from source you will only be able to select the MPD-mini from the make menuconfig interface.
 To display and enable the full version in the menuconfig interface, you'll have to edit the MPD Makefile.
 
 ### Barrier Breaker and Chaos Calmer
 
-1.  In your git clone directory edit `/openwrt/feeds/packages/sound/mpd/Makefile`.  
+1.  In your git clone directory edit `/openwrt/feeds/packages/sound/mpd/Makefile`.
     It is a good idea to make a backup copy before starting.
 2.  Detect the area in the Makefile involved with the full MPD installation and edit `+libffmpeg` to `+libffmpeg-full`
 3.  Save the file
@@ -1330,7 +1326,7 @@ Edited file:
       DEPENDS+= \
        +AUDIO_SUPPORT:alsa-lib \
        +libaudiofile +BUILD_PATENTED:libfaad2 +libffmpeg-full +libid3tag \
-       [+libmms +libogg +libsndfile +libvorbis 
+       [+libmms +libogg +libsndfile +libvorbis
       PROVIDES:=mpd
       VARIANT:=full
 
@@ -1516,7 +1512,7 @@ You are now editing the list of servers to get updates from.
 - Type ctrl-x and then y and then enter to save and exit.
 
 ``` bash
-su - 
+su -
 apt update
 apt dist-upgrade
 apt install linux-headers-amd64 make sudo
@@ -1799,9 +1795,9 @@ config_cb() {
     local name="$2"
     if [ "$type" = "mysection" ]
     then
-        option_cb() {                                            
-            local option="$1"                                
-            local value="$2"                                 
+        option_cb() {
+            local option="$1"
+            local value="$2"
             echo "${option//_/-} $value" >> /var/etc/myfile.conf
         }
     else {
@@ -1933,7 +1929,7 @@ define Package/hellocmake/description
     hellocmake is a simple application to demonstrate OpenWrt build system with cmake packages
 endef
 
-define Package/hellocmake/install   
+define Package/hellocmake/install
     $(INSTALL_DIR) $(1)/usr/bin
     $(INSTALL_BIN) $(PKG_BUILD_DIR)/hellocmake $(1)/usr/bin/
 endef
@@ -2077,7 +2073,7 @@ endef
 define Package/helloworld/install
     $(INSTALL_DIR) $(1)/usr/bin/
     $(INSTALL_BIN)  $(PKG_BUILD_DIR)/openwrt-build/helloworld $(1)/usr/bin
-    
+
 endef
 
 $(eval $(call BuildPackage,helloworld))
@@ -2187,7 +2183,7 @@ root@OpenWrt:~# ps | grep hostapd
 let say for the sake of argument you're only interested in addressing a problem with the phy0 hostapd. First check the current level for this hostapd:
 
 ``` bash
-root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf 
+root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf
 logger_syslog_level=2
 logger_stdout_level=2
 ```
@@ -2198,7 +2194,7 @@ logger_stdout_level=2
 root@OpenWrt:~# uci set wireless.radio0.log_level=1
 root@OpenWrt:~# uci commit wireless
 root@OpenWrt:~# wifi up
-root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf 
+root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf
 logger_syslog_level=1
 logger_stdout_level=1
 ```
@@ -2303,51 +2299,51 @@ The MTD labels of "firmware" and "ubi" have special meaning to the OpenWrt kerne
 
 See below on supplying the proper "compatible" label so that the OpenWrt kernel can properly "split" the partition and `CONFIG_MTD_SPLIT_FIRMWARE` is not needed. (note that `CONFIG_MTD_SPLIT_UIMAGE_FW` is still required!)
 
-\<WRAP center round info 80%\> this article was an email sent to the OpenWrt-devel mailing list by OpenWrt dev Rafał Miłecki  
-**Subject:** \[OpenWrt-Devel\] Specifying "firmware" partition format on all DTS targets  
-**Date:** Sat, 24 Nov 2018 11:32:25 +0100 \</WRAP\>
+ this article was an email sent to the OpenWrt-devel mailing list by OpenWrt dev Rafał Miłecki
+**Subject:** \[OpenWrt-Devel\] Specifying "firmware" partition format on all DTS targets
+**Date:** Sat, 24 Nov 2018 11:32:25 +0100
 
-Parsing "firmware" partition (to create kernel + rootfs) was implemented using OpenWrt downstream code enabled by CONFIG_MTD_SPLIT_FIRMWARE.  
+Parsing "firmware" partition (to create kernel + rootfs) was implemented using OpenWrt downstream code enabled by CONFIG_MTD_SPLIT_FIRMWARE.
 With recent upstream mtd changes we can do it in a more clean way for DTS targets. It just requires adding a proper "compatible" string to the "firmware" partition node.
 
 I'd like all DTS supported devices to use that "compatible" and disable CONFIG_MTD_SPLIT_FIRMWARE eventually.
 
 *Wiki note: This objective may be a challenge for dual-firmware units as the partition to be split will be different depending on which was selected by the boot loader.*
 
-1\) Default uimage  
-If you see:  
-2 uimage-fw partitions found on MTD device firmware  
-please use "denx,uimage"; e.g.  
+1\) Default uimage
+If you see:
+2 uimage-fw partitions found on MTD device firmware
+please use "denx,uimage"; e.g.
 `partition@70000 {
         label = "firmware";
         reg = <0x070000 0x790000>;
         compatible = "denx,uimage";
 };`
 
-2\) Netgear's uimage  
-If you see:  
-2 netgear-fw partitions found on MTD device firmware  
-please use "netgear,uimage"; e.g.  
+2\) Netgear's uimage
+If you see:
+2 netgear-fw partitions found on MTD device firmware
+please use "netgear,uimage"; e.g.
 `partition@70000 {
         label = "firmware";
         reg = <0x070000 0xf80000>;
         compatible = "netgear,uimage";
 };`
 
-3\) TP-LINK's firmware  
-If you see:  
-2 tplink-fw partitions found on MTD device firmware  
-please use "tplink,firmware"; e.g.  
+3\) TP-LINK's firmware
+If you see:
+2 tplink-fw partitions found on MTD device firmware
+please use "tplink,firmware"; e.g.
 `firmware@20000 {
         label = "firmware";
         reg = <0x020000 0xfd0000>;
         compatible = "tplink,firmware";
 };`
 
-Please kindly:  
-1) Use that for all newly added devices  
-2) Port already supported devices you can test  
---  
+Please kindly:
+1) Use that for all newly added devices
+2) Port already supported devices you can test
+--
 Rafał
 
 ---
@@ -2670,7 +2666,7 @@ The source code for the drivers already integrated into the mainline kernel can 
 
 - -\> <http://kernel.org/>
 
-In OpenWRT, all kernel module package filenames begin with kmod-.  
+In OpenWRT, all kernel module package filenames begin with kmod-.
 The modprobe command is not available in at least some firmware version of OpenWrt. Use insmod instead.
 
 ## Learning more
@@ -2683,24 +2679,24 @@ You can also contact the developers. You can often reach them on one or more **m
 
 # embedding-files-in-image
 
-\<WRAP center round help 90%\> UPDATE: This functionality was [removed in April 2017](https://git.lede-project.org/?p=source.git;a=commit;h=b044bd5921e9644c9df9655bef10cee0af730724).
+ UPDATE: This functionality was [removed in April 2017](https://git.lede-project.org/?p=source.git;a=commit;h=b044bd5921e9644c9df9655bef10cee0af730724).
 
-The easy way is to include the files as [custom files](/docs/guide-developer/toolchain/use-buildsystem#custom_files) \</WRAP\>
+The easy way is to include the files as [custom files](/docs/guide-developer/toolchain/use-buildsystem#custom_files)
 
 This is a plain copy-paste from mailing list, if you have some time to turn it in a proper wiki article please do so.
 
-Hi Karl,  
-let me introduce a not strictly new way but another heavily under documented buildroot feature which you can use to implement custom modifications to packages which do not require source code edits.  
-For every processed package Makefile, the buildroot tries to include a a Makefile fragment in \$(TOPDIR)/overlay/\*/\$(PKG_DIR_NAME).mk which one can use to monkey-patch internals without directly touching the package recipes.  
-For example to amend "base-files" to include a custom banner and inittab, you could create an overlay file called  
+Hi Karl,
+let me introduce a not strictly new way but another heavily under documented buildroot feature which you can use to implement custom modifications to packages which do not require source code edits.
+For every processed package Makefile, the buildroot tries to include a a Makefile fragment in \$(TOPDIR)/overlay/\*/\$(PKG_DIR_NAME).mk which one can use to monkey-patch internals without directly touching the package recipes.
+For example to amend "base-files" to include a custom banner and inittab, you could create an overlay file called
 
     "overlay/my-example-organization/base-files.mk"\\
 
-which extends the default Package/base-files/install recipe to copy your custom files in the end.  
-Assuming a directory structure like this  
-\* overlay/my-example-organization/banner  
-\* overlay/my-example-organization/inittab  
-\* overlay/my-example-organization/base-files.mk  
+which extends the default Package/base-files/install recipe to copy your custom files in the end.
+Assuming a directory structure like this
+\* overlay/my-example-organization/banner
+\* overlay/my-example-organization/inittab
+\* overlay/my-example-organization/base-files.mk
 the base-files.mk would need to include something like the following code to splicy your custom files into the packaging procedure:
 
     --- 8< ---
@@ -2728,7 +2724,7 @@ HTH, Jo
 
 ## Use OpenWrt as External Toolchain
 
-Using an external toolchain reduce build time when starting with a cleaned-up source tree. Useful when using an automated build system like Hudson/Tinderbox.  
+Using an external toolchain reduce build time when starting with a cleaned-up source tree. Useful when using an automated build system like Hudson/Tinderbox.
 
 ### Step 1: Build Toolchain
 
@@ -2811,7 +2807,7 @@ During the `install` step, packages from the feeds obtained during an \`update\`
 
 `make package/feeds/<feed_name>/<package_name>`
 
-    $ ./scripts/feeds 
+    $ ./scripts/feeds
     Usage: ./scripts/feeds <command> [options]
 
     Commands:
@@ -3020,7 +3016,7 @@ Don't do that. It will waste the reviewer's life-time (since they have to come b
 
 # GNU Debugger
 
-- **`Note:`** This guide is by no means a Howto, just some short instructions to use GDB on OpenWrt.  
+- **`Note:`** This guide is by no means a Howto, just some short instructions to use GDB on OpenWrt.
   Please look upstream for multilingual instructions and manuals, like e.g. here: <https://sourceware.org/gdb/documentation/>
 
 ## Compiling Tools
@@ -3299,9 +3295,9 @@ json_load "$MSG_JSON"
 json_select test # go into the object inside of the "test" field
 json_get_var var1 testdata # first is var name "var1" then the JSON field name "testdata"
 json_select .. # go back to the upper level
-# load the "code" field into corresponding code var, and the "msg" field into the msg var 
+# load the "code" field into corresponding code var, and the "msg" field into the msg var
 json_get_vars code msg
- 
+
 echo "code: $code, msg: $msg, testdata: $var1"
 ```
 
@@ -3538,7 +3534,7 @@ Options:
 You can call it directly:
 
 ``` bash
-root@OpenWrt:/# jshn -R /etc/board.json 
+root@OpenWrt:/# jshn -R /etc/board.json
 json_init;
 json_add_object 'model';
 json_add_string 'id' 'innotek-gmbh-virtualbox';
@@ -3648,12 +3644,12 @@ cat /sbin/devstatus
 #!/bin/sh
 . /usr/share/libubox/jshn.sh
 DEVICE="$1"
- 
+
 [ -n "$DEVICE" ] || {
     echo "Usage: $0 <device>"
     exit 1
 }
- 
+
 json_init
 json_add_string name "$DEVICE"
 ubus call network.device status "$(json_dump)"
@@ -3818,7 +3814,7 @@ One can do this by adding a file to the controller directory in your `<luci-path
 
 We will call this file `new_tab.lua`
 
-The content is as follows: \<WRAP prewrap 1000px\>
+The content is as follows:
 
 ``` lua
 module("luci.controller.myapp.new_tab", package.seeall)  --notice that new_tab is the name of the file new_tab.lua
@@ -3829,8 +3825,6 @@ module("luci.controller.myapp.new_tab", package.seeall)  --notice that new_tab i
 end
 ```
 
-\</WRAP\>
-
 ------------------------------------------------------------------------
 
 ## Adding the cbi_tab code
@@ -3839,8 +3833,6 @@ As specified above, we need to create a file called `cbi_tab.lua` in `<luci-path
 
 We will include the following code:
 
-\<WRAP prewrap 1000px\>
-
 ``` lua
 m = Map("cbi_file", translate("First Tab Form"), translate("Please fill out the form below")) -- cbi_file is the config file in /etc/config
 d = m:section(TypedSection, "info", "Part A of the form")  -- info is the section called info in cbi_file
@@ -3848,20 +3840,14 @@ a = d:option(Value, "name", "Name"); a.optional=false; a.rmempty = false;  -- na
 return m
 ```
 
-\</WRAP\>
-
 ------------------------------------------------------------------------
 
 ## Adding the cbi_file
 
 From the code above, we know we need a config file that has the appropriate sections and options. In our case, we will create the file *cbi_file* in `/etc/config` which looks like this:
 
-\<WRAP prewrap 1000px\>
-
     config 'info' 'A'
         option 'name' 'OpenWRT'
-
-\</WRAP\>
 
 ------------------------------------------------------------------------
 
@@ -3871,13 +3857,9 @@ The *view_tab.htm* file needs to go in `<luci-path>/applications/luci-myapplicat
 
 Here are the contents of the file:
 
-\<WRAP prewrap 1000px\>
-
-    <%+header%>                                                                    
-    <h1><%:Hello World%></h1>                                                      
+    <%+header%>
+    <h1><%:Hello World%></h1>
     <%+footer%>
-
-\</WRAP\>
 
 ---
 
@@ -4201,7 +4183,7 @@ Almost all interaction with the daemon is via [ubus](/docs/guide-developer/ubus)
                 "txt": "adminurl=http:\/\/NPI46A14F.local."
           },
        ....
-    $ ubus call umdns hosts 
+    $ ubus call umdns hosts
     #Show hosts discovered via mDns
             "SteakPrinter.local": {
                     "ipv4": "192.168.1.159"
@@ -4545,8 +4527,8 @@ If errors for interfaces occur, the json object in *ifstatus interfacename* or i
 | CODE                | Meaning                                                                                                                                                                                                                                                                                                                                                                                        |
 |---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | NO_DEVICE           | The configured device in ifname is not found.                                                                                                                                                                                                                                                                                                                                                  |
-| DEVICE_CLAIM_FAILED | One of the reasons for this is, that the device configured by ifname does not exist. Usually this would result in NO_DEVICE as the device is only claimed when it is available. However when the proto flags *available=1* and *no_device=0* are set, the device specified by ifname is tried to be claimed directly. \<color \#ff7f27\>TBD: Is this the only case? Is this correct?\</color\> |
-| SETUP_FAILED        | \<color \#ff7f27\>TBD\</color\>                                                                                                                                                                                                                                                                                                                                                                |
+| DEVICE_CLAIM_FAILED | One of the reasons for this is, that the device configured by ifname does not exist. Usually this would result in NO_DEVICE as the device is only claimed when it is available. However when the proto flags *available=1* and *no_device=0* are set, the device specified by ifname is tried to be claimed directly. TBD: Is this the only case? Is this correct? |
+| SETUP_FAILED        | TBD                                                                                                                                                                                                                                                                                                                                                                |
 
 Custom error codes can be thrown from the proto scripts aswell. This is done via `proto_notify_error "$config" MY_CUSTOM_ERROR_ID`.
 
@@ -4747,8 +4729,8 @@ ubus call network.interface dump \
 
 # Using the SDK
 
-\<WRAP center round info 60%\> THIS IS THE *OLD* DOCUMENT :!:  
-**See [Using the SDK](/docs/guide-developer/toolchain/using_the_sdk) for the latest version** :!: \</WRAP\>
+ THIS IS THE *OLD* DOCUMENT :!:
+**See [Using the SDK](/docs/guide-developer/toolchain/using_the_sdk) for the latest version** :!:
 
 The [SDK](https://en.wikipedia.org/wiki/Software_development_kit) is a relocatable, precompiled OpenWrt [toolchain](https://en.wikipedia.org/wiki/Toolchain) suitable to [cross compile](https://en.wikipedia.org/wiki/Cross_compile) single [userspace](https://en.wikipedia.org/wiki/User_space) packages for a specific target without compiling the whole system from scratch.
 
@@ -4888,16 +4870,16 @@ Bug: BB SDK for BRCM2708: static compilation broken
 
 If you are familiar with GNU/Linux systems, you should find your way around pretty easily; if you are not, you will need to learn some basic concepts and terminology first.
 
-You might have read that OpenWrt is a **GNU/Linux distribution** (or "distro") aimed at embedded devices.  
-A GNU/Linux **distribution** is a project that creates and maintains *packages*, used with a Linux kernel to create a GNU/Linux operating system tailored to users' needs.  
-A **package** is a compressed archive containing a program, a [library](https://en.wikipedia.org/wiki/Library_(computing)) or some scripts, its accompanying configuration files and also information used to integrate it in the operating system. These packages are handled by a **package manager** (opkg in OpenWrt); a program that downloads/opens/installs/uninstalls the packages.  
+You might have read that OpenWrt is a **GNU/Linux distribution** (or "distro") aimed at embedded devices.
+A GNU/Linux **distribution** is a project that creates and maintains *packages*, used with a Linux kernel to create a GNU/Linux operating system tailored to users' needs.
+A **package** is a compressed archive containing a program, a [library](https://en.wikipedia.org/wiki/Library_(computing)) or some scripts, its accompanying configuration files and also information used to integrate it in the operating system. These packages are handled by a **package manager** (opkg in OpenWrt); a program that downloads/opens/installs/uninstalls the packages.
 So, an OpenWrt firmware is made by assembling packages around a Linux kernel.
 
 Each package is compiled separately, and when all are done the needed packages are "installed" in a temporary directory that will then be the compressed-read-only [SquashFS](https://en.wikipedia.org/wiki/SquashFS) partition in the device firmware.
 
 While the kernel is handled as a package, it is added to firmware images in the special way each device's bootloader expects. So you can replace the stock firmware without touching the bootloader (which is dangerous and not always possible).
 
-The last step in the build process is actually creating the firmware file, the file to install or upgrade OpenWrt.  
+The last step in the build process is actually creating the firmware file, the file to install or upgrade OpenWrt.
 This file is usually a memory image ready to be written as is on the internal flash storage of the device. You may notice that many developers simply call it "image" on IRC or in the mailing list.
 
 ## How Packages are Compiled
@@ -5102,7 +5084,7 @@ Whenever possible, try to avoid redefining the default macros but use the provid
 
 Example for a bad redefinition:
 
-    define Build/Compile 
+    define Build/Compile
             (cd $(PKG_BUILD_DIR)/nonstandard/dir/; make)
     endef
 
@@ -5582,7 +5564,7 @@ define Build/Prepare
 endef
 ```
 
-    Examples: px5g, px5g-standalone, usbutils, debootstrap, gcc, 
+    Examples: px5g, px5g-standalone, usbutils, debootstrap, gcc,
 
 ## BuildPackage defines
 
@@ -5755,11 +5737,11 @@ Some examples of packages that *provide* host tools (and their makefiles):
 
 If you want to build only the host tool to test or check a compilation error for host compilation, then you could also build only the host tool with the following command.
 
-- Compile:  
+- Compile:
   make ./package/\<package_name\>/**host**/compile
-- Clean:  
+- Clean:
   make ./package/\<package_name\>/**host**/clean
-- Update:  
+- Update:
   make ./package/\<package_name\>/**host**/update
 
 The make arguments **QUILT=1** and **V=s** are also valid.
@@ -5814,16 +5796,16 @@ Create a Config.in file directory where the Makefile is located with the content
             depends on PACKAGE_mjpg-streamer
             config MJPEG_STREAMER_INPUT_FILE
                 bool "File input plugin"
-                help 
+                help
                     You can stream pictures from jpg files on the filesystem
                 default n
-        
+
             config MJPEG_STREAMER_INPUT_UVC
                 bool "UVC input plugin"
                 help
                     You can stream pictures from an Universal Video Class compatible webcamera
                 default y
-        
+
             config MJPEG_STREAMER_FPS
                 depends MJPEG_STREAMER_INPUT_UVC
                 int "Maximum FPS"
@@ -5843,16 +5825,16 @@ Create a Config.in file directory where the Makefile is located with the content
                 depends MJPEG_STREAMER_INPUT_UVC
                 string "Device"
                 default /dev/video0
-    
+
             config MJPEG_STREAMER_INPUT_GSPCA
                 bool "GSPCA input plugin"
                 help
                     You can stream pictures from a gspca supported webcamera Note this module is deprecated, use the UVVC plugin instead
                 default n
         endmenu
-    
+
         # ......
-    
+
     endmenu
 ```
 
@@ -6120,8 +6102,8 @@ endef
 
 #### Make a Kernel Module required for boot
 
-Some modules may be required for the correct operation of the device. One example would be an ethernet driver required for the correct operation of the switch on the device.  
-To flag a Kernel Module this way it's needed to append `1` to `AUTOLOAD` at the end.  
+Some modules may be required for the correct operation of the device. One example would be an ethernet driver required for the correct operation of the switch on the device.
+To flag a Kernel Module this way it's needed to append `1` to `AUTOLOAD` at the end.
 This cause the module file to get placed in /etc/modules-boot.d/ instead of /etc/modules.d/, modules-boot.d is processed by procd init before launching preinit and correctly works both in a normal boot and in a failsafe boot. All of this is with the assumption that the module is installed in the firmware and not with OPKG on a loaded system as **it needs to be present before /overlay is mounted**. (OPKG installed module are present only in after /overlay is mounted)
 
 For example here is `phy-realtek` in `package/kernel/linux/modules/netdevices.mk`:
@@ -6147,13 +6129,13 @@ Package/\<name\>/install:
 
 A set of commands to copy files out of the compiled source and into the ipkg which is represented by the \$(1) directory. Note that there are currently 4 defined install macros:
 
-    INSTALL_DIR 
+    INSTALL_DIR
     install -d -m0755
-    INSTALL_BIN 
+    INSTALL_BIN
     install -m0755
-    INSTALL_DATA 
+    INSTALL_DATA
     install -m0644
-    INSTALL_CONF 
+    INSTALL_CONF
     install -m0600
 
 ## Packaging a service
@@ -6221,8 +6203,8 @@ See [the original announcement](https://web.archive.org/web/20170629071358/https
 
 # Create a sample procd init script
 
-\<WRAP center round info 80%\> This article is a mostly verbatim copy of [this archived article](https://web.archive.org/web/20220518121856/https://joostoostdijk.com/posts/service-configuration-with-procd), all credit goes to the original author, **Joost Oostdijk**  
-It was adapted to use an equivalent shell script instead of NodeJS JavaScript, because it's lighter and better for a simple testing setup on most OpenWrt devices. \</WRAP\>
+ This article is a mostly verbatim copy of [this archived article](https://web.archive.org/web/20220518121856/https://joostoostdijk.com/posts/service-configuration-with-procd), all credit goes to the original author, **Joost Oostdijk**
+It was adapted to use an equivalent shell script instead of NodeJS JavaScript, because it's lighter and better for a simple testing setup on most OpenWrt devices.
 
 Procd init scripts gives us many nice to use features by default such as a restart strategy and the ability to store and read configuration from the UCI system.
 
@@ -6234,7 +6216,7 @@ As example, lets say we’d want to create shell script as a service and that th
 #!/bin/sh
 
 #these if statements will check input and place default values if no input is given
-#they will also check if input is a number so you can call 
+#they will also check if input is a number so you can call
 #this script with just a time and it will still work correctly
 
 if [ "$1" = '' ]; then
@@ -6259,7 +6241,7 @@ fi
 
 #endless loop, will print the message every X seconds as indicated in the $every variable
 
-while [ 1 ]; do 
+while [ 1 ]; do
     echo "Hey, $name, it's time to get up"
     sleep $every
 done
@@ -6438,31 +6420,31 @@ With that line in place we are able to restart the service whenever only our con
 
 There are a couple of more options that can be configured in a procd scripts ‘instance block’ that might be handy to know about. I’ll list a few here, but this is by no means covering everything.
 
-- **respawn**  
-  respawn your service automatically when it terminates for some reason.  
+- **respawn**
+  respawn your service automatically when it terminates for some reason.
   `procd_set_param respawn \
         ${respawn_threshold:-3600} \
-        ${respawn_timeout:-5} ${respawn_retry:-5}`  
+        ${respawn_timeout:-5} ${respawn_retry:-5}`
   In this example we respawn if process terminates sooner than respawn_threshold, it is considered crashed and after 5 retries the service is stopped. However, if it terminates later than respawn_threshold, it would be respawned indefinitely.
 
 <!-- -->
 
-- **pidfile**  
-  Configure where to store the pid file  
+- **pidfile**
+  Configure where to store the pid file
   `procd_set_param pidfile $PIDFILE`
 
 <!-- -->
 
-- **env vars**  
-  Pass environment variables to your process with  
+- **env vars**
+  Pass environment variables to your process with
   `procd_set_param env A_VAR=avalue`
 
 <!-- -->
 
-- **ulimit**  
-  If you need to set resource limits for your process you can use  
-  `procd_set_param limits core="unlimited"`  
-  To see the system wide settings for ulimt on an OpenWrt device you can run  
+- **ulimit**
+  If you need to set resource limits for your process you can use
+  `procd_set_param limits core="unlimited"`
+  To see the system wide settings for ulimt on an OpenWrt device you can run
   `$ ulimit -a
   -f: file size (blocks)             unlimited
   -t: cpu time (seconds)             unlimited
@@ -6478,10 +6460,10 @@ There are a couple of more options that can be configured in a procd scripts ‘
   -e: scheduling priority            0
   -r: real-time priority             0
   `
-- **user**  
-  To change the user that runs the service you can use  
-  \<code\> procd_set_param user nobody \</code\>  
-  Default OpenWrt only has a ‘root’ user or ‘nobody’ as the process owner.  
+- **user**
+  To change the user that runs the service you can use
+  \<code\> procd_set_param user nobody \</code\>
+  Default OpenWrt only has a ‘root’ user or ‘nobody’ as the process owner.
   You can add users with the usual linux way, see [Create a non-privileged user in OpenWrt](/docs/guide-user/security/secure.access#create_a_non-privileged_user_in_openwrt) or if you are creating an actual package you can use [buildpackage defines](/docs/guide-developer/packages#buildpackage_defines) to make OpenWrt generate the user when the package is installed.
 
 ---
@@ -6625,17 +6607,17 @@ service_triggers()
 | procd_add_reload_mount_trigger     | paths to watch for   | `mount.add`     | Uses `/etc/init.d/<foo> reload` as the handler  |
 | procd_add_restart_mount_trigger    | paths to watch for   | `mount.add`     | Uses `/etc/init.d/<foo> restart` as the handler |
 
-\<WRAP important\> When using `uci` from command line `uci commit` doesn't generate `config.change` event. It requires calling `reload_config` afterwards.
+ When using `uci` from command line `uci commit` doesn't generate `config.change` event. It requires calling `reload_config` afterwards.
 
-This does not apply to using `uci` over `rpcd` plugin. \</WRAP\>
+This does not apply to using `uci` over `rpcd` plugin.
 
-\<WRAP important\> Adding `interface.*` trigger and having `/etc/init.d/<foo> reload` called won't automatically make `procd` notice any state change and won't make it restart a service.
+ Adding `interface.*` trigger and having `/etc/init.d/<foo> reload` called won't automatically make `procd` notice any state change and won't make it restart a service.
 
-Relevant interface has to be made part of service state using the `procd_set_param netdev`. \</WRAP\>
+Relevant interface has to be made part of service state using the `procd_set_param netdev`.
 
-\<WRAP important\> Using mount triggers depends on mount notifications emitted by `blockd`. Hence `blockd` needs to be installed and the mount need to be configured in `/etc/config/fstab`.
+ Using mount triggers depends on mount notifications emitted by `blockd`. Hence `blockd` needs to be installed and the mount need to be configured in `/etc/config/fstab`.
 
-See also [fstab](/docs/guide-user/storage/fstab) \</WRAP\>
+See also [fstab](/docs/guide-user/storage/fstab)
 
 See use cases of [procd_add_interface_trigger](https://github.com/openwrt/packages/search?q=procd_add_interface_trigger), [procd_add_reload_trigger](https://github.com/openwrt/packages/search?q=procd_add_reload_trigger), [procd_add_reload_mount_trigger](https://github.com/openwrt/packages/search?q=procd_add_reload_mount_trigger) in the OpenWrt packages repository.
 
@@ -6688,7 +6670,7 @@ The *instance_name* allows specifying custom instance name in case it was used l
     . /lib/functions/procd.sh
     procd_send_signal service_name [instance_name] [signal]
 
-\<WRAP important\> You can also configure reload by signal with `procd_set_param reload_signal` service option. \</WRAP\>
+ You can also configure reload by signal with `procd_set_param reload_signal` service option.
 
 ## Service jails
 
@@ -7928,12 +7910,12 @@ Whereas desktop distributions use [glib](https://en.wikipedia.org/wiki/GLib)+[db
 <tbody>
 <tr class="odd">
 <td>Typical main memory size</td>
-<td style="text-align: center;"><strong>&lt;color red&gt;128 MiB&lt;/color&gt;</strong> to 16 GiB (or more)</td>
+<td style="text-align: center;"><strong>128 MiB</strong> to 16 GiB (or more)</td>
 <td></td>
-<td style="text-align: center;"><strong>&lt;color red&gt;32 MiB&lt;/color&gt;</strong> to 512 MiB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
+<td style="text-align: center;"><strong>32 MiB</strong> to 512 MiB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
 <td></td>
-<td style="text-align: center;">min <strong>&lt;color red&gt;92 MiB&lt;/color&gt;</strong> for Android 2.1<br />
-min <strong>&lt;color red&gt;340 MiB&lt;/color&gt;</strong> for Android 4.0</td>
+<td style="text-align: center;">min <strong>92 MiB</strong> for Android 2.1<br />
+min <strong>340 MiB</strong> for Android 4.0</td>
 <td></td>
 <td>?</td>
 </tr>
@@ -8167,9 +8149,9 @@ With the new block mount mechanism you can run `block info` to get the same outp
 :!: For ntfs mount [read here](https://forum.openwrt.org/t/block-mount-ntfs-not-a-tty/64350)
 
     root@OpenWrt:~# blkid
-    /dev/sda1: TYPE="ext2" 
-    /dev/sda2: UUID="890c87d4-e276-4fb0-a34a-296db408d792" TYPE="ext4" 
-    /dev/sdb1: LABEL="OPENWRT-BTRFS" UUID="2412e056-a1d8-4710-bf0e-d54b8ff0662f" UUID_SUB="edd04b0f-ccf6-4978-9d76-1fa17921fe58" TYPE="btrfs" 
+    /dev/sda1: TYPE="ext2"
+    /dev/sda2: UUID="890c87d4-e276-4fb0-a34a-296db408d792" TYPE="ext4"
+    /dev/sdb1: LABEL="OPENWRT-BTRFS" UUID="2412e056-a1d8-4710-bf0e-d54b8ff0662f" UUID_SUB="edd04b0f-ccf6-4978-9d76-1fa17921fe58" TYPE="btrfs"
     root@OpenWrt:~# block info
     /dev/sda1: VERSION="1.0" TYPE="ext2"
     /dev/sda2: UUID="890c87d4-e276-4fb0-a34a-296db408d792" VERSION="1.0" TYPE="ext4"
@@ -8254,9 +8236,9 @@ Block hotplug consists of three scripts, `10-swap`, `20-fsck`, and `40-mount`. W
 
 The [Bootloader](https://en.wikipedia.org/wiki/Bootloader) is a piece of software that is executed every time the hardware device is powered up. It is executable machine code and thus [ARCH](/docs/techref/hardware/cpu#the_isa_instruction_set_architecture)-specific. It's quite heavily device-specific because its main task is to initialize all the low-level hardware details. The bootloader can be contained on a separate [EEPROM](https://en.wikipedia.org/wiki/EEPROM) (very seldom) or directly on flash storage (most common).
 
-\<WRAP round tip\> Being a piece of software, the bootloader is considered part of the firmware, but \<color red\>**the bootloader is not part of OpenWrt!**\</color\>  
-Only on seldom occasions a change of the *bootloader settings* or the *bootloader code* is necessary to allow for booting/installing OpenWrt  
-There are a number of bootloaders under diverse [software license](https://en.wikipedia.org/wiki/software license)s \</WRAP\>
+ Being a piece of software, the bootloader is considered part of the firmware, but **the bootloader is not part of OpenWrt!**
+Only on seldom occasions a change of the *bootloader settings* or the *bootloader code* is necessary to allow for booting/installing OpenWrt
+There are a number of bootloaders under diverse [software license](https://en.wikipedia.org/wiki/software license)s
 
 ## Main Function
 
@@ -8309,27 +8291,27 @@ The bootloader can be more or less sophisticated, and offer none to many additio
 
 An embedded bootloader fulfills the same functionality as the [BIOS](https://en.wikipedia.org/wiki/BIOS) plus [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) together on a PC.
 
-- [BIOS](https://en.wikipedia.org/wiki/BIOS) \<color red\>proprietary\</color\> the BIOS of your PC *is* nothing else but a bootloader!
-- [UEFI](https://en.wikipedia.org/wiki/Extensible Firmware Interface) \<color red\>proprietary\</color\> successor want-to-be of the BIOS
-- [coreboot](https://en.wikipedia.org/wiki/coreboot) \<color green\>GPLv2\</color\> successor of the BIOS, alternative to [UEFI](../L2-semantic/wiki/wiki_page-guide-developer-uefi-bootable-image.md) based on the Linux kernel;  
-  support for x86, x86-64 and ARM. There is no MIPS support.  
+- [BIOS](https://en.wikipedia.org/wiki/BIOS) proprietary the BIOS of your PC *is* nothing else but a bootloader!
+- [UEFI](https://en.wikipedia.org/wiki/Extensible Firmware Interface) proprietary successor want-to-be of the BIOS
+- [coreboot](https://en.wikipedia.org/wiki/coreboot) GPLv2 successor of the BIOS, alternative to [UEFI](../L2-semantic/wiki/wiki_page-guide-developer-uefi-bootable-image.md) based on the Linux kernel;
+  support for x86, x86-64 and ARM. There is no MIPS support.
   Coreboot does only "a little bit of hardware initialization"
-- [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) \<color green\>GPLv2\</color\>
+- [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) GPLv2
 
 ### Embedded Devices
 
-- **[Das U-Boot](/docs/techref/bootloader/uboot)** \<color green\>GPLv2\</color\> arguably the richest, most flexible, and most actively developed FOSS bootloader available
-- [pepe2k-u-boot_mod](/docs/techref/bootloader/pepe2k) \<color green\>GPLv2\</color\> U-Boot 1.1.4 modification for routers <https://github.com/pepe2k/u-boot_mod>
-- [RedBoot](/docs/techref/bootloader/redboot) \<color green\>mod GPL\</color\>
-- [CFE](/docs/techref/bootloader/cfe) \<color orange\>BSD like\</color\> by Broadcom; the orange color means, the OEM is not obliged to deliver the source code
-- [Adam2](/docs/techref/bootloader/adam2) \<color red\>proprietary\</color\> for AR7/UR8
-  - [pspboot](/docs/techref/bootloader/pspboot) \<color red\>proprietary\</color\> the only slightly compatible successor of Adam2.
-- [brnboot](/docs/techref/bootloader/brnboot) \<color red\>unknown\</color\> sometimes called AMAZON Loader.
-- [bootbase](/docs/techref/bootloader/bootbase) \<color red\>unknown\</color\> used by the ZyXEL Prestige 660HW-xx and Prestige 660M-xx devices (and probably other ZyXEL products). <http://www.ixo.de/info/zyxel_uclinux/>
-- [jboot](/docs/techref/bootloader/jboot) \<color red\>unknown\</color\>
-- [myloader](/docs/techref/bootloader/myloader) \<color red\>unknown\</color\>
-- [pp_boot](/docs/techref/bootloader/pp_boot) \<color red\>unknown\</color\>
-- [yamon](/docs/techref/bootloader/yamon) \<color red\>unknown\</color\> by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
+- **[Das U-Boot](/docs/techref/bootloader/uboot)** GPLv2 arguably the richest, most flexible, and most actively developed FOSS bootloader available
+- [pepe2k-u-boot_mod](/docs/techref/bootloader/pepe2k) GPLv2 U-Boot 1.1.4 modification for routers <https://github.com/pepe2k/u-boot_mod>
+- [RedBoot](/docs/techref/bootloader/redboot) mod GPL
+- [CFE](/docs/techref/bootloader/cfe) BSD like by Broadcom; the orange color means, the OEM is not obliged to deliver the source code
+- [Adam2](/docs/techref/bootloader/adam2) proprietary for AR7/UR8
+  - [pspboot](/docs/techref/bootloader/pspboot) proprietary the only slightly compatible successor of Adam2.
+- [brnboot](/docs/techref/bootloader/brnboot) unknown sometimes called AMAZON Loader.
+- [bootbase](/docs/techref/bootloader/bootbase) unknown used by the ZyXEL Prestige 660HW-xx and Prestige 660M-xx devices (and probably other ZyXEL products). <http://www.ixo.de/info/zyxel_uclinux/>
+- [jboot](/docs/techref/bootloader/jboot) unknown
+- [myloader](/docs/techref/bootloader/myloader) unknown
+- [pp_boot](/docs/techref/bootloader/pp_boot) unknown
+- [yamon](/docs/techref/bootloader/yamon) unknown by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
 - [Breed](/docs/techref/bootloader/Breed) - Breed booatloader
 - [bl-mt798x](/docs/techref/bootloader/bl-mt798x) - ATF and u-boot for mt798x-based routers
 
@@ -8523,7 +8505,7 @@ The size of the image header is 512 bytes length. Offsets are at different addre
 | ''unsigned long productId;''	                     | 52-55 | product id |
 | ''unsigned long productVer;''	                     | 56-59 | product version |
 | ''unsigned long addHver;''                         | 60-63 | Addtional hardware version |
-| ''unsigned char imageValidToken[20];''             | 64-83 | image validation token - md5 checksum <color crimson>(not used?)</color> |
+| ''unsigned char imageValidToken[20];''             | 64-83 | image validation token - md5 checksum (not used?) |
 | ''unsigned char rcSingature[20];'' 	             | 84-103 | RC singature(only for vxWorks) - RSA |
 | ''unsigned long kernelTextAddr;''                  | 104-107 | text section address of kernel |
 | ''unsigned long kernelEntryPoint;''                | 108-111 | entry point address of kernel |
@@ -8537,10 +8519,10 @@ The size of the image header is 512 bytes length. Offsets are at different addre
 | ''unsigned long swRevision;''		             | 140-143 | software revision |
 | ''unsigned long platformVer;''	             | 144-147 | platform version |
 | ''unsigned long specialVer;''                      | 148:151 | special version or CRC32 for bin(kernel+rootfs) bitfliped|
-| ''unsigned long binCrc32;''		             | 152:155 | <color crimson>CRC32 for bin(kernel+rootfs) bitfliped</color> or empty|
+| ''unsigned long binCrc32;''		             | 152:155 | CRC32 for bin(kernel+rootfs) bitfliped or empty|
 | ''unsigned long imageSequence;''                   | 156:159 | DUALIMAGE, initial value is 0, valid value is [1 .. 999], for [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash: it's indicated by file extension of cferam.xxx in rootfs, for NOR flash: it's stored in kernel tag |
 | ''unsigned long reserved1[12];''                   | 160-207 | reserved for future |
-| ''unsigned char sig[128];''	                     | 208-335 | <color crimson>signature for update</color> |
+| ''unsigned char sig[128];''	                     | 208-335 | signature for update |
 | ''unsigned char resSig[128];''                     | 336-443 | reserved for signature |
 | ''unsigned long reserved2[12];''                   | 464-511 | reserved for future |
 
@@ -8746,20 +8728,20 @@ see <http://wiki.musl-libc.org/wiki/Building_Busybox>
 
 ### Make sequence
 
-Top command `make world` calls the following sequence of the commands:  
-`make target/compile`  
-`make package/cleanup`  
-`make package/compile`  
-`make package/install`  
-`make package/preconfig`  
-`make target/install`  
+Top command `make world` calls the following sequence of the commands:
+`make target/compile`
+`make package/cleanup`
+`make package/compile`
+`make package/install`
+`make package/preconfig`
+`make target/install`
 `make package/index`
 
-You may run each command independently. For example, if the process of compilation of packages stops on error, you may fix the problem and next continue without cleanup:  
-`make package/compile`  
-`make package/install`  
-`make package/preconfig`  
-`make target/install`  
+You may run each command independently. For example, if the process of compilation of packages stops on error, you may fix the problem and next continue without cleanup:
+`make package/compile`
+`make package/install`
+`make package/preconfig`
+`make target/install`
 `make package/index`
 
 see [packages](/docs/guide-developer/packages)
@@ -8772,7 +8754,7 @@ The parameter `V=x` specifies level of messages in the process of the build.
         though the old flags are still supported.
         You can set the V variable on the command line (or OPENWRT_VERBOSE in the
         environment) to one or more of the following characters:
-        
+
         - s: stdout+stderr (equal to the old V=99)
         - c: commands (for build systems that suppress commands by default, e.g. kbuild, cmake)
         - w: warnings/errors only (equal to the old V=1)
@@ -8986,10 +8968,10 @@ Currently used by the X-Wrt project. [lighttpd](http://www.lighttpd.net/) (insta
 
 ### Mount Points
 
-- \<color magenta\>`/`\</color\> this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
-- \<color magenta\>`/rom`\</color\> contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SqashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, so called *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
-- \<color magenta\>`/overlay`\</color\> is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formated with JFFS2.  
-  Rather than deleting the files, insert a whiteout, a special high-priority entry that marks the file as deleted. File system code that sees a whiteout entry for file F behaves as if F does not exist.  
+- `/` this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
+- `/rom` contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SqashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, so called *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
+- `/overlay` is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formated with JFFS2.
+  Rather than deleting the files, insert a whiteout, a special high-priority entry that marks the file as deleted. File system code that sees a whiteout entry for file F behaves as if F does not exist.
   `#!/bin/sh
   # shows all overlay-whiteout symlinks in the directory /overlay
 
@@ -9001,12 +8983,12 @@ Currently used by the X-Wrt project. [lighttpd](http://www.lighttpd.net/) (insta
       fi
     done
   `
-- \<color magenta\>`/tmp`\</color\> is a tmpfs-partition `#!/bin/sh
+- `/tmp` is a tmpfs-partition `#!/bin/sh
   # shows current size of the tmpfs-partition mounted to /tmp
   calc_tmpfs_size() {pi_size=$(awk '/MemTotal:/ {l=10485760;mt=($2*1024);print((s=mt/2)<l)&&(mt>l)?mt-l:s}' /proc/meminfo)}}
   echo $pi_size
   `
-- \<color magenta\>`/dev`\</color\> [Driver Core: devtmpfs - kernel-maintained tmpfs-based /dev](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=2b2af54a5bb6f7e80ccf78f20084b93c398c3a8b)
+- `/dev` [Driver Core: devtmpfs - kernel-maintained tmpfs-based /dev](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=2b2af54a5bb6f7e80ccf78f20084b93c398c3a8b)
 
 ## History
 
@@ -9163,17 +9145,17 @@ System bootup is as follows: -\>[process.boot](process.boot)
 
 #### Explanations 1
 
-Both SquashFS and JFFS2 are compressed filesystems using [LZMA](https://en.wikipedia.org/wiki/Lempel–Ziv–Markov chain algorithm) for the compression. SquashFS is a *read only* filesystem while JFFS2 is a writable filesystem with *journaling* and *wear leveling*.  
-Our job when writing the firmware is to put as much common functionality on SquashFS while not wasting space with unwanted features. Additional features can always be installed onto JFFS2 by the user. The use of `mini_fo`/`overlayfs` means that the filesystem is presented as one large writable filesystem to the user with no visible boundary between SquashFS and JFFS2 -- files are simply copied to JFFS2 when they're written.  
-It's not all without side effects however.  
-The fact that we pack things so tightly in flash means that if the firmware ever changes, the size and location of the JFFS2 partition also changes, potentially wiping out a large chunk of JFFS2 data and corrupting the filesystem. To deal with this, we've implemented a policy that after each reflash the JFFS2 data is reformatted. The trick to doing that is a special value, `0xdeadc0de`; when this value appears in a JFFS2 partition, everything from that point to the end of the partition is wiped. So, hidden at the end of the firmware images, is the value 0xdeadcode, positioned such that it becomes the start of the JFFS2 partition.  
-The fact that we use a combination of compressed and partially read only filesystems also has an interesting effect on package management:  
+Both SquashFS and JFFS2 are compressed filesystems using [LZMA](https://en.wikipedia.org/wiki/Lempel–Ziv–Markov chain algorithm) for the compression. SquashFS is a *read only* filesystem while JFFS2 is a writable filesystem with *journaling* and *wear leveling*.
+Our job when writing the firmware is to put as much common functionality on SquashFS while not wasting space with unwanted features. Additional features can always be installed onto JFFS2 by the user. The use of `mini_fo`/`overlayfs` means that the filesystem is presented as one large writable filesystem to the user with no visible boundary between SquashFS and JFFS2 -- files are simply copied to JFFS2 when they're written.
+It's not all without side effects however.
+The fact that we pack things so tightly in flash means that if the firmware ever changes, the size and location of the JFFS2 partition also changes, potentially wiping out a large chunk of JFFS2 data and corrupting the filesystem. To deal with this, we've implemented a policy that after each reflash the JFFS2 data is reformatted. The trick to doing that is a special value, `0xdeadc0de`; when this value appears in a JFFS2 partition, everything from that point to the end of the partition is wiped. So, hidden at the end of the firmware images, is the value 0xdeadcode, positioned such that it becomes the start of the JFFS2 partition.
+The fact that we use a combination of compressed and partially read only filesystems also has an interesting effect on package management:
 In particular, you need to be careful what packages you update. While `opkg` is more than happy to install an updated package on JFFS2, it's unable to remove the original package from SquashFS; the end result is that you slowly start using more and more space until the JFFS2 partition is filled. The opkg util really has no idea how much space is available on the JFFS2 partition since it's compressed, and so it will blindly keep going until the opkg system crashes -- at that point you have so little space you probably can't even use opkg to remove anything.
 
 #### Explanation 2
 
-On many embedded targets that use [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) for the root filesystem, OpenWrt implements a clever trick to get the most out of the limited flash memory capacity while retaining flexibility for the end-user:  
-Basically, during the image creation, all of the rootfs contents is packed up in a SquashFS filesystem -- a highly efficient filesystem with compression support. There's one important detail about it though: it is a read-only filesystem. To overcome this limitation OpenWrt uses the remaining portion of the NOR rootfs partition to store an additional read/write jffs2 filesystem which is "overlayed" on top of the rootfs (that is, allowing to read unchanged files from the SquashFS but storing all the modifications made to the jffs2 part).  
+On many embedded targets that use [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) for the root filesystem, OpenWrt implements a clever trick to get the most out of the limited flash memory capacity while retaining flexibility for the end-user:
+Basically, during the image creation, all of the rootfs contents is packed up in a SquashFS filesystem -- a highly efficient filesystem with compression support. There's one important detail about it though: it is a read-only filesystem. To overcome this limitation OpenWrt uses the remaining portion of the NOR rootfs partition to store an additional read/write jffs2 filesystem which is "overlayed" on top of the rootfs (that is, allowing to read unchanged files from the SquashFS but storing all the modifications made to the jffs2 part).
 This design has another important advantage for the end-user: even when the read/write partition is in total mess, he can always boot to the failsafe mode (which mounts only the squashfs part) and proceed from there.
 
 ### Technical Details
@@ -9213,7 +9195,7 @@ Example pictures: on formatted partition / how data is stored (and addressed on 
 
 # The OpenWrt Flash Layout
 
-The embedded devices (routers and such) OpenWrt/LEDE (Linux Embedded Development Environment) has mainly targeted since its inception, use flash memory as the form of non-volatile memory for the persistent storage of the firmware and its configuration.  
+The embedded devices (routers and such) OpenWrt/LEDE (Linux Embedded Development Environment) has mainly targeted since its inception, use flash memory as the form of non-volatile memory for the persistent storage of the firmware and its configuration.
 
 ## Types of flash memory
 
@@ -9250,7 +9232,7 @@ Based on how the flash memory chip is connected with the [SoC](/docs/techref/har
 
 ### NOR flash vs NAND flash
 
-Additionally we at OpenWrt distinguish between the two basic types of flash memory: [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) and [NAND flash](https://en.wikipedia.org/wiki/Flash_memory#NAND_flash).  
+Additionally we at OpenWrt distinguish between the two basic types of flash memory: [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) and [NAND flash](https://en.wikipedia.org/wiki/Flash_memory#NAND_flash).
 "Raw NOR flash" in typical routers is generally small (4 MiB – 16 MiB) and <u>error-free</u>: all data blocks are guaranteed to work correctly. Because raw NOR flash is error-free, the installed file system(s) do not need to take bad blocks into account, and neither SquashFS nor JFFS2 do. The combination of OverlayFS with SquashFS and JFFS2 has been the default OpenWrt setup since the beginning, and it works flawlessly on "raw NOR flash". Older routers typically use NOR flash.
 
 "Raw [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash" in typical routers is generally much larger (32 MiB – 1 GiB) and <u>not error-free</u>: in general the flash contains bad blocks when new and may develop more at any time. Newer routers use [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash because it is much cheaper for a given capacity and is also faster for bulk access (disk emulation), but at the cost of the increased complexity required to handle flash defects.
@@ -9367,12 +9349,12 @@ SquashFS-Images are suitable for devices with *"raw NOR flash memory"*-chips and
 |                Layer0                 | raw NOR flash memory chip (m25p80 [spi](https://en.wikipedia.org/wiki/Serial Peripheral Interface Bus)0.0: m25p64) 8192 KiB |                              |                                                            |                                                      |                       |
 |                Layer1                 | mtd0 ***u-boot*** 128 KiB                                                                                                   | mtd5 ***firmware*** 8000 KiB |                                                            |                                                      | mtd4 ***art*** 64 KiB |
 |                Layer2                 |                                                                                                                             | mtd1 ***kernel*** 1280 KiB   | mtd2 ***rootfs*** 6720 KiB                                 |                                                      |                       |
-| \<color magenta\>mountpoint\</color\> |                                                                                                                             |                              | \<color magenta\>`/`\</color\>                             |                                                      |                       |
+| mountpoint |                                                                                                                             |                              | `/`                             |                                                      |                       |
 |              filesystem               |                                                                                                                             |                              | [OverlayFS](/docs/techref/filesystems#overlayfs)           |                                                      |                       |
 |                Layer3                 |                                                                                                                             |                              |                                                            | mtd3 ***rootfs_data*** 5184 KiB                      |                       |
 |              Size in KiB              | 128 KiB                                                                                                                     | 1280 KiB                     | 1536 KiB                                                   | 5184 KiB                                             | 64 KiB                |
 |                 Name                  | ***u-boot***                                                                                                                | ***kernel***                 |                                                            | ***rootfs_data***                                    | ***art***             |
-| \<color magenta\>mountpoint\</color\> | *none*                                                                                                                      | *none*                       | \<color magenta\>`/rom`\</color\>                          | \<color magenta\>`/overlay`\</color\>                | *none*                |
+| mountpoint | *none*                                                                                                                      | *none*                       | `/rom`                          | `/overlay`                | *none*                |
 |              filesystem               | *none*                                                                                                                      | *none*                       | [filesystems#SquashFS](/docs/techref/filesystems#SquashFS) | [filesystems#JFFS2](/docs/techref/filesystems#JFFS2) | *none*                |
 
 #### Another Flash layout example
@@ -9392,9 +9374,9 @@ Since the partitions are nested we look at this whole thing in layers:
 
 #### Mount Points
 
-- \<color magenta\>`/`\</color\> this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
-- \<color magenta\>`/rom`\</color\> contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SquashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
-- \<color magenta\>`/overlay`\</color\> is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formatted with JFFS2.
+- `/` this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
+- `/rom` contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SquashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
+- `/overlay` is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formatted with JFFS2.
 
 Whenever the system is asked to look for an existing file in `/`, it first looks in `/overlay`, and if not there, then in `/rom`. In this way `/overlay` overrides `/rom` and creates the effect of a writable `/` while much of the content is safely and efficiently stored in the read-only `/rom`.
 
@@ -9683,7 +9665,7 @@ Create and enable the `extra` volume using `uvol`:
 
 You do not like the default mount path (`/tmp/run/uvol/extra`), so you change it to `/extra` using you text editor:
 
-    root@router:~# nano /etc/config/fstab 
+    root@router:~# nano /etc/config/fstab
 
 Finally reboot and check that your new volume is mounted where you want it:
 
@@ -10021,8 +10003,8 @@ Some devices have firmware files with different file name endings. While the ove
 
 ## TRX v1
 
-      0                   1                   2                   3   
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +---------------------------------------------------------------+
      |                     magic number ('HDR0')                     |
      +---------------------------------------------------------------+
@@ -10045,8 +10027,8 @@ Some devices have firmware files with different file name endings. While the ove
 
 ## TRX v2
 
-      0                   1                   2                   3   
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +---------------------------------------------------------------+
      |                     magic number ('HDR0')                     |
      +---------------------------------------------------------------+
@@ -10076,8 +10058,8 @@ Source: [openwrt/tools/firmware-utils/src/trx.c](http://git.openwrt.org/?p=14.07
 
 FIXME (which bin header?)
 
-      0                   1                   2                   3   
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +---------------------------------------------------------------+
      |                            magic                              |
      +---------------------------------------------------------------+
@@ -10110,7 +10092,7 @@ FIXME (which bin header?)
 
 ## TP-LINK BIN Header
 
-      0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f  
+      0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f
     +---------------------------------------------------------------+
     |    version    |          vendor_name...                       |
     +---------------------------------------------------------------+
@@ -10239,7 +10221,7 @@ fi'' \|
 
 **`/etc/hotplug.d/usb/20-cp210x`**
 
-An other script to create a symlink instead of renaming the device.  
+An other script to create a symlink instead of renaming the device.
 I test if DEVICE_NAME is empty because when I plug usb device I retrieve two add event, and the first come before created device, so symlink fails.
 
 \| ''#!/bin/sh
@@ -10265,7 +10247,7 @@ fi
 if \[ "\${PRODUCT}" = "\${CP210_PRODID}" \];
 
      then if [ "${ACTION}" = "remove" ];
-           then 
+           then
            rm /dev/${SYMLINK}
            logger -t Hotplug Symlink /dev/${SYMLINK} removed
      fi
@@ -10313,9 +10295,9 @@ Auto start mjpg-streamer when an usb camera is plugged in. Firstly, remove '^' b
 
 ## Coldplug
 
-If you had notice the udev and eudev were removed in the openwrt 18.0.\* release, don't be afraid because you still can make the things works.  
-**Using hotplug scripts as coldplug**  
-You just need to pay atention at the ACTION env var, at the boot are executed 'bind' actions.  
+If you had notice the udev and eudev were removed in the openwrt 18.0.\* release, don't be afraid because you still can make the things works.
+**Using hotplug scripts as coldplug**
+You just need to pay atention at the ACTION env var, at the boot are executed 'bind' actions.
 So, just add this option to hotplug run accordinly. In my case I used this:
 
 Take a look into file `/etc/hotplug.d/usb/22-symlinks`
@@ -10415,8 +10397,7 @@ So my using some (maybe flawed) logic we can deduce that match bluetooth is poss
 
 # Image formats
 
-\<WRAP center round info 50%\> You can help to improve this page by adding explanations for the different firmware types below.  
-\</WRAP\>
+ You can help to improve this page by adding explanations for the different firmware types below.
 
 If you are confused by the many different firmware types and extensions in the [OpenWrt firmware downloads](/toh/views/toh_fwdownload) table, this pages tries to explain a bit about this topic.
 
@@ -10468,19 +10449,19 @@ Linux core, generally without compression or appended headers.
 
 ### ubifs
 
-\<color \#ed1c24\>??\</color\>
+??
 
 ### ubi
 
-\<color \#ed1c24\>??\</color\>
+??
 
 ### tftp
 
-\<color \#ed1c24\>Designed to be loaded from tftp server. Device in recovery mode?\</color\>
+Designed to be loaded from tftp server. Device in recovery mode?
 
 ### u-boot
 
-\<color \#ed1c24\>This is an image format designed for U-Boot loader. Same as initramfs-or-uImage?\</color\>
+This is an image format designed for U-Boot loader. Same as initramfs-or-uImage?
 
 ### ubinized.bin
 
@@ -10769,7 +10750,7 @@ to call a define for each use:
 Example of: **trunk/target/linux*/platform*/image/Makefile**
 
 ``` make
-# 
+#
 # Copyright (C) 2010 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
@@ -10779,7 +10760,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
 define Image/Prepare
-    
+
 endef
 
 define Image/Build/Initramfs
@@ -10787,7 +10768,7 @@ define Image/Build/Initramfs
 endef
 
 define Image/BuildKernel
-    
+
 endef
 
 define Image/Build/jffs2-64k
@@ -10909,137 +10890,137 @@ On a fully booted Chaos Calmer system, pid 1 is `/sbin/procd`:
 
 At boot, Linux kernel starts `/sbin/init` as the first user process. In Chaos Calmer, `/sbin/init` does the preinit/failsafe steps, those that depend only on the read-only partition in flashed image, then execs (that is: is replaced by) `/sbin/procd` to continue boot as specified by the configuration in writable flash partition. Procd started as pid 1 assumes several roles: service manager, hotplug events handler; this as of February 2016, when this research was done. [Procd techref wiki page](/docs/techref/procd) at this point in time is a design document and work in progress, if you are reading here and know/understand procd's semantics and API, please update that page.
 
-Procd sources:  
-<http://git.openwrt.org/?p=project/procd.git;a=tree;hb=0da5bf2ff222d1a499172a6e09507388676b5a08>  
-at the commit used to build the procd package in Chaos Calmer release:  
+Procd sources:
+<http://git.openwrt.org/?p=project/procd.git;a=tree;hb=0da5bf2ff222d1a499172a6e09507388676b5a08>
+at the commit used to build the procd package in Chaos Calmer release:
 `PKG_SOURCE_VERSION:=0da5bf2ff222d1a499172a6e09507388676b5a08`
 
-`/sbin/init` source:  
+`/sbin/init` source:
 <http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/init.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l71>
 
 ## Life and death of a Chaos Calmer system
 
 This is the source code path followed in logical order of execution by the processor in user space while booting Chaos Calmer.
 
-:!: All links to source repositories should show the code at the commit used in Chaos Calmer release.  
+:!: All links to source repositories should show the code at the commit used in Chaos Calmer release.
 :!: Pathnames evaluated at preinit time when / is read only have "(/rom)" prepended, to signify the path where the file is found on a fully booted system.
 
-1.  `main(int argc, char **argv)` in /sbin/init, line 71  
+1.  `main(int argc, char **argv)` in /sbin/init, line 71
     User space life begins here. OpenWrt calls this phase "preinit".
-    1.  `early()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/early.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l92)  
-        Mount filesystems: `/proc`, `/sys`, `/sys/fs/cgroup`, `/dev` (a tmpfs), `/dev/pts`  
-        Populate `/dev` with entries from `/sys/dev/{char;block}`  
-        Open `/dev/console` as STDIN/STDOUT/STDERR  
-        Make directories `/tmp` (optionally on zram), `/tmp/run`, `tmp/lock`, `/tmp/state`  
-          
-        This accounts for most of the filesystem layout, observed that `/etc/fstab` is a [broken symlink, line 161](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/Makefile;hb=483dac821788b457d349233e770329186a0aa860#l161), with the following additions:  
-        - `procd_coldplug()` [invoked at hotplug setup time](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l105) will recreate `/dev` from scratch.  
+    1.  `early()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/early.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l92)
+        Mount filesystems: `/proc`, `/sys`, `/sys/fs/cgroup`, `/dev` (a tmpfs), `/dev/pts`
+        Populate `/dev` with entries from `/sys/dev/{char;block}`
+        Open `/dev/console` as STDIN/STDOUT/STDERR
+        Make directories `/tmp` (optionally on zram), `/tmp/run`, `tmp/lock`, `/tmp/state`
+
+        This accounts for most of the filesystem layout, observed that `/etc/fstab` is a [broken symlink, line 161](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/Makefile;hb=483dac821788b457d349233e770329186a0aa860#l161), with the following additions:
+        - `procd_coldplug()` [invoked at hotplug setup time](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l105) will recreate `/dev` from scratch.
         - `/etc/rc.d/S10boot` will invoke `mount_root` to setup a writable filesystem based on extroot or jffs2 overlay or a tmpfs backed [snapshot capable](/docs/guide-user/installation/snapshot) overlay, add some directories and files, and mount debugfs.
-    2.  `cmdline()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/init.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l56)  
+    2.  `cmdline()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/init.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l56)
         Check kernel cmdline for boot parameter "`init_debug={1,2,3,4}`".
-    3.  Fork `/sbin/kmodloader (/rom)/etc/modules-boot.d/` [kmodloader source](http://git.openwrt.org/?p=project/ubox.git;a=blob;f=kmodloader.c;hb=907d046c8929fb74e5a3502a9498198695e62ad8#l830)  
-        Wait up to 120 seconds for `/sbin/kmodloader` to probe the kernel modules declared in `(/rom)/etc/modules-boot.d/`  
-        At this point in the boot sequence, '/etc/modules-boot.d' is the one from the rom image (`/rom/etc/...` when boot is done). The overlay filesystem is mounted later.  
-          
-        kmodloader is a multicall binary, invoked as  
-        '' kmodloader` does ` [main_loader()](http://git.openwrt.org/?p=project/ubox.git;a=blob;f=kmodloader.c;hb=907d046c8929fb74e5a3502a9498198695e62ad8#l732)''  
+    3.  Fork `/sbin/kmodloader (/rom)/etc/modules-boot.d/` [kmodloader source](http://git.openwrt.org/?p=project/ubox.git;a=blob;f=kmodloader.c;hb=907d046c8929fb74e5a3502a9498198695e62ad8#l830)
+        Wait up to 120 seconds for `/sbin/kmodloader` to probe the kernel modules declared in `(/rom)/etc/modules-boot.d/`
+        At this point in the boot sequence, '/etc/modules-boot.d' is the one from the rom image (`/rom/etc/...` when boot is done). The overlay filesystem is mounted later.
+
+        kmodloader is a multicall binary, invoked as
+        '' kmodloader` does ` [main_loader()](http://git.openwrt.org/?p=project/ubox.git;a=blob;f=kmodloader.c;hb=907d046c8929fb74e5a3502a9498198695e62ad8#l732)''
         which reads files in `(/rom)/etc/modules-boot.d/`, looking for lines starting with the name of a module to load, optionally followed by a space and module parameters. There appear to be [special treatment for files with names beginning with a number](http://git.openwrt.org/?p=project/ubox.git;a=blob;f=kmodloader.c;hb=907d046c8929fb74e5a3502a9498198695e62ad8#l788): the modules they list are immediately loaded, then modules from files with name beginning with an ascii char greater than "9" are loaded all together in a final load_modprobe call.
-    4.  `uloop_init()` line 116 [(definition)](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l211)  
-        [Documentation of libubox/uloop.h](/docs/techref/libubox#libuboxulooph) says:  
-        *Uloop is a loop runner for i/o. Gets in charge of polling the different file descriptors you have added to it, gets in charge of running timers, and helps you manage child processes. Supports epoll and kqueue as event running backends.*  
-        [uloop.c source in libubox](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l666) says uloop's process management duty is assigned by a call to  
-        '' [int uloop_process_add(struct uloop_process \*p)](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l492)` `p-\>pid'' is the process id of a child process to monitor and `p->cb` a pointer to a callback function.  
+    4.  `uloop_init()` line 116 [(definition)](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l211)
+        [Documentation of libubox/uloop.h](/docs/techref/libubox#libuboxulooph) says:
+        *Uloop is a loop runner for i/o. Gets in charge of polling the different file descriptors you have added to it, gets in charge of running timers, and helps you manage child processes. Supports epoll and kqueue as event running backends.*
+        [uloop.c source in libubox](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l666) says uloop's process management duty is assigned by a call to
+        '' [int uloop_process_add(struct uloop_process \*p)](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l492)` `p-\>pid'' is the process id of a child process to monitor and `p->cb` a pointer to a callback function.
         When the managed child process will exit, uloop_run, running in parent context to receive SIGCHLD signal, will trigger execution of the callback.
     5.  `preinit()` line 117 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l86)
-        1.  [Forks a "plugd instance"](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l94), line 94  
-            '' /sbin/procd -h [(/rom)/etc/hotplug-preinit.json](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/system/procd/files/hotplug-preinit.json;hb=483dac821788b457d349233e770329186a0aa860)''  
-            to listen to kernel uevents for any required firmware or for notification of button pressed, handled by '' [(/rom)/etc/rc.button/failsafe](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/files/etc/rc.button/failsafe;hb=483dac821788b457d349233e770329186a0aa860)''  
+        1.  [Forks a "plugd instance"](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l94), line 94
+            '' /sbin/procd -h [(/rom)/etc/hotplug-preinit.json](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/system/procd/files/hotplug-preinit.json;hb=483dac821788b457d349233e770329186a0aa860)''
+            to listen to kernel uevents for any required firmware or for notification of button pressed, handled by '' [(/rom)/etc/rc.button/failsafe](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/files/etc/rc.button/failsafe;hb=483dac821788b457d349233e770329186a0aa860)''
             as the request to enter failsafe mode. A flag file `/tmp/failsafe_button` containing the value of `${BUTTON}` is created if failsafe has been requested.
-        2.  Forks, [at lines 106-111](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l106),  
-            '' PREINIT=1 /bin/sh [(/rom)/etc/preinit](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/files/etc/preinit;hb=483dac821788b457d349233e770329186a0aa860)''  
-            a shell to execute `(/rom)/etc/preinit` with `PREINIT=1` in its environment. Submits the child process to uloop management with the callback  
-            '' [spawn_procd()](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l51)''  
+        2.  Forks, [at lines 106-111](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l106),
+            '' PREINIT=1 /bin/sh [(/rom)/etc/preinit](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/files/etc/preinit;hb=483dac821788b457d349233e770329186a0aa860)''
+            a shell to execute `(/rom)/etc/preinit` with `PREINIT=1` in its environment. Submits the child process to uloop management with the callback
+            '' [spawn_procd()](http://git.openwrt.org/?p=project/procd.git;a=blob;f=initd/preinit.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l51)''
             that will exec procd to replace init as pid 1 at completion of `(/rom)/etc/preinit`.
-            1.  `/etc/preinit`  
-                A shell script, fully documented here [preinit_mount#preinit_operation](/docs/techref/preinit_mount#preinit_operation). In short, parse files in `(/rom)/lib/preinit` to build 5 lists of hooks and an environment, then run the hooks from some of the lists depending on the state of the environment.  
-                One of the steps in a successful boot sequence is to mount the overlay file system with a hook setup by  
-                '' [(/rom)/lib/preinit/80_mount_root](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/files/lib/preinit/80_mount_root;hb=483dac821788b457d349233e770329186a0aa860)` to call ` [mount_root](http://git.openwrt.org/?p=project/fstools.git;a=blob;f=mount_root.c;hb=09027fc86babc3986027a0e677aca1b6999a9e14)''  
-                which if extroot is not configured, mounts the writable data partition "rootfs_data" as overlay over the / partition "rootfs". If the data partition is being prepared, overlays a tmpfs in ram.  
+            1.  `/etc/preinit`
+                A shell script, fully documented here [preinit_mount#preinit_operation](/docs/techref/preinit_mount#preinit_operation). In short, parse files in `(/rom)/lib/preinit` to build 5 lists of hooks and an environment, then run the hooks from some of the lists depending on the state of the environment.
+                One of the steps in a successful boot sequence is to mount the overlay file system with a hook setup by
+                '' [(/rom)/lib/preinit/80_mount_root](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/base-files/files/lib/preinit/80_mount_root;hb=483dac821788b457d349233e770329186a0aa860)` to call ` [mount_root](http://git.openwrt.org/?p=project/fstools.git;a=blob;f=mount_root.c;hb=09027fc86babc3986027a0e677aca1b6999a9e14)''
+                which if extroot is not configured, mounts the writable data partition "rootfs_data" as overlay over the / partition "rootfs". If the data partition is being prepared, overlays a tmpfs in ram.
                 Filesystem snapshots are supported; this is a feature listed in Barrier Breaker announce, shell wrapper is `/sbin/snapshot` script. The "`SNAPSHOT=magic`" environment variable is set in `mount_snapshot()` line 330.
-    6.  `uloop_run()`, line 118  
+    6.  `uloop_run()`, line 118
         At exit of the `(/rom)/etc/preinit` shell script, invokes the callback spawn_procd()
-    7.  `spawn_procd()`  
-        As a callback by uloop_run in pid 1, this is pid 1; execs `/sbin/procd`  
-          
-2.  `/sbin/procd`  
+    7.  `spawn_procd()`
+        As a callback by uloop_run in pid 1, this is pid 1; execs `/sbin/procd`
+
+2.  `/sbin/procd`
     Execed by pid 1 `/sbin/init`, `/sbin/procd` replaces it as pid 1.
-    1.  `setsid()`, line 67  
+    1.  `setsid()`, line 67
         *The process group ID and session ID of the calling process are set to the PID of the calling process: [man 2 setsid](http://man7.org/linux/man-pages/man2/setsid.2.html)* See also [man 7 credentials](http://man7.org/linux/man-pages/man7/credentials.7.html).
-    2.  `uloop_init()`, line 68  
+    2.  `uloop_init()`, line 68
         The uloop instance set up before by `/sbin/init` is gone. Creates a new one.
-    3.  `procd_signal()`, line 69 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=signal.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l82), line 82.  
+    3.  `procd_signal()`, line 69 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=signal.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l82), line 82.
         Setup signal handlers. Reboot on SIGTERM or SIGINT, poweroff on SIGUSR2 or SIGUSR2.
-    4.  `trigger_init()`, line 70 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=service/trigger.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l319)  
-        Procd triggers on config file/network interface changes, see [procd-init-scripts#procd_triggers_on_config_filenetwork_interface_changes](/docs/guide-developer/procd-init-scripts#procd_triggers_on_config_filenetwork_interface_changes)  
+    4.  `trigger_init()`, line 70 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=service/trigger.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l319)
+        Procd triggers on config file/network interface changes, see [procd-init-scripts#procd_triggers_on_config_filenetwork_interface_changes](/docs/guide-developer/procd-init-scripts#procd_triggers_on_config_filenetwork_interface_changes)
         Initialise a run queue. An [example](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=examples/runqueue-example.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8) is the sole documentation. A queued task has an uloop callback invoked when done, here sets the empty queue callback to do nothing.
-    5.  `procd_state_next()`, line 74 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l179)  
+    5.  `procd_state_next()`, line 74 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l179)
         Transitions from NONE to EARLY the state of a state machine implemented in `state_enter(void)` used to sequence the remaining boot steps.
     6.  `STATE_EARLY` in `state_enter()`
         1.  Emits "- early -" to syslog,
         2.  Initialise the watchdog,
-        3.  `hotplug("/etc/hotplug.json")` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/hotplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l568)  
-            User space device hotplugging handler setup.  
-            Static variables in file scope are important. The filename of the script to execute is kept in hotplug.c global scope: `static char * rule_file;`.  
-            Opens a netlink socket ([man 7 netlink](http://man7.org/linux/man-pages/man7/netlink.7.html)) and handles the file descriptor to uloop, to listen to uevents: kernel messages informing <u>u</u>serspace of kernel <u>events</u>. See <https://www.kernel.org/doc/pending/hotplug.txt>  
-            The uloop instance in pid 1 [uses epoll_wait](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l259) to monitor file descriptors, the kernel netlink socket FD is one of them, and is instructed to invoke the callback `hotplug_handler()` on uevent arrival.  
+        3.  `hotplug("/etc/hotplug.json")` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/hotplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l568)
+            User space device hotplugging handler setup.
+            Static variables in file scope are important. The filename of the script to execute is kept in hotplug.c global scope: `static char * rule_file;`.
+            Opens a netlink socket ([man 7 netlink](http://man7.org/linux/man-pages/man7/netlink.7.html)) and handles the file descriptor to uloop, to listen to uevents: kernel messages informing <u>u</u>serspace of kernel <u>events</u>. See <https://www.kernel.org/doc/pending/hotplug.txt>
+            The uloop instance in pid 1 [uses epoll_wait](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l259) to monitor file descriptors, the kernel netlink socket FD is one of them, and is instructed to invoke the callback `hotplug_handler()` on uevent arrival.
             This `hotplug_handler` callback stays active after coldplug, and will handle all uevents the kernel will emit.
-        4.  `procd_coldplug()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l40)  
+        4.  `procd_coldplug()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l40)
             Umounts `/dev/pts` and `/dev`, mounts a tmpfs on `/dev`, creates directories `/dev/shm` and `/dev/pts`, forks `udevtrigger` to reconstruct kernel uevents went unheard before netlink socket opening ("coldplug").
-            1.  `udevtrigger`  
-                Scans `/sys/bus/*/devices`, `/sys/class`; and `/sys/block` if it isn't a subdir of `/sys/class`, writing "add" to the uevent file of all devices. Then the kernel synthesizes an "add" uevent message on netlink. See Injecting events into hotplug via "uevent" in <https://www.kernel.org/doc/pending/hotplug.txt>  
-                  
+            1.  `udevtrigger`
+                Scans `/sys/bus/*/devices`, `/sys/class`; and `/sys/block` if it isn't a subdir of `/sys/class`, writing "add" to the uevent file of all devices. Then the kernel synthesizes an "add" uevent message on netlink. See Injecting events into hotplug via "uevent" in <https://www.kernel.org/doc/pending/hotplug.txt>
+
                 A callback chain, `udevtrigger_complete()` followed by `coldplug_complete()` is attached to completion of the child udevtrigger process, such that the still to be reached `uloop_run()` in procd `main()` function, after all uevents will have been processed, will advance procd state to STATE_UBUS, [line 31](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l31).
-    7.  `uloop_run`, line 75  
+    7.  `uloop_run`, line 75
         Solicited by udevtrigger in another process, the kernel emits uevents and uloop invokes the user space hotplug handler: the callback
-        1.  `hotplug_handler`  
+        1.  `hotplug_handler`
             to run `/etc/hotplug.json`.
-            1.  The `/etc/hotplug.json` script  
-                - creates and removes devices files, assigns them permissions,  
-                - loads firmware,  
-                - handles buttons by calling scripts in `/etc/rc.button/%BUTTON%` if the uevent has the "`BUTTON`" value,  
-                - and invokes `/sbin/hotplug-call "%SUBSYSTEM%"` to handle all other subsystem related actions.  
-                Subystems are: "platform" "net", "input", "usb", "usbmisc", "ieee1394", "block", "atm", "zaptel", "tty", "button" (without BUTTON value, possible?), "usb-serial". "usb-serial" is aliased to "tty" in hotplug.json.  
-                Documentation of json script syntax? Offline. [Use the source](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=json_script.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8). It is the json representation of the abstract syntax tree of a script in a fairly intuitive scripting language.  
-                There are 2 levels at which decisions are taken: hotplug.json acts as fast path executor or lightweight dispatcher, the subsystem scripts in /etc/hotplug.d/%SUBSYSTEM%/ do the heavy lifting.  
-                Uevent messages from the kernel contain key-value pairs passed as environment variables to the scripts. The kernel function  
-                '' [int add_uevent_var(struct kobj_uevent_env \*env, const char \*format, ...)](http://lxr.free-electrons.com/source/lib/kobject_uevent.c?v=3.18#L387)''  
+            1.  The `/etc/hotplug.json` script
+                - creates and removes devices files, assigns them permissions,
+                - loads firmware,
+                - handles buttons by calling scripts in `/etc/rc.button/%BUTTON%` if the uevent has the "`BUTTON`" value,
+                - and invokes `/sbin/hotplug-call "%SUBSYSTEM%"` to handle all other subsystem related actions.
+                Subystems are: "platform" "net", "input", "usb", "usbmisc", "ieee1394", "block", "atm", "zaptel", "tty", "button" (without BUTTON value, possible?), "usb-serial". "usb-serial" is aliased to "tty" in hotplug.json.
+                Documentation of json script syntax? Offline. [Use the source](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=json_script.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8). It is the json representation of the abstract syntax tree of a script in a fairly intuitive scripting language.
+                There are 2 levels at which decisions are taken: hotplug.json acts as fast path executor or lightweight dispatcher, the subsystem scripts in /etc/hotplug.d/%SUBSYSTEM%/ do the heavy lifting.
+                Uevent messages from the kernel contain key-value pairs passed as environment variables to the scripts. The kernel function
+                '' [int add_uevent_var(struct kobj_uevent_env \*env, const char \*format, ...)](http://lxr.free-electrons.com/source/lib/kobject_uevent.c?v=3.18#L387)''
                 creates them. This link <http://lxr.free-electrons.com/ident?v=3.18;i=add_uevent_var> provides a list of all places in the Linux kernel where it is used. It is an authoritative reference of the upstream defined uevent variables. Button events are generated by the out of tree kernel modules `button-hotplug` `gpio-button-hotplug` specific to OpenWrt.
-                1.  `/sbin/hotplug-call "%SUBSYSTEM%"`  
+                1.  `/sbin/hotplug-call "%SUBSYSTEM%"`
                     is a shell script that scans `/etc/hotlug.d/%SUBSYSTEM%/*` and sources all scripts assigned to a subsystem. "button" subsystem is handled here if the uevent lacks the "BUTTON" value, unlikely or impossible?.
-        2.  `STATE_UBUS`  
-            At end of coldplug uevents processing, the callback [coldplug_complete calls](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l34) `procd_state_next` which results in advancing procd to STATE_UBUS.  
-            "- ubus -" is logged to console, the services infrastructure is initialised, then procd schedules connect to after 1" ([line 67](http://git.openwrt.org/?p=project/procd.git;a=blob;f=ubus.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l64)) and starts `/sbin/ubus` as the system [ubus](/docs/techref/ubus) service.  
+        2.  `STATE_UBUS`
+            At end of coldplug uevents processing, the callback [coldplug_complete calls](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l34) `procd_state_next` which results in advancing procd to STATE_UBUS.
+            "- ubus -" is logged to console, the services infrastructure is initialised, then procd schedules connect to after 1" ([line 67](http://git.openwrt.org/?p=project/procd.git;a=blob;f=ubus.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l64)) and starts `/sbin/ubus` as the system [ubus](/docs/techref/ubus) service.
             Transition to next state is triggered by the callback `ubus_connect_cb` that at the end, line 118, calls `procd_state_ubus_connect()`, line 186, that calls `procd_state_next` to transition to
-        3.  `STATE_INIT`  
-            "- init -" is logged, `/etc/inittab` is parsed and entries  
+        3.  `STATE_INIT`
+            "- init -" is logged, `/etc/inittab` is parsed and entries
             '' ::askconsole:/bin/ash --login` ` ::sysinit:/etc/init.d/rcS S boot` executed. inittab format is the same as the one from busybox (Busybox example inittab). The "`sysinit'' action" handler
-            1.  `runrc`  
-                instantiates a queue, whose empty handler `rcdone` will advance procd state.  
+            1.  `runrc`
+                instantiates a queue, whose empty handler `rcdone` will advance procd state.
                 `runrc` [ignores](http://git.openwrt.org/?p=project/procd.git;a=blob;f=inittab.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l151) the process specification "`/etc/init.d/rcS`" (there is no such a script!), and runs
-                1.  `rcS(pattern="S" , param="boot", rcdone)` (line 159)  
-                    that invokes the equivalent of  
-                    `_rc(&q, *path="/etc/rc.d", *file="S", *pattern="*", *param="boot")`  
-                    to enqueue in glob sort order the scripts  
-                    '' /etc/rc.d/S\* boot` with "`boot''" as the action. `/etc/rc.d/S*` are [symlinks made by rc.common enable](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/Makefile;hb=483dac821788b457d349233e770329186a0aa860#l117) to files in `/etc/init.d`, that are shell scripts with the shebang `#!/bin/sh /etc/rc.common`.  
+                1.  `rcS(pattern="S" , param="boot", rcdone)` (line 159)
+                    that invokes the equivalent of
+                    `_rc(&q, *path="/etc/rc.d", *file="S", *pattern="*", *param="boot")`
+                    to enqueue in glob sort order the scripts
+                    '' /etc/rc.d/S\* boot` with "`boot''" as the action. `/etc/rc.d/S*` are [symlinks made by rc.common enable](http://git.openwrt.org/?p=15.05/openwrt.git;a=blob;f=package/Makefile;hb=483dac821788b457d349233e770329186a0aa860#l117) to files in `/etc/init.d`, that are shell scripts with the shebang `#!/bin/sh /etc/rc.common`.
                     Invoking a `/etc/rc.d/S*` script runs `rc.common` that sources the /etc/rc.d/S\* script to set up a context, then invokes the function named as the action parameter ("`boot()`"), in that context.
-        4.  `STATE_RUNNING`  
-            Execution arrives here after rcS scripts are done.  
-            "- init complete -" is logged.  
+        4.  `STATE_RUNNING`
+            Execution arrives here after rcS scripts are done.
+            "- init complete -" is logged.
             This is a stable state, keeping uloop_run in procd.c main() running, mostly waiting on epoll_wait. [Upon receipt of a signal](http://git.openwrt.org/?p=project/procd.git;a=blob;f=signal.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l33) in SIGTERM, SIGINT (reboot), or SIGUSR2, SIGUSR2 (poweroff), procd transitions to
-        5.  `STATE_SHUTDOWN`  
+        5.  `STATE_SHUTDOWN`
             "- shutdown -" is logged, /etc/inittab shutdown entry is executed, and procd sleeps [at line 169](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l169) while the kernel does poweroff or reboot.
-    8.  `uloop_done`  
-        `return 0`  
+    8.  `uloop_done`
+        `return 0`
         lines 75 & 76 are never reached by pid 1, kernel would panic if init exited.
 
 ---
@@ -11728,7 +11709,7 @@ Tested on Marvell EspressoBinBoard based on MVEBU, (see [forum topic](https://fo
 
 You can checks your mtd partitions from proc :
 
-    root@EBIN:~# cat /proc/mtd 
+    root@EBIN:~# cat /proc/mtd
     dev:    size   erasesize  name
     mtd0: 003f0000 00010000 "firmware"
     mtd1: 00010000 00010000 "u-boot-env"
@@ -11829,7 +11810,7 @@ It boils down to the fact that the current network and interface setup mechanism
 - limited featureset of the ash shell which will not allow for complex interface operations like e.g. calculating [ULAs](https://en.wikipedia.org/wiki/Unique local address)
 - you name it
 
-`Netifd` will be able to manage even complex interface configurations with a mix of bonding, vlans, bridges, etc. and handle the dependencies between interfaces properly - and of course all that without adding unnecessary bloat.  
+`Netifd` will be able to manage even complex interface configurations with a mix of bonding, vlans, bridges, etc. and handle the dependencies between interfaces properly - and of course all that without adding unnecessary bloat.
 AFAIK there are no alternatives to netifd, e.g. [connman](https://connman.net/) seems to be centered around one specifific use case only: having a mobile device access the internet through multiple connections. Connman is based on dbus.
 
 The following is a brief conversation from IRC regarding hints on how netifd is involved with wifi interface startup and variables used. It 'documents' my frustration with trying to add a new uci variable (utf8_ssid), and I don't think the answers contained should be lost:
@@ -11930,16 +11911,15 @@ Configuration for the odhcp daemon.
 | `loglevel`     | integer | `4`                       | Syslog level priority (0-7). 0=emer, 1=alert, 2=crit, 3=err, 4=warn, 5=notice, 6=info, 7=debug |
 | `enable_tz`    | boolean | `1`                       | Set to `0` to disable sending option 41 and 42 timezone info to clients that request them      |
 
-\<WRAP center round important 80%\> **RFC9096 § 3.5 SLAAC compliance relies on the `piodir` option, \<color \#ed1c24\>which may wear out the flash under certain conditions\</color\>.  
-For example: ISPs with dynamic IPv6 prefixes which disconnect the clients every X hours.  
-\<color \#ed1c24\>Therefore, setting `dhcp.odhcpd.piodir` to persistent storage in the router flash is not advisable\</color\> and should be set to other kinds of persistent storage such as USBs, SDs, NVMEs...  
-In order to prevent wearing out the router flash it's set to ephemeral storage by default:  
-`uci set dhcp.odhcpd.piodir=/tmp/odhcpd-piodir`  
-`uci commit dhcp`**  
-  
-If dhcp.odhcpd.piodir is set to persistent storage, you should also add that directory to sysupgrade.conf in order to preserve the PIOs when OpenWrt is upgraded.  
-`$(uci -q get dhcp.odhcpd.piodir) >> /etc/sysupgrade.conf`  
-\</WRAP\>
+ **RFC9096 § 3.5 SLAAC compliance relies on the `piodir` option, which may wear out the flash under certain conditions.
+For example: ISPs with dynamic IPv6 prefixes which disconnect the clients every X hours.
+Therefore, setting `dhcp.odhcpd.piodir` to persistent storage in the router flash is not advisable and should be set to other kinds of persistent storage such as USBs, SDs, NVMEs...
+In order to prevent wearing out the router flash it's set to ephemeral storage by default:
+`uci set dhcp.odhcpd.piodir=/tmp/odhcpd-piodir`
+`uci commit dhcp`**
+
+If dhcp.odhcpd.piodir is set to persistent storage, you should also add that directory to sysupgrade.conf in order to preserve the PIOs when OpenWrt is upgraded.
+`$(uci -q get dhcp.odhcpd.piodir) >> /etc/sysupgrade.conf`
 
 ### dhcp section
 
@@ -12495,7 +12475,7 @@ all_jffs2 refers to a 'jffs2' target in menuconfig; e.g. firmware has no squashf
 6.  This is only reached on an error condition; attempts to mount a tmpfs (ramdisk) as root filesystem
 7.  This is only reached if no other step succeeds; attempt to mount `/dev/root` (e.g. squashfs/all_jffs2) as root filesystem.
 
-\*\* \* \*\* `/overlay` was previously named `/jffs2`.  
+\*\* \* \*\* `/overlay` was previously named `/jffs2`.
 \*\* \* \*\* [NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md): If volatile files (e.g. a config) were preserved across firmware update via `sysupgrade`, step 3 is skipped. Instead, preinit_main hangs while the rootfs_data partition is formatted and the jffs2 overlay is mounted. Hypothetically, this is fatal on systems with weak cpu and exceptionally large rootfs_data partitions. For more information [consult this forum post](https://forum.openwrt.org/t/error-in-preinit-documentation-regarding-overlays/60188/4).
 
 ## First Boot
@@ -12883,12 +12863,11 @@ Create a file that replaces the function \`indicate_regular_preinit_boot\`. \`pi
 
 \`/lib/preinit/25_dinner_not_router\`
 
-       pi_indicate_preinit() { 
+       pi_indicate_preinit() {
              echo "- setting the table for dinner -"
              preinit_net_echo "Dinner is just about ready!"
              pi_indicate_led
        }
-       
 
 This results in the following boot log:
 
@@ -12921,7 +12900,6 @@ The default boot log is
       [mini_fo](../L2-semantic/wiki/wiki_page-techref-filesystems.md): using base directory: /
       [mini_fo](../L2-semantic/wiki/wiki_page-techref-filesystems.md): using storage directory: /jffs
       - init -
-       
 
 ## Adding Example
 
@@ -12934,9 +12912,8 @@ We create the file \`50_failsafe_remember_no_rw\`, in \`/lib/preinit\`
       remember_no_rw() {
           echo "Remember, at this point there are no writable filesystems"
       }
-      
+
       boot_hook_add failsafe remember_no_rw
-      
 
 This creates the function \`remember_no_rw\` and adds it to the failsafe hook, in between \`10_indicate_failsafe\` and \`99_10_failsafe_login\` which define the other functions in the \`failsafe\` hook. This wasn't necessary for the previous example because the function was already in a hook.
 
@@ -13100,7 +13077,7 @@ Package history is available at:
 
 # The Boot Process
 
-\<WRAP center round alert 60%\> As noted below, this page is woefully out of date \</WRAP\>
+ As noted below, this page is woefully out of date
 
 <table>
 <tbody>
@@ -13498,7 +13475,7 @@ The program `swconfig` allows you to configure *configurable* [Ethernet network 
 
 It is considered legacy and new switch drivers should use the DSA (distributed switch architecture) kernel framework which makes it possible to use standard userspace tools such as `ip` to configure the switches.
 
-\<color red\>Make sure you can [safemode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset) or TTL before changing network/switch settings\</color\>
+Make sure you can [safemode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset) or TTL before changing network/switch settings
 
 ## Supported hardware
 
@@ -14186,10 +14163,10 @@ The RPC-JSON container format is:
 
 ``` javascript
 { "jsonrpc": "2.0",
-  "id": <unique-id-to-identify-request>, 
+  "id": <unique-id-to-identify-request>,
   "method": "call",
   "params": [
-             <ubus_rpc_session>, <ubus_object>, <ubus_method>, 
+             <ubus_rpc_session>, <ubus_object>, <ubus_method>,
              { <ubus_arguments> }
             ]
 }
@@ -15479,7 +15456,7 @@ Xenomai framework run only on some architecture and generally isn't needed for y
 
 ## Status
 
-Xenomai is intended to be used only for specific purpose and OpenWrt community generally don't support it directly.  
+Xenomai is intended to be used only for specific purpose and OpenWrt community generally don't support it directly.
 
 [^1]: from <http://www.armadeus.com/wiki/index.php?title=Xenomai>
 

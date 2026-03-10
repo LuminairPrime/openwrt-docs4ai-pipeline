@@ -2,10 +2,10 @@
 title: Xenomai - real-time framework inside OpenWrt
 module: wiki
 origin_type: wiki_page
-token_count: 503
+token_count: 502
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-xenomai.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Xenomai - real-time framework inside OpenWrt
@@ -35,6 +35,6 @@ Xenomai framework run only on some architecture and generally isn't needed for y
 
 ## Status
 
-Xenomai is intended to be used only for specific purpose and OpenWrt community generally don't support it directly.  
+Xenomai is intended to be used only for specific purpose and OpenWrt community generally don't support it directly.
 
 [^1]: from <http://www.armadeus.com/wiki/index.php?title=Xenomai>

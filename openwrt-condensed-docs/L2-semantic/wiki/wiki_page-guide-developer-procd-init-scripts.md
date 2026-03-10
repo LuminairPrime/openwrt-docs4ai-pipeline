@@ -2,10 +2,10 @@
 title: Procd Init Scripts
 module: wiki
 origin_type: wiki_page
-token_count: 5439
+token_count: 5391
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-procd-init-scripts.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Procd Init Scripts
@@ -147,17 +147,17 @@ service_triggers()
 | procd_add_reload_mount_trigger     | paths to watch for   | `mount.add`     | Uses `/etc/init.d/<foo> reload` as the handler  |
 | procd_add_restart_mount_trigger    | paths to watch for   | `mount.add`     | Uses `/etc/init.d/<foo> restart` as the handler |
 
-\<WRAP important\> When using `uci` from command line `uci commit` doesn't generate `config.change` event. It requires calling `reload_config` afterwards.
+ When using `uci` from command line `uci commit` doesn't generate `config.change` event. It requires calling `reload_config` afterwards.
 
-This does not apply to using `uci` over `rpcd` plugin. \</WRAP\>
+This does not apply to using `uci` over `rpcd` plugin.
 
-\<WRAP important\> Adding `interface.*` trigger and having `/etc/init.d/<foo> reload` called won't automatically make `procd` notice any state change and won't make it restart a service.
+ Adding `interface.*` trigger and having `/etc/init.d/<foo> reload` called won't automatically make `procd` notice any state change and won't make it restart a service.
 
-Relevant interface has to be made part of service state using the `procd_set_param netdev`. \</WRAP\>
+Relevant interface has to be made part of service state using the `procd_set_param netdev`.
 
-\<WRAP important\> Using mount triggers depends on mount notifications emitted by `blockd`. Hence `blockd` needs to be installed and the mount need to be configured in `/etc/config/fstab`.
+ Using mount triggers depends on mount notifications emitted by `blockd`. Hence `blockd` needs to be installed and the mount need to be configured in `/etc/config/fstab`.
 
-See also [fstab](/docs/guide-user/storage/fstab) \</WRAP\>
+See also [fstab](/docs/guide-user/storage/fstab)
 
 See use cases of [procd_add_interface_trigger](https://github.com/openwrt/packages/search?q=procd_add_interface_trigger), [procd_add_reload_trigger](https://github.com/openwrt/packages/search?q=procd_add_reload_trigger), [procd_add_reload_mount_trigger](https://github.com/openwrt/packages/search?q=procd_add_reload_mount_trigger) in the OpenWrt packages repository.
 
@@ -210,7 +210,7 @@ The *instance_name* allows specifying custom instance name in case it was used l
     . /lib/functions/procd.sh
     procd_send_signal service_name [instance_name] [signal]
 
-\<WRAP important\> You can also configure reload by signal with `procd_set_param reload_signal` service option. \</WRAP\>
+ You can also configure reload by signal with `procd_set_param reload_signal` service option.
 
 ## Service jails
 

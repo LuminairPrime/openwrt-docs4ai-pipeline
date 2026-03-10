@@ -1,7 +1,7 @@
 # wiki (Skeleton Semantic Map)
 
 > **Contains:** Headers and function signatures for wiki.
-> **Generated:** 2026-03-09T22:23:57.692638+00:00
+> **Generated:** 2026-03-10T06:39:07.985313+00:00
 
 ---
 
@@ -334,7 +334,7 @@
 # generating json data
 # the MSG_JSON var now contains: { "code": 0, "msg": "Hello, world!", "test": { "testdata": 1 } }
 # parsing json data from the MSG_JSON variable
-# load the "code" field into corresponding code var, and the "msg" field into the msg var 
+# load the "code" field into corresponding code var, and the "msg" field into the msg var
 #!/bin/sh
 # source jshn shell library
 # initialize JSON output structure
@@ -595,7 +595,7 @@
 ## Setting up
 #!/bin/sh
 #these if statements will check input and place default values if no input is given
-#they will also check if input is a number so you can call 
+#they will also check if input is a number so you can call
 #this script with just a time and it will still work correctly
 #endless loop, will print the message every X seconds as indicated in the $every variable
 ## Creating a basic procd script
@@ -738,6 +738,7 @@
 ## Individual Bootloaders
 ### PC
 ### Embedded Devices
+
 ## Bootloader Pages
 
 # BCM63xx Firmware Image Information
@@ -945,7 +946,7 @@
 ### Image/Build/squashfs
 ### Image/Build
 ## Example
-# 
+#
 # Copyright (C) 2010 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.

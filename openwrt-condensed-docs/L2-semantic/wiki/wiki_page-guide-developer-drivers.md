@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 331
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-drivers.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Drivers
@@ -25,7 +25,7 @@ The source code for the drivers already integrated into the mainline kernel can 
 
 - -\> <http://kernel.org/>
 
-In OpenWRT, all kernel module package filenames begin with kmod-.  
+In OpenWRT, all kernel module package filenames begin with kmod-.
 The modprobe command is not available in at least some firmware version of OpenWrt. Use insmod instead.
 
 ## Learning more

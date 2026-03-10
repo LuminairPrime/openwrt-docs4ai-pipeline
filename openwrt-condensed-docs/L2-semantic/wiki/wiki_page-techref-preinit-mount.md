@@ -2,10 +2,10 @@
 title: Abstract
 module: wiki
 origin_type: wiki_page
-token_count: 12200
+token_count: 12194
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-preinit-mount.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Abstract
@@ -189,7 +189,7 @@ all_jffs2 refers to a 'jffs2' target in menuconfig; e.g. firmware has no squashf
 6.  This is only reached on an error condition; attempts to mount a tmpfs (ramdisk) as root filesystem
 7.  This is only reached if no other step succeeds; attempt to mount `/dev/root` (e.g. squashfs/all_jffs2) as root filesystem.
 
-\*\* \* \*\* `/overlay` was previously named `/jffs2`.  
+\*\* \* \*\* `/overlay` was previously named `/jffs2`.
 \*\* \* \*\* [NOTE](../wiki/wiki_page-techref-luci2.md): If volatile files (e.g. a config) were preserved across firmware update via `sysupgrade`, step 3 is skipped. Instead, preinit_main hangs while the rootfs_data partition is formatted and the jffs2 overlay is mounted. Hypothetically, this is fatal on systems with weak cpu and exceptionally large rootfs_data partitions. For more information [consult this forum post](https://forum.openwrt.org/t/error-in-preinit-documentation-regarding-overlays/60188/4).
 
 ## First Boot
@@ -577,12 +577,11 @@ Create a file that replaces the function \`indicate_regular_preinit_boot\`. \`pi
 
 \`/lib/preinit/25_dinner_not_router\`
 
-       pi_indicate_preinit() { 
+       pi_indicate_preinit() {
              echo "- setting the table for dinner -"
              preinit_net_echo "Dinner is just about ready!"
              pi_indicate_led
        }
-       
 
 This results in the following boot log:
 
@@ -615,7 +614,6 @@ The default boot log is
       [mini_fo](../wiki/wiki_page-techref-filesystems.md): using base directory: /
       [mini_fo](../wiki/wiki_page-techref-filesystems.md): using storage directory: /jffs
       - init -
-       
 
 ## Adding Example
 
@@ -628,9 +626,8 @@ We create the file \`50_failsafe_remember_no_rw\`, in \`/lib/preinit\`
       remember_no_rw() {
           echo "Remember, at this point there are no writable filesystems"
       }
-      
+
       boot_hook_add failsafe remember_no_rw
-      
 
 This creates the function \`remember_no_rw\` and adds it to the failsafe hook, in between \`10_indicate_failsafe\` and \`99_10_failsafe_login\` which define the other functions in the \`failsafe\` hook. This wasn't necessary for the previous example because the function was already in a hook.
 

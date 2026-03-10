@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 2302
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-mdns.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # umdns for Local Device Discovery
@@ -125,7 +125,7 @@ Almost all interaction with the daemon is via [ubus](/docs/guide-developer/ubus)
                 "txt": "adminurl=http:\/\/NPI46A14F.local."
           },
        ....
-    $ ubus call umdns hosts 
+    $ ubus call umdns hosts
     #Show hosts discovered via mDns
             "SteakPrinter.local": {
                     "ipv4": "192.168.1.159"

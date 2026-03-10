@@ -2,10 +2,10 @@
 title: "OpenWrt Buildroot \u2013 Technical Reference"
 module: wiki
 origin_type: wiki_page
-token_count: 1025
+token_count: 1012
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-buildroot.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # OpenWrt Buildroot – Technical Reference
@@ -79,20 +79,20 @@ see <http://wiki.musl-libc.org/wiki/Building_Busybox>
 
 ### Make sequence
 
-Top command `make world` calls the following sequence of the commands:  
-`make target/compile`  
-`make package/cleanup`  
-`make package/compile`  
-`make package/install`  
-`make package/preconfig`  
-`make target/install`  
+Top command `make world` calls the following sequence of the commands:
+`make target/compile`
+`make package/cleanup`
+`make package/compile`
+`make package/install`
+`make package/preconfig`
+`make target/install`
 `make package/index`
 
-You may run each command independently. For example, if the process of compilation of packages stops on error, you may fix the problem and next continue without cleanup:  
-`make package/compile`  
-`make package/install`  
-`make package/preconfig`  
-`make target/install`  
+You may run each command independently. For example, if the process of compilation of packages stops on error, you may fix the problem and next continue without cleanup:
+`make package/compile`
+`make package/install`
+`make package/preconfig`
+`make target/install`
 `make package/index`
 
 see [packages](/docs/guide-developer/packages)
@@ -105,7 +105,7 @@ The parameter `V=x` specifies level of messages in the process of the build.
         though the old flags are still supported.
         You can set the V variable on the command line (or OPENWRT_VERBOSE in the
         environment) to one or more of the following characters:
-        
+
         - s: stdout+stderr (equal to the old V=99)
         - c: commands (for build systems that suppress commands by default, e.g. kbuild, cmake)
         - w: warnings/errors only (equal to the old V=1)

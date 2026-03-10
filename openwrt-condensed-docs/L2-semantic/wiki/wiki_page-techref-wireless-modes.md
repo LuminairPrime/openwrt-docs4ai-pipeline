@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 349
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-wireless-modes.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Wireless Modes

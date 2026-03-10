@@ -2,10 +2,10 @@
 title: BCM63xx Firmware Image Information
 module: wiki
 origin_type: wiki_page
-token_count: 6827
+token_count: 6807
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-brcm63xx-imagetag.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # BCM63xx Firmware Image Information
@@ -186,7 +186,7 @@ The size of the image header is 512 bytes length. Offsets are at different addre
 | ''unsigned long productId;''	                     | 52-55 | product id |
 | ''unsigned long productVer;''	                     | 56-59 | product version |
 | ''unsigned long addHver;''                         | 60-63 | Addtional hardware version |
-| ''unsigned char imageValidToken[20];''             | 64-83 | image validation token - md5 checksum <color crimson>(not used?)</color> |
+| ''unsigned char imageValidToken[20];''             | 64-83 | image validation token - md5 checksum (not used?) |
 | ''unsigned char rcSingature[20];'' 	             | 84-103 | RC singature(only for vxWorks) - RSA |
 | ''unsigned long kernelTextAddr;''                  | 104-107 | text section address of kernel |
 | ''unsigned long kernelEntryPoint;''                | 108-111 | entry point address of kernel |
@@ -200,10 +200,10 @@ The size of the image header is 512 bytes length. Offsets are at different addre
 | ''unsigned long swRevision;''		             | 140-143 | software revision |
 | ''unsigned long platformVer;''	             | 144-147 | platform version |
 | ''unsigned long specialVer;''                      | 148:151 | special version or CRC32 for bin(kernel+rootfs) bitfliped|
-| ''unsigned long binCrc32;''		             | 152:155 | <color crimson>CRC32 for bin(kernel+rootfs) bitfliped</color> or empty|
+| ''unsigned long binCrc32;''		             | 152:155 | CRC32 for bin(kernel+rootfs) bitfliped or empty|
 | ''unsigned long imageSequence;''                   | 156:159 | DUALIMAGE, initial value is 0, valid value is [1 .. 999], for [NAND](../wiki/wiki_page-techref-flash.md) flash: it's indicated by file extension of cferam.xxx in rootfs, for NOR flash: it's stored in kernel tag |
 | ''unsigned long reserved1[12];''                   | 160-207 | reserved for future |
-| ''unsigned char sig[128];''	                     | 208-335 | <color crimson>signature for update</color> |
+| ''unsigned char sig[128];''	                     | 208-335 | signature for update |
 | ''unsigned char resSig[128];''                     | 336-443 | reserved for signature |
 | ''unsigned long reserved2[12];''                   | 464-511 | reserved for future |
 

@@ -2,10 +2,10 @@
 title: Device Tree Usage in OpenWrt (DTS)
 module: wiki
 origin_type: wiki_page
-token_count: 1073
+token_count: 1049
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-defining-firmware-partitions.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Device Tree Usage in OpenWrt (DTS)
@@ -46,49 +46,49 @@ The MTD labels of "firmware" and "ubi" have special meaning to the OpenWrt kerne
 
 See below on supplying the proper "compatible" label so that the OpenWrt kernel can properly "split" the partition and `CONFIG_MTD_SPLIT_FIRMWARE` is not needed. (note that `CONFIG_MTD_SPLIT_UIMAGE_FW` is still required!)
 
-\<WRAP center round info 80%\> this article was an email sent to the OpenWrt-devel mailing list by OpenWrt dev Rafał Miłecki  
-**Subject:** \[OpenWrt-Devel\] Specifying "firmware" partition format on all DTS targets  
-**Date:** Sat, 24 Nov 2018 11:32:25 +0100 \</WRAP\>
+ this article was an email sent to the OpenWrt-devel mailing list by OpenWrt dev Rafał Miłecki
+**Subject:** \[OpenWrt-Devel\] Specifying "firmware" partition format on all DTS targets
+**Date:** Sat, 24 Nov 2018 11:32:25 +0100
 
-Parsing "firmware" partition (to create kernel + rootfs) was implemented using OpenWrt downstream code enabled by CONFIG_MTD_SPLIT_FIRMWARE.  
+Parsing "firmware" partition (to create kernel + rootfs) was implemented using OpenWrt downstream code enabled by CONFIG_MTD_SPLIT_FIRMWARE.
 With recent upstream mtd changes we can do it in a more clean way for DTS targets. It just requires adding a proper "compatible" string to the "firmware" partition node.
 
 I'd like all DTS supported devices to use that "compatible" and disable CONFIG_MTD_SPLIT_FIRMWARE eventually.
 
 *Wiki note: This objective may be a challenge for dual-firmware units as the partition to be split will be different depending on which was selected by the boot loader.*
 
-1\) Default uimage  
-If you see:  
-2 uimage-fw partitions found on MTD device firmware  
-please use "denx,uimage"; e.g.  
+1\) Default uimage
+If you see:
+2 uimage-fw partitions found on MTD device firmware
+please use "denx,uimage"; e.g.
 `partition@70000 {
         label = "firmware";
         reg = <0x070000 0x790000>;
         compatible = "denx,uimage";
 };`
 
-2\) Netgear's uimage  
-If you see:  
-2 netgear-fw partitions found on MTD device firmware  
-please use "netgear,uimage"; e.g.  
+2\) Netgear's uimage
+If you see:
+2 netgear-fw partitions found on MTD device firmware
+please use "netgear,uimage"; e.g.
 `partition@70000 {
         label = "firmware";
         reg = <0x070000 0xf80000>;
         compatible = "netgear,uimage";
 };`
 
-3\) TP-LINK's firmware  
-If you see:  
-2 tplink-fw partitions found on MTD device firmware  
-please use "tplink,firmware"; e.g.  
+3\) TP-LINK's firmware
+If you see:
+2 tplink-fw partitions found on MTD device firmware
+please use "tplink,firmware"; e.g.
 `firmware@20000 {
         label = "firmware";
         reg = <0x020000 0xfd0000>;
         compatible = "tplink,firmware";
 };`
 
-Please kindly:  
-1) Use that for all newly added devices  
-2) Port already supported devices you can test  
---  
+Please kindly:
+1) Use that for all newly added devices
+2) Port already supported devices you can test
+--
 Rafał

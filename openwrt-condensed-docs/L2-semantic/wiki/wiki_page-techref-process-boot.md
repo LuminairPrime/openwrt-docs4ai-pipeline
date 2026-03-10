@@ -2,15 +2,15 @@
 title: The Boot Process
 module: wiki
 origin_type: wiki_page
-token_count: 3283
+token_count: 3268
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-process-boot.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # The Boot Process
 
-\<WRAP center round alert 60%\> As noted below, this page is woefully out of date \</WRAP\>
+ As noted below, this page is woefully out of date
 
 <table>
 <tbody>

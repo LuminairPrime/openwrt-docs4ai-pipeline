@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 1469
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-headers.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # TRX vs. TRX2 vs. BIN
@@ -18,8 +18,8 @@ Some devices have firmware files with different file name endings. While the ove
 
 ## TRX v1
 
-      0                   1                   2                   3   
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +---------------------------------------------------------------+
      |                     magic number ('HDR0')                     |
      +---------------------------------------------------------------+
@@ -42,8 +42,8 @@ Some devices have firmware files with different file name endings. While the ove
 
 ## TRX v2
 
-      0                   1                   2                   3   
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +---------------------------------------------------------------+
      |                     magic number ('HDR0')                     |
      +---------------------------------------------------------------+
@@ -73,8 +73,8 @@ Source: [openwrt/tools/firmware-utils/src/trx.c](http://git.openwrt.org/?p=14.07
 
 FIXME (which bin header?)
 
-      0                   1                   2                   3   
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +---------------------------------------------------------------+
      |                            magic                              |
      +---------------------------------------------------------------+
@@ -107,7 +107,7 @@ FIXME (which bin header?)
 
 ## TP-LINK BIN Header
 
-      0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f  
+      0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f
     +---------------------------------------------------------------+
     |    version    |          vendor_name...                       |
     +---------------------------------------------------------------+

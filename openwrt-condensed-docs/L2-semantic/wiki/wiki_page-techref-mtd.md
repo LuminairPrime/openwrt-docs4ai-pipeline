@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 1589
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-mtd.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # MTD
@@ -61,7 +61,7 @@ Tested on Marvell EspressoBinBoard based on MVEBU, (see [forum topic](https://fo
 
 You can checks your mtd partitions from proc :
 
-    root@EBIN:~# cat /proc/mtd 
+    root@EBIN:~# cat /proc/mtd
     dev:    size   erasesize  name
     mtd0: 003f0000 00010000 "firmware"
     mtd1: 00010000 00010000 "u-boot-env"

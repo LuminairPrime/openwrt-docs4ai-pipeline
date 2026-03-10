@@ -20,5 +20,5 @@
 
 ## Current Context
 - **Module Count:** 8
-- **Total Token Count:** ~434368
+- **Total Token Count:** ~433212
 - **Indexed Symbols:** 397

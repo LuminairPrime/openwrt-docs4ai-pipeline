@@ -2,17 +2,17 @@
 title: External Toolchain
 module: wiki
 origin_type: wiki_page
-token_count: 409
+token_count: 408
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-external-toolchain.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # External Toolchain
 
 ## Use OpenWrt as External Toolchain
 
-Using an external toolchain reduce build time when starting with a cleaned-up source tree. Useful when using an automated build system like Hudson/Tinderbox.  
+Using an external toolchain reduce build time when starting with a cleaned-up source tree. Useful when using an automated build system like Hudson/Tinderbox.
 
 ### Step 1: Build Toolchain
 

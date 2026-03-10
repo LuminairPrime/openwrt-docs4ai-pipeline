@@ -2,10 +2,10 @@
 title: 'jshn: a JSON parsing and generation library in for shell scripts'
 module: wiki
 origin_type: wiki_page
-token_count: 3694
+token_count: 3692
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-jshn.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # jshn: a JSON parsing and generation library in for shell scripts
@@ -36,9 +36,9 @@ json_load "$MSG_JSON"
 json_select test # go into the object inside of the "test" field
 json_get_var var1 testdata # first is var name "var1" then the JSON field name "testdata"
 json_select .. # go back to the upper level
-# load the "code" field into corresponding code var, and the "msg" field into the msg var 
+# load the "code" field into corresponding code var, and the "msg" field into the msg var
 json_get_vars code msg
- 
+
 echo "code: $code, msg: $msg, testdata: $var1"
 ```
 
@@ -275,7 +275,7 @@ Options:
 You can call it directly:
 
 ``` bash
-root@OpenWrt:/# jshn -R /etc/board.json 
+root@OpenWrt:/# jshn -R /etc/board.json
 json_init;
 json_add_object 'model';
 json_add_string 'id' 'innotek-gmbh-virtualbox';
@@ -385,12 +385,12 @@ cat /sbin/devstatus
 #!/bin/sh
 . /usr/share/libubox/jshn.sh
 DEVICE="$1"
- 
+
 [ -n "$DEVICE" ] || {
     echo "Usage: $0 <device>"
     exit 1
 }
- 
+
 json_init
 json_add_string name "$DEVICE"
 ubus call network.device status "$(json_dump)"

@@ -2,10 +2,10 @@
 title: "OpenWrt \u2013 operating system architecture"
 module: wiki
 origin_type: wiki_page
-token_count: 3023
+token_count: 2987
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-architecture.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # OpenWrt – operating system architecture
@@ -28,12 +28,12 @@ Whereas desktop distributions use [glib](https://en.wikipedia.org/wiki/GLib)+[db
 <tbody>
 <tr class="odd">
 <td>Typical main memory size</td>
-<td style="text-align: center;"><strong>&lt;color red&gt;128 MiB&lt;/color&gt;</strong> to 16 GiB (or more)</td>
+<td style="text-align: center;"><strong>128 MiB</strong> to 16 GiB (or more)</td>
 <td></td>
-<td style="text-align: center;"><strong>&lt;color red&gt;32 MiB&lt;/color&gt;</strong> to 512 MiB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
+<td style="text-align: center;"><strong>32 MiB</strong> to 512 MiB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
 <td></td>
-<td style="text-align: center;">min <strong>&lt;color red&gt;92 MiB&lt;/color&gt;</strong> for Android 2.1<br />
-min <strong>&lt;color red&gt;340 MiB&lt;/color&gt;</strong> for Android 4.0</td>
+<td style="text-align: center;">min <strong>92 MiB</strong> for Android 2.1<br />
+min <strong>340 MiB</strong> for Android 4.0</td>
 <td></td>
 <td>?</td>
 </tr>

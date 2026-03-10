@@ -5,7 +5,7 @@ origin_type: makefile_meta
 token_count: 2083
 version: unknown
 source_file: L1-raw/openwrt-core/makefile_meta-include-mk.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 upstream_path: include/
 language: makefile
 ---

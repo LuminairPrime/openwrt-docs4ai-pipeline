@@ -2,10 +2,10 @@
 title: Adding new platform support
 module: wiki
 origin_type: wiki_page
-token_count: 5106
+token_count: 4884
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-add-new-platform.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Adding new platform support
@@ -28,19 +28,19 @@ A large bunch of tools over the Internet exists in order to let you do OS finger
 
 |                                                                      |
 |----------------------------------------------------------------------|
-| `nmap -P0 -O //IP address//                                          
- Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET    
- Interesting ports on 192.168.2.1:                                     
- Not shown: 1693 closed ports                                          
- PORT   STATE SERVICE                                                  
- 22/tcp open  ssh                                                      
- 23/tcp open  telnet                                                   
- 53/tcp open  domain                                                   
- 80/tcp open  http                                                     
- MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)                        
- Device type: broadband router                                         
- Running: Linksys embedded                                             
- OS details: Linksys WRT54GS v4 running OpenWrt w/Linux kernel 2.4.30  
+| `nmap -P0 -O //IP address//
+ Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET
+ Interesting ports on 192.168.2.1:
+ Not shown: 1693 closed ports
+ PORT   STATE SERVICE
+ 22/tcp open  ssh
+ 23/tcp open  telnet
+ 53/tcp open  domain
+ 80/tcp open  http
+ MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
+ Device type: broadband router
+ Running: Linksys embedded
+ OS details: Linksys WRT54GS v4 running OpenWrt w/Linux kernel 2.4.30
  Network Distance: 1 hop`                                              |
 
 The *nmap* utility is able to report whether your device uses a Linux TCP/IP stack, and if so, will show you which Linux kernel version is probably runs. This report is quite reliable and it can make the distinction between BSD and Linux TCP/IP stacks and others.
@@ -49,16 +49,16 @@ Using the same tool, you can also do port scanning and service version discovery
 
 |                                                                      |
 |----------------------------------------------------------------------|
-| `nmap -P0 -sV //IP address//                                         
- Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET    
- Interesting ports on 192.168.2.1:                                     
- Not shown: 1693 closed ports                                          
- PORT   STATE SERVICE VERSION                                          
- 22/tcp open  ssh     Dropbear sshd 0.48 (protocol 2.0)                
- 23/tcp open  telnet  Busybox telnetd                                  
- 53/tcp open  domain  ISC Bind dnsmasq-2.35                            
- 80/tcp open  http    OpenWrt BusyBox httpd                            
- MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)                        
+| `nmap -P0 -sV //IP address//
+ Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET
+ Interesting ports on 192.168.2.1:
+ Not shown: 1693 closed ports
+ PORT   STATE SERVICE VERSION
+ 22/tcp open  ssh     Dropbear sshd 0.48 (protocol 2.0)
+ 23/tcp open  telnet  Busybox telnetd
+ 53/tcp open  domain  ISC Bind dnsmasq-2.35
+ 80/tcp open  http    OpenWrt BusyBox httpd
+ MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
  Service Info: Device: WAP`                                            |
 
 The web server version, if identified, can be determining in knowing the Operating System. For instance, the BOA web server is typical from devices running an open-source Unix or Unix-like.
@@ -83,12 +83,12 @@ Some Unix tools like `hexdump` or `strings` can be used to analyze the firmware.
 
 |                                                                                  |
 |----------------------------------------------------------------------------------|
-| `hexdump -C <binary image.extension> | less                                      
- 00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|    
- 00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|    
- 00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|    
- 00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|    
- 00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|    
+| `hexdump -C <binary image.extension> | less
+ 00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|
+ 00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|
+ 00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|
+ 00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|
+ 00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|
  00000050  da ff f3 9b f7 39 7b ef  73 f6 19 3b 53 67 ea 44  |???.?9{?s?.;Sg?D|`   |
 
 Scroll over the firmware to find printable words that can be significant.
@@ -115,19 +115,19 @@ You will find below a sample letter that can be sent to the manufacturer:
 
 |                                                                                                               |
 |---------------------------------------------------------------------------------------------------------------|
-| `Miss, Mister,                                                                                                
-                                                                                                                
- I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM                      
- the open source software used to build or modify the firmware.                                                 
-                                                                                                                
- In conformance to the GPL license, you have to release the following sources:                                  
-                                                                                                                
-  * complete toolchain that made the kernel and applications be compiled (gcc, binutils, libc)                  
-  * tools to build a custom firmware (mksquashfs, mkcramfs ...)                                                 
-  * kernel sources with patches to make it run on this specific hardware, this does not include binary drivers  
-                                                                                                                
- Thank you very much in advance for your answer.                                                                
-                                                                                                                
+| `Miss, Mister,
+
+ I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM
+ the open source software used to build or modify the firmware.
+
+ In conformance to the GPL license, you have to release the following sources:
+
+  * complete toolchain that made the kernel and applications be compiled (gcc, binutils, libc)
+  * tools to build a custom firmware (mksquashfs, mkcramfs ...)
+  * kernel sources with patches to make it run on this specific hardware, this does not include binary drivers
+
+ Thank you very much in advance for your answer.
+
  Best regards, //Your Name//`                                                                                   |
 
 ### Using the SDK
@@ -157,11 +157,11 @@ Some directories are very likely to have local modifications needed to make your
 
 |                                 |
 |---------------------------------|
-| `head -5 linux-2.x.x/Makefile   
- VERSION = 2                      
- PATCHLEVEL = x                   
- SUBLEVEL = y                     
- EXTRAVERSION = z                 
+| `head -5 linux-2.x.x/Makefile
+ VERSION = 2
+ PATCHLEVEL = x
+ SUBLEVEL = y
+ EXTRAVERSION = z
  NAME=A fancy name`               |
 
 So now, you know that you have to download a standard kernel tarball at kernel.org that matches the version being used by your hardware.
@@ -170,8 +170,8 @@ Then you can create a diff file between the two trees, especially for the follow
 
 |                                                                                                                           |
 |---------------------------------------------------------------------------------------------------------------------------|
-| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch   
- diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch                                            
+| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch
+ diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch
  diff -urN linux-2.x.x/drivers/ linux-2.x.x-modified/drivers > 03-drivers.patch`                                            |
 
 This will constitute a basic set of three patches that are very likely to contain any needed modifications that has been made to the stock Linux kernel to run on your specific device. Of course, the content produced by the diff -urN may not always be relevant, so that you have to clean up those patches to only let the "must have" code into them.
@@ -245,11 +245,11 @@ First of all, you need to make your flash map driver be visible in the kernel co
 
 |                                                                            |
 |----------------------------------------------------------------------------|
-| `config MTD_DEVICE_FLASH                                                   
-         tristate "Device Flash device"                                      
-         depends on ARCHITECTURE && DEVICE                                   
-         help                                                                
-          Flash memory access on DEVICE boards. Currently only works with    
+| `config MTD_DEVICE_FLASH
+         tristate "Device Flash device"
+         depends on ARCHITECTURE && DEVICE
+         help
+          Flash memory access on DEVICE boards. Currently only works with
           Bootloader Foo and Bootloader Bar.`                                |
 
 Then add your source file to the linux/drivers/mtd/maps/Makefile, so that it will be compiled along with the kernel.
@@ -262,102 +262,102 @@ You can then write the kernel driver itself, by creating a `linux/drivers/mtd/ma
 
 |                                                                                               |
 |-----------------------------------------------------------------------------------------------|
-| `// Includes that are required for the flash map driver to know of the prototypes:            
- #include <asm/io.h>                                                                            
- #include <linux/init.h>                                                                        
- #include <linux/kernel.h>                                                                      
- #include <linux/mtd/map.h>                                                                     
- #include <linux/mtd/mtd.h>                                                                     
- #include <linux/mtd/partitions.h>                                                              
- #include <linux/vmalloc.h>                                                                     
-                                                                                                
- // Put some flash map definitions here:                                                        
- #define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */                                
- #define WINDOW_SIZE 0x400000    /* Size of flash */                                            
- #define BUSWIDTH 2      /* Buswidth */                                                         
-                                                                                                
- static void __exit device_mtd_cleanup(void);                                                   
-                                                                                                
- static struct mtd_info *device_mtd_info;                                                       
-                                                                                                
- static struct map_info devicd_map = {                                                          
-     .name = "device",                                                                          
-     .size = WINDOW_SIZE,                                                                       
-     .bankwidth = BUSWIDTH,                                                                     
-     .phys = WINDOW_ADDR,                                                                       
- };                                                                                             
-                                                                                                
- static int __init device_mtd_init(void)                                                        
- {                                                                                              
-     // Display that we found a flash map device                                                
-     printk("device: 0x\%08x at 0x\%08x\n", WINDOW_SIZE, WINDOW_ADDR);                          
-                                                                                                
-     // Remap the device address to a kernel address                                            
-     device_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);                                       
-                                                                                                
-     // If impossible to remap, exit with the EIO error                                         
-     if (!device_map.virt) {                                                                    
-         printk("device: Failed to ioremap\n");                                                 
-         return -EIO;                                                                           
-     }                                                                                          
-     // Initialize the device map                                                               
-     simple_map_init(&device_map);                                                              
-                                                                                                
-     /* MTD informations are closely linked to the flash map device                             
-        you might also use "jedec_probe" "amd_probe" or "intel_probe" */                        
-     device_mtd_info = do_map_probe("cfi_probe", &device_map);                                  
-                                                                                                
-     if (device_mtd_info) {                                                                     
-         device_mtd_info->owner = THIS_MODULE;                                                  
-                                                                                                
-         int parsed_nr_parts = 0;                                                               
-                                                                                                
-         // We try here to use the partition schema provided by the bootloader specific code    
-         if (parsed_nr_parts == 0) {                                                            
-             int ret =                                                                          
-                 parse_bootloader_partitions(device_mtd_info,                                   
-                             &parsed_parts, 0);                                                 
-             if (ret > 0) {                                                                     
-                 part_type = "BootLoader";                                                      
-                 parsed_nr_parts = ret;                                                         
-             }                                                                                  
-         }                                                                                      
-                                                                                                
-         add_mtd_partitions(devicd_mtd_info, parsed_parts,                                      
-                    parsed_nr_parts);                                                           
-                                                                                                
-         return 0;                                                                              
-     }                                                                                          
-     iounmap(device_map.virt);                                                                  
-                                                                                                
-     return -ENXIO;                                                                             
- }                                                                                              
-                                                                                                
- // This function will make the driver clean up the MTD device mapping                          
- static void __exit device_mtd_cleanup(void)                                                    
- {                                                                                              
-     // If we found a MTD device before                                                         
-     if (device_mtd_info) {                                                                     
-         // Delete every partitions                                                             
-         del_mtd_partitions(device_mtd_info);                                                   
-         // Delete the associated map                                                           
-         map_destroy(device_mtd_info);                                                          
-     }                                                                                          
-                                                                                                
-     // If the virtual address is already in use                                                
-     if (device_map.virt) {                                                                     
-         // Unmap the physical address to a kernel space address                                
-         iounmap(device_map.virt);                                                              
-                                                                                                
-         // Reset the structure field                                                           
-         device_map.virt = 0;                                                                   
-     }                                                                                          
- }                                                                                              
-                                                                                                
- // Macros that indicate which function is called on loading/unloading the module               
- module_init(device_mtd_init);                                                                  
- module_exit(device_mtd_cleanup);                                                               
-                                                                                                
- // Macros defining license and author, parameters can be defined here too.                     
- MODULE_LICENSE("GPL");                                                                         
+| `// Includes that are required for the flash map driver to know of the prototypes:
+ #include <asm/io.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/vmalloc.h>
+
+ // Put some flash map definitions here:
+ #define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */
+ #define WINDOW_SIZE 0x400000    /* Size of flash */
+ #define BUSWIDTH 2      /* Buswidth */
+
+ static void __exit device_mtd_cleanup(void);
+
+ static struct mtd_info *device_mtd_info;
+
+ static struct map_info devicd_map = {
+     .name = "device",
+     .size = WINDOW_SIZE,
+     .bankwidth = BUSWIDTH,
+     .phys = WINDOW_ADDR,
+ };
+
+ static int __init device_mtd_init(void)
+ {
+     // Display that we found a flash map device
+     printk("device: 0x\%08x at 0x\%08x\n", WINDOW_SIZE, WINDOW_ADDR);
+
+     // Remap the device address to a kernel address
+     device_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
+
+     // If impossible to remap, exit with the EIO error
+     if (!device_map.virt) {
+         printk("device: Failed to ioremap\n");
+         return -EIO;
+     }
+     // Initialize the device map
+     simple_map_init(&device_map);
+
+     /* MTD informations are closely linked to the flash map device
+        you might also use "jedec_probe" "amd_probe" or "intel_probe" */
+     device_mtd_info = do_map_probe("cfi_probe", &device_map);
+
+     if (device_mtd_info) {
+         device_mtd_info->owner = THIS_MODULE;
+
+         int parsed_nr_parts = 0;
+
+         // We try here to use the partition schema provided by the bootloader specific code
+         if (parsed_nr_parts == 0) {
+             int ret =
+                 parse_bootloader_partitions(device_mtd_info,
+                             &parsed_parts, 0);
+             if (ret > 0) {
+                 part_type = "BootLoader";
+                 parsed_nr_parts = ret;
+             }
+         }
+
+         add_mtd_partitions(devicd_mtd_info, parsed_parts,
+                    parsed_nr_parts);
+
+         return 0;
+     }
+     iounmap(device_map.virt);
+
+     return -ENXIO;
+ }
+
+ // This function will make the driver clean up the MTD device mapping
+ static void __exit device_mtd_cleanup(void)
+ {
+     // If we found a MTD device before
+     if (device_mtd_info) {
+         // Delete every partitions
+         del_mtd_partitions(device_mtd_info);
+         // Delete the associated map
+         map_destroy(device_mtd_info);
+     }
+
+     // If the virtual address is already in use
+     if (device_map.virt) {
+         // Unmap the physical address to a kernel space address
+         iounmap(device_map.virt);
+
+         // Reset the structure field
+         device_map.virt = 0;
+     }
+ }
+
+ // Macros that indicate which function is called on loading/unloading the module
+ module_init(device_mtd_init);
+ module_exit(device_mtd_cleanup);
+
+ // Macros defining license and author, parameters can be defined here too.
+ MODULE_LICENSE("GPL");
  MODULE_AUTHOR("Me, myself and I <memyselfandi@domain.tld>");`                                  |

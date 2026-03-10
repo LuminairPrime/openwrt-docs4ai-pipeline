@@ -2,10 +2,10 @@
 title: Network scripts
 module: wiki
 origin_type: wiki_page
-token_count: 4223
+token_count: 4192
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-network-scripting.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Network scripts
@@ -271,8 +271,8 @@ If errors for interfaces occur, the json object in *ifstatus interfacename* or i
 | CODE                | Meaning                                                                                                                                                                                                                                                                                                                                                                                        |
 |---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | NO_DEVICE           | The configured device in ifname is not found.                                                                                                                                                                                                                                                                                                                                                  |
-| DEVICE_CLAIM_FAILED | One of the reasons for this is, that the device configured by ifname does not exist. Usually this would result in NO_DEVICE as the device is only claimed when it is available. However when the proto flags *available=1* and *no_device=0* are set, the device specified by ifname is tried to be claimed directly. \<color \#ff7f27\>TBD: Is this the only case? Is this correct?\</color\> |
-| SETUP_FAILED        | \<color \#ff7f27\>TBD\</color\>                                                                                                                                                                                                                                                                                                                                                                |
+| DEVICE_CLAIM_FAILED | One of the reasons for this is, that the device configured by ifname does not exist. Usually this would result in NO_DEVICE as the device is only claimed when it is available. However when the proto flags *available=1* and *no_device=0* are set, the device specified by ifname is tried to be claimed directly. TBD: Is this the only case? Is this correct? |
+| SETUP_FAILED        | TBD                                                                                                                                                                                                                                                                                                                                                                |
 
 Custom error codes can be thrown from the proto scripts aswell. This is done via `proto_notify_error "$config" MY_CUSTOM_ERROR_ID`.
 

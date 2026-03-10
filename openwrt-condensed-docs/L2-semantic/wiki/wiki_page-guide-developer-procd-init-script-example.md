@@ -2,16 +2,16 @@
 title: Create a sample procd init script
 module: wiki
 origin_type: wiki_page
-token_count: 2417
+token_count: 2390
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-procd-init-script-example.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Create a sample procd init script
 
-\<WRAP center round info 80%\> This article is a mostly verbatim copy of [this archived article](https://web.archive.org/web/20220518121856/https://joostoostdijk.com/posts/service-configuration-with-procd), all credit goes to the original author, **Joost Oostdijk**  
-It was adapted to use an equivalent shell script instead of NodeJS JavaScript, because it's lighter and better for a simple testing setup on most OpenWrt devices. \</WRAP\>
+ This article is a mostly verbatim copy of [this archived article](https://web.archive.org/web/20220518121856/https://joostoostdijk.com/posts/service-configuration-with-procd), all credit goes to the original author, **Joost Oostdijk**
+It was adapted to use an equivalent shell script instead of NodeJS JavaScript, because it's lighter and better for a simple testing setup on most OpenWrt devices.
 
 Procd init scripts gives us many nice to use features by default such as a restart strategy and the ability to store and read configuration from the UCI system.
 
@@ -23,7 +23,7 @@ As example, lets say we’d want to create shell script as a service and that th
 #!/bin/sh
 
 #these if statements will check input and place default values if no input is given
-#they will also check if input is a number so you can call 
+#they will also check if input is a number so you can call
 #this script with just a time and it will still work correctly
 
 if [ "$1" = '' ]; then
@@ -48,7 +48,7 @@ fi
 
 #endless loop, will print the message every X seconds as indicated in the $every variable
 
-while [ 1 ]; do 
+while [ 1 ]; do
     echo "Hey, $name, it's time to get up"
     sleep $every
 done
@@ -227,31 +227,31 @@ With that line in place we are able to restart the service whenever only our con
 
 There are a couple of more options that can be configured in a procd scripts ‘instance block’ that might be handy to know about. I’ll list a few here, but this is by no means covering everything.
 
-- **respawn**  
-  respawn your service automatically when it terminates for some reason.  
+- **respawn**
+  respawn your service automatically when it terminates for some reason.
   `procd_set_param respawn \
         ${respawn_threshold:-3600} \
-        ${respawn_timeout:-5} ${respawn_retry:-5}`  
+        ${respawn_timeout:-5} ${respawn_retry:-5}`
   In this example we respawn if process terminates sooner than respawn_threshold, it is considered crashed and after 5 retries the service is stopped. However, if it terminates later than respawn_threshold, it would be respawned indefinitely.
 
 <!-- -->
 
-- **pidfile**  
-  Configure where to store the pid file  
+- **pidfile**
+  Configure where to store the pid file
   `procd_set_param pidfile $PIDFILE`
 
 <!-- -->
 
-- **env vars**  
-  Pass environment variables to your process with  
+- **env vars**
+  Pass environment variables to your process with
   `procd_set_param env A_VAR=avalue`
 
 <!-- -->
 
-- **ulimit**  
-  If you need to set resource limits for your process you can use  
-  `procd_set_param limits core="unlimited"`  
-  To see the system wide settings for ulimt on an OpenWrt device you can run  
+- **ulimit**
+  If you need to set resource limits for your process you can use
+  `procd_set_param limits core="unlimited"`
+  To see the system wide settings for ulimt on an OpenWrt device you can run
   `$ ulimit -a
   -f: file size (blocks)             unlimited
   -t: cpu time (seconds)             unlimited
@@ -267,8 +267,8 @@ There are a couple of more options that can be configured in a procd scripts ‘
   -e: scheduling priority            0
   -r: real-time priority             0
   `
-- **user**  
-  To change the user that runs the service you can use  
-  \<code\> procd_set_param user nobody \</code\>  
-  Default OpenWrt only has a ‘root’ user or ‘nobody’ as the process owner.  
+- **user**
+  To change the user that runs the service you can use
+  \<code\> procd_set_param user nobody \</code\>
+  Default OpenWrt only has a ‘root’ user or ‘nobody’ as the process owner.
   You can add users with the usual linux way, see [Create a non-privileged user in OpenWrt](/docs/guide-user/security/secure.access#create_a_non-privileged_user_in_openwrt) or if you are creating an actual package you can use [buildpackage defines](/docs/guide-developer/packages#buildpackage_defines) to make OpenWrt generate the user when the package is installed.

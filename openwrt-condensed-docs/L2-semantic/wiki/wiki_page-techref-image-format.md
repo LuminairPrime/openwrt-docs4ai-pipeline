@@ -2,16 +2,15 @@
 title: Image formats
 module: wiki
 origin_type: wiki_page
-token_count: 2236
+token_count: 2161
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-image-format.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Image formats
 
-\<WRAP center round info 50%\> You can help to improve this page by adding explanations for the different firmware types below.  
-\</WRAP\>
+ You can help to improve this page by adding explanations for the different firmware types below.
 
 If you are confused by the many different firmware types and extensions in the [OpenWrt firmware downloads](/toh/views/toh_fwdownload) table, this pages tries to explain a bit about this topic.
 
@@ -63,19 +62,19 @@ Linux core, generally without compression or appended headers.
 
 ### ubifs
 
-\<color \#ed1c24\>??\</color\>
+??
 
 ### ubi
 
-\<color \#ed1c24\>??\</color\>
+??
 
 ### tftp
 
-\<color \#ed1c24\>Designed to be loaded from tftp server. Device in recovery mode?\</color\>
+Designed to be loaded from tftp server. Device in recovery mode?
 
 ### u-boot
 
-\<color \#ed1c24\>This is an image format designed for U-Boot loader. Same as initramfs-or-uImage?\</color\>
+This is an image format designed for U-Boot loader. Same as initramfs-or-uImage?
 
 ### ubinized.bin
 

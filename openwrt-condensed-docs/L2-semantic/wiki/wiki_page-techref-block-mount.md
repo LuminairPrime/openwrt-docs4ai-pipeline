@@ -2,10 +2,10 @@
 title: Mounting Block Devices
 module: wiki
 origin_type: wiki_page
-token_count: 2070
+token_count: 2067
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-block-mount.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Mounting Block Devices
@@ -31,9 +31,9 @@ With the new block mount mechanism you can run `block info` to get the same outp
 :!: For ntfs mount [read here](https://forum.openwrt.org/t/block-mount-ntfs-not-a-tty/64350)
 
     root@OpenWrt:~# blkid
-    /dev/sda1: TYPE="ext2" 
-    /dev/sda2: UUID="890c87d4-e276-4fb0-a34a-296db408d792" TYPE="ext4" 
-    /dev/sdb1: LABEL="OPENWRT-BTRFS" UUID="2412e056-a1d8-4710-bf0e-d54b8ff0662f" UUID_SUB="edd04b0f-ccf6-4978-9d76-1fa17921fe58" TYPE="btrfs" 
+    /dev/sda1: TYPE="ext2"
+    /dev/sda2: UUID="890c87d4-e276-4fb0-a34a-296db408d792" TYPE="ext4"
+    /dev/sdb1: LABEL="OPENWRT-BTRFS" UUID="2412e056-a1d8-4710-bf0e-d54b8ff0662f" UUID_SUB="edd04b0f-ccf6-4978-9d76-1fa17921fe58" TYPE="btrfs"
     root@OpenWrt:~# block info
     /dev/sda1: VERSION="1.0" TYPE="ext2"
     /dev/sda2: UUID="890c87d4-e276-4fb0-a34a-296db408d792" VERSION="1.0" TYPE="ext4"

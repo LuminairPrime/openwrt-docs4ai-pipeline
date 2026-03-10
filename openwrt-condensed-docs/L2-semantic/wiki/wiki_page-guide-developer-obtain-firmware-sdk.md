@@ -2,16 +2,16 @@
 title: Using the SDK
 module: wiki
 origin_type: wiki_page
-token_count: 1614
+token_count: 1599
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-obtain-firmware-sdk.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Using the SDK
 
-\<WRAP center round info 60%\> THIS IS THE *OLD* DOCUMENT :!:  
-**See [Using the SDK](/docs/guide-developer/toolchain/using_the_sdk) for the latest version** :!: \</WRAP\>
+ THIS IS THE *OLD* DOCUMENT :!:
+**See [Using the SDK](/docs/guide-developer/toolchain/using_the_sdk) for the latest version** :!:
 
 The [SDK](https://en.wikipedia.org/wiki/Software_development_kit) is a relocatable, precompiled OpenWrt [toolchain](https://en.wikipedia.org/wiki/Toolchain) suitable to [cross compile](https://en.wikipedia.org/wiki/Cross_compile) single [userspace](https://en.wikipedia.org/wiki/User_space) packages for a specific target without compiling the whole system from scratch.
 

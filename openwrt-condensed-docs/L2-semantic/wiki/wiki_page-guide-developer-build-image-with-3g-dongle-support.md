@@ -2,10 +2,10 @@
 title: Building image with support for 3g/4g and usb tethering
 module: wiki
 origin_type: wiki_page
-token_count: 1771
+token_count: 1767
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-build-image-with-3g-dongle-support.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Building image with support for 3g/4g and usb tethering
@@ -46,50 +46,48 @@ Select the following modules by pressing `y` to include the modules within the c
 Select all subsets if you want perfect support for usb network interfaces, including Android and iPhone tethering. Some newer 4g dongles use usb network interface (rndis) instead of legacy serial protocol.
 
     <*> kmod-usb-net............... Kernel modules for USB-to-Ethernet convertors
-      <*>   kmod-usb-net-asix...... Kernel module for USB-to-Ethernet Asix convertors  
-      <*>   kmod-usb-net-cdc-eem..................... Support for CDC EEM connections  
-      -*-   kmod-usb-net-cdc-ether.............. Support for cdc ethernet connections  
-      <*>   kmod-usb-net-cdc-mbim..................... Kernel module for MBIM Devices  
-      -*-   kmod-usb-net-cdc-ncm..................... Support for CDC NCM connections  
-      <*>   kmod-usb-net-cdc-subset...... Support for CDC Ethernet subset connections  
-      <*>   kmod-usb-net-dm9601-ether........ Support for DM9601 ethernet connections  
-      <*>   kmod-usb-net-hso.. Kernel module for Option USB High Speed Mobile Devices  
-      <*>   kmod-usb-net-ipheth..................... Apple iPhone USB Ethernet driver  
-      <*>   kmod-usb-net-kalmia................... Samsung Kalmia based LTE USB modem  
-      <*>   kmod-usb-net-kaweth.. Kernel module for USB-to-Ethernet Kaweth convertors  
-      <*>   kmod-usb-net-mcs7830                                                       
-      <*>   kmod-usb-net-pegasus                                                       
-      <*>   kmod-usb-net-qmi-wwan.................................... QMI WWAN driver  
-      <*>   kmod-usb-net-rndis......................... Support for RNDIS connections  
-      <*>   kmod-usb-net-sierrawireless.......... Support for Sierra Wireless devices  
+      <*>   kmod-usb-net-asix...... Kernel module for USB-to-Ethernet Asix convertors
+      <*>   kmod-usb-net-cdc-eem..................... Support for CDC EEM connections
+      -*-   kmod-usb-net-cdc-ether.............. Support for cdc ethernet connections
+      <*>   kmod-usb-net-cdc-mbim..................... Kernel module for MBIM Devices
+      -*-   kmod-usb-net-cdc-ncm..................... Support for CDC NCM connections
+      <*>   kmod-usb-net-cdc-subset...... Support for CDC Ethernet subset connections
+      <*>   kmod-usb-net-dm9601-ether........ Support for DM9601 ethernet connections
+      <*>   kmod-usb-net-hso.. Kernel module for Option USB High Speed Mobile Devices
+      <*>   kmod-usb-net-ipheth..................... Apple iPhone USB Ethernet driver
+      <*>   kmod-usb-net-kalmia................... Samsung Kalmia based LTE USB modem
+      <*>   kmod-usb-net-kaweth.. Kernel module for USB-to-Ethernet Kaweth convertors
+      <*>   kmod-usb-net-mcs7830
+      <*>   kmod-usb-net-pegasus
+      <*>   kmod-usb-net-qmi-wwan.................................... QMI WWAN driver
+      <*>   kmod-usb-net-rndis......................... Support for RNDIS connections
+      <*>   kmod-usb-net-sierrawireless.......... Support for Sierra Wireless devices
       <*>   kmod-usb-net-smsc95xx. SMSC LAN95XX based USB 2.0 10/100 ethernet devices
-      
 
 **kmod-usb-serial** -\> to support legacy 3g dongles.
 
 Select all subsets to ensure that your dongle works. Most 3g dongles use the option driver or generic serial driver to work. Note that option driver has better capability of distinguishing between modem serial interfaces and storage interface than generic usb serial driver.
 
-    <*> kmod-usb-serial..................... Support for USB-to-Serial converters    
-      <*>   kmod-usb-serial-ark3116........ Support for ArkMicroChips ARK3116 devices  
-      <*>   kmod-usb-serial-belkin........................ Support for Belkin devices  
-      <*>   kmod-usb-serial-ch341.......................... Support for CH341 devices  
-      <*>   kmod-usb-serial-cp210x........... Support for Silicon Labs cp210x devices  
-      <*>   kmod-usb-serial-cypress-m8.............. Support for CypressM8 USB-Serial  
-      <*>   kmod-usb-serial-ftdi............................ Support for FTDI devices  
-      <*> kmod-usb-serial-ipw.................... Support for IPWireless 3G devices    
-      <*> kmod-usb-serial-keyspan........ Support for Keyspan USB-to-Serial devices    
-      <*> kmod-usb-serial-mct.............. Support for Magic Control Tech. devices    
-      <*> kmod-usb-serial-mos7720.............. Support for Moschip MOS7720 devices    
-      <*> kmod-usb-serial-motorola-phone............ Support for Motorola usb phone    
-      <*> kmod-usb-serial-option................... Support for Option HSDPA modems    
-      <*> kmod-usb-serial-oti6858...... Support for Ours Technology OTI6858 devices    
-      <*> kmod-usb-serial-pl2303............... Support for Prolific PL2303 devices    
-      <*> kmod-usb-serial-qualcomm................. Support for Qualcomm USB serial    
-      <*> kmod-usb-serial-sierrawireless....... Support for Sierra Wireless devices    
-      <*> kmod-usb-serial-ti-usb...................... Support for TI USB 3410/5052    
-      <*> kmod-usb-serial-visor............... Support for Handspring Visor devices    
+    <*> kmod-usb-serial..................... Support for USB-to-Serial converters
+      <*>   kmod-usb-serial-ark3116........ Support for ArkMicroChips ARK3116 devices
+      <*>   kmod-usb-serial-belkin........................ Support for Belkin devices
+      <*>   kmod-usb-serial-ch341.......................... Support for CH341 devices
+      <*>   kmod-usb-serial-cp210x........... Support for Silicon Labs cp210x devices
+      <*>   kmod-usb-serial-cypress-m8.............. Support for CypressM8 USB-Serial
+      <*>   kmod-usb-serial-ftdi............................ Support for FTDI devices
+      <*> kmod-usb-serial-ipw.................... Support for IPWireless 3G devices
+      <*> kmod-usb-serial-keyspan........ Support for Keyspan USB-to-Serial devices
+      <*> kmod-usb-serial-mct.............. Support for Magic Control Tech. devices
+      <*> kmod-usb-serial-mos7720.............. Support for Moschip MOS7720 devices
+      <*> kmod-usb-serial-motorola-phone............ Support for Motorola usb phone
+      <*> kmod-usb-serial-option................... Support for Option HSDPA modems
+      <*> kmod-usb-serial-oti6858...... Support for Ours Technology OTI6858 devices
+      <*> kmod-usb-serial-pl2303............... Support for Prolific PL2303 devices
+      <*> kmod-usb-serial-qualcomm................. Support for Qualcomm USB serial
+      <*> kmod-usb-serial-sierrawireless....... Support for Sierra Wireless devices
+      <*> kmod-usb-serial-ti-usb...................... Support for TI USB 3410/5052
+      <*> kmod-usb-serial-visor............... Support for Handspring Visor devices
       -*- kmod-usb-serial-wwan..................... Support for GSM and CDMA modems
-      
 
 ### Additional packages required for 3g functionality
 

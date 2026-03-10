@@ -2,10 +2,10 @@
 title: odhcpd
 module: wiki
 origin_type: wiki_page
-token_count: 5895
+token_count: 5842
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-odhcpd.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # odhcpd
@@ -78,16 +78,15 @@ Configuration for the odhcp daemon.
 | `loglevel`     | integer | `4`                       | Syslog level priority (0-7). 0=emer, 1=alert, 2=crit, 3=err, 4=warn, 5=notice, 6=info, 7=debug |
 | `enable_tz`    | boolean | `1`                       | Set to `0` to disable sending option 41 and 42 timezone info to clients that request them      |
 
-\<WRAP center round important 80%\> **RFC9096 § 3.5 SLAAC compliance relies on the `piodir` option, \<color \#ed1c24\>which may wear out the flash under certain conditions\</color\>.  
-For example: ISPs with dynamic IPv6 prefixes which disconnect the clients every X hours.  
-\<color \#ed1c24\>Therefore, setting `dhcp.odhcpd.piodir` to persistent storage in the router flash is not advisable\</color\> and should be set to other kinds of persistent storage such as USBs, SDs, NVMEs...  
-In order to prevent wearing out the router flash it's set to ephemeral storage by default:  
-`uci set dhcp.odhcpd.piodir=/tmp/odhcpd-piodir`  
-`uci commit dhcp`**  
-  
-If dhcp.odhcpd.piodir is set to persistent storage, you should also add that directory to sysupgrade.conf in order to preserve the PIOs when OpenWrt is upgraded.  
-`$(uci -q get dhcp.odhcpd.piodir) >> /etc/sysupgrade.conf`  
-\</WRAP\>
+ **RFC9096 § 3.5 SLAAC compliance relies on the `piodir` option, which may wear out the flash under certain conditions.
+For example: ISPs with dynamic IPv6 prefixes which disconnect the clients every X hours.
+Therefore, setting `dhcp.odhcpd.piodir` to persistent storage in the router flash is not advisable and should be set to other kinds of persistent storage such as USBs, SDs, NVMEs...
+In order to prevent wearing out the router flash it's set to ephemeral storage by default:
+`uci set dhcp.odhcpd.piodir=/tmp/odhcpd-piodir`
+`uci commit dhcp`**
+
+If dhcp.odhcpd.piodir is set to persistent storage, you should also add that directory to sysupgrade.conf in order to preserve the PIOs when OpenWrt is upgraded.
+`$(uci -q get dhcp.odhcpd.piodir) >> /etc/sysupgrade.conf`
 
 ### dhcp section
 

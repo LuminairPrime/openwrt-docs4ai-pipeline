@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 5459
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-package-policies.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # OpenWrt packages
@@ -157,7 +157,7 @@ Whenever possible, try to avoid redefining the default macros but use the provid
 
 Example for a bad redefinition:
 
-    define Build/Compile 
+    define Build/Compile
             (cd $(PKG_BUILD_DIR)/nonstandard/dir/; make)
     endef
 

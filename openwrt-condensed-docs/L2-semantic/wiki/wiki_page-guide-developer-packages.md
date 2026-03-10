@@ -2,10 +2,10 @@
 title: Creating packages
 module: wiki
 origin_type: wiki_page
-token_count: 11054
+token_count: 11047
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-packages.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Creating packages
@@ -251,7 +251,7 @@ define Build/Prepare
 endef
 ```
 
-    Examples: px5g, px5g-standalone, usbutils, debootstrap, gcc, 
+    Examples: px5g, px5g-standalone, usbutils, debootstrap, gcc,
 
 ## BuildPackage defines
 
@@ -424,11 +424,11 @@ Some examples of packages that *provide* host tools (and their makefiles):
 
 If you want to build only the host tool to test or check a compilation error for host compilation, then you could also build only the host tool with the following command.
 
-- Compile:  
+- Compile:
   make ./package/\<package_name\>/**host**/compile
-- Clean:  
+- Clean:
   make ./package/\<package_name\>/**host**/clean
-- Update:  
+- Update:
   make ./package/\<package_name\>/**host**/update
 
 The make arguments **QUILT=1** and **V=s** are also valid.
@@ -483,16 +483,16 @@ Create a Config.in file directory where the Makefile is located with the content
             depends on PACKAGE_mjpg-streamer
             config MJPEG_STREAMER_INPUT_FILE
                 bool "File input plugin"
-                help 
+                help
                     You can stream pictures from jpg files on the filesystem
                 default n
-        
+
             config MJPEG_STREAMER_INPUT_UVC
                 bool "UVC input plugin"
                 help
                     You can stream pictures from an Universal Video Class compatible webcamera
                 default y
-        
+
             config MJPEG_STREAMER_FPS
                 depends MJPEG_STREAMER_INPUT_UVC
                 int "Maximum FPS"
@@ -512,16 +512,16 @@ Create a Config.in file directory where the Makefile is located with the content
                 depends MJPEG_STREAMER_INPUT_UVC
                 string "Device"
                 default /dev/video0
-    
+
             config MJPEG_STREAMER_INPUT_GSPCA
                 bool "GSPCA input plugin"
                 help
                     You can stream pictures from a gspca supported webcamera Note this module is deprecated, use the UVVC plugin instead
                 default n
         endmenu
-    
+
         # ......
-    
+
     endmenu
 ```
 
@@ -789,8 +789,8 @@ endef
 
 #### Make a Kernel Module required for boot
 
-Some modules may be required for the correct operation of the device. One example would be an ethernet driver required for the correct operation of the switch on the device.  
-To flag a Kernel Module this way it's needed to append `1` to `AUTOLOAD` at the end.  
+Some modules may be required for the correct operation of the device. One example would be an ethernet driver required for the correct operation of the switch on the device.
+To flag a Kernel Module this way it's needed to append `1` to `AUTOLOAD` at the end.
 This cause the module file to get placed in /etc/modules-boot.d/ instead of /etc/modules.d/, modules-boot.d is processed by procd init before launching preinit and correctly works both in a normal boot and in a failsafe boot. All of this is with the assumption that the module is installed in the firmware and not with OPKG on a loaded system as **it needs to be present before /overlay is mounted**. (OPKG installed module are present only in after /overlay is mounted)
 
 For example here is `phy-realtek` in `package/kernel/linux/modules/netdevices.mk`:
@@ -816,13 +816,13 @@ Package/\<name\>/install:
 
 A set of commands to copy files out of the compiled source and into the ipkg which is represented by the \$(1) directory. Note that there are currently 4 defined install macros:
 
-    INSTALL_DIR 
+    INSTALL_DIR
     install -d -m0755
-    INSTALL_BIN 
+    INSTALL_BIN
     install -m0755
-    INSTALL_DATA 
+    INSTALL_DATA
     install -m0644
-    INSTALL_CONF 
+    INSTALL_CONF
     install -m0600
 
 ## Packaging a service

@@ -2,10 +2,10 @@
 title: Hotplug -- Legacy
 module: wiki
 origin_type: wiki_page
-token_count: 3474
+token_count: 3470
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-hotplug-legacy.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Hotplug -- Legacy
@@ -108,7 +108,7 @@ fi'' \|
 
 **`/etc/hotplug.d/usb/20-cp210x`**
 
-An other script to create a symlink instead of renaming the device.  
+An other script to create a symlink instead of renaming the device.
 I test if DEVICE_NAME is empty because when I plug usb device I retrieve two add event, and the first come before created device, so symlink fails.
 
 \| ''#!/bin/sh
@@ -134,7 +134,7 @@ fi
 if \[ "\${PRODUCT}" = "\${CP210_PRODID}" \];
 
      then if [ "${ACTION}" = "remove" ];
-           then 
+           then
            rm /dev/${SYMLINK}
            logger -t Hotplug Symlink /dev/${SYMLINK} removed
      fi
@@ -182,9 +182,9 @@ Auto start mjpg-streamer when an usb camera is plugged in. Firstly, remove '^' b
 
 ## Coldplug
 
-If you had notice the udev and eudev were removed in the openwrt 18.0.\* release, don't be afraid because you still can make the things works.  
-**Using hotplug scripts as coldplug**  
-You just need to pay atention at the ACTION env var, at the boot are executed 'bind' actions.  
+If you had notice the udev and eudev were removed in the openwrt 18.0.\* release, don't be afraid because you still can make the things works.
+**Using hotplug scripts as coldplug**
+You just need to pay atention at the ACTION env var, at the boot are executed 'bind' actions.
 So, just add this option to hotplug run accordinly. In my case I used this:
 
 Take a look into file `/etc/hotplug.d/usb/22-symlinks`

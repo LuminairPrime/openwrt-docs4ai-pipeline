@@ -2,10 +2,10 @@
 title: Setting up a build VM in VirtualBox
 module: wiki
 origin_type: wiki_page
-token_count: 1006
+token_count: 1005
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-buildserver-virtualbox.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Setting up a build VM in VirtualBox
@@ -80,7 +80,7 @@ You are now editing the list of servers to get updates from.
 - Type ctrl-x and then y and then enter to save and exit.
 
 ``` bash
-su - 
+su -
 apt update
 apt dist-upgrade
 apt install linux-headers-amd64 make sudo

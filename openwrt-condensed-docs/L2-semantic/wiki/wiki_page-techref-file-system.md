@@ -2,10 +2,10 @@
 title: OpenWrt File System Hierarchy / Memory Usage
 module: wiki
 origin_type: wiki_page
-token_count: 1618
+token_count: 1566
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-file-system.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # OpenWrt File System Hierarchy / Memory Usage
@@ -24,10 +24,10 @@ language: text
 
 ### Mount Points
 
-- \<color magenta\>`/`\</color\> this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
-- \<color magenta\>`/rom`\</color\> contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SqashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, so called *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
-- \<color magenta\>`/overlay`\</color\> is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formated with JFFS2.  
-  Rather than deleting the files, insert a whiteout, a special high-priority entry that marks the file as deleted. File system code that sees a whiteout entry for file F behaves as if F does not exist.  
+- `/` this is your entire root filesystem, it comprises `/rom` and `/overlay`. Please ignore `/rom` and `/overlay` and use exclusively `/` for your daily routines!
+- `/rom` contains all the basic files, like `busybox`, `dropbear` or `iptables`. It also includes default configuration files used when booting into [OpenWrt Failsafe mode](/docs/guide-user/troubleshooting/failsafe_and_factory_reset). It does not contain the Linux kernel. All files in this directory are located on the SqashFS partition, and thus cannot be altered or deleted. But, because we use overlay_fs filesystem, so called *overlay-whiteout*-symlinks can be created on the JFFS2 partition.
+- `/overlay` is the writable part of the file system that gets merged with `/rom` to create a uniform `/`-tree. It contains anything that was written to the router after [installation](/docs/guide-user/installation/generic.flashing), e.g. changed configuration files, additional packages installed with `opkg`, etc. It is formated with JFFS2.
+  Rather than deleting the files, insert a whiteout, a special high-priority entry that marks the file as deleted. File system code that sees a whiteout entry for file F behaves as if F does not exist.
   `#!/bin/sh
   # shows all overlay-whiteout symlinks in the directory /overlay
 
@@ -39,12 +39,12 @@ language: text
       fi
     done
   `
-- \<color magenta\>`/tmp`\</color\> is a tmpfs-partition `#!/bin/sh
+- `/tmp` is a tmpfs-partition `#!/bin/sh
   # shows current size of the tmpfs-partition mounted to /tmp
   calc_tmpfs_size() {pi_size=$(awk '/MemTotal:/ {l=10485760;mt=($2*1024);print((s=mt/2)<l)&&(mt>l)?mt-l:s}' /proc/meminfo)}}
   echo $pi_size
   `
-- \<color magenta\>`/dev`\</color\> [Driver Core: devtmpfs - kernel-maintained tmpfs-based /dev](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=2b2af54a5bb6f7e80ccf78f20084b93c398c3a8b)
+- `/dev` [Driver Core: devtmpfs - kernel-maintained tmpfs-based /dev](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=2b2af54a5bb6f7e80ccf78f20084b93c398c3a8b)
 
 ## History
 

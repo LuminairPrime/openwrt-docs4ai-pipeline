@@ -2,19 +2,19 @@
 title: The Bootloader
 module: wiki
 origin_type: wiki_page
-token_count: 2329
+token_count: 2141
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-bootloader.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # The Bootloader
 
 The [Bootloader](https://en.wikipedia.org/wiki/Bootloader) is a piece of software that is executed every time the hardware device is powered up. It is executable machine code and thus [ARCH](/docs/techref/hardware/cpu#the_isa_instruction_set_architecture)-specific. It's quite heavily device-specific because its main task is to initialize all the low-level hardware details. The bootloader can be contained on a separate [EEPROM](https://en.wikipedia.org/wiki/EEPROM) (very seldom) or directly on flash storage (most common).
 
-\<WRAP round tip\> Being a piece of software, the bootloader is considered part of the firmware, but \<color red\>**the bootloader is not part of OpenWrt!**\</color\>  
-Only on seldom occasions a change of the *bootloader settings* or the *bootloader code* is necessary to allow for booting/installing OpenWrt  
-There are a number of bootloaders under diverse [software license](https://en.wikipedia.org/wiki/software license)s \</WRAP\>
+ Being a piece of software, the bootloader is considered part of the firmware, but **the bootloader is not part of OpenWrt!**
+Only on seldom occasions a change of the *bootloader settings* or the *bootloader code* is necessary to allow for booting/installing OpenWrt
+There are a number of bootloaders under diverse [software license](https://en.wikipedia.org/wiki/software license)s
 
 ## Main Function
 
@@ -67,27 +67,27 @@ The bootloader can be more or less sophisticated, and offer none to many additio
 
 An embedded bootloader fulfills the same functionality as the [BIOS](https://en.wikipedia.org/wiki/BIOS) plus [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) together on a PC.
 
-- [BIOS](https://en.wikipedia.org/wiki/BIOS) \<color red\>proprietary\</color\> the BIOS of your PC *is* nothing else but a bootloader!
-- [UEFI](https://en.wikipedia.org/wiki/Extensible Firmware Interface) \<color red\>proprietary\</color\> successor want-to-be of the BIOS
-- [coreboot](https://en.wikipedia.org/wiki/coreboot) \<color green\>GPLv2\</color\> successor of the BIOS, alternative to [UEFI](../wiki/wiki_page-guide-developer-uefi-bootable-image.md) based on the Linux kernel;  
-  support for x86, x86-64 and ARM. There is no MIPS support.  
+- [BIOS](https://en.wikipedia.org/wiki/BIOS) proprietary the BIOS of your PC *is* nothing else but a bootloader!
+- [UEFI](https://en.wikipedia.org/wiki/Extensible Firmware Interface) proprietary successor want-to-be of the BIOS
+- [coreboot](https://en.wikipedia.org/wiki/coreboot) GPLv2 successor of the BIOS, alternative to [UEFI](../wiki/wiki_page-guide-developer-uefi-bootable-image.md) based on the Linux kernel;
+  support for x86, x86-64 and ARM. There is no MIPS support.
   Coreboot does only "a little bit of hardware initialization"
-- [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) \<color green\>GPLv2\</color\>
+- [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) GPLv2
 
 ### Embedded Devices
 
-- **[Das U-Boot](/docs/techref/bootloader/uboot)** \<color green\>GPLv2\</color\> arguably the richest, most flexible, and most actively developed FOSS bootloader available
-- [pepe2k-u-boot_mod](/docs/techref/bootloader/pepe2k) \<color green\>GPLv2\</color\> U-Boot 1.1.4 modification for routers <https://github.com/pepe2k/u-boot_mod>
-- [RedBoot](/docs/techref/bootloader/redboot) \<color green\>mod GPL\</color\>
-- [CFE](/docs/techref/bootloader/cfe) \<color orange\>BSD like\</color\> by Broadcom; the orange color means, the OEM is not obliged to deliver the source code
-- [Adam2](/docs/techref/bootloader/adam2) \<color red\>proprietary\</color\> for AR7/UR8
-  - [pspboot](/docs/techref/bootloader/pspboot) \<color red\>proprietary\</color\> the only slightly compatible successor of Adam2.
-- [brnboot](/docs/techref/bootloader/brnboot) \<color red\>unknown\</color\> sometimes called AMAZON Loader.
-- [bootbase](/docs/techref/bootloader/bootbase) \<color red\>unknown\</color\> used by the ZyXEL Prestige 660HW-xx and Prestige 660M-xx devices (and probably other ZyXEL products). <http://www.ixo.de/info/zyxel_uclinux/>
-- [jboot](/docs/techref/bootloader/jboot) \<color red\>unknown\</color\>
-- [myloader](/docs/techref/bootloader/myloader) \<color red\>unknown\</color\>
-- [pp_boot](/docs/techref/bootloader/pp_boot) \<color red\>unknown\</color\>
-- [yamon](/docs/techref/bootloader/yamon) \<color red\>unknown\</color\> by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
+- **[Das U-Boot](/docs/techref/bootloader/uboot)** GPLv2 arguably the richest, most flexible, and most actively developed FOSS bootloader available
+- [pepe2k-u-boot_mod](/docs/techref/bootloader/pepe2k) GPLv2 U-Boot 1.1.4 modification for routers <https://github.com/pepe2k/u-boot_mod>
+- [RedBoot](/docs/techref/bootloader/redboot) mod GPL
+- [CFE](/docs/techref/bootloader/cfe) BSD like by Broadcom; the orange color means, the OEM is not obliged to deliver the source code
+- [Adam2](/docs/techref/bootloader/adam2) proprietary for AR7/UR8
+  - [pspboot](/docs/techref/bootloader/pspboot) proprietary the only slightly compatible successor of Adam2.
+- [brnboot](/docs/techref/bootloader/brnboot) unknown sometimes called AMAZON Loader.
+- [bootbase](/docs/techref/bootloader/bootbase) unknown used by the ZyXEL Prestige 660HW-xx and Prestige 660M-xx devices (and probably other ZyXEL products). <http://www.ixo.de/info/zyxel_uclinux/>
+- [jboot](/docs/techref/bootloader/jboot) unknown
+- [myloader](/docs/techref/bootloader/myloader) unknown
+- [pp_boot](/docs/techref/bootloader/pp_boot) unknown
+- [yamon](/docs/techref/bootloader/yamon) unknown by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
 - [Breed](/docs/techref/bootloader/Breed) - Breed booatloader
 - [bl-mt798x](/docs/techref/bootloader/bl-mt798x) - ATF and u-boot for mt798x-based routers
 

@@ -2,26 +2,26 @@
 title: Overview
 module: wiki
 origin_type: wiki_page
-token_count: 1472
+token_count: 1468
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-overview.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Overview
 
 If you are familiar with GNU/Linux systems, you should find your way around pretty easily; if you are not, you will need to learn some basic concepts and terminology first.
 
-You might have read that OpenWrt is a **GNU/Linux distribution** (or "distro") aimed at embedded devices.  
-A GNU/Linux **distribution** is a project that creates and maintains *packages*, used with a Linux kernel to create a GNU/Linux operating system tailored to users' needs.  
-A **package** is a compressed archive containing a program, a [library](https://en.wikipedia.org/wiki/Library_(computing)) or some scripts, its accompanying configuration files and also information used to integrate it in the operating system. These packages are handled by a **package manager** (opkg in OpenWrt); a program that downloads/opens/installs/uninstalls the packages.  
+You might have read that OpenWrt is a **GNU/Linux distribution** (or "distro") aimed at embedded devices.
+A GNU/Linux **distribution** is a project that creates and maintains *packages*, used with a Linux kernel to create a GNU/Linux operating system tailored to users' needs.
+A **package** is a compressed archive containing a program, a [library](https://en.wikipedia.org/wiki/Library_(computing)) or some scripts, its accompanying configuration files and also information used to integrate it in the operating system. These packages are handled by a **package manager** (opkg in OpenWrt); a program that downloads/opens/installs/uninstalls the packages.
 So, an OpenWrt firmware is made by assembling packages around a Linux kernel.
 
 Each package is compiled separately, and when all are done the needed packages are "installed" in a temporary directory that will then be the compressed-read-only [SquashFS](https://en.wikipedia.org/wiki/SquashFS) partition in the device firmware.
 
 While the kernel is handled as a package, it is added to firmware images in the special way each device's bootloader expects. So you can replace the stock firmware without touching the bootloader (which is dangerous and not always possible).
 
-The last step in the build process is actually creating the firmware file, the file to install or upgrade OpenWrt.  
+The last step in the build process is actually creating the firmware file, the file to install or upgrade OpenWrt.
 This file is usually a memory image ready to be written as is on the internal flash storage of the device. You may notice that many developers simply call it "image" on IRC or in the mailing list.
 
 ## How Packages are Compiled

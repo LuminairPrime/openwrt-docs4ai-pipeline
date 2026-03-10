@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 1994
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-debugging.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # Debugging
@@ -85,7 +85,7 @@ root@OpenWrt:~# ps | grep hostapd
 let say for the sake of argument you're only interested in addressing a problem with the phy0 hostapd. First check the current level for this hostapd:
 
 ``` bash
-root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf 
+root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf
 logger_syslog_level=2
 logger_stdout_level=2
 ```
@@ -96,7 +96,7 @@ logger_stdout_level=2
 root@OpenWrt:~# uci set wireless.radio0.log_level=1
 root@OpenWrt:~# uci commit wireless
 root@OpenWrt:~# wifi up
-root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf 
+root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf
 logger_syslog_level=1
 logger_stdout_level=1
 ```

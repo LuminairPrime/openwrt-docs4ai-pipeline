@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 2767
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-feeds.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # OpenWrt Feeds
@@ -64,7 +64,7 @@ During the `install` step, packages from the feeds obtained during an \`update\`
 
 `make package/feeds/<feed_name>/<package_name>`
 
-    $ ./scripts/feeds 
+    $ ./scripts/feeds
     Usage: ./scripts/feeds <command> [options]
 
     Commands:

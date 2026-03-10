@@ -2,10 +2,10 @@
 title: ubus (OpenWrt micro bus architecture)
 module: wiki
 origin_type: wiki_page
-token_count: 6666
+token_count: 6664
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-ubus.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # ubus (OpenWrt micro bus architecture)
@@ -343,10 +343,10 @@ The RPC-JSON container format is:
 
 ``` javascript
 { "jsonrpc": "2.0",
-  "id": <unique-id-to-identify-request>, 
+  "id": <unique-id-to-identify-request>,
   "method": "call",
   "params": [
-             <ubus_rpc_session>, <ubus_object>, <ubus_method>, 
+             <ubus_rpc_session>, <ubus_object>, <ubus_method>,
              { <ubus_arguments> }
             ]
 }

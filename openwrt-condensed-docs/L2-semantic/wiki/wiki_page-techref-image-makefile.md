@@ -2,10 +2,10 @@
 title: image/Makefile Details
 module: wiki
 origin_type: wiki_page
-token_count: 1304
+token_count: 1303
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-image-makefile.md
-last_pipeline_run: '2026-03-09T22:23:42.960002+00:00'
+last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
 language: text
 ---
 # image/Makefile Details
@@ -58,7 +58,7 @@ to call a define for each use:
 Example of: **trunk/target/linux*/platform*/image/Makefile**
 
 ``` make
-# 
+#
 # Copyright (C) 2010 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
@@ -68,7 +68,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
 define Image/Prepare
-    
+
 endef
 
 define Image/Build/Initramfs
@@ -76,7 +76,7 @@ define Image/Build/Initramfs
 endef
 
 define Image/BuildKernel
-    
+
 endef
 
 define Image/Build/jffs2-64k
