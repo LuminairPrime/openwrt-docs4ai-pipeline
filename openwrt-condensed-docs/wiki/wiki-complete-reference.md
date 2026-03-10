@@ -1,15 +1,15 @@
 ---
 module: "wiki"
-total_token_count: 207956
+total_token_count: 200836
 section_count: 92
 is_monolithic: true
-generated: "2026-03-10T06:39:07.985313+00:00"
+generated: "2026-03-10T09:12:42.924835+00:00"
 ---
 
 # wiki Complete Reference
 
 > **Contains:** 92 documents concatenated
-> **Tokens:** ~207956 (cl100k_base)
+> **Tokens:** ~200836 (cl100k_base)
 
 ---
 
@@ -338,11 +338,8 @@ For creating the OpenWrt firmware your [bcm63xx](/docs/techref/hardware/soc/soc.
     `make kernel_menuconfig`
 4.  Add the board-id to the ./target/linux/brcm63xx/image/Makefile.
     **Example**
-    \<code\> \# Davolink DV2020
-
-<!-- -->
-
-      $(call Image/Build/CFE,$(1),DV2020,6348)</code>
+    \\# Davolink DV2020
+$(call Image/Build/CFE,$(1),DV2020,6348)
     - add the board-id with the parameters to ./build_dir/linux-brcm63xx/linux-2.6.37.4/arch/mips/bcm63xx/boards/board_bcm963xx.c\\ **Example**\\ <code>static struct board_info __initdata board_DV2020 = {
           .name                           = "DV2020",
           .expected_cpu_id                = 0x6348,
@@ -1504,8 +1501,6 @@ You are now editing the list of servers to get updates from.
 - Delete the lines containing "deb cdrom". Lines can be deleted with ctrl-k.
 - From the last two lines, remove the leading \# and space, and the -updates after bullseye. They should now look like this:
 
-<!-- -->
-
     deb http://deb.debian.org/debian/ bullseye main contrib
     deb-src http://deb.debian.org/debian/ bullseye main contrib
 
@@ -2368,8 +2363,6 @@ This page talks about what the DEPENDS:= line should look like.
 
 - If you specify a package name without any ornaments then that means that the current package cannot be selected unless the package named in enabled. e.g., in `tcpdump` above,
 
-<!-- -->
-
     DEPENDS:=libpcap
 
 would mean that tcpdump would not be shown as possible to be selected unless `libpcap` were already selected
@@ -2913,8 +2906,6 @@ For this example we assume that you name your feed `custom` and your project is 
 1.  Edit `/home/user/openwrt/feeds.conf.default`
 2.  Add a new line for your feed. `src-link custom /usr/src/openwrt/custom-feed/`
 
-<!-- -->
-
 1.  Update the feed: from the `<buildroot dir>` (e.g. `/home/user/openwrt`) do: `./scripts/feeds update custom`
 2.  And then install it `./scripts/feeds install -a -p custom`
 
@@ -2932,7 +2923,7 @@ The downloaded sources (referenced in package Makefiles) are not there... The do
 2.  [OpenWrt Buildroot – Installation](/docs/guide-developer/toolchain/install-buildsystem)
 3.  [OpenWrt Buildroot – Usage](/docs/guide-developer/toolchain/use-buildsystem)
 4.  OpenWrt Buildroot – Feeds
-5.  [OpenWrt Buildroot – Technical Reference](/docs/techref/buildroot) <img src="/meta/icons/tango/48px-construction.svg.png" width="16" alt="48px-construction.svg.png" /> this article needs *your* attention.
+5.  [OpenWrt Buildroot – Technical Reference](/docs/techref/buildroot)  this article needs *your* attention.
 
 ## Links
 
@@ -3090,8 +3081,6 @@ You bought yourself a new router, and it's nice. You can connect a hard disc to 
 - Depending on the [bootloader](/docs/techref/bootloader) that is being used, you could utilize different `commands` to gather hardware information. Please see the manual for that particular bootloader to get this done. Once you have the information you could keep it for yourself or post it online. Depending on how fast you are, there probably is going to be information regarding this already available or you are the first one. This simple step is necessary because the manufacturer usually does not document exactly what hardware has been installed. Now with this information you are going to use google or the search engine of your choice, to see what GNU/Linux drivers are available, and if, in which kernel version they have been integrated into. For example:
 - <http://en.wikipedia.org/wiki/Comparison_of_open_source_wireless_drivers#Linux> you can see, since which or until which Kernel version drivers for wireless radio circuitry, has been integrated.
 - But of course there is much more to a system, in this case in form of a SoC, then the wireless drivers. Anything needs drivers. For example the [VLYNQ](https://en.wikipedia.org/wiki/VLYNQ) needs to be supported by the Kernel. etc. And you are done. If you really want to continue, you could find help here:
-
-<!-- -->
 
 - <http://www.tldp.org/LDP/tlk/tlk.html> *The Linux Kernel*
 - <http://www.tldp.org/LDP/lkmpg/index.html> *The Linux Kernel Module Programming Guide*
@@ -3770,8 +3759,6 @@ Here we could place links to light-build libraries you could link against:
     - `umurmur`
 - `libmatrixssl` [MatrixSSL](https://en.wikipedia.org/wiki/MatrixSSL)
 
-<!-- -->
-
       *[[http://www.matrixssl.org/]] GPLv2+
         * ''[[docs:guide-user:services:webserver:http.mini-httpd]]''
     * ''libcyassl'' [[wp>CyaSSL]] [[http://www.yassl.com/yaSSL/Home.html]]
@@ -4111,11 +4098,7 @@ config umdns
 
 - The `option jail` **DOES WHAT?**
 
-<!-- -->
-
 - The `list network` lines indicate the interfaces where `umdns` advertises its names. The interface name is found from `/etc/config/network`, not the device name shown by `ifconfig`. So if the network configuration file contains `config interface 'vlan1'` in your `/etc/config/network`, use `vlan1`. To test for the correct name name use `ifstatus`.
-
-<!-- -->
 
 - It is considered unsafe to enable umdns on `wan` interface because it makes those hosts more visible to the external world.
 
@@ -4456,69 +4439,18 @@ An example in context:
 
 Flags can be added to a proto handler in `proto_protoname_init_config`, by setting their value to `1`. The information about all loaded protocols can be obtained by calling *ubus call network get_proto_handlers*.
 
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Name in <em>ubus call network get_proto_handlers</em></th>
-<th style="text-align: left;">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">force_link_default</td>
-<td style="text-align: left;">Instruct netifd to prefer link-based default routing behavior for the interface (affects how link state influences routing selection).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">immediate</td>
-<td style="text-align: left;">Protocol should be started/processed immediately upon attach instead of waiting for link or other conditions (useful for static/always-on protos).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">available</td>
-<td style="text-align: left;">init_available</td>
-<td style="text-align: left;">Indicates the protocol handler is present/usable on the system (1 = available, 0 = not).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">lasterror</td>
-<td style="text-align: left;">last_error</td>
-<td style="text-align: left;">True when the last setup attempt failed and the handler wants to expose that state.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">no_device</td>
-<td style="text-align: left;">no_device</td>
-<td style="text-align: left;">Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">no_device_config</td>
-<td style="text-align: left;">no_device_config</td>
-<td style="text-align: left;">Protocol has no device-specific configuration (config applies to the protocol itself).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">no_proto_task</td>
-<td style="text-align: left;">no_task</td>
-<td style="text-align: left;">Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.<br />
-<br />
-As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">peer_detect</td>
-<td style="text-align: left;">peer_detect</td>
-<td style="text-align: left;">netifd calls renew when it detects that a &lt;proto&gt;_peer in the config changed.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">renew_handler</td>
-<td style="text-align: left;">renew_available</td>
-<td style="text-align: left;">Protocol implements the "renew" action/handler <code>proto_*_renew()</code>, which can be called by netifd.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">teardown_on_l3_link_down</td>
-<td style="text-align: left;">teardown_on_l3_link_down</td>
-<td style="text-align: left;">If the l3 device receives state down (e.g. ifdown), call the <code>proto_*_teardown()</code>. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task</td>
-</tr>
-</tbody>
-</table>
+| Name | Name in *ubus call network get_proto_handlers* | Meaning |
+| --- | --- | --- |
+|   | force_link_default | Instruct netifd to prefer link-based default routing behavior for the interface (affects how link state influences routing selection). |
+|   | immediate | Protocol should be started/processed immediately upon attach instead of waiting for link or other conditions (useful for static/always-on protos). |
+| available | init_available | Indicates the protocol handler is present/usable on the system (1 = available, 0 = not). |
+| lasterror | last_error | True when the last setup attempt failed and the handler wants to expose that state. |
+| no_device | no_device | Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device. |
+| no_device_config | no_device_config | Protocol has no device-specific configuration (config applies to the protocol itself). |
+| no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'. |
+| peer_detect | peer_detect | netifd calls renew when it detects that a \_peer in the config changed. |
+| renew_handler | renew_available | Protocol implements the "renew" action/handler `proto_*_renew()`, which can be called by netifd. |
+| teardown_on_l3_link_down | teardown_on_l3_link_down | If the l3 device receives state down (e.g. ifdown), call the `proto_*_teardown()`. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task |
 
 ### Error codes
 
@@ -4947,8 +4879,6 @@ The term *OpenWrt package* may either refer to one of two things:
   - an *OpenWrt package Makefile* describing the acquisition, building and packaging procedures for a piece of software (required)
   - a supplemental directory with *OpenWrt package patches* which modify the acquired source code (optional)
   - other static files that go with the package, such as init script files, default configurations, scripts or other support files (optional)
-
-<!-- -->
 
 - an OpenWrt *binary package*, which is a GNU tar compatible archive containing binary executable software artifacts and the accompanying *package control files* for installation on a running system, similar to the `.deb` or `.rpm` files used in other package managers
 
@@ -6427,19 +6357,13 @@ There are a couple of more options that can be configured in a procd scripts ‘
         ${respawn_timeout:-5} ${respawn_retry:-5}`
   In this example we respawn if process terminates sooner than respawn_threshold, it is considered crashed and after 5 retries the service is stopped. However, if it terminates later than respawn_threshold, it would be respawned indefinitely.
 
-<!-- -->
-
 - **pidfile**
   Configure where to store the pid file
   `procd_set_param pidfile $PIDFILE`
 
-<!-- -->
-
 - **env vars**
   Pass environment variables to your process with
   `procd_set_param env A_VAR=avalue`
-
-<!-- -->
 
 - **ulimit**
   If you need to set resource limits for your process you can use
@@ -6579,7 +6503,7 @@ If you want to add a check *after* procd has sent the terminate signal (e.g. wai
 
 ### Init scripts during compilation
 
-<img src="/meta/icons/tango/48px-dialog-warning.svg.png" width="32" alt="48px-dialog-warning.svg.png" />WARNING<img src="/meta/icons/tango/48px-dialog-warning.svg.png" width="32" alt="48px-dialog-warning.svg.png" />: initscripts **will run** while building OpenWrt images (when installing packages in what will become a ROM image) in the **host system** (right now, for actions "*enable*" and "*disable*"). **They must not fail, or have undesired side-effects in that situation.** When being run by the build system, environment variable **\${IPKG_INSTROOT}** will be set to the working directory being used. On the "target system", that environment variable will be empty/unset. Refer to "/lib/functions.sh" and also to "/etc/rc.common" in package "base-files" for the nasty details.
+WARNING: initscripts **will run** while building OpenWrt images (when installing packages in what will become a ROM image) in the **host system** (right now, for actions "*enable*" and "*disable*"). **They must not fail, or have undesired side-effects in that situation.** When being run by the build system, environment variable **\${IPKG_INSTROOT}** will be set to the working directory being used. On the "target system", that environment variable will be empty/unset. Refer to "/lib/functions.sh" and also to "/etc/rc.common" in package "base-files" for the nasty details.
 
 ## Specifying triggers
 
@@ -6911,78 +6835,20 @@ The kernel is normally located in its own partition and upgrades are not so easi
 
 OpenWrt activates some build hardening options in the [build configuration](https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=config/Config-build.in) at compile time for all package builds. Note that individual packages and/or targets may ignore or otherwise not respect these settings.
 
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">.config line</th>
-<th style="text-align: left;">Enabled by default</th>
-<th style="text-align: left;">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_CHECK_FORMAT_SECURITY=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-Wformat -Werror=format-security</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_CC_STACKPROTECTOR_REGULAR=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-fstack-protector</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_CC_STACKPROTECTOR_STRONG=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;"><code>-fstack-protector-strong</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_KERNEL_CC_STACKPROTECTOR_REGULAR=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Kernel config CONFIG_STACKPROTECTOR</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_KERNEL_CC_STACKPROTECTOR_STRONG=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Kernel config CONFIG_STACKPROTECTOR_STRONG</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_FORTIFY_SOURCE_1=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-D_FORTIFY_SOURCE=1</code> (Using <a href="https://git.2f30.org/fortify-headers/">fortify-headers</a> for musl libc)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_FORTIFY_SOURCE_2=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;"><code>-D_FORTIFY_SOURCE=2</code> (Using <a href="https://git.2f30.org/fortify-headers/">fortify-headers</a> for musl libc)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_RELRO_FULL=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-Wl,-z,now -Wl,-z,relro</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_ASLR_PIE_REGULAR=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-fPIC</code> CFLAGS and <code>-specs=hardened-build-ld</code> LDFLAGS<br />
-PIE is activated for some binaries, mostly network exposed applications</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_ASLR_PIE_ALL=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">PIE is activated for all applications</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_KERNEL_SECCOMP</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Kernel config CONFIG_SECCOMP</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_SELINUX</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Kernel config SECURITY_SELINUX</td>
-</tr>
-</tbody>
-</table>
+| .config line | Enabled by default | Notes |
+| --- | --- | --- |
+| `CONFIG_PKG_CHECK_FORMAT_SECURITY=y` | Yes | `-Wformat -Werror=format-security` |
+| `CONFIG_PKG_CC_STACKPROTECTOR_REGULAR=y` | Yes | `-fstack-protector` |
+| `CONFIG_PKG_CC_STACKPROTECTOR_STRONG=y` | No | `-fstack-protector-strong` |
+| `CONFIG_KERNEL_CC_STACKPROTECTOR_REGULAR=y` | Yes | Kernel config CONFIG_STACKPROTECTOR |
+| `CONFIG_KERNEL_CC_STACKPROTECTOR_STRONG=y` | No | Kernel config CONFIG_STACKPROTECTOR_STRONG |
+| `CONFIG_PKG_FORTIFY_SOURCE_1=y` | Yes | `-D_FORTIFY_SOURCE=1` (Using [fortify-headers](https://git.2f30.org/fortify-headers/) for musl libc) |
+| `CONFIG_PKG_FORTIFY_SOURCE_2=y` | No | `-D_FORTIFY_SOURCE=2` (Using [fortify-headers](https://git.2f30.org/fortify-headers/) for musl libc) |
+| `CONFIG_PKG_RELRO_FULL=y` | Yes | `-Wl,-z,now -Wl,-z,relro` |
+| `CONFIG_PKG_ASLR_PIE_REGULAR=y` | Yes | `-fPIC` CFLAGS and `-specs=hardened-build-ld` LDFLAGS; PIE is activated for some binaries, mostly network exposed applications |
+| `CONFIG_PKG_ASLR_PIE_ALL=y` | No | PIE is activated for all applications |
+| `CONFIG_KERNEL_SECCOMP` | Yes | Kernel config CONFIG_SECCOMP |
+| `CONFIG_SELINUX` | No | Kernel config SECURITY_SELINUX |
 
 ---
 
@@ -7894,209 +7760,29 @@ See also: [Configuration in scripts](config-scripting)
 
 Whereas desktop distributions use [glib](https://en.wikipedia.org/wiki/GLib)+[dbus](https://en.wikipedia.org/wiki/D-Bus)+[udev(part of systemd)](https://en.wikipedia.org/wiki/udev), OpenWrt uses [libubox](/docs/techref/libubox)+[ubus](ubus)+[procd](/docs/techref/procd). This provides some pretty awesome functionality without requiring huge libraries with huge dependencies (\*cough\* glib).
 
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th style="text-align: center;">Desktop Distributions</th>
-<th></th>
-<th style="text-align: center;">OpenWrt</th>
-<th></th>
-<th style="text-align: center;"><a href="https://en.wikipedia.org/wiki/Android (operating system)">Android</a></th>
-<th><a href="https://en.wikipedia.org/wiki/Replicant (operating system)">Replicant</a></th>
-<th><a href="https://en.wikipedia.org/wiki/Mer (software distribution)">mer-based</a></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Typical main memory size</td>
-<td style="text-align: center;"><strong>128 MiB</strong> to 16 GiB (or more)</td>
-<td></td>
-<td style="text-align: center;"><strong>32 MiB</strong> to 512 MiB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
-<td></td>
-<td style="text-align: center;">min <strong>92 MiB</strong> for Android 2.1<br />
-min <strong>340 MiB</strong> for Android 4.0</td>
-<td></td>
-<td>?</td>
-</tr>
-<tr class="even">
-<td>Supported instruction sets</td>
-<td style="text-align: center;">almost anything</td>
-<td></td>
-<td style="text-align: center;">almost anything</td>
-<td></td>
-<td style="text-align: center;">x86, 86-64, ARM, MIPS32</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>non-volatile storage space</td>
-<td style="text-align: center;">100 MiB</td>
-<td></td>
-<td style="text-align: center;">8 MiB<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></td>
-<td></td>
-<td style="text-align: center;">150MiB for Android 2.1<br />
-512MiB for Android 4.0</td>
-<td></td>
-<td>?</td>
-</tr>
-<tr class="even">
-<td><a href="https://en.wikipedia.org/wiki/Kernel (computing)">kernel</a></td>
-<td style="text-align: center;"><strong><code>Linux kernel</code></strong></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>:::</td>
-<td style="text-align: center;">FOSS and binary drivers</td>
-<td></td>
-<td style="text-align: center;">FOSS drivers: e.g. <a href="https://en.wikipedia.org/wiki/Comparison of open-source wireless drivers">802.11</a>; <a href="/docs/techref/hardware/internet.access.technologies">Iaccess</a></td>
-<td></td>
-<td style="text-align: center;">Android binary drivers</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="https://en.wikipedia.org/wiki/C standard library">C standard library</a></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/GNU C Library">glibc</a></td>
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/uClibc">uClibc</a>, <a href="https://en.wikipedia.org/wiki/musl">musl</a></td>
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/Bionic (software)">bionic</a></td>
-<td>glibc + <a href="https://en.wikipedia.org/wiki/Hybris (software)">libhybris</a></td>
-<td>eglibc 2.15</td>
-</tr>
-<tr class="odd">
-<td><a href="https://en.wikipedia.org/wiki/init">init</a></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/init">init</a><br />
-<a href="https://en.wikipedia.org/wiki/Upstart">Upstart</a><br />
-<a href="https://en.wikipedia.org/wiki/Initng">Initng</a></td>
-<td><strong><code>systemd</code></strong></td>
-<td style="text-align: center;">busybox-initd</td>
-<td><strong><code>procd</code></strong></td>
-<td style="text-align: center;">Android init-fork</td>
-<td></td>
-<td><code>systemd</code></td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/rsyslog">rsyslog</a> / <a href="https://en.wikipedia.org/wiki/syslog-ng">syslog-ng</a></td>
-<td>:::</td>
-<td style="text-align: center;">busybox-klogd, busybox-syslogd</td>
-<td>:::</td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/watchdog">watchdog</a></td>
-<td>:::</td>
-<td style="text-align: center;">busybox-watchdog</td>
-<td>:::</td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/udev">udev</a></td>
-<td>:::</td>
-<td style="text-align: center;"><a href="/docs/techref/hotplug_legacy">hotplug2</a></td>
-<td>:::</td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/cron">cron</a></td>
-<td>:::</td>
-<td style="text-align: center;"><code>busybox-crond</code></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/at (Unix)">atd</a></td>
-<td>:::</td>
-<td style="text-align: center;"><em>na</em></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/D-Bus">D-Bus</a></td>
-<td></td>
-<td style="text-align: center;"><a href="/docs/techref/ubus">ubus</a></td>
-<td></td>
-<td style="text-align: center;">Binder</td>
-<td>?</td>
-<td>D-Bus</td>
-</tr>
-<tr class="even">
-<td>network configuration</td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/NetworkManager">NetworkManager</a> + GUI</td>
-<td></td>
-<td style="text-align: center;"><code>netifd</code></td>
-<td></td>
-<td style="text-align: center;">ConnectivityManager<br />
-(not <a href="https://connman.net/">ConnMan = ConnectionManager</a>!)</td>
-<td>?</td>
-<td>ConnMan</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/GLib">GLib</a><br />
-(GObject, Glib, GModule, GThread, GIO)</td>
-<td></td>
-<td style="text-align: center;"><a href="/docs/techref/libubox">libubox</a></td>
-<td></td>
-<td style="text-align: center;">?</td>
-<td>?</td>
-<td>Qt-based?</td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/PulseAudio">PulseAudio</a></td>
-<td></td>
-<td style="text-align: center;"><a href="/docs/guide-user/hardware/audio/pulseaudio">pulseaudio</a> (optional)</td>
-<td></td>
-<td style="text-align: center;">PulseAudio</td>
-<td>PulseAudio</td>
-<td>PulseAudio</td>
-</tr>
-<tr class="odd">
-<td><a href="https://en.wikipedia.org/wiki/Package management system">Package management system</a></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/dpkg">dpkg</a>/<a href="https://en.wikipedia.org/wiki/Advanced Packaging Tool">APT</a><br />
-<a href="https://en.wikipedia.org/wiki/RPM Package Manager">RPM</a>/<a href="https://en.wikipedia.org/wiki/Yellowdog Updater, Modified">yum</a><br />
-<a href="https://en.wikipedia.org/wiki/Portage (software)">portage</a><br />
-<a href="https://en.wikipedia.org/wiki/pacman (package manager)">pacman</a><br />
-...</td>
-<td></td>
-<td style="text-align: center;"><code>opkg</code></td>
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/APK (file format)">apk</a></td>
-<td>?</td>
-<td><a href="https://en.wikipedia.org/wiki/RPM Package Manager">RPM</a></td>
-</tr>
-</tbody>
-</table>
-<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>yes, <em>heavily</em> stripped OpenWrt can run on 16 or even 8MiB<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>yes, 4MiB and 2MiB possible<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</aside>
+```tsv
+ 	Desktop Distributions	 	OpenWrt	 	[Android](https://en.wikipedia.org/wiki/Android (operating system))	[Replicant](https://en.wikipedia.org/wiki/Replicant (operating system))	[mer-based](https://en.wikipedia.org/wiki/Mer (software distribution))
+Typical main memory size	**128 MiB** to 16 GiB (or more)	 	**32 MiB** to 512 MiB[^1]	 	min **92 MiB** for Android 2.1; min **340 MiB** for Android 4.0	 	?
+Supported instruction sets	almost anything	 	almost anything	 	x86, 86-64, ARM, MIPS32
+non-volatile storage space	100 MiB	 	8 MiB[^2]	 	150MiB for Android 2.1; 512MiB for Android 4.0	 	?
+[kernel](https://en.wikipedia.org/wiki/Kernel (computing))	**`Linux kernel`**
+:::	FOSS and binary drivers	 	FOSS drivers: e.g. [802.11](https://en.wikipedia.org/wiki/Comparison of open-source wireless drivers); [Iaccess](/docs/techref/hardware/internet.access.technologies)	 	Android binary drivers
+[C standard library](https://en.wikipedia.org/wiki/C standard library)	[glibc](https://en.wikipedia.org/wiki/GNU C Library)	 	[uClibc](https://en.wikipedia.org/wiki/uClibc), [musl](https://en.wikipedia.org/wiki/musl)	 	[bionic](https://en.wikipedia.org/wiki/Bionic (software))	glibc + [libhybris](https://en.wikipedia.org/wiki/Hybris (software))	eglibc 2.15
+[init](https://en.wikipedia.org/wiki/init)	[init](https://en.wikipedia.org/wiki/init); [Upstart](https://en.wikipedia.org/wiki/Upstart); [Initng](https://en.wikipedia.org/wiki/Initng)	**`systemd`**	busybox-initd	**`procd`**	Android init-fork	 	`systemd`
+ 	[rsyslog](https://en.wikipedia.org/wiki/rsyslog) / [syslog-ng](https://en.wikipedia.org/wiki/syslog-ng)	:::	busybox-klogd, busybox-syslogd	:::	 	 	:::
+ 	[watchdog](https://en.wikipedia.org/wiki/watchdog)	:::	busybox-watchdog	:::	 	 	:::
+ 	[udev](https://en.wikipedia.org/wiki/udev)	:::	[hotplug2](/docs/techref/hotplug_legacy)	:::	 	 	:::
+ 	[cron](https://en.wikipedia.org/wiki/cron)	:::	`busybox-crond`	 	 	 	:::
+ 	[atd](https://en.wikipedia.org/wiki/at (Unix))	:::	*na*	 	 	 	:::
+ 	[D-Bus](https://en.wikipedia.org/wiki/D-Bus)	 	[ubus](/docs/techref/ubus)	 	Binder	?	D-Bus
+network configuration	[NetworkManager](https://en.wikipedia.org/wiki/NetworkManager) + GUI	 	`netifd`	 	ConnectivityManager; (not [ConnMan = ConnectionManager](https://connman.net/)!)	?	ConnMan
+ 	[GLib](https://en.wikipedia.org/wiki/GLib); (GObject, Glib, GModule, GThread, GIO)	 	[libubox](/docs/techref/libubox)	 	?	?	Qt-based?
+ 	[PulseAudio](https://en.wikipedia.org/wiki/PulseAudio)	 	[pulseaudio](/docs/guide-user/hardware/audio/pulseaudio) (optional)	 	PulseAudio	PulseAudio	PulseAudio
+[Package management system](https://en.wikipedia.org/wiki/Package management system)	[dpkg](https://en.wikipedia.org/wiki/dpkg)/[APT](https://en.wikipedia.org/wiki/Advanced Packaging Tool); [RPM](https://en.wikipedia.org/wiki/RPM Package Manager)/[yum](https://en.wikipedia.org/wiki/Yellowdog Updater, Modified); [portage](https://en.wikipedia.org/wiki/Portage (software)); [pacman](https://en.wikipedia.org/wiki/pacman (package manager)); ...	 	`opkg`	 	[apk](https://en.wikipedia.org/wiki/APK (file format))	?	[RPM](https://en.wikipedia.org/wiki/RPM Package Manager)
+```
+
+[^1]: yes, *heavily* stripped OpenWrt can run on 16 or even 8MiB
+[^2]: yes, 4MiB and 2MiB possible
 
 ### What's the difference between ubus vs dbus?
 
@@ -8118,8 +7804,6 @@ min <strong>340 MiB</strong> for Android 4.0</td>
 - →[file_system](/docs/techref/file_system) / [flash.layout](/docs/techref/flash.layout)
 - →[internal.layout](/docs/techref/internal.layout)
 - →[preinit_mount](/docs/techref/preinit_mount)/[process.boot](/docs/techref/process.boot)/[requirements.boot.process](/docs/techref/requirements.boot.process)
-
-<!-- -->
 
 - [PulseAudio does not depend on GLib](https://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/#index2h3) and does not seem to depends on D-Bus neither: [LFS](http://www.linuxfromscratch.org/blfs/view/svn/multimedia/pulseaudio.html)
 - [FOSDEM2013: Can Linux network configuration suck less?](https://archive.fosdem.org/2013/schedule/event/dist_network/)
@@ -8162,8 +7846,6 @@ With the new block mount mechanism you can run `block info` to get the same outp
 
 - **info** -\> get the same output that blkid delivered (including mtdblock)
 
-<!-- -->
-
       /dev/mtdblock2: UUID="0906f1b4-51688c99-666b11b5-71d70575" VERSION="4.0" TYPE="squashfs"
       /dev/mtdblock3: TYPE="jffs2"
       /dev/sda1: UUID="e81a771e-249f-4f9e-ab30-b2fb73789744" LABEL="overlay" NAME="EXT_JOURNAL" VERSION="1.0" TYPE="ext4"
@@ -8175,8 +7857,6 @@ With the new block mount mechanism you can run `block info` to get the same outp
 - **mount** -\> mount all devices listed in fstab
 - **umount** -\> unmount all devices listed in fstab
 - **detect** -\> get a sample uci file for the currently attached block devices
-
-<!-- -->
 
     config 'global'
         option  anon_swap   '0'
@@ -8314,8 +7994,6 @@ An embedded bootloader fulfills the same functionality as the [BIOS](https://en.
 - [yamon](/docs/techref/bootloader/yamon) unknown by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
 - [Breed](/docs/techref/bootloader/Breed) - Breed booatloader
 - [bl-mt798x](/docs/techref/bootloader/bl-mt798x) - ATF and u-boot for mt798x-based routers
-
-<!-- -->
 
 - VxWorks' own bootloader - most Atheros devices (There is a description of the basic workings on the [Netgear WGT624](/oldwiki/OpenWrtDocs/Hardware/Netgear/WGT624) page.)
 - NetBoot - the standard loader in DWL7100AP allows to boot firmware image via network from [TFTP](../L2-semantic/wiki/wiki_page-guide-developer-adding-new-device.md) server direct to RAM
@@ -9061,8 +8739,6 @@ Used to merge two filesystems, one read-only and the other writable. [flash.layo
 
 - [Kernel documentation on tmpfs](https://www.kernel.org/doc/html/latest/filesystems/tmpfs.html)
 
-<!-- -->
-
 - (+) doesn't directly use space on non-volatile storage
 - (-) no wear leveling
 - (-) volatile (doesn't survive a reboot)
@@ -9205,37 +8881,26 @@ Moving parts are prone to [wear](https://en.wikipedia.org/wiki/wear) (german: [V
 
 Non-mechanical wear does not only occur when flash memory is erased!
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/dialog-information.png" alt="dialog-information.png" /></td>
-<td>1. Flash memory is more likely to experience failure than a <a href="https://en.wikipedia.org/wiki/Hard_disk_drive">Hard_disk_drive</a> (the ones with the platters rotating at 5400–15000 <a href="https://en.wikipedia.org/wiki/Revolutions per minute">RPM</a>)<br />
-2. Some types of flash memory seem to experience more non-mechanical wear then other types<br />
-3. How do we deal with failure?</td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md)]
+> 1. Flash memory is more likely to experience failure than a [Hard_disk_drive](https://en.wikipedia.org/wiki/Hard_disk_drive) (the ones with the platters rotating at 5400–15000 [RPM](https://en.wikipedia.org/wiki/Revolutions per minute))
+>
+> 2. Some types of flash memory seem to experience more non-mechanical wear then other types
+>
+> 3. How do we deal with failure?
 
 ### Host-managed vs. self-managed
 
 Based on how the flash memory chip is connected with the [SoC](/docs/techref/hardware/soc) (i.e. the "host") we at OpenWrt distinguish between ***"raw flash"*** or ***"host-managed"*** and ***"FTL (Flash Translation Layer) flash"*** or ***"self-managed"***: in case the flash memory chip is connected directly with the SoC we call it "raw flash" / "host-managed" and in case there is an additional controller chip between the flash memory chip and the SoC, we call it "FTL flash" / "self-managed". Primarily the controller chip does [wear-leveling](https://en.wikipedia.org/wiki/wear-leveling) and manages known bad blocks, but it may do other stuff as well. The flash memory cannot be accessed directly, but only through this controller. The controller has to be considered a [black box](https://en.wikipedia.org/wiki/black box).
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/dialog-information.png" alt="dialog-information.png" /></td>
-<td>Embedded systems almost exclusively use "raw flash", while <a href="https://en.wikipedia.org/wiki/Solid-state drive">solid-state drives (SSDs)</a> and USB memory sticks, almost exclusively use "FTL flash"!<br />
-</td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md)]
+> Embedded systems almost exclusively use "raw flash", while [solid-state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state drive) and USB memory sticks, almost exclusively use "FTL flash"!
 
 ### NOR flash vs NAND flash
 
 Additionally we at OpenWrt distinguish between the two basic types of flash memory: [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) and [NAND flash](https://en.wikipedia.org/wiki/Flash_memory#NAND_flash).
-"Raw NOR flash" in typical routers is generally small (4 MiB – 16 MiB) and <u>error-free</u>: all data blocks are guaranteed to work correctly. Because raw NOR flash is error-free, the installed file system(s) do not need to take bad blocks into account, and neither SquashFS nor JFFS2 do. The combination of OverlayFS with SquashFS and JFFS2 has been the default OpenWrt setup since the beginning, and it works flawlessly on "raw NOR flash". Older routers typically use NOR flash.
+"Raw NOR flash" in typical routers is generally small (4 MiB – 16 MiB) and **error-free**: all data blocks are guaranteed to work correctly. Because raw NOR flash is error-free, the installed file system(s) do not need to take bad blocks into account, and neither SquashFS nor JFFS2 do. The combination of OverlayFS with SquashFS and JFFS2 has been the default OpenWrt setup since the beginning, and it works flawlessly on "raw NOR flash". Older routers typically use NOR flash.
 
-"Raw [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash" in typical routers is generally much larger (32 MiB – 1 GiB) and <u>not error-free</u>: in general the flash contains bad blocks when new and may develop more at any time. Newer routers use [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash because it is much cheaper for a given capacity and is also faster for bulk access (disk emulation), but at the cost of the increased complexity required to handle flash defects.
+"Raw [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash" in typical routers is generally much larger (32 MiB – 1 GiB) and **not error-free**: in general the flash contains bad blocks when new and may develop more at any time. Newer routers use [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash because it is much cheaper for a given capacity and is also faster for bulk access (disk emulation), but at the cost of the increased complexity required to handle flash defects.
 
 Bad blocks in [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) flash and handled in various ways:
 
@@ -9261,70 +8926,13 @@ On these systems, the storage is presented by the kernel as an MTD device, and i
 
 The generic flash layout is:
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;">bootloader<br />
-partition(s)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>firmware partition</td>
-<td></td>
-<td></td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>OpenWrt firmware image</td>
-<td></td>
-<td><em>(space available for storage)</em></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>Linux kernel<br />
-(raw image)</td>
-<td><strong><code>rootfs</code></strong><br />
-mounted: "<code>/rom</code>", <a href="/docs/techref/filesystems#SquashFS">SquashFS</a><br />
-size depends on selected packages</td>
-<td><strong><code>rootfs_data</code></strong><br />
-mounted: "<code>/overlay</code>", <a href="/docs/techref/filesystems#JFFS2">JFFS2</a><br />
-all remaining free space</td>
-<td>:::</td>
-</tr>
-<tr class="even">
-<td>Layer4</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>mounted: "<code>/</code>", <a href="/docs/techref/filesystems#overlayfs">OverlayFS</a><br />
-stacking <code>/overlay</code> on top of <code>/rom</code></td>
-<td></td>
-<td>:::</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash
+Layer1	bootloader; partition(s)	optional; SoC; specific; partition(s)	firmware partition	 	 	optional; SoC; specific; partition(s)
+Layer2	:::	:::	OpenWrt firmware image	 	*(space available for storage)*	:::
+Layer3	:::	:::	Linux kernel; (raw image)	**`rootfs`**; mounted: "`/rom`", [SquashFS](/docs/techref/filesystems#SquashFS); size depends on selected packages	**`rootfs_data`**; mounted: "`/overlay`", [JFFS2](/docs/techref/filesystems#JFFS2); all remaining free space	:::
+Layer4	:::	:::	:::	mounted: "`/`", [OverlayFS](/docs/techref/filesystems#overlayfs); stacking `/overlay` on top of `/rom`	 	:::
+```
 
 Many NOR devices share this scheme, but the flash layout can differ between the devices. Please see the wiki pages for each SoC and devices for information about a particular layout. In case the flash layout differs for your device please update the wiki pages.
 
@@ -9396,62 +9004,12 @@ find /overlay -type c; find /overlay -type l -exec sh -c \
 
 [Ralink RT5350F](/docs/techref/hardware/soc/soc.ralink)-based [Hoo Too HT-TM02](/toh/hwdata/hootoo/hootoo_tripmatenano_v15).
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash, 8192 KiB</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;"><strong>mtd0</strong><br />
-<code>u-boot</code><br />
-192 KiB</td>
-<td><strong>mtd1</strong><br />
-<code>u-boot-env</code><br />
-64 KiB</td>
-<td><strong>mtd2</strong><br />
-<code>factory</code><br />
-64 KiB</td>
-<td><strong>mtd3</strong><br />
-<code>firmware</code><br />
-7872 KiB <sub><sup>(= FlashSize-(192+64+64))</sup></sub></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td><strong>mtd4</strong><br />
-<code>kernel</code><br />
-about 1 MiB</td>
-<td><strong>mtd5</strong><br />
-<code>rootfs</code></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>:::</td>
-<td><strong><code>/dev/root</code></strong><br />
-around 2 MiB</td>
-<td><strong>mtd6</strong><br />
-<code>rootfs_data</code><br />
-around 4.5 MiB</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash, 8192 KiB
+Layer1	**mtd0**; `u-boot`; 192 KiB	**mtd1**; `u-boot-env`; 64 KiB	**mtd2**; `factory`; 64 KiB	**mtd3**; `firmware`; 7872 KiB (= FlashSize-(192+64+64))
+Layer2	:::	:::	:::	**mtd4**; `kernel`; about 1 MiB	**mtd5**; `rootfs`
+Layer3	:::	:::	:::	:::	**`/dev/root`**; around 2 MiB	**mtd6**; `rootfs_data`; around 4.5 MiB
+```
 
 #### Example 3: D-Link DIR-300
 
@@ -9463,127 +9021,21 @@ On these systems, the storage is presented by the kernel as an MTD device, and i
 
 Some [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) devices contain bootloaders that do not understand UBI partitions and thus cannot boot kernels contained in UBI volumes. The generic flash layout for these devices is:
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;">bootloader<br />
-partition(s)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>Linux kernel<br />
-(raw image)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>UBI partition</td>
-<td></td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>:::</td>
-<td><strong><code>rootfs</code></strong><br />
-mounted: "<code>/rom</code>", <a href="/docs/techref/filesystems#SquashFS">SquashFS</a><br />
-size depends on selected packages</td>
-<td><strong><code>rootfs_data</code></strong><br />
-mounted: "<code>/overlay</code>", <a href="/docs/techref/filesystems#UBIFS">[UBIFS](../L2-semantic/wiki/wiki_page-techref-filesystems.md)</a><br />
-all remaining free space</td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>mounted: "<code>/</code>", <a href="/docs/techref/filesystems#overlayfs">OverlayFS</a><br />
-stacking <code>/overlay</code> on top of <code>/rom</code></td>
-<td></td>
-<td>:::</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash
+Layer1	bootloader; partition(s)	optional; SoC; specific; partition(s)	Linux kernel; (raw image)	optional; SoC; specific; partition(s)	UBI partition	 	optional; SoC; specific; partition(s)
+Layer2	:::	:::	:::	:::	**`rootfs`**; mounted: "`/rom`", [SquashFS](/docs/techref/filesystems#SquashFS); size depends on selected packages	**`rootfs_data`**; mounted: "`/overlay`", [UBIFS](/docs/techref/filesystems#UBIFS); all remaining free space	:::
+Layer3	:::	:::	:::	:::	mounted: "`/`", [OverlayFS](/docs/techref/filesystems#overlayfs); stacking `/overlay` on top of `/rom`	 	:::
+```
 
 The generic flash layout for [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) devices that can boot kernels contained in UBI volumes is:
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;">bootloader<br />
-partition(s)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>UBI partition</td>
-<td></td>
-<td></td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td><strong><code>kernel</code></strong><br />
-Linux kernel<br />
-(raw image)</td>
-<td><strong><code>rootfs</code></strong><br />
-mounted: "<code>/rom</code>", <a href="/docs/techref/filesystems#SquashFS">SquashFS</a><br />
-size depends on selected packages</td>
-<td><strong><code>rootfs_data</code></strong><br />
-mounted: "<code>/overlay</code>", <a href="/docs/techref/filesystems#UBIFS">[UBIFS](../L2-semantic/wiki/wiki_page-techref-filesystems.md)</a><br />
-all remaining free space</td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>mounted: "<code>/</code>", <a href="/docs/techref/filesystems#overlayfs">OverlayFS</a><br />
-stacking <code>/overlay</code> on top of <code>/rom</code></td>
-<td></td>
-<td>:::</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash
+Layer1	bootloader; partition(s)	optional; SoC; specific; partition(s)	UBI partition	 	 	optional; SoC; specific; partition(s)
+Layer2	:::	:::	**`kernel`**; Linux kernel; (raw image)	**`rootfs`**; mounted: "`/rom`", [SquashFS](/docs/techref/filesystems#SquashFS); size depends on selected packages	**`rootfs_data`**; mounted: "`/overlay`", [UBIFS](/docs/techref/filesystems#UBIFS); all remaining free space	:::
+Layer3	:::	:::	:::	mounted: "`/`", [OverlayFS](/docs/techref/filesystems#overlayfs); stacking `/overlay` on top of `/rom`	 	:::
+```
 
 Many [NAND](../L2-semantic/wiki/wiki_page-techref-flash.md) devices share this scheme, but the flash layout can differ between the devices. Please see the wiki pages for each SoC and devices for information about a particular layout. In case the flash layout differs for your device please update the wiki pages.
 
@@ -10125,16 +9577,10 @@ source: [openwrt/tools/firmware-utils/src/mktplinkfw.c](http://git.openwrt.org/?
 
 ![historic&noheader&nofooter&noeditbtn](/page>meta/infobox/historic&noheader&nofooter&noeditbtn)
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/48px-outdated.svg.png" alt="48px-outdated.svg.png" /></td>
-<td style="text-align: left;">See the <a href="/docs/guide-user/base-system/hotplug">Hotplug article</a> for information on the current approach.<br />
-<br />
-The "hotplug2" daemon was removed in 2013 (<a href="https://dev.openwrt.org/changeset/36987">r36987</a>) and replaced with <a href="/docs/techref/procd">procd</a>.</td>
-</tr>
-</tbody>
-</table>
+> [!WARNING]
+> See the [Hotplug article](/docs/guide-user/base-system/hotplug) for information on the current approach.
+>
+> The "hotplug2" daemon was removed in 2013 ([r36987](https://dev.openwrt.org/changeset/36987)) and replaced with [procd](/docs/techref/procd).
 
 Hotplug2 was a trivial replacement of some of the UDev functionality in a tiny pack, intended for Linux early userspace: Init RAM FS and InitRD. Hotplug executes scripts located in the respective hotplug directory: `/etc/hotplug.d/` on certain events, like when an interface goes up or down or when a button gets pressed. It can be very useful with [PPPoE](https://en.wikipedia.org/wiki/Point-to-Point Protocol over Ethernet)-connection or in an unstable network. Hotplug has been available since OpenWrt 'Kamikaze' 7.06 and was removed in 2013, prior to the release of "Attitude Adjustment".
 
@@ -10501,167 +9947,33 @@ Linux kernel for build [^6]
 
 ## Firmware types
 
-<table>
-<thead>
-<tr class="header">
-<th>Target</th>
-<th>Install</th>
-<th>Upgrade</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>adm5120</td>
-<td>squashfs.bin</td>
-<td>squashfs.bin</td>
-</tr>
-<tr class="even">
-<td>apm821xx</td>
-<td>squashfs-factory.img<br />
-initramfs-kernel.bin</td>
-<td>squashfs-sysupgrade.tar<br />
-ext4-rootfs.img.gz</td>
-</tr>
-<tr class="odd">
-<td>ar7</td>
-<td>squashfs.bin<br />
-squashfs-code.bin</td>
-<td>squashfs.bin</td>
-</tr>
-<tr class="even">
-<td>ar71xx</td>
-<td>factory.img<br />
-factory.bin</td>
-<td>sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>at91</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>atheros</td>
-<td>squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.tar</td>
-</tr>
-<tr class="odd">
-<td>brcm2708</td>
-<td>ext4-sdcard.img.gz</td>
-<td>-</td>
-</tr>
-<tr class="even">
-<td>brcm47xx</td>
-<td>squashfs.bin<br />
-squashfs.chk<br />
-squashfs.trx</td>
-<td>squashfs.bin<br />
-squashfs.chk<br />
-squashfs.trx</td>
-</tr>
-<tr class="odd">
-<td>bcm53xx</td>
-<td>squashfs.bin<br />
-squashfs.chk<br />
-squashfs.trx</td>
-<td><br />
-squashfs.chk<br />
-squashfs.trx</td>
-</tr>
-<tr class="even">
-<td>brcm63xx</td>
-<td>squashfs-cfe.bin<br />
-squashfs-factory.chk</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>cns3xxx</td>
-<td>-</td>
-<td>sysupgrade.bin</td>
-</tr>
-<tr class="even">
-<td>imx6</td>
-<td>?</td>
-<td>?</td>
-</tr>
-<tr class="odd">
-<td>ipq806x</td>
-<td>factory.img</td>
-<td>sysupgrade.tar</td>
-</tr>
-<tr class="even">
-<td>ixp4xx</td>
-<td>squashfs.bin<br />
-squashfs.img<br />
-zImage</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>kirkwood</td>
-<td>squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="even">
-<td>lantiq</td>
-<td>initramfs-kernel.bin<br />
-squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>layerscape</td>
-<td>squashfs-firmware.bin</td>
-<td>-</td>
-</tr>
-<tr class="even">
-<td>mpc85xx</td>
-<td>squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>mvebu</td>
-<td>sdcard.img.gz<br />
-squashfs-factory.img</td>
-<td><br />
-squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="even">
-<td>mxs</td>
-<td>?</td>
-<td>?</td>
-</tr>
-<tr class="odd">
-<td>orion</td>
-<td>not supported</td>
-<td>not supported</td>
-</tr>
-<tr class="even">
-<td>oxnas</td>
-<td>squashfs-ubinized.bin<br />
-ubifs-ubinized.bin</td>
-<td>squashfs-sysupgrade.tar<br />
-ubifs-sysupgrade.tar</td>
-</tr>
-<tr class="odd">
-<td>ramips</td>
-<td>initramfs-kernel.bin<br />
-squashfs-factory.bin<br />
-squashfs-factory.dlf<br />
-initramfs-uImage.bin</td>
-<td>squashfs-sysupgrade.bin<br />
-squashfs-sysupgrade.tar</td>
-</tr>
-<tr class="even">
-<td>sunxi</td>
-<td>ext4-sdcard.img.gz<br />
-squashfs-sdcard.img.gz</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>x86</td>
-<td>combined-ext4.img</td>
-<td>combined-ext4.img.gz</td>
-</tr>
-</tbody>
-</table>
+| Target | Install | Upgrade |
+| --- | --- | --- |
+| adm5120 | squashfs.bin | squashfs.bin |
+| apm821xx | squashfs-factory.img; initramfs-kernel.bin | squashfs-sysupgrade.tar; ext4-rootfs.img.gz |
+| ar7 | squashfs.bin; squashfs-code.bin | squashfs.bin |
+| ar71xx | factory.img; factory.bin | sysupgrade.bin |
+| at91 |   |   |
+| atheros | squashfs-factory.bin | squashfs-sysupgrade.tar |
+| brcm2708 | ext4-sdcard.img.gz | - |
+| brcm47xx | squashfs.bin; squashfs.chk; squashfs.trx | squashfs.bin; squashfs.chk; squashfs.trx |
+| bcm53xx | squashfs.bin; squashfs.chk; squashfs.trx | squashfs.chk; squashfs.trx |
+| brcm63xx | squashfs-cfe.bin; squashfs-factory.chk | squashfs-sysupgrade.bin |
+| cns3xxx | - | sysupgrade.bin |
+| imx6 | ? | ? |
+| ipq806x | factory.img | sysupgrade.tar |
+| ixp4xx | squashfs.bin; squashfs.img; zImage | squashfs-sysupgrade.bin |
+| kirkwood | squashfs-factory.bin | squashfs-sysupgrade.bin |
+| lantiq | initramfs-kernel.bin; squashfs-factory.bin | squashfs-sysupgrade.bin |
+| layerscape | squashfs-firmware.bin | - |
+| mpc85xx | squashfs-factory.bin | squashfs-sysupgrade.bin |
+| mvebu | sdcard.img.gz; squashfs-factory.img | squashfs-sysupgrade.bin |
+| mxs | ? | ? |
+| orion | not supported | not supported |
+| oxnas | squashfs-ubinized.bin; ubifs-ubinized.bin | squashfs-sysupgrade.tar; ubifs-sysupgrade.tar |
+| ramips | initramfs-kernel.bin; squashfs-factory.bin; squashfs-factory.dlf; initramfs-uImage.bin | squashfs-sysupgrade.bin; squashfs-sysupgrade.tar |
+| sunxi | ext4-sdcard.img.gz; squashfs-sdcard.img.gz |   |
+| x86 | combined-ext4.img | combined-ext4.img.gz |
 
 # Image Formats General
 
@@ -10971,7 +10283,7 @@ This is the source code path followed in logical order of execution by the proce
         3.  `hotplug("/etc/hotplug.json")` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/hotplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l568)
             User space device hotplugging handler setup.
             Static variables in file scope are important. The filename of the script to execute is kept in hotplug.c global scope: `static char * rule_file;`.
-            Opens a netlink socket ([man 7 netlink](http://man7.org/linux/man-pages/man7/netlink.7.html)) and handles the file descriptor to uloop, to listen to uevents: kernel messages informing <u>u</u>serspace of kernel <u>events</u>. See <https://www.kernel.org/doc/pending/hotplug.txt>
+            Opens a netlink socket ([man 7 netlink](http://man7.org/linux/man-pages/man7/netlink.7.html)) and handles the file descriptor to uloop, to listen to uevents: kernel messages informing **u**serspace of kernel **events**. See <https://www.kernel.org/doc/pending/hotplug.txt>
             The uloop instance in pid 1 [uses epoll_wait](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l259) to monitor file descriptors, the kernel netlink socket FD is one of them, and is instructed to invoke the callback `hotplug_handler()` on uevent arrival.
             This `hotplug_handler` callback stays active after coldplug, and will handle all uevents the kernel will emit.
         4.  `procd_coldplug()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l40)
@@ -11785,8 +11097,6 @@ This patches the mtd source to include the "-static" option when building the bi
     - 8 = DEBUG_WIRELESS
   - Add your favorite options together to obtain the `<mask>`.
 
-<!-- -->
-
       * In order for the output to be seen you'll need to modify /etc/init.d/network to add:
         * procd_set_param stdout 1
         * procd_set_param stderr 1
@@ -11925,330 +11235,52 @@ If dhcp.odhcpd.piodir is set to persistent storage, you should also add that dir
 
 Configuration for DHCPv4, DHCPv6, RA and NDP services.
 
-\<sortable\>
-
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Required</th>
-<th style="text-align: left;">Default</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>interface</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>&lt;name of UCI section&gt;</code></td>
-<td style="text-align: left;">Logical OpenWrt interface.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ifname</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>&lt;resolved from logical&gt;</code></td>
-<td style="text-align: left;">Physical network interface.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>networkid</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>&lt;same as ifname&gt;</code></td>
-<td style="text-align: left;">Alias of <code>ifname</code> for compatibility.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ignore</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Do not serve this interface unless overridden by <code>ra</code>, <code>ndp</code>, <code>dhcpv4</code> or <code>dhcpv6</code> options.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>master</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Is a master interface for relaying.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>disabled</code></td>
-<td style="text-align: left;">Router Advert service. Set to <code>disabled</code>, <code>server</code>, <code>relay</code> or <code>hybrid</code>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>dhcpv6</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>disabled</code></td>
-<td style="text-align: left;">DHCPv6 service. Set to <code>disabled</code>, <code>server</code>, <code>relay</code> or <code>hybrid</code>.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>dhcpv4</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>disabled</code></td>
-<td style="text-align: left;">DHCPv4 service. Set to <code>disabled</code> or <code>server</code>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ndp</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>disabled</code></td>
-<td style="text-align: left;">Neighbor Discovery Proxy. Set to <code>disabled</code>, <code>relay</code> or <code>hybrid</code>.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>dynamicdhcp</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">Leases for DHCPv4 and DHCPv6 are created dynamically.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>dhcpv4_forcereconf</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Force reconfiguration by sending force renew message even if the client did not include the force renew nonce capability option (<a href="https://datatracker.ietf.org/doc/html/rfc6704">RFC 6704</a>).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>dhcpv6_assignall</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">Assign all viable DHCPv6 addresses in statefull mode. If disabled only the DHCPv6 address having the longest preferred lifetime is assigned.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>dhcpv6_hostidlength</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>12</code></td>
-<td style="text-align: left;">Host ID length of dynamically created leases, allowed values: 12 - 64 (bits).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>dhcpv6_na</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">DHCPv6 stateful addressing hands out IA_NA - Internet Address - Network Address.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>dhcpv6_pd</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">DHCPv6 stateful addressing hands out IA_PD - Internet Address - Prefix Delegation.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>router</code></td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>&lt;local address&gt;</code></td>
-<td style="text-align: left;">Routers to announce accepts IPv4 only.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>dns</code></td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>&lt;local address&gt;</code></td>
-<td style="text-align: left;">DNS servers to announce on the network. IPv4 and IPv6 addresses are accepted.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>dns_service</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">Announce the address of interface as DNS service if the list of DNS is empty.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>domain</code></td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>&lt;local search domain&gt;</code></td>
-<td style="text-align: left;">Search domains to announce on the network.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>leasetime</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>12h</code></td>
-<td style="text-align: left;">DHCPv4 address leasetime</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>start</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>100</code></td>
-<td style="text-align: left;">Starting address of the DHCPv4 pool.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>limit</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>150</code></td>
-<td style="text-align: left;">Number of addresses in the DHCPv4 pool.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>preferred_lifetime</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>12h</code></td>
-<td style="text-align: left;">Value for the preferred lifetime for a prefix.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_default</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Override default route. Set to <code>0</code> (default), <code>1</code> (ignore, no public address) or <code>2</code> (ignore all).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_flags</code></td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>other-config</code></td>
-<td style="text-align: left;">List of RA flags to be advertised in RA messages:<br />
-<code>managed-config</code> - get address information from DHCPv6 server. If this flag is set, <code>other-config</code> flag is redundant.<br />
-<code>other-config</code> - get other configuration from DHCPv6 server (such as DNS servers). See <a href="https://datatracker.ietf.org/doc/html/rfc4861#section-4.2">here</a> for details.<br />
-<code>home-agent</code> - see <a href="https://datatracker.ietf.org/doc/html/rfc3775#section-7.1">here</a> for details.<br />
-<code>none</code>.<br />
-OpenWrt since version 21.02 configures <code>managed-config</code> and <code>other-config</code> <a href="https://github.com/openwrt/openwrt/blob/openwrt-21.02/package/network/services/odhcpd/files/odhcpd.defaults#L49-L50">by default</a>.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_slaac</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">Announce SLAAC for a prefix (that is, set the A flag in RA messages).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_management</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">:!: This option is <a href="commit&gt;?p=project/odhcpd.git;a=commit;h=e73bf11dee1073aaaddc0dc67ca8c7d75ae3c6ad">deprecated</a>. Use <code>ra_flags</code> and <code>ra_slaac</code> options instead.<br />
-RA management mode: no M-Flag but A-Flag and ra_slaac is ture (<code>0</code>) , both M and A flags and ra_slaac is ture(<code>1</code>), both M and A flags and ra_slaac is false (<code>2</code>)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_offlink</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Announce prefixes off-link.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_preference</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>medium</code></td>
-<td style="text-align: left;">Route preference <code>medium</code>, <code>high</code> or <code>low</code>.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_maxinterval</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>600</code></td>
-<td style="text-align: left;">Maximum time allowed between sending unsolicited Router Advertisements (RA).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_mininterval</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>200</code></td>
-<td style="text-align: left;">Minimum time allowed between sending unsolicited Router Advertisements (RA).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_lifetime</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1800</code></td>
-<td style="text-align: left;">Router Lifetime published in Router Advertisement (RA) messages.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_useleasetime</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">If set, the configured DHCPv4 <code>leasetime</code> is used both as limit for the preferred and valid lifetime of an IPv6 prefix.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_reachabletime</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Reachable Time in milliseconds to be published in Router Advertisement (RA) messages'.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_retranstime</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">Retransmit Time in milliseconds to be published in Router Advertisment (RA) messages.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_hoplimit</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">The maximum hops to be published in Router Advertisement (RA) messages.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ra_mtu</code></td>
-<td style="text-align: left;">integer</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">The MTU to be published in Router Advertisement (RA) messages.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ra_dns</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">Announce DNS configuration in RA messages (<a href="https://datatracker.ietf.org/doc/html/rfc8106">RFC 8106</a>).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ndproxy_routing</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">Learn routes from NDP.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>ndproxy_slave</code></td>
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">NDProxy external slave.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ndproxy_static</code></td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Static NDProxy prefixes.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>prefix_filter</code></td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"><code>::/0</code></td>
-<td style="text-align: left;">Only advertise on-link prefixes within the provided IPv6 prefix. Others are filtered out.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>ntp</code></td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">DHCPv6 stateful option 56 to Announce NTP servers</td>
-</tr>
-</tbody>
-</table>
-
-\</sortable\>
+```tsv
+Name	Type	Required	Default	Description
+`interface`	string	 	`<name of UCI section>`	Logical OpenWrt interface.
+`ifname`	string	 	`<resolved from logical>`	Physical network interface.
+`networkid`	string	 	`<same as ifname>`	Alias of `ifname` for compatibility.
+`ignore`	boolean	 	`0`	Do not serve this interface unless overridden by `ra`, `ndp`, `dhcpv4` or `dhcpv6` options.
+`master`	boolean	 	`0`	Is a master interface for relaying.
+`ra`	string	 	`disabled`	Router Advert service. Set to `disabled`, `server`, `relay` or `hybrid`.
+`dhcpv6`	string	 	`disabled`	DHCPv6 service. Set to `disabled`, `server`, `relay` or `hybrid`.
+`dhcpv4`	string	 	`disabled`	DHCPv4 service. Set to `disabled` or `server`.
+`ndp`	string	 	`disabled`	Neighbor Discovery Proxy. Set to `disabled`, `relay` or `hybrid`.
+`dynamicdhcp`	boolean	 	`1`	Leases for DHCPv4 and DHCPv6 are created dynamically.
+`dhcpv4_forcereconf`	boolean	 	`0`	Force reconfiguration by sending force renew message even if the client did not include the force renew nonce capability option ([RFC 6704](https://datatracker.ietf.org/doc/html/rfc6704)).
+`dhcpv6_assignall`	boolean	 	`1`	Assign all viable DHCPv6 addresses in statefull mode. If disabled only the DHCPv6 address having the longest preferred lifetime is assigned.
+`dhcpv6_hostidlength`	integer	 	`12`	Host ID length of dynamically created leases, allowed values: 12 - 64 (bits).
+`dhcpv6_na`	boolean	 	`1`	DHCPv6 stateful addressing hands out IA_NA - Internet Address - Network Address.
+`dhcpv6_pd`	boolean	 	`1`	DHCPv6 stateful addressing hands out IA_PD - Internet Address - Prefix Delegation.
+`router`	list	 	`<local address>`	Routers to announce accepts IPv4 only.
+`dns`	list	 	`<local address>`	DNS servers to announce on the network. IPv4 and IPv6 addresses are accepted.
+`dns_service`	boolean	 	`1`	Announce the address of interface as DNS service if the list of DNS is empty.
+`domain`	list	 	`<local search domain>`	Search domains to announce on the network.
+`leasetime`	string	 	`12h`	DHCPv4 address leasetime
+`start`	integer	 	`100`	Starting address of the DHCPv4 pool.
+`limit`	integer	 	`150`	Number of addresses in the DHCPv4 pool.
+`preferred_lifetime`	string	 	`12h`	Value for the preferred lifetime for a prefix.
+`ra_default`	integer	 	`0`	Override default route. Set to `0` (default), `1` (ignore, no public address) or `2` (ignore all).
+`ra_flags`	list	 	`other-config`	List of RA flags to be advertised in RA messages:; `managed-config` - get address information from DHCPv6 server. If this flag is set, `other-config` flag is redundant.; `other-config` - get other configuration from DHCPv6 server (such as DNS servers). See [here](https://datatracker.ietf.org/doc/html/rfc4861#section-4.2) for details.; `home-agent` - see [here](https://datatracker.ietf.org/doc/html/rfc3775#section-7.1) for details.; `none`.; OpenWrt since version 21.02 configures `managed-config` and `other-config` [by default](https://github.com/openwrt/openwrt/blob/openwrt-21.02/package/network/services/odhcpd/files/odhcpd.defaults#L49-L50).
+`ra_slaac`	boolean	 	`1`	Announce SLAAC for a prefix (that is, set the A flag in RA messages).
+`ra_management`	integer	no	`1`	:!: This option is [deprecated](commit>?p=project/odhcpd.git;a=commit;h=e73bf11dee1073aaaddc0dc67ca8c7d75ae3c6ad). Use `ra_flags` and `ra_slaac` options instead.; RA management mode: no M-Flag but A-Flag and ra_slaac is ture (`0`) , both M and A flags and ra_slaac is ture(`1`), both M and A flags and ra_slaac is false (`2`)
+`ra_offlink`	boolean	 	`0`	Announce prefixes off-link.
+`ra_preference`	string	 	`medium`	Route preference `medium`, `high` or `low`.
+`ra_maxinterval`	integer	 	`600`	Maximum time allowed between sending unsolicited Router Advertisements (RA).
+`ra_mininterval`	integer	 	`200`	Minimum time allowed between sending unsolicited Router Advertisements (RA).
+`ra_lifetime`	integer	 	`1800`	Router Lifetime published in Router Advertisement (RA) messages.
+`ra_useleasetime`	boolean	 	`0`	If set, the configured DHCPv4 `leasetime` is used both as limit for the preferred and valid lifetime of an IPv6 prefix.
+`ra_reachabletime`	integer	 	`0`	Reachable Time in milliseconds to be published in Router Advertisement (RA) messages'.
+`ra_retranstime`	integer	 	`0`	Retransmit Time in milliseconds to be published in Router Advertisment (RA) messages.
+`ra_hoplimit`	integer	 	`0`	The maximum hops to be published in Router Advertisement (RA) messages.
+`ra_mtu`	integer	 	`0`	The MTU to be published in Router Advertisement (RA) messages.
+`ra_dns`	boolean	 	`1`	Announce DNS configuration in RA messages ([RFC 8106](https://datatracker.ietf.org/doc/html/rfc8106)).
+`ndproxy_routing`	boolean	 	`1`	Learn routes from NDP.
+`ndproxy_slave`	boolean	 	`0`	NDProxy external slave.
+`ndproxy_static`	list	 	 	Static NDProxy prefixes.
+`prefix_filter`	string	 	`::/0`	Only advertise on-link prefixes within the provided IPv6 prefix. Others are filtered out.
+`ntp`	list	 	 	DHCPv6 stateful option 56 to Announce NTP servers
+```
 
 ### host section
 
@@ -12755,8 +11787,6 @@ No files or functions at this time.
 2.  Source functions for hooks
 3.  if block:
 
-<!-- -->
-
       if invoked as executable
            if called with `switch2jffs` parameter (i.e. from rcS)
                run hook `switch2jffs`
@@ -13052,8 +12082,6 @@ Package history is available at:
 - current history: <https://dev.openwrt.org/log/trunk/package/system/procd>
 - old history pre r37007 <https://dev.openwrt.org/log/trunk/package/procd/Makefile?rev=36995>
 
-<!-- -->
-
 - [r34865: procd: add initial implementation](https://dev.openwrt.org/changeset/34865)
 - [r34866: base-files: add basic procd integration, let procd start (and restart) ubus instead of having an ubus init script](https://dev.openwrt.org/changeset/34866)
 - [r34867: dropbear: convert init script to procd](https://dev.openwrt.org/changeset/34867)
@@ -13079,14 +12107,10 @@ Package history is available at:
 
  As noted below, this page is woefully out of date
 
-<table>
-<tbody>
-<tr class="odd">
-<td>Please also see <a href="/docs/techref/requirements.boot.process">requirements.boot.process</a><br />
-This guide it not up-to-date! It does not mention <a href="/docs/techref/procd">procd</a></td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md)]
+> Please also see [requirements.boot.process](/docs/techref/requirements.boot.process)
+>
+> This guide it not up-to-date! It does not mention [procd](/docs/techref/procd)
 
 This guide shall help you understand, e.g.
 
@@ -13094,8 +12118,6 @@ This guide shall help you understand, e.g.
 - How does the [OpenWrt FailSafe](/docs/guide-user/troubleshooting/failsafe_and_factory_reset) work?
 - the [flash.layout](/docs/techref/flash.layout) and the combination of [Utilization of file systems in OpenWrt](/docs/techref/filesystems#implementation_in_openwrt)
 - When does the tmpfs get mounted and `/tmp` symlinked to it and `/var` symlinked to `/tmp`?
-
-<!-- -->
 
 - [Preinit mount](/docs/techref/preinit_mount) Preinit, Mount Root, and First Boot Scripts
 - [Init Scripts](/docs/techref/initscripts) Init script implementation reference
@@ -13751,7 +12773,7 @@ The `sysupgrade` process starts with the execution of `/sbin/sysupgrade`. The be
 
 1.  Parse command line and validate no mutually exclusive options passed.
 2.  At this point, sysupgrade calls `include /lib/upgrade` -- a function in `/lib/functions.sh` that will source all `*.sh` files in the given directory.
-    1.  [NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md): An optional, platform-specific `/lib/upgrade/platform.sh` can override behavior, so for a full understanding, you should examine this file. (See `target/linux/<arch>/<sub-arch>/base-files/lib/upgrade/platform.sh` in your source tree.)
+    1.  [NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md): An optional, platform-specific `/lib/upgrade/platform.sh` can override behavior, so for a full understanding, you should examine this file. (See `target/linux/<arch>//base-files/lib/upgrade/platform.sh` in your source tree.)
     2.  The optional functions `platform_copy_config` and `platform_do_upgrade` are at the end of this list.
 3.  Create list of files to preserve and store them in `/tmp/sysupgrade.tgz` (unless `-f` was supplied).
 4.  If the image supplied is an http or https URL, `wget` is run to retrieve it.
@@ -14031,7 +13053,7 @@ While logged in via ssh, you have direct, full access to ubus. When you're acces
 ubus call session access '{ "ubus_rpc_session": "xxxxx", "object": "requested-object", "function": "requested-method" }'
 ```
 
-This happens to be `rpcd` at the moment, with the `http-json` interface, for friendly operation with browser code, but this is just one possible implementation. Because we're using rpcd to implement the ACLs at this time, this allows/requires (depending on your point of view) ACLs to be configured in `/usr/share/rpcd/acl.d/*.json`. The <u>names</u> of the files in `/usr/share/rpcd/acl.d/*.json` don't matter, but the top level keys define roles. The default ACL, listed below, <u>only</u> defines the login methods, so you can log in, but you still wouldn't be able to do anything.
+This happens to be `rpcd` at the moment, with the `http-json` interface, for friendly operation with browser code, but this is just one possible implementation. Because we're using rpcd to implement the ACLs at this time, this allows/requires (depending on your point of view) ACLs to be configured in `/usr/share/rpcd/acl.d/*.json`. The **names** of the files in `/usr/share/rpcd/acl.d/*.json` don't matter, but the top level keys define roles. The default ACL, listed below, **only** defines the login methods, so you can log in, but you still wouldn't be able to do anything.
 
 ``` yaml
 {
@@ -14430,15 +13452,10 @@ Source code is available here <http://git.openwrt.org/project/uci.git>
 
 `UCI` is a small utility written in [C](https://en.wikipedia.org/wiki/C (programming language)) (a [shell script](https://en.wikipedia.org/wiki/shell script)-wrapper is available as well) and is intended to *centralize* the whole configuration of a device running OpenWrt. UCI is the successor of the NVRAM based configuration found in the historical OpenWrt branch [White Russian](/about/history) and a wrapper for the standard configuration files programs bring with them, like e.g. `/etc/network/interfaces`, `/etc/exports`, `/etc/dnsmasq.conf`, `/etc/samba/samba.conf` etc.
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/dialog-information.png" alt="dialog-information.png" /></td>
-<td>UCI configuration files are located in the directory <strong><code>/etc/config/</code></strong><br />
-Their documentation can be accessed online in the OpenWrt-Wiki under <a href="/docs/guide-user/base-system/uci">UCI configuration files</a>.</td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../L2-semantic/wiki/wiki_page-techref-luci2.md)]
+> UCI configuration files are located in the directory **`/etc/config/`**
+>
+> Their documentation can be accessed online in the OpenWrt-Wiki under [UCI configuration files](/docs/guide-user/base-system/uci).
 
 They can be altered with any text editor or with the command line utility program `uci` or through various programming APIs (like Shell, Lua and C). The WUI [luci](/docs/techref/luci) e.g. uses Lua to manipulate them.
 
@@ -14662,7 +13679,7 @@ In the preceding example, s is a table containing all options and two special pr
      * ''s['.type']'' -> section type
      * ''s['.name']''  -> section name
 
-If the callback function returns `false` \[NB: <u>not</u> `nil`!\], `foreach()` will terminate at that point without iterating over any remaining sections. `foreach()` returns `true` if at least one section exists and the callback function didn't raise an error for it; `false` otherwise.
+If the callback function returns `false` \[NB: **not** `nil`!\], `foreach()` will terminate at that point without iterating over any remaining sections. `foreach()` returns `true` if at least one section exists and the callback function didn't raise an error for it; `false` otherwise.
 
 Here's another example:
 

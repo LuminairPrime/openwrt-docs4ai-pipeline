@@ -2,10 +2,10 @@
 title: Network scripts
 module: wiki
 origin_type: wiki_page
-token_count: 4192
+token_count: 3764
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-network-scripting.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Network scripts
@@ -200,69 +200,18 @@ An example in context:
 
 Flags can be added to a proto handler in `proto_protoname_init_config`, by setting their value to `1`. The information about all loaded protocols can be obtained by calling *ubus call network get_proto_handlers*.
 
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Name in <em>ubus call network get_proto_handlers</em></th>
-<th style="text-align: left;">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">force_link_default</td>
-<td style="text-align: left;">Instruct netifd to prefer link-based default routing behavior for the interface (affects how link state influences routing selection).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">immediate</td>
-<td style="text-align: left;">Protocol should be started/processed immediately upon attach instead of waiting for link or other conditions (useful for static/always-on protos).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">available</td>
-<td style="text-align: left;">init_available</td>
-<td style="text-align: left;">Indicates the protocol handler is present/usable on the system (1 = available, 0 = not).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">lasterror</td>
-<td style="text-align: left;">last_error</td>
-<td style="text-align: left;">True when the last setup attempt failed and the handler wants to expose that state.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">no_device</td>
-<td style="text-align: left;">no_device</td>
-<td style="text-align: left;">Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">no_device_config</td>
-<td style="text-align: left;">no_device_config</td>
-<td style="text-align: left;">Protocol has no device-specific configuration (config applies to the protocol itself).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">no_proto_task</td>
-<td style="text-align: left;">no_task</td>
-<td style="text-align: left;">Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.<br />
-<br />
-As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">peer_detect</td>
-<td style="text-align: left;">peer_detect</td>
-<td style="text-align: left;">netifd calls renew when it detects that a &lt;proto&gt;_peer in the config changed.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">renew_handler</td>
-<td style="text-align: left;">renew_available</td>
-<td style="text-align: left;">Protocol implements the "renew" action/handler <code>proto_*_renew()</code>, which can be called by netifd.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">teardown_on_l3_link_down</td>
-<td style="text-align: left;">teardown_on_l3_link_down</td>
-<td style="text-align: left;">If the l3 device receives state down (e.g. ifdown), call the <code>proto_*_teardown()</code>. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task</td>
-</tr>
-</tbody>
-</table>
+| Name | Name in *ubus call network get_proto_handlers* | Meaning |
+| --- | --- | --- |
+|   | force_link_default | Instruct netifd to prefer link-based default routing behavior for the interface (affects how link state influences routing selection). |
+|   | immediate | Protocol should be started/processed immediately upon attach instead of waiting for link or other conditions (useful for static/always-on protos). |
+| available | init_available | Indicates the protocol handler is present/usable on the system (1 = available, 0 = not). |
+| lasterror | last_error | True when the last setup attempt failed and the handler wants to expose that state. |
+| no_device | no_device | Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device. |
+| no_device_config | no_device_config | Protocol has no device-specific configuration (config applies to the protocol itself). |
+| no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'. |
+| peer_detect | peer_detect | netifd calls renew when it detects that a \_peer in the config changed. |
+| renew_handler | renew_available | Protocol implements the "renew" action/handler `proto_*_renew()`, which can be called by netifd. |
+| teardown_on_l3_link_down | teardown_on_l3_link_down | If the l3 device receives state down (e.g. ifdown), call the `proto_*_teardown()`. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task |
 
 ### Error codes
 

@@ -6,7 +6,7 @@ Flags    : --keep-temp         keep the temp tree for inspection
            --run-ai            include the optional AI stage
            --include-extractors run 01 and 02* before the fixture-backed stages
            --only <id>         run only scripts matching a partial identifier such as 03 or 06c
-Outputs  : Appends step logs to tests/openwrt-docs4ai-00-smoke-test-log.txt
+Outputs  : Appends step logs to tmp/logs/openwrt-docs4ai-00-smoke-test-log.txt
 Notes    : Default mode is fixture-backed and offline-friendly. The extractor path is optional.
 """
 
@@ -25,13 +25,13 @@ from smoke_support import (
     PROJECT_ROOT,
     assert_fixture_outputs,
     build_env,
+    get_local_log_path,
     run_named_script,
     seed_ai_cache,
     seed_l1_fixtures,
 )
 
-TEST_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE = os.path.join(TEST_DIR, "openwrt-docs4ai-00-smoke-test-log.txt")
+LOG_FILE = get_local_log_path("openwrt-docs4ai-00-smoke-test-log.txt")
 
 
 def parse_args():

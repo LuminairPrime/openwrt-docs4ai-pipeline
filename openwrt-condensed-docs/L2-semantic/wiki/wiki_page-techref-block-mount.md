@@ -2,10 +2,10 @@
 title: Mounting Block Devices
 module: wiki
 origin_type: wiki_page
-token_count: 2067
+token_count: 2063
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-block-mount.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Mounting Block Devices
@@ -44,8 +44,6 @@ With the new block mount mechanism you can run `block info` to get the same outp
 
 - **info** -\> get the same output that blkid delivered (including mtdblock)
 
-<!-- -->
-
       /dev/mtdblock2: UUID="0906f1b4-51688c99-666b11b5-71d70575" VERSION="4.0" TYPE="squashfs"
       /dev/mtdblock3: TYPE="jffs2"
       /dev/sda1: UUID="e81a771e-249f-4f9e-ab30-b2fb73789744" LABEL="overlay" NAME="EXT_JOURNAL" VERSION="1.0" TYPE="ext4"
@@ -57,8 +55,6 @@ With the new block mount mechanism you can run `block info` to get the same outp
 - **mount** -\> mount all devices listed in fstab
 - **umount** -\> unmount all devices listed in fstab
 - **detect** -\> get a sample uci file for the currently attached block devices
-
-<!-- -->
 
     config 'global'
         option  anon_swap   '0'

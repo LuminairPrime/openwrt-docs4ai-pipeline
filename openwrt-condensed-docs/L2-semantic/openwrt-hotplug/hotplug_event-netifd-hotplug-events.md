@@ -3,9 +3,9 @@ title: OpenWrt Core Hotplug Events
 module: openwrt-hotplug
 origin_type: hotplug_event
 token_count: 1412
-version: unknown
+version: a919299
 source_file: L1-raw/openwrt-hotplug/hotplug_event-netifd-hotplug-events.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 upstream_path: package/**/etc/hotplug.d/*
 language: bash
 ---

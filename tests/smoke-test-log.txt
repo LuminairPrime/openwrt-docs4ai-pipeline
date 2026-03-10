@@ -1,6 +1,6 @@
 
 --- openwrt-docs4ai-03-normalize-semantic.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-03-normalize-semantic.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-03-normalize-semantic.py
 
 STDOUT:
 [03] Pass 1: YAML Schema Injection & Link Registry Build
@@ -14,7 +14,7 @@ STDERR:
 EXIT CODE: 0
 
 --- openwrt-docs4ai-05-assemble-references.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-05-assemble-references.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-05-assemble-references.py
 
 STDOUT:
 [05] Assemble L4 monolithic files and L3 skeletons
@@ -33,7 +33,7 @@ STDERR:
 EXIT CODE: 0
 
 --- openwrt-docs4ai-06a-generate-llms-txt.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06a-generate-llms-txt.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06a-generate-llms-txt.py
 
 STDOUT:
 [06a] Generating L3 Navigational Maps (llms.txt)
@@ -45,7 +45,7 @@ STDERR:
 EXIT CODE: 0
 
 --- openwrt-docs4ai-06b-generate-agents-md.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06b-generate-agents-md.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06b-generate-agents-md.py
 
 STDOUT:
 [06b] Generating AGENTS.md and README.md
@@ -56,18 +56,18 @@ STDERR:
 EXIT CODE: 0
 
 --- openwrt-docs4ai-06c-generate-ide-schemas.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06c-generate-ide-schemas.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06c-generate-ide-schemas.py
 
 STDOUT:
 [06c] Generating ucode.d.ts IDE schemas
-[06c] OK: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\tmp\fixture-smoke-3zigtxu1\out\ucode\ucode.d.ts (4 symbols)
+[06c] OK: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\tmp\fixture-smoke-62z0kmfx\out\ucode\ucode.d.ts (4 symbols)
 
 STDERR:
 
 EXIT CODE: 0
 
 --- openwrt-docs4ai-06d-generate-changelog.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06d-generate-changelog.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-06d-generate-changelog.py
 
 STDOUT:
 [06d] Generating L5 Changelog and Telemetry
@@ -79,7 +79,7 @@ STDERR:
 EXIT CODE: 0
 
 --- openwrt-docs4ai-07-generate-index-html.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-07-generate-index-html.py
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-07-generate-index-html.py
 
 STDOUT:
 [07] Generating index.html web landing page
@@ -90,10 +90,10 @@ STDERR:
 EXIT CODE: 0
 
 --- openwrt-docs4ai-08-validate.py ---
-COMMAND: C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-08-validate.py --warn-only
+COMMAND: c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.venv\Scripts\python.exe c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\.github\scripts\openwrt-docs4ai-08-validate.py --warn-only
 
 STDOUT:
-[08] Security & Quality Validation (C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\tmp\fixture-smoke-3zigtxu1\out) [Mode: soft]
+[08] Security & Quality Validation (c:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-v12-copilot\tmp\fixture-smoke-62z0kmfx\out) [Mode: soft]
 
 [08] ----------------------------------------------
 [08] Validation Results

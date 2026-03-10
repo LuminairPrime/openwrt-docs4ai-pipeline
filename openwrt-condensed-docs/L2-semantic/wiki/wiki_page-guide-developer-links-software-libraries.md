@@ -2,10 +2,10 @@
 title: Links to Libraries
 module: wiki
 origin_type: wiki_page
-token_count: 692
+token_count: 690
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-links-software-libraries.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Links to Libraries
@@ -38,8 +38,6 @@ Here we could place links to light-build libraries you could link against:
   - [GPLv2 with FOSS exception or Commercial Licensing](http://polarssl.org/licensing)
     - `umurmur`
 - `libmatrixssl` [MatrixSSL](https://en.wikipedia.org/wiki/MatrixSSL)
-
-<!-- -->
 
       *[[http://www.matrixssl.org/]] GPLv2+
         * ''[[docs:guide-user:services:webserver:http.mini-httpd]]''

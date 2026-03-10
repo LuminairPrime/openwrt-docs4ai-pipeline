@@ -4,6 +4,11 @@ tmp/
 # CI staging output (generated during pipeline runs)
 staging/
 
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Legacy v8 clone locations
 repo-ucode/
 repo-luci/
@@ -13,6 +18,9 @@ repo-openwrt/
 node_modules/
 .venv/
 *.err
+
+# Local review bundles and scratch reports
+tests/comprehensive-test-results-*/
 
 # Smoke test terminal output (large, regenerated each run)
 tests/openwrt-docs4ai-00-smoke-test-terminal-output-recent.txt

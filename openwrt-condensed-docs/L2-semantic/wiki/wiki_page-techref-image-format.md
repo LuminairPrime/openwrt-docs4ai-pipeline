@@ -2,10 +2,10 @@
 title: Image formats
 module: wiki
 origin_type: wiki_page
-token_count: 2161
+token_count: 1610
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-image-format.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Image formats
@@ -114,167 +114,33 @@ Linux kernel for build [^6]
 
 ## Firmware types
 
-<table>
-<thead>
-<tr class="header">
-<th>Target</th>
-<th>Install</th>
-<th>Upgrade</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>adm5120</td>
-<td>squashfs.bin</td>
-<td>squashfs.bin</td>
-</tr>
-<tr class="even">
-<td>apm821xx</td>
-<td>squashfs-factory.img<br />
-initramfs-kernel.bin</td>
-<td>squashfs-sysupgrade.tar<br />
-ext4-rootfs.img.gz</td>
-</tr>
-<tr class="odd">
-<td>ar7</td>
-<td>squashfs.bin<br />
-squashfs-code.bin</td>
-<td>squashfs.bin</td>
-</tr>
-<tr class="even">
-<td>ar71xx</td>
-<td>factory.img<br />
-factory.bin</td>
-<td>sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>at91</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>atheros</td>
-<td>squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.tar</td>
-</tr>
-<tr class="odd">
-<td>brcm2708</td>
-<td>ext4-sdcard.img.gz</td>
-<td>-</td>
-</tr>
-<tr class="even">
-<td>brcm47xx</td>
-<td>squashfs.bin<br />
-squashfs.chk<br />
-squashfs.trx</td>
-<td>squashfs.bin<br />
-squashfs.chk<br />
-squashfs.trx</td>
-</tr>
-<tr class="odd">
-<td>bcm53xx</td>
-<td>squashfs.bin<br />
-squashfs.chk<br />
-squashfs.trx</td>
-<td><br />
-squashfs.chk<br />
-squashfs.trx</td>
-</tr>
-<tr class="even">
-<td>brcm63xx</td>
-<td>squashfs-cfe.bin<br />
-squashfs-factory.chk</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>cns3xxx</td>
-<td>-</td>
-<td>sysupgrade.bin</td>
-</tr>
-<tr class="even">
-<td>imx6</td>
-<td>?</td>
-<td>?</td>
-</tr>
-<tr class="odd">
-<td>ipq806x</td>
-<td>factory.img</td>
-<td>sysupgrade.tar</td>
-</tr>
-<tr class="even">
-<td>ixp4xx</td>
-<td>squashfs.bin<br />
-squashfs.img<br />
-zImage</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>kirkwood</td>
-<td>squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="even">
-<td>lantiq</td>
-<td>initramfs-kernel.bin<br />
-squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>layerscape</td>
-<td>squashfs-firmware.bin</td>
-<td>-</td>
-</tr>
-<tr class="even">
-<td>mpc85xx</td>
-<td>squashfs-factory.bin</td>
-<td>squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="odd">
-<td>mvebu</td>
-<td>sdcard.img.gz<br />
-squashfs-factory.img</td>
-<td><br />
-squashfs-sysupgrade.bin</td>
-</tr>
-<tr class="even">
-<td>mxs</td>
-<td>?</td>
-<td>?</td>
-</tr>
-<tr class="odd">
-<td>orion</td>
-<td>not supported</td>
-<td>not supported</td>
-</tr>
-<tr class="even">
-<td>oxnas</td>
-<td>squashfs-ubinized.bin<br />
-ubifs-ubinized.bin</td>
-<td>squashfs-sysupgrade.tar<br />
-ubifs-sysupgrade.tar</td>
-</tr>
-<tr class="odd">
-<td>ramips</td>
-<td>initramfs-kernel.bin<br />
-squashfs-factory.bin<br />
-squashfs-factory.dlf<br />
-initramfs-uImage.bin</td>
-<td>squashfs-sysupgrade.bin<br />
-squashfs-sysupgrade.tar</td>
-</tr>
-<tr class="even">
-<td>sunxi</td>
-<td>ext4-sdcard.img.gz<br />
-squashfs-sdcard.img.gz</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>x86</td>
-<td>combined-ext4.img</td>
-<td>combined-ext4.img.gz</td>
-</tr>
-</tbody>
-</table>
+| Target | Install | Upgrade |
+| --- | --- | --- |
+| adm5120 | squashfs.bin | squashfs.bin |
+| apm821xx | squashfs-factory.img; initramfs-kernel.bin | squashfs-sysupgrade.tar; ext4-rootfs.img.gz |
+| ar7 | squashfs.bin; squashfs-code.bin | squashfs.bin |
+| ar71xx | factory.img; factory.bin | sysupgrade.bin |
+| at91 |   |   |
+| atheros | squashfs-factory.bin | squashfs-sysupgrade.tar |
+| brcm2708 | ext4-sdcard.img.gz | - |
+| brcm47xx | squashfs.bin; squashfs.chk; squashfs.trx | squashfs.bin; squashfs.chk; squashfs.trx |
+| bcm53xx | squashfs.bin; squashfs.chk; squashfs.trx | squashfs.chk; squashfs.trx |
+| brcm63xx | squashfs-cfe.bin; squashfs-factory.chk | squashfs-sysupgrade.bin |
+| cns3xxx | - | sysupgrade.bin |
+| imx6 | ? | ? |
+| ipq806x | factory.img | sysupgrade.tar |
+| ixp4xx | squashfs.bin; squashfs.img; zImage | squashfs-sysupgrade.bin |
+| kirkwood | squashfs-factory.bin | squashfs-sysupgrade.bin |
+| lantiq | initramfs-kernel.bin; squashfs-factory.bin | squashfs-sysupgrade.bin |
+| layerscape | squashfs-firmware.bin | - |
+| mpc85xx | squashfs-factory.bin | squashfs-sysupgrade.bin |
+| mvebu | sdcard.img.gz; squashfs-factory.img | squashfs-sysupgrade.bin |
+| mxs | ? | ? |
+| orion | not supported | not supported |
+| oxnas | squashfs-ubinized.bin; ubifs-ubinized.bin | squashfs-sysupgrade.tar; ubifs-sysupgrade.tar |
+| ramips | initramfs-kernel.bin; squashfs-factory.bin; squashfs-factory.dlf; initramfs-uImage.bin | squashfs-sysupgrade.bin; squashfs-sysupgrade.tar |
+| sunxi | ext4-sdcard.img.gz; squashfs-sdcard.img.gz |   |
+| x86 | combined-ext4.img | combined-ext4.img.gz |
 
 # Image Formats General
 

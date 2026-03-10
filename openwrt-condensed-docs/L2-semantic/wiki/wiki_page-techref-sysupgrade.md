@@ -2,10 +2,10 @@
 title: "Sysupgrade \u2013 Technical Reference"
 module: wiki
 origin_type: wiki_page
-token_count: 2609
+token_count: 2605
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-sysupgrade.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Sysupgrade – Technical Reference
@@ -83,7 +83,7 @@ The `sysupgrade` process starts with the execution of `/sbin/sysupgrade`. The be
 
 1.  Parse command line and validate no mutually exclusive options passed.
 2.  At this point, sysupgrade calls `include /lib/upgrade` -- a function in `/lib/functions.sh` that will source all `*.sh` files in the given directory.
-    1.  [NOTE](../wiki/wiki_page-techref-luci2.md): An optional, platform-specific `/lib/upgrade/platform.sh` can override behavior, so for a full understanding, you should examine this file. (See `target/linux/<arch>/<sub-arch>/base-files/lib/upgrade/platform.sh` in your source tree.)
+    1.  [NOTE](../wiki/wiki_page-techref-luci2.md): An optional, platform-specific `/lib/upgrade/platform.sh` can override behavior, so for a full understanding, you should examine this file. (See `target/linux/<arch>//base-files/lib/upgrade/platform.sh` in your source tree.)
     2.  The optional functions `platform_copy_config` and `platform_do_upgrade` are at the end of this list.
 3.  Create list of files to preserve and store them in `/tmp/sysupgrade.tgz` (unless `-f` was supplied).
 4.  If the image supplied is an http or https URL, `wget` is run to retrieve it.

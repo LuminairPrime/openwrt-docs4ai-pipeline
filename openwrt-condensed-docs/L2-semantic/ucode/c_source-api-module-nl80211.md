@@ -3,9 +3,9 @@ title: 'ucode module: nl80211'
 module: ucode
 origin_type: c_source
 token_count: 3950
-version: unknown
+version: e87be9d
 source_file: L1-raw/ucode/c_source-api-module-nl80211.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 upstream_path: lib/nl80211.c
 language: c
 ---

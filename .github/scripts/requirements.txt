@@ -2,3 +2,6 @@ requests
 tiktoken
 pyyaml
 lxml
+beautifulsoup4
+html5lib
+markdownify

@@ -2,10 +2,10 @@
 title: OpenWrt Feeds
 module: wiki
 origin_type: wiki_page
-token_count: 2767
+token_count: 2736
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-feeds.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # OpenWrt Feeds
@@ -170,8 +170,6 @@ For this example we assume that you name your feed `custom` and your project is 
 1.  Edit `/home/user/openwrt/feeds.conf.default`
 2.  Add a new line for your feed. `src-link custom /usr/src/openwrt/custom-feed/`
 
-<!-- -->
-
 1.  Update the feed: from the `<buildroot dir>` (e.g. `/home/user/openwrt`) do: `./scripts/feeds update custom`
 2.  And then install it `./scripts/feeds install -a -p custom`
 
@@ -189,6 +187,6 @@ The downloaded sources (referenced in package Makefiles) are not there... The do
 2.  [OpenWrt Buildroot – Installation](/docs/guide-developer/toolchain/install-buildsystem)
 3.  [OpenWrt Buildroot – Usage](/docs/guide-developer/toolchain/use-buildsystem)
 4.  OpenWrt Buildroot – Feeds
-5.  [OpenWrt Buildroot – Technical Reference](/docs/techref/buildroot) <img src="/meta/icons/tango/48px-construction.svg.png" width="16" alt="48px-construction.svg.png" /> this article needs *your* attention.
+5.  [OpenWrt Buildroot – Technical Reference](/docs/techref/buildroot)  this article needs *your* attention.
 
 ## Links

@@ -2,24 +2,20 @@
 title: The Boot Process
 module: wiki
 origin_type: wiki_page
-token_count: 3268
+token_count: 3243
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-process-boot.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # The Boot Process
 
  As noted below, this page is woefully out of date
 
-<table>
-<tbody>
-<tr class="odd">
-<td>Please also see <a href="/docs/techref/requirements.boot.process">requirements.boot.process</a><br />
-This guide it not up-to-date! It does not mention <a href="/docs/techref/procd">procd</a></td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../wiki/wiki_page-techref-luci2.md)]
+> Please also see [requirements.boot.process](/docs/techref/requirements.boot.process)
+>
+> This guide it not up-to-date! It does not mention [procd](/docs/techref/procd)
 
 This guide shall help you understand, e.g.
 
@@ -27,8 +23,6 @@ This guide shall help you understand, e.g.
 - How does the [OpenWrt FailSafe](/docs/guide-user/troubleshooting/failsafe_and_factory_reset) work?
 - the [flash.layout](/docs/techref/flash.layout) and the combination of [Utilization of file systems in OpenWrt](/docs/techref/filesystems#implementation_in_openwrt)
 - When does the tmpfs get mounted and `/tmp` symlinked to it and `/var` symlinked to `/tmp`?
-
-<!-- -->
 
 - [Preinit mount](/docs/techref/preinit_mount) Preinit, Mount Root, and First Boot Scripts
 - [Init Scripts](/docs/techref/initscripts) Init script implementation reference

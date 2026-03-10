@@ -2,10 +2,10 @@
 title: "netifd (Network Interface Daemon) \u2013 Technical Reference"
 module: wiki
 origin_type: wiki_page
-token_count: 1931
+token_count: 1929
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-netifd.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # netifd (Network Interface Daemon) – Technical Reference
@@ -41,8 +41,6 @@ language: text
     - 4 = DEBUG_INTERFACE
     - 8 = DEBUG_WIRELESS
   - Add your favorite options together to obtain the `<mask>`.
-
-<!-- -->
 
       * In order for the output to be seen you'll need to modify /etc/init.d/network to add:
         * procd_set_param stdout 1

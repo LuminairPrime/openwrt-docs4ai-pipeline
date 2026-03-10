@@ -2,10 +2,10 @@
 title: Adding new device support
 module: wiki
 origin_type: wiki_page
-token_count: 2901
+token_count: 2892
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-add-new-device.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Adding new device support
@@ -154,11 +154,8 @@ For creating the OpenWrt firmware your [bcm63xx](/docs/techref/hardware/soc/soc.
     `make kernel_menuconfig`
 4.  Add the board-id to the ./target/linux/brcm63xx/image/Makefile.
     **Example**
-    \<code\> \# Davolink DV2020
-
-<!-- -->
-
-      $(call Image/Build/CFE,$(1),DV2020,6348)</code>
+    \\# Davolink DV2020
+$(call Image/Build/CFE,$(1),DV2020,6348)
     - add the board-id with the parameters to ./build_dir/linux-brcm63xx/linux-2.6.37.4/arch/mips/bcm63xx/boards/board_bcm963xx.c\\ **Example**\\ <code>static struct board_info __initdata board_DV2020 = {
           .name                           = "DV2020",
           .expected_cpu_id                = 0x6348,

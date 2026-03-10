@@ -2,10 +2,10 @@
 title: Setting up a build VM in VirtualBox
 module: wiki
 origin_type: wiki_page
-token_count: 1005
+token_count: 1003
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-buildserver-virtualbox.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Setting up a build VM in VirtualBox
@@ -71,8 +71,6 @@ You are now editing the list of servers to get updates from.
 
 - Delete the lines containing "deb cdrom". Lines can be deleted with ctrl-k.
 - From the last two lines, remove the leading \# and space, and the -updates after bullseye. They should now look like this:
-
-<!-- -->
 
     deb http://deb.debian.org/debian/ bullseye main contrib
     deb-src http://deb.debian.org/debian/ bullseye main contrib

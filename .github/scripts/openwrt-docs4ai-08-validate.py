@@ -35,6 +35,12 @@ UCODE_IMPORT_RE = re.compile(
 UCODE_EXPORT_RE = re.compile(r'^\s*export\b', re.MULTILINE)
 CODE_FENCE_START_RE = re.compile(r'^(\s*)```(javascript|ucode|js|uc)\s*$')
 CODE_FENCE_END_RE = re.compile(r'^(\s*)```\s*$')
+FENCED_BLOCK_RE = re.compile(r'```.*?```|~~~.*?~~~', re.DOTALL)
+WIKI_RESIDUAL_HTML_PATTERNS = {
+    "raw html table": re.compile(r'<table\b|<tr\b|<td\b|<th\b', re.IGNORECASE),
+    "sortable tag": re.compile(r'(?:\\?<\s*/?sortable\b[^>]*\\?>|&lt;\/?sortable\b[^&]*&gt;)', re.IGNORECASE),
+    "footnote aside": re.compile(r'<aside\b[^>]*\bfootnotes\b', re.IGNORECASE),
+}
 
 
 def extract_ucode_imports(code):
@@ -76,6 +82,10 @@ def extract_markdown_code_blocks(content):
             block_lines.append(line)
 
     return blocks
+
+
+def strip_fenced_code_blocks(content):
+    return FENCED_BLOCK_RE.sub('', content)
 
 
 def validate_outdir(outdir):
@@ -163,6 +173,12 @@ def validate_outdir(outdir):
 
             if '<a name="' in content:
                 soft_warn(f"Raw HTML anchor tag leaked into L2: {rel}")
+
+            if rel.replace("\\", "/").startswith("L2-semantic/wiki/"):
+                wiki_scan_content = strip_fenced_code_blocks(content)
+                for label, pattern in WIKI_RESIDUAL_HTML_PATTERNS.items():
+                    if pattern.search(wiki_scan_content):
+                        soft_warn(f"Residual wiki HTML ({label}) leaked into L2: {rel}")
 
     for fpath in all_md:
         if "L2-semantic" not in fpath:

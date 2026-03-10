@@ -2,10 +2,10 @@
 title: OpenWrt packages
 module: wiki
 origin_type: wiki_page
-token_count: 5459
+token_count: 5457
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-package-policies.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # OpenWrt packages
@@ -20,8 +20,6 @@ The term *OpenWrt package* may either refer to one of two things:
   - an *OpenWrt package Makefile* describing the acquisition, building and packaging procedures for a piece of software (required)
   - a supplemental directory with *OpenWrt package patches* which modify the acquired source code (optional)
   - other static files that go with the package, such as init script files, default configurations, scripts or other support files (optional)
-
-<!-- -->
 
 - an OpenWrt *binary package*, which is a GNU tar compatible archive containing binary executable software artifacts and the accompanying *package control files* for installation on a running system, similar to the `.deb` or `.rpm` files used in other package managers
 

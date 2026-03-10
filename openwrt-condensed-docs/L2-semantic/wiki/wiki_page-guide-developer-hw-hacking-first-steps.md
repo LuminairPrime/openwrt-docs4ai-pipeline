@@ -2,10 +2,10 @@
 title: Hardware Hacking First Steps
 module: wiki
 origin_type: wiki_page
-token_count: 1494
+token_count: 1492
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-hw-hacking-first-steps.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Hardware Hacking First Steps
@@ -23,8 +23,6 @@ You bought yourself a new router, and it's nice. You can connect a hard disc to 
 - Depending on the [bootloader](/docs/techref/bootloader) that is being used, you could utilize different `commands` to gather hardware information. Please see the manual for that particular bootloader to get this done. Once you have the information you could keep it for yourself or post it online. Depending on how fast you are, there probably is going to be information regarding this already available or you are the first one. This simple step is necessary because the manufacturer usually does not document exactly what hardware has been installed. Now with this information you are going to use google or the search engine of your choice, to see what GNU/Linux drivers are available, and if, in which kernel version they have been integrated into. For example:
 - <http://en.wikipedia.org/wiki/Comparison_of_open_source_wireless_drivers#Linux> you can see, since which or until which Kernel version drivers for wireless radio circuitry, has been integrated.
 - But of course there is much more to a system, in this case in form of a SoC, then the wireless drivers. Anything needs drivers. For example the [VLYNQ](https://en.wikipedia.org/wiki/VLYNQ) needs to be supported by the Kernel. etc. And you are done. If you really want to continue, you could find help here:
-
-<!-- -->
 
 - <http://www.tldp.org/LDP/tlk/tlk.html> *The Linux Kernel*
 - <http://www.tldp.org/LDP/lkmpg/index.html> *The Linux Kernel Module Programming Guide*

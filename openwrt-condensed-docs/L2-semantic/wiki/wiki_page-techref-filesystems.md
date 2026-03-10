@@ -2,10 +2,10 @@
 title: Filesystems
 module: wiki
 origin_type: wiki_page
-token_count: 3339
+token_count: 3337
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-filesystems.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Filesystems
@@ -34,8 +34,6 @@ Used to merge two filesystems, one read-only and the other writable. [flash.layo
 [tmpfs](https://en.wikipedia.org/wiki/tmpfs) is implemented on many Unix-like operating systems (including OpenWrt). It operates similar to a RAM-Disk, without writing files to disk. In OpenWrt, `/tmp` resides on a tmpfs-partition and `/var` is a symlink to it; `/dev` resides on a little tmpfs partition of its own.
 
 - [Kernel documentation on tmpfs](https://www.kernel.org/doc/html/latest/filesystems/tmpfs.html)
-
-<!-- -->
 
 - (+) doesn't directly use space on non-volatile storage
 - (-) no wear leveling

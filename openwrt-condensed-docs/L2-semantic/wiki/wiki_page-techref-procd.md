@@ -2,10 +2,10 @@
 title: Procd system init and daemon management
 module: wiki
 origin_type: wiki_page
-token_count: 1965
+token_count: 1963
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-procd.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Procd system init and daemon management
@@ -107,8 +107,6 @@ Package history is available at:
 
 - current history: <https://dev.openwrt.org/log/trunk/package/system/procd>
 - old history pre r37007 <https://dev.openwrt.org/log/trunk/package/procd/Makefile?rev=36995>
-
-<!-- -->
 
 - [r34865: procd: add initial implementation](https://dev.openwrt.org/changeset/34865)
 - [r34866: base-files: add basic procd integration, let procd start (and restart) ubus instead of having an ubus init script](https://dev.openwrt.org/changeset/34866)

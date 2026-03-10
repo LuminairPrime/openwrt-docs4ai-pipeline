@@ -2,10 +2,10 @@
 title: 'Init (User space boot) reference for Chaos Calmer: procd'
 module: wiki
 origin_type: wiki_page
-token_count: 5595
+token_count: 5589
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-init-detail-cc.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Init (User space boot) reference for Chaos Calmer: procd
@@ -104,7 +104,7 @@ This is the source code path followed in logical order of execution by the proce
         3.  `hotplug("/etc/hotplug.json")` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/hotplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l568)
             User space device hotplugging handler setup.
             Static variables in file scope are important. The filename of the script to execute is kept in hotplug.c global scope: `static char * rule_file;`.
-            Opens a netlink socket ([man 7 netlink](http://man7.org/linux/man-pages/man7/netlink.7.html)) and handles the file descriptor to uloop, to listen to uevents: kernel messages informing <u>u</u>serspace of kernel <u>events</u>. See <https://www.kernel.org/doc/pending/hotplug.txt>
+            Opens a netlink socket ([man 7 netlink](http://man7.org/linux/man-pages/man7/netlink.7.html)) and handles the file descriptor to uloop, to listen to uevents: kernel messages informing **u**serspace of kernel **events**. See <https://www.kernel.org/doc/pending/hotplug.txt>
             The uloop instance in pid 1 [uses epoll_wait](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=uloop.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8#l259) to monitor file descriptors, the kernel netlink socket FD is one of them, and is instructed to invoke the callback `hotplug_handler()` on uevent arrival.
             This `hotplug_handler` callback stays active after coldplug, and will handle all uevents the kernel will emit.
         4.  `procd_coldplug()` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l40)

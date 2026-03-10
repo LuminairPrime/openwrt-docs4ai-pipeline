@@ -3,9 +3,9 @@ title: docker_socket.uc
 module: luci-examples
 origin_type: example_app
 token_count: 724
-version: unknown
+version: 31f220d
 source_file: L1-raw/luci-examples/example_app-luci-app-dockerman-ucode-docker-socket-uc.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 upstream_path: applications/luci-app-dockerman/ucode/docker_socket.uc
 language: ucode
 ---

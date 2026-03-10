@@ -2,10 +2,10 @@
 title: The Bootloader
 module: wiki
 origin_type: wiki_page
-token_count: 2141
+token_count: 2139
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-bootloader.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # The Bootloader
@@ -90,8 +90,6 @@ An embedded bootloader fulfills the same functionality as the [BIOS](https://en.
 - [yamon](/docs/techref/bootloader/yamon) unknown by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
 - [Breed](/docs/techref/bootloader/Breed) - Breed booatloader
 - [bl-mt798x](/docs/techref/bootloader/bl-mt798x) - ATF and u-boot for mt798x-based routers
-
-<!-- -->
 
 - VxWorks' own bootloader - most Atheros devices (There is a description of the basic workings on the [Netgear WGT624](/oldwiki/OpenWrtDocs/Hardware/Netgear/WGT624) page.)
 - NetBoot - the standard loader in DWL7100AP allows to boot firmware image via network from [TFTP](../wiki/wiki_page-guide-developer-adding-new-device.md) server direct to RAM

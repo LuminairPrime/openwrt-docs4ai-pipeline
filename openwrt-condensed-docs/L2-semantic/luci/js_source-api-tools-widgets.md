@@ -3,9 +3,9 @@ title: 'LuCI API: widgets'
 module: luci
 origin_type: js_source
 token_count: 126
-version: unknown
+version: 31f220d
 source_file: L1-raw/luci/js_source-api-tools-widgets.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 upstream_path: modules/luci-base/htdocs/luci-static/resources/tools/widgets.js
 language: javascript
 ---

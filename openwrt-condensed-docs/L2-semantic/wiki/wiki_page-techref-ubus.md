@@ -2,10 +2,10 @@
 title: ubus (OpenWrt micro bus architecture)
 module: wiki
 origin_type: wiki_page
-token_count: 6664
+token_count: 6656
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-ubus.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # ubus (OpenWrt micro bus architecture)
@@ -211,7 +211,7 @@ While logged in via ssh, you have direct, full access to ubus. When you're acces
 ubus call session access '{ "ubus_rpc_session": "xxxxx", "object": "requested-object", "function": "requested-method" }'
 ```
 
-This happens to be `rpcd` at the moment, with the `http-json` interface, for friendly operation with browser code, but this is just one possible implementation. Because we're using rpcd to implement the ACLs at this time, this allows/requires (depending on your point of view) ACLs to be configured in `/usr/share/rpcd/acl.d/*.json`. The <u>names</u> of the files in `/usr/share/rpcd/acl.d/*.json` don't matter, but the top level keys define roles. The default ACL, listed below, <u>only</u> defines the login methods, so you can log in, but you still wouldn't be able to do anything.
+This happens to be `rpcd` at the moment, with the `http-json` interface, for friendly operation with browser code, but this is just one possible implementation. Because we're using rpcd to implement the ACLs at this time, this allows/requires (depending on your point of view) ACLs to be configured in `/usr/share/rpcd/acl.d/*.json`. The **names** of the files in `/usr/share/rpcd/acl.d/*.json` don't matter, but the top level keys define roles. The default ACL, listed below, **only** defines the login methods, so you can log in, but you still wouldn't be able to do anything.
 
 ``` yaml
 {

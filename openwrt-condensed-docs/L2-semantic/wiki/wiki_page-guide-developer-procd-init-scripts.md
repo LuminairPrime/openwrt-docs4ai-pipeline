@@ -2,10 +2,10 @@
 title: Procd Init Scripts
 module: wiki
 origin_type: wiki_page
-token_count: 5391
+token_count: 5333
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-procd-init-scripts.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Procd Init Scripts
@@ -119,7 +119,7 @@ If you want to add a check *after* procd has sent the terminate signal (e.g. wai
 
 ### Init scripts during compilation
 
-<img src="/meta/icons/tango/48px-dialog-warning.svg.png" width="32" alt="48px-dialog-warning.svg.png" />WARNING<img src="/meta/icons/tango/48px-dialog-warning.svg.png" width="32" alt="48px-dialog-warning.svg.png" />: initscripts **will run** while building OpenWrt images (when installing packages in what will become a ROM image) in the **host system** (right now, for actions "*enable*" and "*disable*"). **They must not fail, or have undesired side-effects in that situation.** When being run by the build system, environment variable **\${IPKG_INSTROOT}** will be set to the working directory being used. On the "target system", that environment variable will be empty/unset. Refer to "/lib/functions.sh" and also to "/etc/rc.common" in package "base-files" for the nasty details.
+WARNING: initscripts **will run** while building OpenWrt images (when installing packages in what will become a ROM image) in the **host system** (right now, for actions "*enable*" and "*disable*"). **They must not fail, or have undesired side-effects in that situation.** When being run by the build system, environment variable **\${IPKG_INSTROOT}** will be set to the working directory being used. On the "target system", that environment variable will be empty/unset. Refer to "/lib/functions.sh" and also to "/etc/rc.common" in package "base-files" for the nasty details.
 
 ## Specifying triggers
 

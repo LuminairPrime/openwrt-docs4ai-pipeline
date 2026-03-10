@@ -2,10 +2,10 @@
 title: Create a sample procd init script
 module: wiki
 origin_type: wiki_page
-token_count: 2390
+token_count: 2384
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-procd-init-script-example.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Create a sample procd init script
@@ -234,19 +234,13 @@ There are a couple of more options that can be configured in a procd scripts ‘
         ${respawn_timeout:-5} ${respawn_retry:-5}`
   In this example we respawn if process terminates sooner than respawn_threshold, it is considered crashed and after 5 retries the service is stopped. However, if it terminates later than respawn_threshold, it would be respawned indefinitely.
 
-<!-- -->
-
 - **pidfile**
   Configure where to store the pid file
   `procd_set_param pidfile $PIDFILE`
 
-<!-- -->
-
 - **env vars**
   Pass environment variables to your process with
   `procd_set_param env A_VAR=avalue`
-
-<!-- -->
 
 - **ulimit**
   If you need to set resource limits for your process you can use

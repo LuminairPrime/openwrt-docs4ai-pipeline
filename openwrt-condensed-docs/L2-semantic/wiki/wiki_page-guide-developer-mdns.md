@@ -2,10 +2,10 @@
 title: umdns for Local Device Discovery
 module: wiki
 origin_type: wiki_page
-token_count: 2302
+token_count: 2298
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-mdns.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # umdns for Local Device Discovery
@@ -53,11 +53,7 @@ config umdns
 
 - The `option jail` **DOES WHAT?**
 
-<!-- -->
-
 - The `list network` lines indicate the interfaces where `umdns` advertises its names. The interface name is found from `/etc/config/network`, not the device name shown by `ifconfig`. So if the network configuration file contains `config interface 'vlan1'` in your `/etc/config/network`, use `vlan1`. To test for the correct name name use `ifstatus`.
-
-<!-- -->
 
 - It is considered unsafe to enable umdns on `wan` interface because it makes those hosts more visible to the external world.
 

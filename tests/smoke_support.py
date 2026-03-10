@@ -95,6 +95,12 @@ FIXTURE_DOCS = [
 ]
 
 
+def get_local_log_path(filename):
+    log_dir = os.path.join(PROJECT_ROOT, "tmp", "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    return os.path.join(log_dir, filename)
+
+
 def build_env(workdir, outdir, run_ai=False, extra_env=None):
     env = os.environ.copy()
     env["WORKDIR"] = workdir

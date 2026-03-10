@@ -3,9 +3,9 @@ title: 'ucode module: zlib'
 module: ucode
 origin_type: c_source
 token_count: 1913
-version: unknown
+version: e87be9d
 source_file: L1-raw/ucode/c_source-api-module-zlib.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 upstream_path: lib/zlib.c
 language: c
 ---

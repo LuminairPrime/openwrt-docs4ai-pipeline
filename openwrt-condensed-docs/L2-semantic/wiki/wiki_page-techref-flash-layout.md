@@ -2,10 +2,10 @@
 title: The OpenWrt Flash Layout
 module: wiki
 origin_type: wiki_page
-token_count: 10870
+token_count: 9839
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-flash-layout.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # The OpenWrt Flash Layout
@@ -20,37 +20,26 @@ Moving parts are prone to [wear](https://en.wikipedia.org/wiki/wear) (german: [V
 
 Non-mechanical wear does not only occur when flash memory is erased!
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/dialog-information.png" alt="dialog-information.png" /></td>
-<td>1. Flash memory is more likely to experience failure than a <a href="https://en.wikipedia.org/wiki/Hard_disk_drive">Hard_disk_drive</a> (the ones with the platters rotating at 5400–15000 <a href="https://en.wikipedia.org/wiki/Revolutions per minute">RPM</a>)<br />
-2. Some types of flash memory seem to experience more non-mechanical wear then other types<br />
-3. How do we deal with failure?</td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../wiki/wiki_page-techref-luci2.md)]
+> 1. Flash memory is more likely to experience failure than a [Hard_disk_drive](https://en.wikipedia.org/wiki/Hard_disk_drive) (the ones with the platters rotating at 5400–15000 [RPM](https://en.wikipedia.org/wiki/Revolutions per minute))
+>
+> 2. Some types of flash memory seem to experience more non-mechanical wear then other types
+>
+> 3. How do we deal with failure?
 
 ### Host-managed vs. self-managed
 
 Based on how the flash memory chip is connected with the [SoC](/docs/techref/hardware/soc) (i.e. the "host") we at OpenWrt distinguish between ***"raw flash"*** or ***"host-managed"*** and ***"FTL (Flash Translation Layer) flash"*** or ***"self-managed"***: in case the flash memory chip is connected directly with the SoC we call it "raw flash" / "host-managed" and in case there is an additional controller chip between the flash memory chip and the SoC, we call it "FTL flash" / "self-managed". Primarily the controller chip does [wear-leveling](https://en.wikipedia.org/wiki/wear-leveling) and manages known bad blocks, but it may do other stuff as well. The flash memory cannot be accessed directly, but only through this controller. The controller has to be considered a [black box](https://en.wikipedia.org/wiki/black box).
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/dialog-information.png" alt="dialog-information.png" /></td>
-<td>Embedded systems almost exclusively use "raw flash", while <a href="https://en.wikipedia.org/wiki/Solid-state drive">solid-state drives (SSDs)</a> and USB memory sticks, almost exclusively use "FTL flash"!<br />
-</td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../wiki/wiki_page-techref-luci2.md)]
+> Embedded systems almost exclusively use "raw flash", while [solid-state drives (SSDs)](https://en.wikipedia.org/wiki/Solid-state drive) and USB memory sticks, almost exclusively use "FTL flash"!
 
 ### NOR flash vs NAND flash
 
 Additionally we at OpenWrt distinguish between the two basic types of flash memory: [NOR flash](https://en.wikipedia.org/wiki/Flash_memory#NOR_flash) and [NAND flash](https://en.wikipedia.org/wiki/Flash_memory#NAND_flash).
-"Raw NOR flash" in typical routers is generally small (4 MiB – 16 MiB) and <u>error-free</u>: all data blocks are guaranteed to work correctly. Because raw NOR flash is error-free, the installed file system(s) do not need to take bad blocks into account, and neither SquashFS nor JFFS2 do. The combination of OverlayFS with SquashFS and JFFS2 has been the default OpenWrt setup since the beginning, and it works flawlessly on "raw NOR flash". Older routers typically use NOR flash.
+"Raw NOR flash" in typical routers is generally small (4 MiB – 16 MiB) and **error-free**: all data blocks are guaranteed to work correctly. Because raw NOR flash is error-free, the installed file system(s) do not need to take bad blocks into account, and neither SquashFS nor JFFS2 do. The combination of OverlayFS with SquashFS and JFFS2 has been the default OpenWrt setup since the beginning, and it works flawlessly on "raw NOR flash". Older routers typically use NOR flash.
 
-"Raw [NAND](../wiki/wiki_page-techref-flash.md) flash" in typical routers is generally much larger (32 MiB – 1 GiB) and <u>not error-free</u>: in general the flash contains bad blocks when new and may develop more at any time. Newer routers use [NAND](../wiki/wiki_page-techref-flash.md) flash because it is much cheaper for a given capacity and is also faster for bulk access (disk emulation), but at the cost of the increased complexity required to handle flash defects.
+"Raw [NAND](../wiki/wiki_page-techref-flash.md) flash" in typical routers is generally much larger (32 MiB – 1 GiB) and **not error-free**: in general the flash contains bad blocks when new and may develop more at any time. Newer routers use [NAND](../wiki/wiki_page-techref-flash.md) flash because it is much cheaper for a given capacity and is also faster for bulk access (disk emulation), but at the cost of the increased complexity required to handle flash defects.
 
 Bad blocks in [NAND](../wiki/wiki_page-techref-flash.md) flash and handled in various ways:
 
@@ -76,70 +65,13 @@ On these systems, the storage is presented by the kernel as an MTD device, and i
 
 The generic flash layout is:
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;">bootloader<br />
-partition(s)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>firmware partition</td>
-<td></td>
-<td></td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>OpenWrt firmware image</td>
-<td></td>
-<td><em>(space available for storage)</em></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>Linux kernel<br />
-(raw image)</td>
-<td><strong><code>rootfs</code></strong><br />
-mounted: "<code>/rom</code>", <a href="/docs/techref/filesystems#SquashFS">SquashFS</a><br />
-size depends on selected packages</td>
-<td><strong><code>rootfs_data</code></strong><br />
-mounted: "<code>/overlay</code>", <a href="/docs/techref/filesystems#JFFS2">JFFS2</a><br />
-all remaining free space</td>
-<td>:::</td>
-</tr>
-<tr class="even">
-<td>Layer4</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>mounted: "<code>/</code>", <a href="/docs/techref/filesystems#overlayfs">OverlayFS</a><br />
-stacking <code>/overlay</code> on top of <code>/rom</code></td>
-<td></td>
-<td>:::</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash
+Layer1	bootloader; partition(s)	optional; SoC; specific; partition(s)	firmware partition	 	 	optional; SoC; specific; partition(s)
+Layer2	:::	:::	OpenWrt firmware image	 	*(space available for storage)*	:::
+Layer3	:::	:::	Linux kernel; (raw image)	**`rootfs`**; mounted: "`/rom`", [SquashFS](/docs/techref/filesystems#SquashFS); size depends on selected packages	**`rootfs_data`**; mounted: "`/overlay`", [JFFS2](/docs/techref/filesystems#JFFS2); all remaining free space	:::
+Layer4	:::	:::	:::	mounted: "`/`", [OverlayFS](/docs/techref/filesystems#overlayfs); stacking `/overlay` on top of `/rom`	 	:::
+```
 
 Many NOR devices share this scheme, but the flash layout can differ between the devices. Please see the wiki pages for each SoC and devices for information about a particular layout. In case the flash layout differs for your device please update the wiki pages.
 
@@ -211,62 +143,12 @@ find /overlay -type c; find /overlay -type l -exec sh -c \
 
 [Ralink RT5350F](/docs/techref/hardware/soc/soc.ralink)-based [Hoo Too HT-TM02](/toh/hwdata/hootoo/hootoo_tripmatenano_v15).
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash, 8192 KiB</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;"><strong>mtd0</strong><br />
-<code>u-boot</code><br />
-192 KiB</td>
-<td><strong>mtd1</strong><br />
-<code>u-boot-env</code><br />
-64 KiB</td>
-<td><strong>mtd2</strong><br />
-<code>factory</code><br />
-64 KiB</td>
-<td><strong>mtd3</strong><br />
-<code>firmware</code><br />
-7872 KiB <sub><sup>(= FlashSize-(192+64+64))</sup></sub></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td><strong>mtd4</strong><br />
-<code>kernel</code><br />
-about 1 MiB</td>
-<td><strong>mtd5</strong><br />
-<code>rootfs</code></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>:::</td>
-<td><strong><code>/dev/root</code></strong><br />
-around 2 MiB</td>
-<td><strong>mtd6</strong><br />
-<code>rootfs_data</code><br />
-around 4.5 MiB</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash, 8192 KiB
+Layer1	**mtd0**; `u-boot`; 192 KiB	**mtd1**; `u-boot-env`; 64 KiB	**mtd2**; `factory`; 64 KiB	**mtd3**; `firmware`; 7872 KiB (= FlashSize-(192+64+64))
+Layer2	:::	:::	:::	**mtd4**; `kernel`; about 1 MiB	**mtd5**; `rootfs`
+Layer3	:::	:::	:::	:::	**`/dev/root`**; around 2 MiB	**mtd6**; `rootfs_data`; around 4.5 MiB
+```
 
 #### Example 3: D-Link DIR-300
 
@@ -278,127 +160,21 @@ On these systems, the storage is presented by the kernel as an MTD device, and i
 
 Some [NAND](../wiki/wiki_page-techref-flash.md) devices contain bootloaders that do not understand UBI partitions and thus cannot boot kernels contained in UBI volumes. The generic flash layout for these devices is:
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;">bootloader<br />
-partition(s)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>Linux kernel<br />
-(raw image)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>UBI partition</td>
-<td></td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>:::</td>
-<td><strong><code>rootfs</code></strong><br />
-mounted: "<code>/rom</code>", <a href="/docs/techref/filesystems#SquashFS">SquashFS</a><br />
-size depends on selected packages</td>
-<td><strong><code>rootfs_data</code></strong><br />
-mounted: "<code>/overlay</code>", <a href="/docs/techref/filesystems#UBIFS">[UBIFS](../wiki/wiki_page-techref-filesystems.md)</a><br />
-all remaining free space</td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>mounted: "<code>/</code>", <a href="/docs/techref/filesystems#overlayfs">OverlayFS</a><br />
-stacking <code>/overlay</code> on top of <code>/rom</code></td>
-<td></td>
-<td>:::</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash
+Layer1	bootloader; partition(s)	optional; SoC; specific; partition(s)	Linux kernel; (raw image)	optional; SoC; specific; partition(s)	UBI partition	 	optional; SoC; specific; partition(s)
+Layer2	:::	:::	:::	:::	**`rootfs`**; mounted: "`/rom`", [SquashFS](/docs/techref/filesystems#SquashFS); size depends on selected packages	**`rootfs_data`**; mounted: "`/overlay`", [UBIFS](/docs/techref/filesystems#UBIFS); all remaining free space	:::
+Layer3	:::	:::	:::	:::	mounted: "`/`", [OverlayFS](/docs/techref/filesystems#overlayfs); stacking `/overlay` on top of `/rom`	 	:::
+```
 
 The generic flash layout for [NAND](../wiki/wiki_page-techref-flash.md) devices that can boot kernels contained in UBI volumes is:
 
-<table>
-<thead>
-<tr class="header">
-<th>Layer0</th>
-<th style="text-align: center;">raw flash</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Layer1</td>
-<td style="text-align: center;">bootloader<br />
-partition(s)</td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-<td>UBI partition</td>
-<td></td>
-<td></td>
-<td>optional<br />
-SoC<br />
-specific<br />
-partition(s)</td>
-</tr>
-<tr class="even">
-<td>Layer2</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td><strong><code>kernel</code></strong><br />
-Linux kernel<br />
-(raw image)</td>
-<td><strong><code>rootfs</code></strong><br />
-mounted: "<code>/rom</code>", <a href="/docs/techref/filesystems#SquashFS">SquashFS</a><br />
-size depends on selected packages</td>
-<td><strong><code>rootfs_data</code></strong><br />
-mounted: "<code>/overlay</code>", <a href="/docs/techref/filesystems#UBIFS">[UBIFS](../wiki/wiki_page-techref-filesystems.md)</a><br />
-all remaining free space</td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td>Layer3</td>
-<td style="text-align: center;">:::</td>
-<td>:::</td>
-<td>:::</td>
-<td>mounted: "<code>/</code>", <a href="/docs/techref/filesystems#overlayfs">OverlayFS</a><br />
-stacking <code>/overlay</code> on top of <code>/rom</code></td>
-<td></td>
-<td>:::</td>
-</tr>
-</tbody>
-</table>
+```tsv
+Layer0	raw flash
+Layer1	bootloader; partition(s)	optional; SoC; specific; partition(s)	UBI partition	 	 	optional; SoC; specific; partition(s)
+Layer2	:::	:::	**`kernel`**; Linux kernel; (raw image)	**`rootfs`**; mounted: "`/rom`", [SquashFS](/docs/techref/filesystems#SquashFS); size depends on selected packages	**`rootfs_data`**; mounted: "`/overlay`", [UBIFS](/docs/techref/filesystems#UBIFS); all remaining free space	:::
+Layer3	:::	:::	:::	mounted: "`/`", [OverlayFS](/docs/techref/filesystems#overlayfs); stacking `/overlay` on top of `/rom`	 	:::
+```
 
 Many [NAND](../wiki/wiki_page-techref-flash.md) devices share this scheme, but the flash layout can differ between the devices. Please see the wiki pages for each SoC and devices for information about a particular layout. In case the flash layout differs for your device please update the wiki pages.
 

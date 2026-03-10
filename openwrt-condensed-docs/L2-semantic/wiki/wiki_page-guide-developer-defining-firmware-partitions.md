@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 1049
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-defining-firmware-partitions.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Device Tree Usage in OpenWrt (DTS)

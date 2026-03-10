@@ -2,26 +2,20 @@
 title: Hotplug -- Legacy
 module: wiki
 origin_type: wiki_page
-token_count: 3470
+token_count: 3404
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-hotplug-legacy.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Hotplug -- Legacy
 
 ![historic&noheader&nofooter&noeditbtn](/page>meta/infobox/historic&noheader&nofooter&noeditbtn)
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/48px-outdated.svg.png" alt="48px-outdated.svg.png" /></td>
-<td style="text-align: left;">See the <a href="/docs/guide-user/base-system/hotplug">Hotplug article</a> for information on the current approach.<br />
-<br />
-The "hotplug2" daemon was removed in 2013 (<a href="https://dev.openwrt.org/changeset/36987">r36987</a>) and replaced with <a href="/docs/techref/procd">procd</a>.</td>
-</tr>
-</tbody>
-</table>
+> [!WARNING]
+> See the [Hotplug article](/docs/guide-user/base-system/hotplug) for information on the current approach.
+>
+> The "hotplug2" daemon was removed in 2013 ([r36987](https://dev.openwrt.org/changeset/36987)) and replaced with [procd](/docs/techref/procd).
 
 Hotplug2 was a trivial replacement of some of the UDev functionality in a tiny pack, intended for Linux early userspace: Init RAM FS and InitRD. Hotplug executes scripts located in the respective hotplug directory: `/etc/hotplug.d/` on certain events, like when an interface goes up or down or when a button gets pressed. It can be very useful with [PPPoE](https://en.wikipedia.org/wiki/Point-to-Point Protocol over Ethernet)-connection or in an unstable network. Hotplug has been available since OpenWrt 'Kamikaze' 7.06 and was removed in 2013, prior to the release of "Attitude Adjustment".
 

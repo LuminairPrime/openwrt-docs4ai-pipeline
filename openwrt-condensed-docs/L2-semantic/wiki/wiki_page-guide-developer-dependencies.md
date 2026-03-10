@@ -2,10 +2,10 @@
 title: Using Dependencies
 module: wiki
 origin_type: wiki_page
-token_count: 1488
+token_count: 1486
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-dependencies.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Using Dependencies
@@ -27,8 +27,6 @@ This page talks about what the DEPENDS:= line should look like.
 ## Dependency types
 
 - If you specify a package name without any ornaments then that means that the current package cannot be selected unless the package named in enabled. e.g., in `tcpdump` above,
-
-<!-- -->
 
     DEPENDS:=libpcap
 

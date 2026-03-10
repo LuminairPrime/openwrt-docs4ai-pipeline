@@ -2,10 +2,10 @@
 title: Abstract
 module: wiki
 origin_type: wiki_page
-token_count: 12194
+token_count: 12192
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-preinit-mount.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Abstract
@@ -468,8 +468,6 @@ No files or functions at this time.
 1.  Source common functions
 2.  Source functions for hooks
 3.  if block:
-
-<!-- -->
 
       if invoked as executable
            if called with `switch2jffs` parameter (i.e. from rcS)

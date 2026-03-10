@@ -2,10 +2,10 @@
 title: "UCI (Unified Configuration Interface) \u2013 Technical Reference"
 module: wiki
 origin_type: wiki_page
-token_count: 3974
+token_count: 3923
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-uci.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # UCI (Unified Configuration Interface) – Technical Reference
@@ -18,15 +18,10 @@ Source code is available here <http://git.openwrt.org/project/uci.git>
 
 `UCI` is a small utility written in [C](https://en.wikipedia.org/wiki/C (programming language)) (a [shell script](https://en.wikipedia.org/wiki/shell script)-wrapper is available as well) and is intended to *centralize* the whole configuration of a device running OpenWrt. UCI is the successor of the NVRAM based configuration found in the historical OpenWrt branch [White Russian](/about/history) and a wrapper for the standard configuration files programs bring with them, like e.g. `/etc/network/interfaces`, `/etc/exports`, `/etc/dnsmasq.conf`, `/etc/samba/samba.conf` etc.
 
-<table>
-<tbody>
-<tr class="odd">
-<td><img src="/meta/icons/tango/dialog-information.png" alt="dialog-information.png" /></td>
-<td>UCI configuration files are located in the directory <strong><code>/etc/config/</code></strong><br />
-Their documentation can be accessed online in the OpenWrt-Wiki under <a href="/docs/guide-user/base-system/uci">UCI configuration files</a>.</td>
-</tr>
-</tbody>
-</table>
+> [![NOTE](../wiki/wiki_page-techref-luci2.md)]
+> UCI configuration files are located in the directory **`/etc/config/`**
+>
+> Their documentation can be accessed online in the OpenWrt-Wiki under [UCI configuration files](/docs/guide-user/base-system/uci).
 
 They can be altered with any text editor or with the command line utility program `uci` or through various programming APIs (like Shell, Lua and C). The WUI [luci](/docs/techref/luci) e.g. uses Lua to manipulate them.
 
@@ -250,7 +245,7 @@ In the preceding example, s is a table containing all options and two special pr
      * ''s['.type']'' -> section type
      * ''s['.name']''  -> section name
 
-If the callback function returns `false` \[NB: <u>not</u> `nil`!\], `foreach()` will terminate at that point without iterating over any remaining sections. `foreach()` returns `true` if at least one section exists and the callback function didn't raise an error for it; `false` otherwise.
+If the callback function returns `false` \[NB: **not** `nil`!\], `foreach()` will terminate at that point without iterating over any remaining sections. `foreach()` returns `true` if at least one section exists and the callback function didn't raise an error for it; `false` otherwise.
 
 Here's another example:
 

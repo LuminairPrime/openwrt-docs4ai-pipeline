@@ -2,219 +2,39 @@
 title: "OpenWrt \u2013 operating system architecture"
 module: wiki
 origin_type: wiki_page
-token_count: 2987
+token_count: 1656
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-architecture.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # OpenWrt – operating system architecture
 
 Whereas desktop distributions use [glib](https://en.wikipedia.org/wiki/GLib)+[dbus](https://en.wikipedia.org/wiki/D-Bus)+[udev(part of systemd)](https://en.wikipedia.org/wiki/udev), OpenWrt uses [libubox](/docs/techref/libubox)+[ubus](ubus)+[procd](/docs/techref/procd). This provides some pretty awesome functionality without requiring huge libraries with huge dependencies (\*cough\* glib).
 
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th style="text-align: center;">Desktop Distributions</th>
-<th></th>
-<th style="text-align: center;">OpenWrt</th>
-<th></th>
-<th style="text-align: center;"><a href="https://en.wikipedia.org/wiki/Android (operating system)">Android</a></th>
-<th><a href="https://en.wikipedia.org/wiki/Replicant (operating system)">Replicant</a></th>
-<th><a href="https://en.wikipedia.org/wiki/Mer (software distribution)">mer-based</a></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Typical main memory size</td>
-<td style="text-align: center;"><strong>128 MiB</strong> to 16 GiB (or more)</td>
-<td></td>
-<td style="text-align: center;"><strong>32 MiB</strong> to 512 MiB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
-<td></td>
-<td style="text-align: center;">min <strong>92 MiB</strong> for Android 2.1<br />
-min <strong>340 MiB</strong> for Android 4.0</td>
-<td></td>
-<td>?</td>
-</tr>
-<tr class="even">
-<td>Supported instruction sets</td>
-<td style="text-align: center;">almost anything</td>
-<td></td>
-<td style="text-align: center;">almost anything</td>
-<td></td>
-<td style="text-align: center;">x86, 86-64, ARM, MIPS32</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>non-volatile storage space</td>
-<td style="text-align: center;">100 MiB</td>
-<td></td>
-<td style="text-align: center;">8 MiB<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></td>
-<td></td>
-<td style="text-align: center;">150MiB for Android 2.1<br />
-512MiB for Android 4.0</td>
-<td></td>
-<td>?</td>
-</tr>
-<tr class="even">
-<td><a href="https://en.wikipedia.org/wiki/Kernel (computing)">kernel</a></td>
-<td style="text-align: center;"><strong><code>Linux kernel</code></strong></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>:::</td>
-<td style="text-align: center;">FOSS and binary drivers</td>
-<td></td>
-<td style="text-align: center;">FOSS drivers: e.g. <a href="https://en.wikipedia.org/wiki/Comparison of open-source wireless drivers">802.11</a>; <a href="/docs/techref/hardware/internet.access.technologies">Iaccess</a></td>
-<td></td>
-<td style="text-align: center;">Android binary drivers</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="https://en.wikipedia.org/wiki/C standard library">C standard library</a></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/GNU C Library">glibc</a></td>
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/uClibc">uClibc</a>, <a href="https://en.wikipedia.org/wiki/musl">musl</a></td>
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/Bionic (software)">bionic</a></td>
-<td>glibc + <a href="https://en.wikipedia.org/wiki/Hybris (software)">libhybris</a></td>
-<td>eglibc 2.15</td>
-</tr>
-<tr class="odd">
-<td><a href="https://en.wikipedia.org/wiki/init">init</a></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/init">init</a><br />
-<a href="https://en.wikipedia.org/wiki/Upstart">Upstart</a><br />
-<a href="https://en.wikipedia.org/wiki/Initng">Initng</a></td>
-<td><strong><code>systemd</code></strong></td>
-<td style="text-align: center;">busybox-initd</td>
-<td><strong><code>procd</code></strong></td>
-<td style="text-align: center;">Android init-fork</td>
-<td></td>
-<td><code>systemd</code></td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/rsyslog">rsyslog</a> / <a href="https://en.wikipedia.org/wiki/syslog-ng">syslog-ng</a></td>
-<td>:::</td>
-<td style="text-align: center;">busybox-klogd, busybox-syslogd</td>
-<td>:::</td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/watchdog">watchdog</a></td>
-<td>:::</td>
-<td style="text-align: center;">busybox-watchdog</td>
-<td>:::</td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/udev">udev</a></td>
-<td>:::</td>
-<td style="text-align: center;"><a href="/docs/techref/hotplug_legacy">hotplug2</a></td>
-<td>:::</td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/cron">cron</a></td>
-<td>:::</td>
-<td style="text-align: center;"><code>busybox-crond</code></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/at (Unix)">atd</a></td>
-<td>:::</td>
-<td style="text-align: center;"><em>na</em></td>
-<td></td>
-<td style="text-align: center;"></td>
-<td></td>
-<td>:::</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/D-Bus">D-Bus</a></td>
-<td></td>
-<td style="text-align: center;"><a href="/docs/techref/ubus">ubus</a></td>
-<td></td>
-<td style="text-align: center;">Binder</td>
-<td>?</td>
-<td>D-Bus</td>
-</tr>
-<tr class="even">
-<td>network configuration</td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/NetworkManager">NetworkManager</a> + GUI</td>
-<td></td>
-<td style="text-align: center;"><code>netifd</code></td>
-<td></td>
-<td style="text-align: center;">ConnectivityManager<br />
-(not <a href="https://connman.net/">ConnMan = ConnectionManager</a>!)</td>
-<td>?</td>
-<td>ConnMan</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/GLib">GLib</a><br />
-(GObject, Glib, GModule, GThread, GIO)</td>
-<td></td>
-<td style="text-align: center;"><a href="/docs/techref/libubox">libubox</a></td>
-<td></td>
-<td style="text-align: center;">?</td>
-<td>?</td>
-<td>Qt-based?</td>
-</tr>
-<tr class="even">
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/PulseAudio">PulseAudio</a></td>
-<td></td>
-<td style="text-align: center;"><a href="/docs/guide-user/hardware/audio/pulseaudio">pulseaudio</a> (optional)</td>
-<td></td>
-<td style="text-align: center;">PulseAudio</td>
-<td>PulseAudio</td>
-<td>PulseAudio</td>
-</tr>
-<tr class="odd">
-<td><a href="https://en.wikipedia.org/wiki/Package management system">Package management system</a></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/dpkg">dpkg</a>/<a href="https://en.wikipedia.org/wiki/Advanced Packaging Tool">APT</a><br />
-<a href="https://en.wikipedia.org/wiki/RPM Package Manager">RPM</a>/<a href="https://en.wikipedia.org/wiki/Yellowdog Updater, Modified">yum</a><br />
-<a href="https://en.wikipedia.org/wiki/Portage (software)">portage</a><br />
-<a href="https://en.wikipedia.org/wiki/pacman (package manager)">pacman</a><br />
-...</td>
-<td></td>
-<td style="text-align: center;"><code>opkg</code></td>
-<td></td>
-<td style="text-align: center;"><a href="https://en.wikipedia.org/wiki/APK (file format)">apk</a></td>
-<td>?</td>
-<td><a href="https://en.wikipedia.org/wiki/RPM Package Manager">RPM</a></td>
-</tr>
-</tbody>
-</table>
-<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>yes, <em>heavily</em> stripped OpenWrt can run on 16 or even 8MiB<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>yes, 4MiB and 2MiB possible<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</aside>
+```tsv
+ 	Desktop Distributions	 	OpenWrt	 	[Android](https://en.wikipedia.org/wiki/Android (operating system))	[Replicant](https://en.wikipedia.org/wiki/Replicant (operating system))	[mer-based](https://en.wikipedia.org/wiki/Mer (software distribution))
+Typical main memory size	**128 MiB** to 16 GiB (or more)	 	**32 MiB** to 512 MiB[^1]	 	min **92 MiB** for Android 2.1; min **340 MiB** for Android 4.0	 	?
+Supported instruction sets	almost anything	 	almost anything	 	x86, 86-64, ARM, MIPS32
+non-volatile storage space	100 MiB	 	8 MiB[^2]	 	150MiB for Android 2.1; 512MiB for Android 4.0	 	?
+[kernel](https://en.wikipedia.org/wiki/Kernel (computing))	**`Linux kernel`**
+:::	FOSS and binary drivers	 	FOSS drivers: e.g. [802.11](https://en.wikipedia.org/wiki/Comparison of open-source wireless drivers); [Iaccess](/docs/techref/hardware/internet.access.technologies)	 	Android binary drivers
+[C standard library](https://en.wikipedia.org/wiki/C standard library)	[glibc](https://en.wikipedia.org/wiki/GNU C Library)	 	[uClibc](https://en.wikipedia.org/wiki/uClibc), [musl](https://en.wikipedia.org/wiki/musl)	 	[bionic](https://en.wikipedia.org/wiki/Bionic (software))	glibc + [libhybris](https://en.wikipedia.org/wiki/Hybris (software))	eglibc 2.15
+[init](https://en.wikipedia.org/wiki/init)	[init](https://en.wikipedia.org/wiki/init); [Upstart](https://en.wikipedia.org/wiki/Upstart); [Initng](https://en.wikipedia.org/wiki/Initng)	**`systemd`**	busybox-initd	**`procd`**	Android init-fork	 	`systemd`
+ 	[rsyslog](https://en.wikipedia.org/wiki/rsyslog) / [syslog-ng](https://en.wikipedia.org/wiki/syslog-ng)	:::	busybox-klogd, busybox-syslogd	:::	 	 	:::
+ 	[watchdog](https://en.wikipedia.org/wiki/watchdog)	:::	busybox-watchdog	:::	 	 	:::
+ 	[udev](https://en.wikipedia.org/wiki/udev)	:::	[hotplug2](/docs/techref/hotplug_legacy)	:::	 	 	:::
+ 	[cron](https://en.wikipedia.org/wiki/cron)	:::	`busybox-crond`	 	 	 	:::
+ 	[atd](https://en.wikipedia.org/wiki/at (Unix))	:::	*na*	 	 	 	:::
+ 	[D-Bus](https://en.wikipedia.org/wiki/D-Bus)	 	[ubus](/docs/techref/ubus)	 	Binder	?	D-Bus
+network configuration	[NetworkManager](https://en.wikipedia.org/wiki/NetworkManager) + GUI	 	`netifd`	 	ConnectivityManager; (not [ConnMan = ConnectionManager](https://connman.net/)!)	?	ConnMan
+ 	[GLib](https://en.wikipedia.org/wiki/GLib); (GObject, Glib, GModule, GThread, GIO)	 	[libubox](/docs/techref/libubox)	 	?	?	Qt-based?
+ 	[PulseAudio](https://en.wikipedia.org/wiki/PulseAudio)	 	[pulseaudio](/docs/guide-user/hardware/audio/pulseaudio) (optional)	 	PulseAudio	PulseAudio	PulseAudio
+[Package management system](https://en.wikipedia.org/wiki/Package management system)	[dpkg](https://en.wikipedia.org/wiki/dpkg)/[APT](https://en.wikipedia.org/wiki/Advanced Packaging Tool); [RPM](https://en.wikipedia.org/wiki/RPM Package Manager)/[yum](https://en.wikipedia.org/wiki/Yellowdog Updater, Modified); [portage](https://en.wikipedia.org/wiki/Portage (software)); [pacman](https://en.wikipedia.org/wiki/pacman (package manager)); ...	 	`opkg`	 	[apk](https://en.wikipedia.org/wiki/APK (file format))	?	[RPM](https://en.wikipedia.org/wiki/RPM Package Manager)
+```
+
+[^1]: yes, *heavily* stripped OpenWrt can run on 16 or even 8MiB
+[^2]: yes, 4MiB and 2MiB possible
 
 ### What's the difference between ubus vs dbus?
 
@@ -236,8 +56,6 @@ min <strong>340 MiB</strong> for Android 4.0</td>
 - →[file_system](/docs/techref/file_system) / [flash.layout](/docs/techref/flash.layout)
 - →[internal.layout](/docs/techref/internal.layout)
 - →[preinit_mount](/docs/techref/preinit_mount)/[process.boot](/docs/techref/process.boot)/[requirements.boot.process](/docs/techref/requirements.boot.process)
-
-<!-- -->
 
 - [PulseAudio does not depend on GLib](https://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/#index2h3) and does not seem to depends on D-Bus neither: [LFS](http://www.linuxfromscratch.org/blfs/view/svn/multimedia/pulseaudio.html)
 - [FOSDEM2013: Can Linux network configuration suck less?](https://archive.fosdem.org/2013/schedule/event/dist_network/)

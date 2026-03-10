@@ -7,6 +7,7 @@ from smoke_support import (
     PROJECT_ROOT,
     assert_fixture_outputs,
     build_env,
+    get_local_log_path,
     run_named_script,
     seed_ai_cache,
     seed_l1_fixtures,
@@ -20,7 +21,7 @@ def main():
     parser.add_argument("--only", type=str, default=None, help="Run only a single script identifier such as 03 or 06c")
     args = parser.parse_args()
 
-    log_file = os.path.join(PROJECT_ROOT, "tests", "smoke-test-log.txt")
+    log_file = get_local_log_path("smoke-test-log.txt")
     if os.path.exists(log_file):
         os.remove(log_file)
 

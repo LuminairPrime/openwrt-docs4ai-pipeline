@@ -2,10 +2,10 @@
 title: Security
 module: wiki
 origin_type: wiki_page
-token_count: 2691
+token_count: 2146
 version: N/A
 source_file: L1-raw/wiki/wiki_page-guide-developer-security.md
-last_pipeline_run: '2026-03-10T06:38:52.431013+00:00'
+last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
 language: text
 ---
 # Security
@@ -91,75 +91,17 @@ The kernel is normally located in its own partition and upgrades are not so easi
 
 OpenWrt activates some build hardening options in the [build configuration](https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=config/Config-build.in) at compile time for all package builds. Note that individual packages and/or targets may ignore or otherwise not respect these settings.
 
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">.config line</th>
-<th style="text-align: left;">Enabled by default</th>
-<th style="text-align: left;">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_CHECK_FORMAT_SECURITY=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-Wformat -Werror=format-security</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_CC_STACKPROTECTOR_REGULAR=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-fstack-protector</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_CC_STACKPROTECTOR_STRONG=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;"><code>-fstack-protector-strong</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_KERNEL_CC_STACKPROTECTOR_REGULAR=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Kernel config CONFIG_STACKPROTECTOR</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_KERNEL_CC_STACKPROTECTOR_STRONG=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Kernel config CONFIG_STACKPROTECTOR_STRONG</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_FORTIFY_SOURCE_1=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-D_FORTIFY_SOURCE=1</code> (Using <a href="https://git.2f30.org/fortify-headers/">fortify-headers</a> for musl libc)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_FORTIFY_SOURCE_2=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;"><code>-D_FORTIFY_SOURCE=2</code> (Using <a href="https://git.2f30.org/fortify-headers/">fortify-headers</a> for musl libc)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_RELRO_FULL=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-Wl,-z,now -Wl,-z,relro</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_PKG_ASLR_PIE_REGULAR=y</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;"><code>-fPIC</code> CFLAGS and <code>-specs=hardened-build-ld</code> LDFLAGS<br />
-PIE is activated for some binaries, mostly network exposed applications</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_PKG_ASLR_PIE_ALL=y</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">PIE is activated for all applications</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>CONFIG_KERNEL_SECCOMP</code></td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Kernel config CONFIG_SECCOMP</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>CONFIG_SELINUX</code></td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Kernel config SECURITY_SELINUX</td>
-</tr>
-</tbody>
-</table>
+| .config line | Enabled by default | Notes |
+| --- | --- | --- |
+| `CONFIG_PKG_CHECK_FORMAT_SECURITY=y` | Yes | `-Wformat -Werror=format-security` |
+| `CONFIG_PKG_CC_STACKPROTECTOR_REGULAR=y` | Yes | `-fstack-protector` |
+| `CONFIG_PKG_CC_STACKPROTECTOR_STRONG=y` | No | `-fstack-protector-strong` |
+| `CONFIG_KERNEL_CC_STACKPROTECTOR_REGULAR=y` | Yes | Kernel config CONFIG_STACKPROTECTOR |
+| `CONFIG_KERNEL_CC_STACKPROTECTOR_STRONG=y` | No | Kernel config CONFIG_STACKPROTECTOR_STRONG |
+| `CONFIG_PKG_FORTIFY_SOURCE_1=y` | Yes | `-D_FORTIFY_SOURCE=1` (Using [fortify-headers](https://git.2f30.org/fortify-headers/) for musl libc) |
+| `CONFIG_PKG_FORTIFY_SOURCE_2=y` | No | `-D_FORTIFY_SOURCE=2` (Using [fortify-headers](https://git.2f30.org/fortify-headers/) for musl libc) |
+| `CONFIG_PKG_RELRO_FULL=y` | Yes | `-Wl,-z,now -Wl,-z,relro` |
+| `CONFIG_PKG_ASLR_PIE_REGULAR=y` | Yes | `-fPIC` CFLAGS and `-specs=hardened-build-ld` LDFLAGS; PIE is activated for some binaries, mostly network exposed applications |
+| `CONFIG_PKG_ASLR_PIE_ALL=y` | No | PIE is activated for all applications |
+| `CONFIG_KERNEL_SECCOMP` | Yes | Kernel config CONFIG_SECCOMP |
+| `CONFIG_SELINUX` | No | Kernel config SECURITY_SELINUX |
