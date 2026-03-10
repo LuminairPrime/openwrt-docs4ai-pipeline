@@ -3,9 +3,9 @@ title: 'OpenWrt Buildroot: system packages'
 module: openwrt-core
 origin_type: makefile_meta
 token_count: 2031
-version: a919299
+version: 24ce149
 source_file: L1-raw/openwrt-core/makefile_meta-category-system.md
-last_pipeline_run: '2026-03-10T09:11:28.148507+00:00'
+last_pipeline_run: '2026-03-10T12:02:28.138705+00:00'
 upstream_path: package/system
 language: makefile
 ---
