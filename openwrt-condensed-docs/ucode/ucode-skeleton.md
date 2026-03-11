@@ -1,7 +1,7 @@
 # ucode (Skeleton Semantic Map)
 
 > **Contains:** Headers and function signatures for ucode.
-> **Generated:** 2026-03-11T14:18:28.808254+00:00
+> **Generated:** 2026-03-11T14:27:37.123819+00:00
 
 ---
 
