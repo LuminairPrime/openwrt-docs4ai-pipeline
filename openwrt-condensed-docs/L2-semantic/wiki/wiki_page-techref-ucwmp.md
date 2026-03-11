@@ -5,7 +5,7 @@ origin_type: wiki_page
 token_count: 943
 version: N/A
 source_file: L1-raw/wiki/wiki_page-techref-ucwmp.md
-last_pipeline_run: '2026-03-11T12:57:09.591658+00:00'
+last_pipeline_run: '2026-03-11T13:21:22.584928+00:00'
 language: text
 ---
 # EasyCwmp (CPE WAN Management Protocol daemon)
