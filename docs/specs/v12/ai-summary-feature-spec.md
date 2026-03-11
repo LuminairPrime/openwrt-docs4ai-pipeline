@@ -237,11 +237,15 @@ Total: **39 seeded records** at AI-V1 release.
 
 | Script | Consumes | How |
 |--------|----------|-----|
-| `05a-assemble-references.py` | `ai_summary`, `ai_when_to_use` | Appended to reference assembly blocks |
-| `05b-generate-agents-and-readme.py` | `ai_summary`, `ai_when_to_use`, `ai_related_topics` | Included in AGENTS.md tool descriptions |
-| `06-generate-llm-routing-indexes.py` | All three AI fields | Included in BM25 and semantic routing index entries |
-| `07-generate-web-index.py` | `ai_summary` | Used as search result snippets |
-| `08-validate-output.py` | All three AI fields | Checks for presence in enriched L2 files |
+| `05a-assemble-references.py` | `ai_summary`, `ai_when_to_use` | Written into module skeleton callouts (`Summary`, `Use Case`) |
+| `05c-generate-ucode-ide-schemas.py` | `ai_summary` (fallback) | Uses `ai_summary` or `description` for generated declaration comments |
+| `06-generate-llm-routing-indexes.py` | `ai_summary` (fallback) | Uses `ai_summary` or `description` for `llms*.txt` entry snippets |
+| `07-generate-web-index.py` | indirect (`ai_summary` via `llms.txt`) | Displays snippets already composed by script 06 |
+
+Notes:
+
+- `05b-generate-agents-and-readme.py` does not currently parse `ai_*` fields directly.
+- `08-validate-output.py` does not currently enforce AI-field presence checks.
 
 ---
 

@@ -24,12 +24,12 @@ for the full dependency graph, input/output tables, and AI data flow diagram.
 | `03-normalize-semantic` | Process | L1→L2 | No | — |
 | `04-generate-ai-summaries` | AI Enrichment | L2→L2 | No | **Writes** base store |
 | `05a-assemble-references` | Assembly | L2→L3/L4 | Yes | Reads AI fields |
-| `05b-generate-agents-and-readme` | Indexing | L3 | Yes | Reads AI fields |
-| `05c-generate-ucode-ide-schemas` | Indexing | L3 | Yes | — |
+| `05b-generate-agents-and-readme` | Indexing | L3 | Yes | — |
+| `05c-generate-ucode-ide-schemas` | Indexing | L3 | Yes | Reads `ai_summary` fallback |
 | `05d-generate-api-drift-changelog` | Telemetry | L5 | Yes | — |
-| `06-generate-llm-routing-indexes` | Aggregation | L4→L3 | No | Reads AI fields |
-| `07-generate-web-index` | Presentation | L3 | No | Reads AI fields |
-| `08-validate-output` | Validation | L1–L5 | No | Reads AI fields |
+| `06-generate-llm-routing-indexes` | Aggregation | L4→L3 | No | Reads `ai_summary` fallback |
+| `07-generate-web-index` | Presentation | L3 | No | Indirect (from llms snippets) |
+| `08-validate-output` | Validation | L1–L5 | No | — |
 
 ---
 
