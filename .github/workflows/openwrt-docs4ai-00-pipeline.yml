@@ -38,6 +38,7 @@ env:
   PUBLISH_DIR: openwrt-condensed-docs
   WORKDIR: ${{ github.workspace }}/tmp
   OUTDIR: ${{ github.workspace }}/staging
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # ── Phase 1: Setup & Clone ───────────────────────────
@@ -550,11 +551,15 @@ jobs:
       - name: Normalize L2
         run: python .github/scripts/openwrt-docs4ai-03-normalize-semantic.py
       - name: "AI summaries (Optional)"
+        id: ai_summaries
         env:
           SKIP_AI: ${{ inputs.skip_ai || 'false' }}
           MAX_AI_FILES: ${{ inputs.max_ai_files || '40' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python .github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py
+        run: |
+          set -o pipefail
+          mkdir -p "$WORKDIR/run-summary"
+          python .github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py | tee "$WORKDIR/run-summary/ai-stage.log"
       - name: Assemble publishable references (05a)
         run: python .github/scripts/openwrt-docs4ai-05a-assemble-references.py
       - name: Generate publication companion outputs (05b-05d)
@@ -577,6 +582,7 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import re
           import sys
           from pathlib import Path
 
@@ -605,6 +611,56 @@ jobs:
           l2_md = len(list((outdir / "L2-semantic").glob("**/*.md"))) if (outdir / "L2-semantic").exists() else 0
           module_refs = len(list(outdir.glob("*/**/*-complete-reference.md")))
 
+          ai_log_path = summary_dir / "ai-stage.log"
+          ai: dict[str, object] = {
+              "status": "not-available",
+              "log_present": ai_log_path.is_file(),
+              "timers": {},
+              "counters": {},
+          }
+
+          if ai_log_path.is_file():
+              ai["status"] = "logged"
+              ai_text = ai_log_path.read_text(encoding="utf-8", errors="replace")
+              ai_lines = [line.strip() for line in ai_text.splitlines() if line.strip()]
+
+              if any(line.startswith("[04] SKIP:") for line in ai_lines):
+                  ai["status"] = "skipped"
+
+              timer_line = next(
+                  (
+                      line for line in ai_lines
+                      if line.startswith("[04] TIMER:") and "total_seconds=" in line
+                  ),
+                  None,
+              )
+              if timer_line:
+                  timers: dict[str, object] = {}
+                  for key, raw in re.findall(r"([a-z_]+)=([0-9]+(?:\\.[0-9]+)?)", timer_line):
+                      if "." in raw:
+                          timers[key] = float(raw)
+                      else:
+                          timers[key] = int(raw)
+                  ai["timers"] = timers
+                  if ai["status"] == "logged":
+                      ai["status"] = "timed"
+
+              complete_line = next((line for line in ai_lines if line.startswith("[04] Complete:")), None)
+              if complete_line:
+                  match = re.search(
+                      r"Complete:\\s+(\\d+) enriched \\((\\d+) API-generated, (\\d+) migrated from legacy cache, (\\d+) applied stale\\), (\\d+) already had summaries, (\\d+) too short\\.",
+                      complete_line,
+                  )
+                  if match:
+                      ai["counters"] = {
+                          "applied": int(match.group(1)),
+                          "generated_via_api": int(match.group(2)),
+                          "migrated_from_legacy": int(match.group(3)),
+                          "stale_applied": int(match.group(4)),
+                          "skipped_already": int(match.group(5)),
+                          "skipped_short": int(match.group(6)),
+                      }
+
           payload = {
               "contract_ok": not missing,
               "missing_required_files": missing,
@@ -614,9 +670,13 @@ jobs:
                   "l2_markdown": l2_md,
                   "module_complete_references": module_refs,
               },
+              "ai": ai,
           }
 
           (summary_dir / "process-summary.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+          ai_timers = ai["timers"] if isinstance(ai.get("timers"), dict) else {}
+          ai_counters = ai["counters"] if isinstance(ai.get("counters"), dict) else {}
 
           lines = [
               "# Process Summary",
@@ -626,6 +686,11 @@ jobs:
               f"- l1_metadata: {l1_meta}",
               f"- l2_markdown: {l2_md}",
               f"- module_complete_references: {module_refs}",
+              f"- ai_status: {ai.get('status', 'not-available')}",
+              f"- ai_total_seconds: {ai_timers.get('total_seconds', 'n/a')}",
+              f"- ai_api_calls: {ai_timers.get('api_calls', 'n/a')}",
+              f"- ai_enriched: {ai_counters.get('applied', 'n/a')}",
+              f"- ai_generated_via_api: {ai_counters.get('generated_via_api', 'n/a')}",
           ]
           if missing:
               lines.append(f"- missing_required_files: {', '.join(missing)}")
@@ -811,6 +876,20 @@ jobs:
               lines.append(f"- missing_required_files: {', '.join(missing) if missing else 'none'}")
           else:
               lines.append("- process summary artifact unavailable")
+
+          lines.append("")
+          lines.append("## AI Stage")
+          lines.append("")
+          if process_summary and isinstance(process_summary.get("ai"), dict):
+              ai_block = process_summary.get("ai", {})
+              ai_timers = ai_block.get("timers", {}) if isinstance(ai_block.get("timers"), dict) else {}
+              ai_counters = ai_block.get("counters", {}) if isinstance(ai_block.get("counters"), dict) else {}
+              lines.append(f"- ai_status: {ai_block.get('status', 'unknown')}")
+              lines.append(f"- ai_total_seconds: {ai_timers.get('total_seconds', 'n/a')}")
+              lines.append(f"- ai_api_calls: {ai_timers.get('api_calls', 'n/a')}")
+              lines.append(f"- ai_enriched: {ai_counters.get('applied', 'n/a')}")
+          else:
+              lines.append("- ai stage summary unavailable")
 
           (run_summary_dir / "pipeline-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
