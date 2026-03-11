@@ -755,6 +755,9 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "docs: v12 auto-update $(date -u +%Y-%m-%d)"
+            # Rebase on remote first in case a concurrent run or our own push
+            # landed on main between checkout and now (race condition avoidance).
+            git pull --rebase origin main
             git push
           fi
       - name: Prepare Public Pages
