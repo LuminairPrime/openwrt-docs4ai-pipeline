@@ -14,6 +14,14 @@ Stabilize v12 as an engineering system that is locally correct, documented, test
 - L1 and L2 remain durable generated outputs, while the public Pages copy excludes `L1-raw` and `L2-semantic`.
 - The remaining operational focus is to keep the dockerman warning intentionally deferred, finish validating the bounded wiki cleanliness cleanup, and use only a lightweight committed-corpus sanity snapshot rather than broader new telemetry.
 
+## 2026-03-11 Closeout Update
+
+- The bounded wiki-cleanup closeout gate completed: `pytest -s tests/test_pipeline_hardening.py -q` now reports `status=clean` for the committed wiki L2 corpus (`92` files; `wrap=0`, `color=0`, `html_table=0`, `sortable=0`, `footnote_aside=0`, `duplicate_lead_heading=0`).
+- Local stabilization checks are currently green: `python -m pytest tests/test_pipeline_hardening.py tests/test_wiki_scraper.py -q` (`37 passed`) and `python tests/00-smoke-test.py` passed.
+- Hosted verification remains healthy after stage-family alignment and hygiene follow-through: runs `22901356504` and `22901854476` completed successfully.
+- `CONTENT-001` is now closed as fixed-and-verified in the active bug log.
+- First-stage stabilization is considered complete; the next work is post-stabilization optimization and explicit AI-summary state separation.
+
 ## Primary Decisions
 
 - Keep `openwrt-condensed-docs/` as the stable generated output root.
@@ -91,5 +99,5 @@ Stabilize v12 as an engineering system that is locally correct, documented, test
 
 - Active specs, local smoke tests, repeated remote GitHub Actions verification, and the generated-output promotion path are all in place.
 - Output measurement is now based on a successful remote artifact, not on estimates.
-- Random output spot checks show the generated files are structurally aligned with the active layer contracts, a bounded follow-up L2 wiki cleanup now has local regression coverage, and a lightweight committed-corpus sanity snapshot exists for fast output triage.
-- Remaining work is operational tightening rather than first-pass stabilization.
+- Random output spot checks and corpus sanity checks show the generated files are structurally aligned with the active layer contracts, and the bounded wiki cleanup now has clean committed-corpus evidence.
+- First-pass stabilization is complete; remaining work is a controlled backlog centered on optimization, maintenance ergonomics, and AI-summary storage architecture.

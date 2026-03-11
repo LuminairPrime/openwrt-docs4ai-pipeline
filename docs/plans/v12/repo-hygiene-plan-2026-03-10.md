@@ -30,6 +30,7 @@ Recorded: 2026-03-10
 | `tmp/logs/` | No | Rolling smoke logs, terminal captures, step-by-step debug logs | Committed test evidence |
 | `tmp/reports/` | No | Before/after comparisons, local review bundles, AI scratch reports | Durable project documentation |
 | `tmp/scratch/` | No | Experimental copies of docs or scripts | Finalized files |
+| `tmp/legacy-backup/` | No | Long-lived local backups of removed legacy files or personal reference copies | Active pipeline inputs, publish outputs |
 | `staging/` | No | CI promotion output only | Manual working files |
 | `ai-summaries-cache.json` | Yes, for now | Current workflow cache contract | Random local JSON notes |
 
@@ -78,6 +79,7 @@ This pass is about reducing noise, not redesigning the pipeline layout.
 3. Do not drop local cache files into the repo root unless they are already part of the workflow contract.
 4. If you are comparing old and new generated docs, copy both versions into `tmp/reports/` and diff there.
 5. If you want a note or plan to survive and be reviewable on GitHub, put it in `docs/plans/v12/`, not `tmp/`.
+6. If you want to keep a personal or legacy reference after removing it from tracked history, copy it into `tmp/legacy-backup/<date-or-topic>/`.
 
 ## PowerShell Cleanup For Current Local Noise
 
@@ -93,6 +95,13 @@ Move an existing ad hoc result bundle out of `tests/` if you want to keep it loc
 
 ```powershell
 Move-Item -Force tests\comprehensive-test-results-3-10 tmp\reports\2026-03-10-comprehensive-test-results
+```
+
+Copy personal or legacy reference files into local-only backup storage:
+
+```powershell
+New-Item -ItemType Directory -Force tmp\legacy-backup\2026-03-11 | Out-Null
+Copy-Item -Recurse -Force docs\archive\v12 tmp\legacy-backup\2026-03-11\docs\archive\v12
 ```
 
 Clean local Python cache noise:

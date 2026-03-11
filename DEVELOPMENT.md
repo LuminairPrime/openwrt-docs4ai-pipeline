@@ -42,6 +42,7 @@ The `--run-ai` path is cache-backed for local verification, so it can validate t
 - `L1-raw` and `L2-semantic` are the standard intermediate layer names.
 - Script numbering denotes stage families and dependency boundaries. Letter suffixes denote sibling scripts inside the same stage family.
 - Local smoke runs may still execute the lettered scripts sequentially.
+- Local-only references that are out of scope for this repo (for example third-party bug notes) should stay under `tmp/legacy-backup/` so they remain durable locally and gitignored.
 
 ## Script Families
 
@@ -69,10 +70,14 @@ During the current stabilization pass, these test entry points are being repaire
 ## Remote Publish Policy
 
 - The workflow builds generated artifacts into `staging/` first and only promotes them in the `deploy` job.
+- Hosted extraction now runs `02a` in parallel with `01`, while `02b` through `02h` remain clone-gated.
 - On push, schedule, and manual runs, the deploy job syncs `staging/` into `openwrt-condensed-docs/` with `rsync -a --delete`.
 - If the promoted tree changed, GitHub Actions writes a bot-authored commit in the form `docs: v12 auto-update YYYY-MM-DD`.
 - GitHub Pages publishes a `public/` copy of staging that excludes `L1-raw` and `L2-semantic`.
+- Workflow diagnostics now include `extract-summary`, `process-summary`, and `pipeline-summary` artifacts for first-stop triage.
 - Avoid hand-editing generated outputs if the next workflow run is expected to republish them.
+
+The current non-AI hardening slice intentionally avoided direct implementation changes to `04-generate-ai-summaries.py` and `lib/ai_store.py`.
 
 ## Environment Variables
 

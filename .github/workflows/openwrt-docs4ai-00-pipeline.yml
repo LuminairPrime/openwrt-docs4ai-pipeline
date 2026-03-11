@@ -30,6 +30,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: openwrt-docs4ai-v12-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   PUBLISH_DIR: openwrt-condensed-docs
   WORKDIR: ${{ github.workspace }}/tmp
@@ -39,6 +43,7 @@ jobs:
   # ── Phase 1: Setup & Clone ───────────────────────────
   initialize:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -63,22 +68,170 @@ jobs:
             ${{ env.WORKDIR }}/repo-manifest.json
           retention-days: 1
 
-  # ── Phase 2: Extraction (Matrix) ─────────────────────
+  # ── Phase 2a: Wiki Extraction (Parallel with initialize) ──
+  extract_wiki:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          pip install -r .github/scripts/requirements.txt
+          sudo apt-get update -qq && sudo apt-get install -y -qq pandoc
+      - name: Mark extractor start
+        run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+      - name: Cache Wiki Metadata
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.WORKDIR }}/.cache
+            ${{ env.WORKDIR }}/L1-raw/wiki
+          key: wiki-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            wiki-cache-${{ runner.os }}-
+      - name: Extract 02a-scrape-wiki.py
+        id: extract_run
+        continue-on-error: true
+        env:
+          SKIP_WIKI: ${{ inputs.skip_wiki || 'false' }}
+        run: python .github/scripts/openwrt-docs4ai-02a-scrape-wiki.py
+      - name: Evaluate extractor output contract (02a)
+        if: always()
+        id: extract_contract
+        env:
+          SCRIPT_NAME: 02a-scrape-wiki.py
+          MODULE_NAME: wiki
+          EXTRACT_OUTCOME: ${{ steps.extract_run.outcome }}
+          SKIP_WIKI: ${{ inputs.skip_wiki || 'false' }}
+        run: |
+          set -euo pipefail
+          started_epoch="${EXTRACT_STARTED_EPOCH:-$(date +%s)}"
+          ended_epoch="$(date +%s)"
+          duration_seconds=$(( ended_epoch - started_epoch ))
+
+          module_dir="$WORKDIR/L1-raw/$MODULE_NAME"
+          md_count=0
+          meta_count=0
+          if [ -d "$module_dir" ]; then
+            md_count=$(find "$module_dir" -type f -name '*.md' | wc -l | awk '{print $1}')
+            meta_count=$(find "$module_dir" -type f -name '*.meta.json' | wc -l | awk '{print $1}')
+          fi
+
+          expected_skip="false"
+          skip_reason=""
+          if [ "$SKIP_WIKI" = "true" ]; then
+            expected_skip="true"
+            skip_reason="SKIP_WIKI=true"
+          fi
+
+          contract_status="ok"
+          contract_fail="false"
+          if [ "$EXTRACT_OUTCOME" != "success" ]; then
+            contract_status="extractor_failed"
+            contract_fail="true"
+          elif [ "$md_count" -gt 0 ]; then
+            contract_status="ok"
+          elif [ "$expected_skip" = "true" ]; then
+            contract_status="skipped_expected"
+          else
+            contract_status="unexpected_empty"
+            contract_fail="true"
+          fi
+
+          status_path="$WORKDIR/extract-status/${SCRIPT_NAME}.json"
+          mkdir -p "$WORKDIR/extract-status"
+
+          export CONTRACT_STATUS="$contract_status"
+          export CONTRACT_FAIL="$contract_fail"
+          export EXPECTED_SKIP="$expected_skip"
+          export SKIP_REASON="$skip_reason"
+          export MD_COUNT="$md_count"
+          export META_COUNT="$meta_count"
+          export STARTED_EPOCH="$started_epoch"
+          export ENDED_EPOCH="$ended_epoch"
+          export DURATION_SECONDS="$duration_seconds"
+          export STATUS_PATH="$status_path"
+
+          python - <<'PY'
+          import json
+          import os
+
+          payload = {
+              "script": os.environ["SCRIPT_NAME"],
+              "module": os.environ["MODULE_NAME"],
+              "outcome": os.environ["EXTRACT_OUTCOME"],
+              "contract_status": os.environ["CONTRACT_STATUS"],
+              "contract_fail": os.environ["CONTRACT_FAIL"] == "true",
+              "expected_skip": os.environ["EXPECTED_SKIP"] == "true",
+              "skip_reason": os.environ["SKIP_REASON"] or None,
+              "md_count": int(os.environ["MD_COUNT"]),
+              "meta_count": int(os.environ["META_COUNT"]),
+              "started_epoch": int(os.environ["STARTED_EPOCH"]),
+              "ended_epoch": int(os.environ["ENDED_EPOCH"]),
+              "duration_seconds": int(os.environ["DURATION_SECONDS"]),
+          }
+
+          with open(os.environ["STATUS_PATH"], "w", encoding="utf-8") as handle:
+              json.dump(payload, handle, indent=2)
+          PY
+
+          echo "contract_status=$contract_status" >> "$GITHUB_OUTPUT"
+          echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
+      - name: Upload L1 Artifacts (02a)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: L1-02a-scrape-wiki.py
+          path: ${{ env.WORKDIR }}/L1-raw/
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Upload extractor status (02a)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extract-status-02a-scrape-wiki.py
+          path: ${{ env.WORKDIR }}/extract-status/02a-scrape-wiki.py.json
+          retention-days: 7
+      - name: Enforce extractor output contract (02a)
+        if: steps.extract_contract.outputs.contract_fail == 'true'
+        run: |
+          echo "Extractor contract failed for 02a-scrape-wiki.py with status=${{ steps.extract_contract.outputs.contract_status }}"
+          exit 1
+
+  # ── Phase 2b: Repo-backed Extraction (Matrix) ─────────────
   extract:
     needs: initialize
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
+      fail-fast: false
       matrix:
-        script: [
-          "02a-scrape-wiki.py",
-          "02b-scrape-ucode.py",
-          "02c-scrape-jsdoc.py",
-          "02d-scrape-core-packages.py",
-          "02e-scrape-example-packages.py",
-          "02f-scrape-procd-api.py",
-          "02g-scrape-uci-schemas.py",
-          "02h-scrape-hotplug-events.py"
-        ]
+        include:
+          - script: "02b-scrape-ucode.py"
+            module: "ucode"
+            skip_with_buildroot: "false"
+          - script: "02c-scrape-jsdoc.py"
+            module: "luci"
+            skip_with_buildroot: "false"
+          - script: "02d-scrape-core-packages.py"
+            module: "openwrt-core"
+            skip_with_buildroot: "true"
+          - script: "02e-scrape-example-packages.py"
+            module: "luci-examples"
+            skip_with_buildroot: "false"
+          - script: "02f-scrape-procd-api.py"
+            module: "procd"
+            skip_with_buildroot: "true"
+          - script: "02g-scrape-uci-schemas.py"
+            module: "uci"
+            skip_with_buildroot: "true"
+          - script: "02h-scrape-hotplug-events.py"
+            module: "openwrt-hotplug"
+            skip_with_buildroot: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -90,38 +243,241 @@ jobs:
           pip install -r .github/scripts/requirements.txt
           sudo apt-get update -qq && sudo apt-get install -y -qq pandoc
           npm install -g jsdoc-to-markdown
-      - name: Cache Wiki Metadata
-        if: matrix.script == '02a-scrape-wiki.py'
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.WORKDIR }}/.cache
-            ${{ env.WORKDIR }}/L1-raw/wiki
-          key: wiki-cache-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            wiki-cache-${{ runner.os }}-
+      - name: Mark extractor start
+        run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
       - name: Download L0
         uses: actions/download-artifact@v4
         with:
           name: L0-repos
           path: ${{ env.WORKDIR }}
       - name: Extract ${{ matrix.script }}
+        id: extract_run
+        continue-on-error: true
         env:
           SKIP_WIKI: ${{ inputs.skip_wiki || 'false' }}
           SKIP_BUILDROOT: ${{ inputs.skip_buildroot || 'false' }}
         run: python .github/scripts/openwrt-docs4ai-${{ matrix.script }}
+      - name: Evaluate extractor output contract (${{ matrix.script }})
+        if: always()
+        id: extract_contract
+        env:
+          SCRIPT_NAME: ${{ matrix.script }}
+          MODULE_NAME: ${{ matrix.module }}
+          SKIP_ON_BUILDROOT: ${{ matrix.skip_with_buildroot }}
+          SKIP_BUILDROOT: ${{ inputs.skip_buildroot || 'false' }}
+          EXTRACT_OUTCOME: ${{ steps.extract_run.outcome }}
+        run: |
+          set -euo pipefail
+          started_epoch="${EXTRACT_STARTED_EPOCH:-$(date +%s)}"
+          ended_epoch="$(date +%s)"
+          duration_seconds=$(( ended_epoch - started_epoch ))
+
+          module_dir="$WORKDIR/L1-raw/$MODULE_NAME"
+          md_count=0
+          meta_count=0
+          if [ -d "$module_dir" ]; then
+            md_count=$(find "$module_dir" -type f -name '*.md' | wc -l | awk '{print $1}')
+            meta_count=$(find "$module_dir" -type f -name '*.meta.json' | wc -l | awk '{print $1}')
+          fi
+
+          expected_skip="false"
+          skip_reason=""
+          if [ "$SKIP_BUILDROOT" = "true" ] && [ "$SKIP_ON_BUILDROOT" = "true" ]; then
+            expected_skip="true"
+            skip_reason="SKIP_BUILDROOT=true"
+          fi
+
+          contract_status="ok"
+          contract_fail="false"
+          if [ "$EXTRACT_OUTCOME" != "success" ]; then
+            contract_status="extractor_failed"
+            contract_fail="true"
+          elif [ "$md_count" -gt 0 ]; then
+            contract_status="ok"
+          elif [ "$expected_skip" = "true" ]; then
+            contract_status="skipped_expected"
+          else
+            contract_status="unexpected_empty"
+            contract_fail="true"
+          fi
+
+          status_path="$WORKDIR/extract-status/${SCRIPT_NAME}.json"
+          mkdir -p "$WORKDIR/extract-status"
+
+          export CONTRACT_STATUS="$contract_status"
+          export CONTRACT_FAIL="$contract_fail"
+          export EXPECTED_SKIP="$expected_skip"
+          export SKIP_REASON="$skip_reason"
+          export MD_COUNT="$md_count"
+          export META_COUNT="$meta_count"
+          export STARTED_EPOCH="$started_epoch"
+          export ENDED_EPOCH="$ended_epoch"
+          export DURATION_SECONDS="$duration_seconds"
+          export STATUS_PATH="$status_path"
+
+          python - <<'PY'
+          import json
+          import os
+
+          payload = {
+              "script": os.environ["SCRIPT_NAME"],
+              "module": os.environ["MODULE_NAME"],
+              "outcome": os.environ["EXTRACT_OUTCOME"],
+              "contract_status": os.environ["CONTRACT_STATUS"],
+              "contract_fail": os.environ["CONTRACT_FAIL"] == "true",
+              "expected_skip": os.environ["EXPECTED_SKIP"] == "true",
+              "skip_reason": os.environ["SKIP_REASON"] or None,
+              "md_count": int(os.environ["MD_COUNT"]),
+              "meta_count": int(os.environ["META_COUNT"]),
+              "started_epoch": int(os.environ["STARTED_EPOCH"]),
+              "ended_epoch": int(os.environ["ENDED_EPOCH"]),
+              "duration_seconds": int(os.environ["DURATION_SECONDS"]),
+          }
+
+          with open(os.environ["STATUS_PATH"], "w", encoding="utf-8") as handle:
+              json.dump(payload, handle, indent=2)
+          PY
+
+          echo "contract_status=$contract_status" >> "$GITHUB_OUTPUT"
+          echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
       - name: Upload L1 Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: L1-${{ matrix.script }}
           path: ${{ env.WORKDIR }}/L1-raw/
           retention-days: 1
           if-no-files-found: ignore
+      - name: Upload extractor status (${{ matrix.script }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extract-status-${{ matrix.script }}
+          path: ${{ env.WORKDIR }}/extract-status/${{ matrix.script }}.json
+          retention-days: 7
+      - name: Enforce extractor output contract (${{ matrix.script }})
+        if: steps.extract_contract.outputs.contract_fail == 'true'
+        run: |
+          echo "Extractor contract failed for ${{ matrix.script }} with status=${{ steps.extract_contract.outputs.contract_status }}"
+          exit 1
+
+  # ── Phase 2c: Extract Summary (always) ────────────────
+  extract_summary:
+    needs: [extract, extract_wiki]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare extract summary workspace
+        run: |
+          mkdir -p "$WORKDIR/extract-status"
+          mkdir -p "$WORKDIR/extract-summary"
+      - name: Download extractor status manifests
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: extract-status-*
+          path: ${{ env.WORKDIR }}/extract-status/
+          merge-multiple: true
+      - name: Build extract summary
+        env:
+          EXTRACT_REPO_RESULT: ${{ needs.extract.result }}
+          EXTRACT_WIKI_RESULT: ${{ needs.extract_wiki.result }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from collections import Counter
+          from pathlib import Path
+
+          workdir = Path(os.environ["WORKDIR"])
+          status_dir = workdir / "extract-status"
+          summary_dir = workdir / "extract-summary"
+          summary_dir.mkdir(parents=True, exist_ok=True)
+
+          status_files = sorted(status_dir.glob("*.json"))
+          statuses = []
+          for status_file in status_files:
+              try:
+                  payload = json.loads(status_file.read_text(encoding="utf-8"))
+                  statuses.append(payload)
+              except Exception as exc:
+                  statuses.append(
+                      {
+                          "script": status_file.name,
+                          "module": "unknown",
+                          "outcome": "error",
+                          "contract_status": "status_parse_error",
+                          "contract_fail": True,
+                          "expected_skip": False,
+                          "skip_reason": f"status parse error: {exc}",
+                          "md_count": 0,
+                          "meta_count": 0,
+                          "duration_seconds": 0,
+                      }
+                  )
+
+          statuses.sort(key=lambda item: item.get("script", ""))
+          contract_counts = Counter(item.get("contract_status", "unknown") for item in statuses)
+          contract_failures = [item for item in statuses if item.get("contract_fail")]
+
+          summary_payload = {
+              "extract_repo_result": os.environ.get("EXTRACT_REPO_RESULT", "unknown"),
+              "extract_wiki_result": os.environ.get("EXTRACT_WIKI_RESULT", "unknown"),
+              "extractor_count": len(statuses),
+              "contract_status_counts": dict(contract_counts),
+              "contract_failures": len(contract_failures),
+              "extractors": statuses,
+          }
+
+          json_path = summary_dir / "extract-summary.json"
+          json_path.write_text(json.dumps(summary_payload, indent=2), encoding="utf-8")
+
+          lines = []
+          lines.append("# Extract Summary")
+          lines.append("")
+          lines.append(f"- extract job result: {summary_payload['extract_repo_result']}")
+          lines.append(f"- extract_wiki job result: {summary_payload['extract_wiki_result']}")
+          lines.append(f"- extractor status manifests: {summary_payload['extractor_count']}")
+          lines.append(f"- contract failures: {summary_payload['contract_failures']}")
+          lines.append("")
+          lines.append("| script | module | outcome | contract | md | meta | duration_s | note |")
+          lines.append("| --- | --- | --- | --- | ---: | ---: | ---: | --- |")
+          for item in statuses:
+              note = item.get("skip_reason") or ""
+              lines.append(
+                  "| {script} | {module} | {outcome} | {contract} | {md} | {meta} | {duration} | {note} |".format(
+                      script=item.get("script", ""),
+                      module=item.get("module", ""),
+                      outcome=item.get("outcome", ""),
+                      contract=item.get("contract_status", ""),
+                      md=item.get("md_count", 0),
+                      meta=item.get("meta_count", 0),
+                      duration=item.get("duration_seconds", 0),
+                      note=note.replace("|", "/"),
+                  )
+              )
+
+          md_path = summary_dir / "extract-summary.md"
+          md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+      - name: Upload extract summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: extract-summary
+          path: ${{ env.WORKDIR }}/extract-summary/
+          retention-days: 7
+      - name: Append extract summary to step summary
+        run: cat "$WORKDIR/extract-summary/extract-summary.md" >> "$GITHUB_STEP_SUMMARY"
 
   # ── Phase 3-8: Normalize, Publish, Validate ──────────
   process:
-    needs: extract
+    needs: [extract, extract_wiki]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -144,6 +500,12 @@ jobs:
           pattern: L1-*
           path: ${{ env.WORKDIR }}/L1-raw/
           merge-multiple: true
+      - name: Download extract summary
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: extract-summary
+          path: ${{ env.WORKDIR }}/extract-summary/
       - name: Cache AI Summaries
         uses: actions/cache@v4
         with:
@@ -208,16 +570,105 @@ jobs:
         run: python .github/scripts/openwrt-docs4ai-07-generate-web-index.py
       - name: Validate published output (08)
         run: python .github/scripts/openwrt-docs4ai-08-validate-output.py
+      - name: Validate staging contract and build process summary
+        id: process_contract
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          outdir = Path(os.environ["OUTDIR"])
+          workdir = Path(os.environ["WORKDIR"])
+          summary_dir = workdir / "run-summary"
+          summary_dir.mkdir(parents=True, exist_ok=True)
+
+          required_files = [
+              "AGENTS.md",
+              "README.md",
+              "llms.txt",
+              "llms-full.txt",
+              "index.html",
+              "repo-manifest.json",
+              "cross-link-registry.json",
+              "signature-inventory.json",
+              "CHANGES.md",
+              "changelog.json",
+          ]
+
+          missing = [name for name in required_files if not (outdir / name).is_file()]
+
+          l1_md = len(list((outdir / "L1-raw").glob("**/*.md"))) if (outdir / "L1-raw").exists() else 0
+          l1_meta = len(list((outdir / "L1-raw").glob("**/*.meta.json"))) if (outdir / "L1-raw").exists() else 0
+          l2_md = len(list((outdir / "L2-semantic").glob("**/*.md"))) if (outdir / "L2-semantic").exists() else 0
+          module_refs = len(list(outdir.glob("*/**/*-complete-reference.md")))
+
+          payload = {
+              "contract_ok": not missing,
+              "missing_required_files": missing,
+              "counts": {
+                  "l1_markdown": l1_md,
+                  "l1_metadata": l1_meta,
+                  "l2_markdown": l2_md,
+                  "module_complete_references": module_refs,
+              },
+          }
+
+          (summary_dir / "process-summary.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+          lines = [
+              "# Process Summary",
+              "",
+              f"- contract_ok: {str(payload['contract_ok']).lower()}",
+              f"- l1_markdown: {l1_md}",
+              f"- l1_metadata: {l1_meta}",
+              f"- l2_markdown: {l2_md}",
+              f"- module_complete_references: {module_refs}",
+          ]
+          if missing:
+              lines.append(f"- missing_required_files: {', '.join(missing)}")
+          else:
+              lines.append("- missing_required_files: none")
+          (summary_dir / "process-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+          if missing:
+              print("Missing required staging files:")
+              for item in missing:
+                  print(f"- {item}")
+              sys.exit(1)
+          PY
+      - name: Upload process summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: process-summary
+          path: ${{ env.WORKDIR }}/run-summary/
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Append process summary to step summary
+        if: always()
+        run: |
+          if [ -f "$WORKDIR/run-summary/process-summary.md" ]; then
+            cat "$WORKDIR/run-summary/process-summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Enforce staging contract
+        if: steps.process_contract.outcome != 'success'
+        run: |
+          echo "Staging contract failed. See process-summary artifact for details."
+          exit 1
       - name: Upload Final Staging
         uses: actions/upload-artifact@v4
         with:
           name: final-staging
           path: ${{ env.OUTDIR }}
 
-  # ── Phase 6-7: Deploy ────────────────────────────────
+  # ── Deploy: Publish Outputs ──────────────────────────
   deploy:
     needs: process
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
@@ -246,6 +697,13 @@ jobs:
           mkdir -p public
           # Exclude L1/L2 intermediate layers from public site
           rsync -a --exclude="L1-raw" --exclude="L2-semantic" "$OUTDIR/" public/
+      - name: Validate Public Pages exclusions
+        run: |
+          if [ -d "public/L1-raw" ] || [ -d "public/L2-semantic" ]; then
+            echo "FAIL: public output contains excluded intermediate layers"
+            exit 1
+          fi
+          echo "OK: public output excludes L1-raw and L2-semantic"
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -257,3 +715,112 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # ── Final Summary: Always emit run-state artifact ───────
+  pipeline_summary:
+    needs: [initialize, extract_wiki, extract, extract_summary, process, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare summary directories
+        run: |
+          mkdir -p "$WORKDIR/run-summary"
+          mkdir -p "$WORKDIR/extract-summary"
+      - name: Download extract summary artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: extract-summary
+          path: ${{ env.WORKDIR }}/extract-summary/
+      - name: Download process summary artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: process-summary
+          path: ${{ env.WORKDIR }}/run-summary/
+      - name: Build pipeline summary
+        env:
+          NEEDS_JSON: ${{ toJson(needs) }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          workdir = Path(os.environ["WORKDIR"])
+          run_summary_dir = workdir / "run-summary"
+          run_summary_dir.mkdir(parents=True, exist_ok=True)
+
+          needs = json.loads(os.environ.get("NEEDS_JSON", "{}"))
+          extract_summary_path = workdir / "extract-summary" / "extract-summary.json"
+          process_summary_path = run_summary_dir / "process-summary.json"
+
+          extract_summary = None
+          if extract_summary_path.is_file():
+              extract_summary = json.loads(extract_summary_path.read_text(encoding="utf-8"))
+
+          process_summary = None
+          if process_summary_path.is_file():
+              process_summary = json.loads(process_summary_path.read_text(encoding="utf-8"))
+
+          payload = {
+              "repository": os.environ.get("GITHUB_REPOSITORY"),
+              "run_id": os.environ.get("GITHUB_RUN_ID"),
+              "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+              "ref": os.environ.get("GITHUB_REF"),
+              "jobs": {name: details.get("result", "unknown") for name, details in needs.items()},
+              "extract_summary": extract_summary,
+              "process_summary": process_summary,
+          }
+
+          (run_summary_dir / "pipeline-summary.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+          lines = [
+              "# Pipeline Summary",
+              "",
+              f"- repository: {payload['repository']}",
+              f"- run_id: {payload['run_id']} (attempt {payload['run_attempt']})",
+              f"- ref: {payload['ref']}",
+              "",
+              "## Job Results",
+              "",
+          ]
+
+          for job_name in sorted(payload["jobs"]):
+              lines.append(f"- {job_name}: {payload['jobs'][job_name]}")
+
+          lines.append("")
+          lines.append("## Extract Contracts")
+          lines.append("")
+          if extract_summary:
+              lines.append(f"- extractor_count: {extract_summary.get('extractor_count', 0)}")
+              lines.append(f"- contract_failures: {extract_summary.get('contract_failures', 0)}")
+          else:
+              lines.append("- extract summary artifact unavailable")
+
+          lines.append("")
+          lines.append("## Staging Contract")
+          lines.append("")
+          if process_summary:
+              lines.append(f"- contract_ok: {str(process_summary.get('contract_ok', False)).lower()}")
+              missing = process_summary.get("missing_required_files", [])
+              lines.append(f"- missing_required_files: {', '.join(missing) if missing else 'none'}")
+          else:
+              lines.append("- process summary artifact unavailable")
+
+          (run_summary_dir / "pipeline-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+      - name: Upload pipeline summary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-summary
+          path: |
+            ${{ env.WORKDIR }}/run-summary/pipeline-summary.json
+            ${{ env.WORKDIR }}/run-summary/pipeline-summary.md
+          retention-days: 7
+      - name: Append pipeline summary to step summary
+        run: cat "$WORKDIR/run-summary/pipeline-summary.md" >> "$GITHUB_STEP_SUMMARY"

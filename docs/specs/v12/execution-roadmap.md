@@ -54,14 +54,33 @@ Status: complete
 4. Keep brittle helper surfaces in `02b`, `03`, and `08` directly unit-testable.
 5. Add only lightweight corpus sanity checks unless a stronger telemetry need is proven.
 
+Status: complete
+
+## Stage 7: Operational Observability And Contract Hardening
+
+1. Emit a per-run timing and status summary that includes each pipeline member duration, key output counters, and final run result.
+2. Keep script-level execution contracts explicit (mutability, dependencies, atomicity scope, and abort power) so stage placement remains auditable.
+3. Keep optional stages explicitly optional (`SKIP_AI`) and avoid hidden implicit tolerances.
+4. Preserve deploy isolation so only approved staged outputs can modify committed published artifacts.
+5. Keep long-lived local scratch and legacy-review material in gitignored locations while keeping the public repo surface minimal.
+
 Status: in progress
+
+### 2026-03-11 Non-AI Option B Slice (implemented)
+
+1. Parallelized extraction topology so `02a` runs independently while `02b` through `02h` remain clone-gated.
+2. Added extractor contract diagnostics: matrix fail-fast disabled, per-extractor status manifests, and always-run extract summary artifact.
+3. Added process and pipeline summary artifacts plus staging/public contract checks for faster operational triage.
+4. Added workflow concurrency and timeout guardrails.
+5. Explicitly left AI-touching implementation surfaces out of this slice (`04-generate-ai-summaries.py`, `lib/ai_store.py`).
 
 ## Current Focus
 
-1. Push the local wiki-cleanup and helper-testability patch through live GitHub Actions verification.
-2. Use the committed-corpus sanity snapshot as a quick read on whether wiki artifact levels look bounded, improved, or abnormal.
-3. Close `CONTENT-001` only after a regenerated corpus or remote run confirms the committed outputs reflect the new `03` cleanup behavior.
+1. Preserve the now-verified stabilization baseline while continuing to treat `REMOTE-008` as a truthful deferred warning unless stronger evidence appears.
+2. Formalize AI-summary state architecture so expensive optional enrichment remains isolated from normal output generation.
+3. Add lightweight timing and run-state observability so performance and regressions are visible without deep log forensics.
+4. Keep public-repo hygiene tight while retaining local legacy backups in gitignored paths.
 
 ## Immediate Next Action
 
-Commit the current post-verification hardening pass, run a live workflow, and compare the resulting committed wiki corpus against the sanity snapshot baseline.
+Ratify and implement the AI-summary storage and promotion contract in a dedicated follow-up slice, then align AI-stage observability details with the new run-summary framework without regressing the stabilized non-AI path.

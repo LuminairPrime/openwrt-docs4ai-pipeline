@@ -9,10 +9,12 @@ which scripts it depends on, and whether it touches AI summary data.
 
 ```
 01-clone-repos          (L0 source acquisition)
-  ↓
-02a..02h-scrape-*       (L0 → L1 extraction, all parallelisable)
-  ↓
-03-normalize-semantic   (L1 → L2 + staging promotion)
+  ├──▶ 02b..02h-scrape-*  (repo-backed L0 → L1 extraction)
+  │
+  └──────────────┐
+                 │
+02a-scrape-wiki  │        (wiki L0 → L1 extraction; independent branch)
+    └──────────────┴──▶ 03-normalize-semantic   (L1 → L2 + staging promotion)
   ↓
 04-generate-ai-summaries  (L2 → L2 AI enrichment, optional)
   ↓
@@ -30,6 +32,12 @@ which scripts it depends on, and whether it touches AI summary data.
 08-validate-output               (gatekeeper; reads all layers)
 ```
 
+Hosted workflow execution uses Option B wiring: `02a` runs in its own job without waiting on `01`, while `02b` through `02h` remain gated on `01` because they require cloned repos.
+
+Extractor diagnostics are also now explicit in workflow: per-extractor status manifests, fail-fast disabled for the repo-backed matrix, and an always-generated extract summary artifact.
+
+This hardening slice intentionally excludes AI-touching implementation changes (`04-generate-ai-summaries.py` and `lib/ai_store.py`).
+
 ---
 
 ## Per-Script Detail
@@ -45,7 +53,7 @@ which scripts it depends on, and whether it touches AI summary data.
 | Depends on | — |
 | Depended on by | 02b, 02c, 02d, 02e, 02f, 02g, 02h |
 | AI data | None |
-| Parallelisable | No (network; serial) |
+| Parallelisable | In practice yes with 02a branch in hosted workflow; remains the serial prerequisite for 02b..02h |
 | Key env vars | `WORKDIR`, `SKIP_BUILDROOT` |
 
 ---

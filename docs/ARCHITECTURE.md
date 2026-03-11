@@ -56,14 +56,19 @@ The primary engineering goal for the current stage is maintainable correctness o
 ## Execution Contract
 
 1. `01` prepares local source inputs and manifests.
-2. `02a` through `02h` extract source-specific content into L1.
-3. `03` normalizes L1 into L2 and promotes stable intermediates into the output tree.
-4. `04` optionally enriches staged L2 files with AI summary metadata.
-5. `05a` assembles the publishable skeletons and monolithic references.
-6. `05b`, `05c`, and `05d` generate companion publication artifacts from the stabilized post-`03` snapshot.
-7. `06` generates routing indexes after `05a` has produced the publishable reference assets.
-8. `07` generates the HTML landing page after `06` has produced the routing indexes.
-9. `08` validates the entire output tree.
+2. `02a` is an independent wiki extractor and can run in parallel with `01` in hosted workflow execution.
+3. `02b` through `02h` extract source-specific content into L1 and remain gated on `01` because they consume cloned repositories.
+4. `03` normalizes L1 into L2 and promotes stable intermediates into the output tree.
+5. `04` optionally enriches staged L2 files with AI summary metadata.
+6. `05a` assembles the publishable skeletons and monolithic references.
+7. `05b`, `05c`, and `05d` generate companion publication artifacts from the stabilized post-`03` snapshot.
+8. `06` generates routing indexes after `05a` has produced the publishable reference assets.
+9. `07` generates the HTML landing page after `06` has produced the routing indexes.
+10. `08` validates the entire output tree.
+
+Current Option B hardening adds per-extractor status manifests, disables matrix fail-fast for repo-backed extractors, and emits extract plus pipeline summary artifacts for faster triage.
+
+The non-AI hardening tranche intentionally excludes direct behavior changes in `04-generate-ai-summaries.py` and `lib/ai_store.py`.
 
 ## Local-First Verification Model
 

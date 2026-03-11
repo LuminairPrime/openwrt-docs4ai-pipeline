@@ -9,6 +9,8 @@ import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = PROJECT_ROOT / ".github" / "scripts"
+SMOKE_SUPPORT_PATH = PROJECT_ROOT / "tests" / "smoke_support.py"
+WORKFLOW_PATH = PROJECT_ROOT / ".github" / "workflows" / "openwrt-docs4ai-00-pipeline.yml"
 WIKI_L2_DIR = PROJECT_ROOT / "openwrt-condensed-docs" / "L2-semantic" / "wiki"
 
 WIKI_ARTIFACT_PATTERNS = {
@@ -20,13 +22,20 @@ WIKI_ARTIFACT_PATTERNS = {
 }
 
 
-def load_script_module(module_name, script_name):
-    script_path = SCRIPTS_DIR / script_name
-    spec = importlib.util.spec_from_file_location(module_name, script_path)
+def load_module_from_path(module_name, module_path):
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
+
+
+def load_script_module(module_name, script_name):
+    return load_module_from_path(module_name, SCRIPTS_DIR / script_name)
+
+
+def load_smoke_support_module(module_name):
+    return load_module_from_path(module_name, SMOKE_SUPPORT_PATH)
 
 
 def summarize_wiki_l2_corpus(corpus_dir):
@@ -73,6 +82,25 @@ def classify_wiki_l2_sanity(summary):
         if summary[f"{key}_files"]:
             return "abnormal"
     return "clean"
+
+
+def get_workflow_job_block(workflow_text, job_name):
+    match = re.search(
+        rf"^  {re.escape(job_name)}:\n(.*?)(?=^  [A-Za-z0-9_-]+:\n|\Z)",
+        workflow_text,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    assert match is not None, f"Missing workflow job block: {job_name}"
+    return match.group(1)
+
+
+def collect_workflow_script_invocations(workflow_text):
+    explicit_scripts = set(re.findall(r"openwrt-docs4ai-\d{2}[a-z]?-[\w-]+\.py", workflow_text))
+    matrix_scripts = {
+        f"openwrt-docs4ai-{name}"
+        for name in re.findall(r'"(02[a-z]-[\w-]+\.py)"', workflow_text)
+    }
+    return explicit_scripts | matrix_scripts
 
 
 def test_ucode_normalize_fenced_blocks_classifies_shell_json_and_pseudocode():
@@ -357,6 +385,72 @@ def test_llm_routing_build_version_string_reads_manifest_when_env_missing(tmp_pa
     assert "openwrt/openwrt@1111111" in version_str
     assert "openwrt/luci@2222222" in version_str
     assert "jow-/ucode@3333333" in version_str
+
+
+def test_smoke_selector_rejects_unknown_stage_id():
+    smoke = load_smoke_support_module("smoke_support_unknown_selector")
+
+    with pytest.raises(ValueError, match="does-not-exist"):
+        smoke.select_pipeline_scripts(smoke.POST_EXTRACT_PIPELINE, "does-not-exist")
+
+
+def test_smoke_selector_supports_stage_family_selector():
+    smoke = load_smoke_support_module("smoke_support_stage_family")
+
+    selected = smoke.select_pipeline_scripts(smoke.POST_EXTRACT_PIPELINE, "05")
+
+    assert selected == [
+        "openwrt-docs4ai-05a-assemble-references.py",
+        "openwrt-docs4ai-05b-generate-agents-and-readme.py",
+        "openwrt-docs4ai-05c-generate-ucode-ide-schemas.py",
+        "openwrt-docs4ai-05d-generate-api-drift-changelog.py",
+    ]
+
+
+def test_full_pipeline_registry_matches_files_on_disk():
+    smoke = load_smoke_support_module("smoke_support_registry")
+
+    missing = [script for script in smoke.FULL_PIPELINE if not (SCRIPTS_DIR / script).is_file()]
+
+    assert missing == []
+
+
+def test_full_pipeline_matches_workflow_invocations():
+    smoke = load_smoke_support_module("smoke_support_workflow")
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    workflow_scripts = collect_workflow_script_invocations(workflow_text)
+
+    assert workflow_scripts == set(smoke.FULL_PIPELINE)
+
+
+def test_extract_wiki_runs_without_initialize_dependency():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    wiki_block = get_workflow_job_block(workflow_text, "extract_wiki")
+
+    assert re.search(r"^\s+needs:\s", wiki_block, flags=re.MULTILINE) is None
+
+
+def test_process_waits_for_extract_and_extract_wiki():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    process_block = get_workflow_job_block(workflow_text, "process")
+
+    assert "needs: [extract, extract_wiki]" in process_block
+
+
+def test_extract_matrix_fail_fast_is_disabled():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    extract_block = get_workflow_job_block(workflow_text, "extract")
+
+    assert "fail-fast: false" in extract_block
+
+
+def test_extract_contract_and_summary_artifacts_exist():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+
+    assert "extract-status-${{ matrix.script }}" in workflow_text
+    assert "extract-status-02a-scrape-wiki.py" in workflow_text
+    assert "name: extract-summary" in workflow_text
+    assert "name: pipeline-summary" in workflow_text
 
 
 def test_jsdoc_fallback_requires_zero_exit_code():

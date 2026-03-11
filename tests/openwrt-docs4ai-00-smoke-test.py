@@ -5,7 +5,7 @@ Purpose  : Sequential local smoke runner for the numbered pipeline scripts.
 Flags    : --keep-temp         keep the temp tree for inspection
            --run-ai            include the optional AI stage
            --include-extractors run 01 and 02* before the fixture-backed stages
-           --only <id>         run only scripts matching a partial identifier such as 03, 05c, or 06
+           --only <id>         run only a stage id, stage family, or script name such as 03, 05, 05c, or 06
 Outputs  : Appends step logs to tmp/logs/openwrt-docs4ai-00-smoke-test-log.txt
 Notes    : Default mode is fixture-backed and offline-friendly. The extractor path is optional.
 """
@@ -27,6 +27,7 @@ from smoke_support import (
     build_env,
     get_local_log_path,
     run_named_script,
+    select_pipeline_scripts,
     seed_ai_cache,
     seed_l1_fixtures,
 )
@@ -39,7 +40,7 @@ def parse_args():
     parser.add_argument("--keep-temp", action="store_true", help="Keep the temp directory after completion")
     parser.add_argument("--run-ai", action="store_true", help="Include the optional AI stage")
     parser.add_argument("--include-extractors", action="store_true", help="Run 01 and 02* before the fixture-backed processing stages")
-    parser.add_argument("--only", type=str, default=None, help="Run only scripts matching a partial identifier such as 03, 05c, or 06")
+    parser.add_argument("--only", type=str, default=None, help="Run only a stage id, stage family, or script name such as 03, 05, 05c, or 06")
     return parser.parse_args()
 
 
@@ -56,6 +57,16 @@ def main():
     print(f"Run AI: {args.run_ai}")
     print(f"Include extractors: {args.include_extractors}")
     print()
+
+    pipeline = list(FULL_PIPELINE if args.include_extractors else POST_EXTRACT_PIPELINE)
+    if not args.run_ai:
+        pipeline = [script for script in pipeline if "04-generate-ai-summaries" not in script]
+
+    try:
+        pipeline = select_pipeline_scripts(pipeline, args.only)
+    except ValueError as exc:
+        print(f"Selector error: {exc}")
+        return 1
 
     if os.path.exists(LOG_FILE):
         os.remove(LOG_FILE)
@@ -81,12 +92,6 @@ def main():
         seed_ai_cache(cache_path)
         extra_env = {"AI_CACHE_PATH": cache_path}
     env = build_env(work_dir, out_dir, run_ai=args.run_ai, extra_env=extra_env)
-
-    pipeline = list(FULL_PIPELINE if args.include_extractors else POST_EXTRACT_PIPELINE)
-    if not args.run_ai:
-        pipeline = [script for script in pipeline if "04-generate-ai-summaries" not in script]
-    if args.only:
-        pipeline = [script for script in pipeline if args.only in script]
 
     results = []
     total_start = time.time()

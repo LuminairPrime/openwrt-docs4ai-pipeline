@@ -9,6 +9,7 @@ from smoke_support import (
     build_env,
     get_local_log_path,
     run_named_script,
+    select_pipeline_scripts,
     seed_ai_cache,
     seed_l1_fixtures,
 )
@@ -18,12 +19,21 @@ def main():
     parser = argparse.ArgumentParser(description="Deterministic v12 local smoke test")
     parser.add_argument("--keep-temp", action="store_true", help="Keep the temporary directory after completion")
     parser.add_argument("--run-ai", action="store_true", help="Enable the optional AI stage")
-    parser.add_argument("--only", type=str, default=None, help="Run only a single script identifier such as 03, 05c, or 06")
+    parser.add_argument("--only", type=str, default=None, help="Run only a stage id, stage family, or script name such as 03, 05, 05c, or 06")
     args = parser.parse_args()
 
     log_file = get_local_log_path("smoke-test-log.txt")
     if os.path.exists(log_file):
         os.remove(log_file)
+
+    pipeline = list(POST_EXTRACT_PIPELINE)
+    if not args.run_ai:
+        pipeline = [script for script in pipeline if "04-generate-ai-summaries" not in script]
+
+    try:
+        scripts = select_pipeline_scripts(pipeline, args.only)
+    except ValueError as exc:
+        raise SystemExit(f"ERROR: {exc}")
 
     base_tmp = os.path.join(PROJECT_ROOT, "tmp")
     os.makedirs(base_tmp, exist_ok=True)
@@ -46,10 +56,6 @@ def main():
             seed_ai_cache(cache_path)
             extra_env = {"AI_CACHE_PATH": cache_path}
         env = build_env(workdir, outdir, run_ai=args.run_ai, extra_env=extra_env)
-
-        scripts = [script for script in POST_EXTRACT_PIPELINE if args.only in script] if args.only else list(POST_EXTRACT_PIPELINE)
-        if not args.run_ai:
-            scripts = [script for script in scripts if "04-generate-ai-summaries" not in script]
 
         for script in scripts:
             extra_args = ["--warn-only"] if script.endswith("08-validate-output.py") else []

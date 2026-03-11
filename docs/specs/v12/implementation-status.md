@@ -2,21 +2,24 @@
 
 ## Current State
 
-v12 now has fresh local and remote verification from the 2026-03-09 stabilization pass and the follow-up wiki hardening passes. The system is operationally stable, but it is still in a bounded hardening phase rather than declared fully finished.
+v12 now has fresh local and remote verification from the 2026-03-09 stabilization pass, the follow-up wiki hardening passes, and the 2026-03-11 closeout checks. The system is operationally stable, and first-stage stabilization is complete; remaining work is now a controlled optimization and architecture backlog.
 
 The current authoritative position is:
 
 - code exists for the numbered pipeline stages
 - documentation and test surfaces were realigned with the current script layout on 2026-03-09
 - local smoke, sequential local verification, and cache-backed AI verification paths are passing
-- GitHub Actions behavior is verified through runs `22877164042` and `22877413563`, including `initialize`, all `extract` jobs, `process`, and `deploy`
-- the latest fully checked remote runs completed with `0` hard failures and `1` soft warning
+- GitHub Actions behavior is verified through runs `22877164042`, `22877413563`, `22901356504`, and `22901854476`, including `initialize`, all `extract` jobs, `process`, and `deploy`
+- the latest fully checked remote runs completed successfully with the expected single deferred dockerman soft warning profile
 - the second warm-cache wiki verification proved the hardened `02a` cache paths with `0` fetched, `92` unchanged, `5` too short, `0` reused-cache, and `0` failed pages
 - push, schedule, and manual workflow runs now promote staged generated outputs into `openwrt-condensed-docs/` via bot-authored `docs: v12 auto-update YYYY-MM-DD` commits, while GitHub Pages excludes `L1-raw` and `L2-semantic`
+- hosted extraction topology now runs `02a` in parallel with `01`, while repo-backed `02b` through `02h` remain gated on clone completion
+- extractor diagnostics now emit per-extractor status manifests and an always-run extract summary artifact; process and pipeline summaries are also emitted for first-stop triage
 - L1 and L2 are intentionally retained under `openwrt-condensed-docs`; only L0 remains transient
-- the only verified remote warning is the deferred dockerman ucode context mismatch; the remaining content work is bounded wiki-derived cleanup in L2 rather than broad pipeline instability
+- the only verified remote warning is the deferred dockerman ucode context mismatch; `CONTENT-001` is now closed with clean committed-corpus evidence
 - a follow-up local patch that tightens wiki L2 cleanup and adds direct regression coverage for `02b`, `03`, and `08` is now passing focused tests and the deterministic smoke path
-- a committed-corpus sanity snapshot now reports the current checked-in wiki L2 tree in human-readable terms so stale versus abnormal artifact levels can be judged quickly during bug triage
+- a committed-corpus sanity snapshot now reports the current checked-in wiki L2 tree in human-readable terms and currently reports `clean` (`92` files, all tracked residue counters at `0`)
+- this hardening tranche explicitly excluded direct AI implementation changes in `04-generate-ai-summaries.py` and `lib/ai_store.py`; AI-alignment follow-up remains a separate slice
 
 ## Verification Matrix
 
@@ -29,14 +32,14 @@ The current authoritative position is:
 | Deterministic local smoke test | verified | `python tests/00-smoke-test.py` passes locally |
 | Sequential local smoke runner | verified | `python tests/openwrt-docs4ai-00-smoke-test.py` passes locally |
 | Local AI-summary integration | verified | Cache-backed local AI path passes via `--run-ai` without requiring a live token |
-| GitHub Actions remote verification | verified | Latest fully checked runs `22877164042` and `22877413563` passed end to end on 2026-03-09 |
+| GitHub Actions remote verification | verified | Runs `22877164042`, `22877413563`, `22901356504`, and `22901854476` passed end to end |
 | Remote output measurement | verified | Successful staging artifact contained 151 L1 markdown docs, 151 L2 markdown docs, and 397 indexed symbols |
 | Generated output promotion | verified | Deploy produced follow-up output commits `e13fb46` and `ffe48ad` (`docs: v12 auto-update 2026-03-09`) |
 | L1/L2 retention policy | decided | L1 and L2 remain committed under `openwrt-condensed-docs`; L0 remains transient only |
 | Remote warning reduction | verified | Remote soft warnings were reduced from 48 to 1 and stayed at 1 across the wiki hardening verification runs |
 | Wiki scraper hardening round 2 | verified | Commit `69e98c7` plus runs `22877164042` and `22877413563` hardened cache trust, redirect validation, and short-page cache hits |
 | Latest local follow-up patch | locally verified | `python -m pytest tests/test_pipeline_hardening.py tests/test_wiki_scraper.py -q` and `python tests/00-smoke-test.py` pass after the `03` wiki cleanup pass and the import-safe `02b`/`08` refactors |
-| Committed wiki corpus sanity snapshot | locally verified | `tests/test_pipeline_hardening.py` now prints a readable snapshot of current committed wiki L2 artifact levels when run with `pytest -s` |
+| Committed wiki corpus sanity snapshot | verified-clean | `pytest -s tests/test_pipeline_hardening.py -q` now reports `status=clean` with `wrap=0`, `color=0`, `html_table=0`, `sortable=0`, `footnote_aside=0`, and `duplicate_lead_heading=0` across 92 files |
 
 ## Historical Note
 
@@ -99,6 +102,13 @@ Older status claims from early March 2026 described the pipeline as fully comple
 - Added a committed-corpus sanity snapshot in `tests/test_pipeline_hardening.py` so bug triage can read current wiki L2 artifact levels directly from pytest output.
 - Verified the local follow-up patch with `python -m pytest tests/test_pipeline_hardening.py tests/test_wiki_scraper.py -q` and `python tests/00-smoke-test.py`.
 
+### Milestone 8: stabilization closeout and alignment confirmation
+
+- Re-ran local closeout checks on 2026-03-11: `python -m pytest tests/test_pipeline_hardening.py tests/test_wiki_scraper.py -q` (`37 passed`), `python -m pytest -s tests/test_pipeline_hardening.py -q` (`status=clean` corpus snapshot), and `python tests/00-smoke-test.py`.
+- Confirmed hosted workflow stability after stage-family alignment and hygiene follow-through via successful runs `22901356504` and `22901854476`.
+- Closed `CONTENT-001` as fixed-and-verified based on clean corpus evidence plus hosted verification.
+- Shifted operational focus from first-stage stabilization to post-stabilization optimization and explicit AI-summary state-architecture decisions.
+
 ## Remote Output Snapshot
 
 Measured from the `final-staging` artifact produced by run `22864304564`.
@@ -111,15 +121,13 @@ Measured from the `final-staging` artifact produced by run `22864304564`.
 
 ## Sample Output Audit
 
-A random slice audit of 10 generated files on 2026-03-09 found that the outputs broadly match the active layer contracts:
+A random slice audit of 10 generated files on 2026-03-09 found that the outputs broadly match the active layer contracts, and the 2026-03-11 corpus sanity snapshot confirmed the remaining bounded wiki residue is currently clean in the committed tree:
 
 - L1 samples were raw converted source documents without YAML frontmatter and with source-style structure intact.
 - L2 samples carried the required YAML frontmatter and preserved relative links into the generated corpus.
-- The primary remaining content issue was cleanliness in some wiki-derived pages, where legacy DokuWiki or pandoc artifacts still appeared (for example `<WRAP>` markers, duplicated top headings, and raw HTML table fragments).
-- A bounded L2 cleanup pass now strips `WRAP` and `color` tags, removes immediate duplicate lead headings, and collapses repeated HTML table rows during normalization; a regenerated corpus audit is the remaining close-out step for that work.
-- The committed-corpus sanity snapshot currently shows the pre-republish baseline as `92` wiki L2 files, `11` files with `WRAP`, `9` with `color`, `9` with raw HTML tables, and `0` immediate duplicate lead headings.
+- L2 cleanup for bounded wiki residue is now reflected in the committed corpus sanity snapshot as clean (`92` files, all tracked residue counters at `0`).
 
 ### Next Priority
 
-Keep the remaining dockerman soft warning deferred unless stronger evidence appears, and decide whether any extra corpus-level QA or telemetry is worth the added operational complexity after the bounded wiki cleanup is rerun against the full corpus.
+Keep the remaining dockerman soft warning deferred unless stronger evidence appears, and prioritize explicit AI-summary storage architecture decisions plus performance and maintainability optimizations that do not destabilize the now-verified path.
 
