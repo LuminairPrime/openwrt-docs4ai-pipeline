@@ -369,12 +369,11 @@ OUTDIR/L2-semantic/<module>/<slug>.md
          └──▶ 07   (indirect snippet rendering via 06 output)
 ```
 
-`04a` and `04b` also read the AI store plus L2 documents. They remain local
-maintainer tools, but the hosted `process` job now invokes them as a committed
-store gate when a push changes `data/base/` or `data/override/`.
+The hosted numbered AI surface is now a single stage: `04`.
 
-`04c` is the preferred local wrapper for scratch-first review, promotion, and
-cleanup.
+Local scratch-first review, validation, audit, promotion, and cleanup now live
+in `tools/manage_ai_store.py`, backed by the shared AI helper modules under
+`lib/`.
 
 ---
 

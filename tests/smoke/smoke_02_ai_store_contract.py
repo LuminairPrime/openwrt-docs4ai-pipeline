@@ -1,5 +1,5 @@
 """
-openwrt-docs4ai-v12-ai-v1-smoke-test.py
+smoke_02_ai_store_contract.py
 
 Purpose  : Validate AI-V1 data store schema, prompt contract, and ai_store helpers.
 Inputs   : data/base/**/*.json, script 04 prompt block, data/base/README prompt block.
@@ -19,7 +19,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from lib import ai_store
+from lib import ai_store  # noqa: E402
 
 REQUIRED_FIELDS = (
     "slug",

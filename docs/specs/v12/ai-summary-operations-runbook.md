@@ -145,6 +145,51 @@ What each check proves:
   current L2 corpus.
 - `audit` proves coverage, staleness, orphan detection, and override precedence.
 
+## Pre-Promotion Checklist
+
+Run this checklist before `--option promote`.
+
+- Confirm the scratch run completed cleanly: review, validate, and audit all
+  passed.
+- Review the scratch JSON diff under `tmp/ai-summary-run/ai-data/base/` for the
+  intended modules and slugs.
+- Spot-check a few generated summaries for prompt adherence, specific OpenWrt
+  accuracy, and absence of obvious hallucinations.
+- Confirm no override-backed records were edited unintentionally; pinned human
+  overrides should remain under `data/override/`.
+- Confirm you know the rollback target before copying scratch JSON into
+  `data/base/`.
+
+## Rollback Handling
+
+Promotion is copy-then-check, not transactional. If promotion fails or the
+reviewed result is wrong, use the smallest rollback that matches the situation.
+
+If promotion was run but not committed yet:
+
+```powershell
+git restore data/base
+```
+
+If promotion was committed locally but not pushed yet:
+
+```powershell
+git restore --source=HEAD~1 data/base
+```
+
+If the promotion commit was already pushed:
+
+- prefer a normal follow-up commit that restores the affected `data/base/`
+  records
+- use `git revert <promotion-commit>` only when reverting the entire promotion
+  commit is actually the right outcome
+
+After any rollback, rerun:
+
+1. `python tests/smoke/smoke_02_ai_store_contract.py`
+2. `python tools/manage_ai_store.py --option validate ...`
+3. `python tools/manage_ai_store.py --option audit ...`
+
 ## Promotion To The Permanent Store
 
 Only promote after the scratch store is clean.

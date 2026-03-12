@@ -10,7 +10,6 @@ Notes: Concatenates all discovered hotplug scripts into one reference document.
 """
 
 import os
-import glob
 import datetime
 import sys
 

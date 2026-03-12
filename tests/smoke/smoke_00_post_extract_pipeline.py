@@ -1,3 +1,5 @@
+# ruff: noqa: E402
+
 import argparse
 import os
 from pathlib import Path
@@ -19,7 +21,7 @@ from tests.support.smoke_pipeline_support import (
     select_pipeline_scripts,
     seed_ai_cache,
     seed_l1_fixtures,
-)
+)  # noqa: E402
 
 
 def main():

@@ -11,13 +11,11 @@ Notes: Processes all .js files. Falls back to whole-directory mode if needed.
 
 import os
 import subprocess
-import glob
 import datetime
 import sys
 import re
 import shutil
 import html
-import json
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from lib import config, extractor

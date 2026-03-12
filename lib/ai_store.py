@@ -225,11 +225,11 @@ def temporary_store_roots(base_dir: str, override_dir: str):
 
     previous_base_dir = AI_DATA_BASE_DIR
     previous_override_dir = AI_DATA_OVERRIDE_DIR
-    AI_DATA_BASE_DIR = base_dir
-    AI_DATA_OVERRIDE_DIR = override_dir
+    globals()["AI_DATA_BASE_DIR"] = base_dir
+    globals()["AI_DATA_OVERRIDE_DIR"] = override_dir
 
     try:
         yield
     finally:
-        AI_DATA_BASE_DIR = previous_base_dir
-        AI_DATA_OVERRIDE_DIR = previous_override_dir
+        globals()["AI_DATA_BASE_DIR"] = previous_base_dir
+        globals()["AI_DATA_OVERRIDE_DIR"] = previous_override_dir

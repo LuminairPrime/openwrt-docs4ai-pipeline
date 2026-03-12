@@ -143,7 +143,7 @@ for module in sorted(modules):
         l4.write(f'module: "{module}"\n')
         l4.write(f'total_token_count: {total_tokens}\n')
         l4.write(f'section_count: {len(md_files)}\n')
-        l4.write(f'is_monolithic: true\n')
+        l4.write('is_monolithic: true\n')
         l4.write(f'generated: "{TS}"\n')
         l4.write("---\n\n")
         

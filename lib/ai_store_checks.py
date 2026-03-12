@@ -6,7 +6,7 @@ import re
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, DefaultDict, Mapping
+from typing import Any, DefaultDict, Mapping, cast
 
 from lib.ai_corpus import L2Document, load_l2_documents
 
@@ -47,7 +47,7 @@ def load_json_record(path: str) -> dict[str, Any] | None:
 
     if not isinstance(data, dict):
         return None
-    return data
+    return cast(dict[str, Any], data)
 
 
 def is_iso_timestamp(value: Any) -> bool:
@@ -81,6 +81,14 @@ def iter_store_files(store_root: str) -> list[tuple[str, str, str]]:
             files.append((module, slug, os.path.join(module_dir, filename)))
 
     return files
+
+
+def _load_l2_documents_or_issue(
+    l2_root: str,
+) -> tuple[dict[tuple[str, str], L2Document], list[str]]:
+    """Load typed L2 documents and preserve loader issues explicitly."""
+    documents, issues = load_l2_documents(l2_root)
+    return documents, issues
 
 
 def _append_detail(
@@ -173,17 +181,19 @@ def _validate_record(
             f"{store_name} {module}/{slug}: ai_when_to_use must be non-empty text"
         )
 
-    related_topics = record.get("ai_related_topics")
-    if not isinstance(related_topics, list) or not related_topics:
+    related_topics_any = record.get("ai_related_topics")
+    if not isinstance(related_topics_any, list) or not related_topics_any:
         errors.append(
             f"{store_name} {module}/{slug}: ai_related_topics must be a "
             "non-empty list"
         )
-    elif not all(isinstance(item, str) and item.strip() for item in related_topics):
-        errors.append(
-            f"{store_name} {module}/{slug}: ai_related_topics entries must be "
-            "non-empty strings"
-        )
+    else:
+        related_topics = cast(list[object], related_topics_any)
+        if not all(isinstance(topic, str) and topic.strip() for topic in related_topics):
+            errors.append(
+                f"{store_name} {module}/{slug}: ai_related_topics entries must be "
+                "non-empty strings"
+            )
 
     if not is_iso_timestamp(record.get("generated_at")):
         errors.append(
@@ -255,8 +265,9 @@ def validate_store(
 ) -> StoreValidationResult:
     """Validate selected AI store records against schema and optional L2 data."""
     l2_documents: dict[tuple[str, str], L2Document] | None = None
+    l2_document_count = 0
     if not skip_l2_checks:
-        l2_documents, issues = load_l2_documents(l2_root)
+        l2_documents, issues = _load_l2_documents_or_issue(l2_root)
         if issues:
             return StoreValidationResult(
                 checked_records=0,
@@ -264,6 +275,7 @@ def validate_store(
                 warnings=[],
                 l2_document_count=0,
             )
+        l2_document_count = len(l2_documents)
 
     selected_stores: list[tuple[str, str]] = []
     if store in {"base", "both"}:
@@ -301,7 +313,7 @@ def validate_store(
         checked_records=checked_records,
         errors=errors,
         warnings=warnings,
-        l2_document_count=len(l2_documents or {}),
+        l2_document_count=l2_document_count,
     )
 
 
@@ -314,7 +326,7 @@ def audit_store(
     """Audit store coverage, staleness, and orphaned records."""
     counts: Counter[str] = Counter()
     details: DefaultDict[str, list[str]] = defaultdict(list)
-    l2_documents, issues = load_l2_documents(l2_root)
+    l2_documents, issues = _load_l2_documents_or_issue(l2_root)
 
     if issues:
         return counts, details, issues

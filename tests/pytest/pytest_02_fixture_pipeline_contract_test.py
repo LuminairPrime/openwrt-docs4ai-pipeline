@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from tests.support.pytest_pipeline_support import PROJECT_ROOT, load_script_module
 from tests.support.smoke_pipeline_support import (

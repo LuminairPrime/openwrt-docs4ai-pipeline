@@ -4,7 +4,7 @@ import hashlib
 import os
 import re
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 
 _FRONTMATTER_RE = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)", re.DOTALL)
@@ -83,7 +83,9 @@ def load_l2_documents(
                 issues.append(f"Frontmatter is not a mapping in {module}/{slug}")
                 continue
 
-            title = str(frontmatter_any.get("title", "")).strip() or slug
+            frontmatter = cast(dict[str, object], frontmatter_any)
+            frontmatter_title = frontmatter.get("title", "")
+            title = str(frontmatter_title).strip() or slug
             documents[(module, slug)] = L2Document(
                 module=module,
                 slug=slug,

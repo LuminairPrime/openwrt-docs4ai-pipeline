@@ -1,3 +1,5 @@
+# ruff: noqa: E402
+
 from __future__ import annotations
 
 import argparse
@@ -17,7 +19,7 @@ from tests.support.runner_support import (
     results_success,
     run_stage_specs,
     write_json,
-)
+)  # noqa: E402
 
 
 def main() -> int:

@@ -30,13 +30,13 @@ def _resolve_repo_python() -> Path:
 
 REPO_PYTHON = _resolve_repo_python()
 
-PYTEST_TARGETS = [
-    Path("tests/pytest/pytest_00_pipeline_units_test.py"),
-    Path("tests/pytest/pytest_01_workflow_contract_test.py"),
-    Path("tests/pytest/pytest_02_fixture_pipeline_contract_test.py"),
-    Path("tests/pytest/pytest_03_wiki_corpus_sanity_test.py"),
-    Path("tests/pytest/pytest_04_wiki_scraper_test.py"),
-]
+
+def discover_pytest_targets() -> list[Path]:
+    """Return the maintained focused pytest suites in lexical order."""
+    targets = sorted((TESTS_ROOT / "pytest").glob("pytest_*_test.py"))
+    if not targets:
+        raise RuntimeError("No maintained pytest targets found under tests/pytest")
+    return [target.relative_to(PROJECT_ROOT) for target in targets]
 
 SMOKE_SCRIPTS = {
     "post_extract": Path("tests/smoke/smoke_00_post_extract_pipeline.py"),
@@ -81,11 +81,13 @@ def build_pytest_stage(extra_pytest_args: Sequence[str] | None = None) -> StageS
     if not pytest_args:
         pytest_args = ["-q"]
 
+    pytest_targets = discover_pytest_targets()
+
     command = [
         str(REPO_PYTHON),
         "-m",
         "pytest",
-        *(path.as_posix() for path in PYTEST_TARGETS),
+        *(path.as_posix() for path in pytest_targets),
         *pytest_args,
     ]
     return StageSpec(

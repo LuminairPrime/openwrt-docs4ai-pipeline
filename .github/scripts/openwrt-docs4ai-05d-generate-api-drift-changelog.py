@@ -199,7 +199,7 @@ def main():
     with open(os.path.join(OUTDIR, "signature-inventory.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(inventory_payload, f, indent=2)
 
-    print(f"[05d] OK: changelog.json, CHANGES.md, signature-inventory.json")
+    print("[05d] OK: changelog.json, CHANGES.md, signature-inventory.json")
     return 0
 
 

@@ -10,7 +10,6 @@ Notes: Parses default configuration files to serve as UCI schemas.
 """
 
 import os
-import glob
 import datetime
 import sys
 

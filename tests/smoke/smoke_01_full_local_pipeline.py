@@ -10,6 +10,8 @@ Outputs  : Appends step logs to tmp/logs/smoke-01-full-local-pipeline-log.txt
 Notes    : Default mode is fixture-backed and offline-friendly. The extractor path is optional.
 """
 
+# ruff: noqa: E402
+
 import argparse
 import datetime
 import os
@@ -36,7 +38,7 @@ from tests.support.smoke_pipeline_support import (
     select_pipeline_scripts,
     seed_ai_cache,
     seed_l1_fixtures,
-)
+)  # noqa: E402
 
 LOG_FILE = get_local_log_path("smoke-01-full-local-pipeline-log.txt")
 

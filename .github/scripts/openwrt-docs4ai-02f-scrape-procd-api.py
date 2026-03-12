@@ -53,7 +53,7 @@ if not markdown_content:
 ts = datetime.datetime.now(datetime.UTC).isoformat()
 slug = "procd-api"
 
-final_content = f"# procd init.d API Reference\n\n> **Extracted from:** `procd.sh` block comments\n\n"
+final_content = "# procd init.d API Reference\n\n> **Extracted from:** `procd.sh` block comments\n\n"
 final_content += extractor.wrap_code_block("procd.sh", markdown_content, "bash")
 
 metadata = {

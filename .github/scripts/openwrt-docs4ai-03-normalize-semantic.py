@@ -13,7 +13,6 @@ import os
 import re
 import json
 import yaml
-import glob
 import datetime
 import sys
 import shutil
@@ -712,7 +711,8 @@ def pass_1_normalize_all(ts_now):
 
     for root, _, files in os.walk(L1_DIR):
         for f in files:
-            if not f.endswith(".md"): continue
+            if not f.endswith(".md"):
+                continue
             md_path = os.path.join(root, f)
             meta_path = os.path.splitext(md_path)[0] + ".meta.json"
             
@@ -720,7 +720,8 @@ def pass_1_normalize_all(ts_now):
                 content = file.read()
             
             if not os.path.isfile(meta_path):
-                print(f"[03] FAIL: Missing meta file: {meta_path}"); sys.exit(1)
+                print(f"[03] FAIL: Missing meta file: {meta_path}")
+                sys.exit(1)
             with open(meta_path, "r", encoding="utf-8") as file:
                 meta = json.load(file)
 
@@ -747,7 +748,8 @@ def pass_1_normalize_all(ts_now):
                 "source_file": l1_rel, "last_pipeline_run": ts_now
             }
             for k in ["upstream_path", "language", "description"]:
-                if meta.get(k): y_meta[k] = meta[k]
+                if meta.get(k):
+                    y_meta[k] = meta[k]
 
             full_l2 = "---\n" + yaml.dump(y_meta, sort_keys=False) + "---\n" + content
             out_file = os.path.join(L2_DIR, module, f)
@@ -761,7 +763,8 @@ def pass_1_normalize_all(ts_now):
             for m in re.finditer(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', content, re.MULTILINE):
                 raw_node = m.group(1)
                 symbol = re.split(r'\(', raw_node)[0].strip()
-                if not is_code_symbol(symbol): continue
+                if not is_code_symbol(symbol):
+                    continue
                 
                 # Check for deprecation only inside the current section.
                 is_dep = False
@@ -796,7 +799,8 @@ def pass_2_link_all(l2_files, registry):
     patterns = [(s, m["relative_target"], re.compile(rf'\b{re.escape(s)}\b(?:\(\))?')) for s, m in sorted_syms]
 
     for info in l2_files:
-        with open(info["path"], "r", encoding="utf-8") as f: content = f.read()
+        with open(info["path"], "r", encoding="utf-8") as f:
+            content = f.read()
         
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
         prot = set()
@@ -816,7 +820,8 @@ def pass_2_link_all(l2_files, registry):
             
         spans = []
         for sym, target, pat in patterns:
-            if target.endswith(info["root_rel"]): continue
+            if target.endswith(info["root_rel"]):
+                continue
             for m in pat.finditer(content):
                 if not any(i in prot for i in range(m.start(), m.end())):
                     if not any(s <= m.start() < e for s, e, _ in spans):
@@ -826,7 +831,9 @@ def pass_2_link_all(l2_files, registry):
             spans.sort(key=lambda x: x[0])
             new_c, last = [], 0
             for s, e, rep in spans:
-                new_c.append(content[last:s]); new_c.append(rep); last = e
+                new_c.append(content[last:s])
+                new_c.append(rep)
+                last = e
             new_c.append(content[last:])
             with open(info["path"], "w", encoding="utf-8", newline="\n") as f:
                 f.write("".join(new_c))
@@ -834,12 +841,15 @@ def pass_2_link_all(l2_files, registry):
 def pass_3_deprecation_warnings(l2_files, registry):
     print("[03] Pass 3: Injecting Deprecation Warnings")
     deprecated_symbols = {s: m for s, m in registry["symbols"].items() if m.get("deprecated")}
-    if not deprecated_symbols: return
+    if not deprecated_symbols:
+        return
 
     for info in l2_files:
-        if info["module"] != "wiki": continue # Warnings priority for wiki usage
+        if info["module"] != "wiki":
+            continue  # Warnings priority for wiki usage
         
-        with open(info["path"], "r", encoding="utf-8") as f: content = f.read()
+        with open(info["path"], "r", encoding="utf-8") as f:
+            content = f.read()
         
         warnings = []
         for sym, meta in deprecated_symbols.items():
@@ -851,7 +861,8 @@ def pass_3_deprecation_warnings(l2_files, registry):
         if warnings:
             callout = "\n> [!WARNING]\n"
             callout += "> This page references deprecated symbols from the official API documentation:\n"
-            for w in warnings: callout += f"> {w}\n"
+            for w in warnings:
+                callout += f"> {w}\n"
             callout += "\n"
             
             # Inject after frontmatter
@@ -871,14 +882,17 @@ def promote_to_staging(registry_path):
     os.makedirs(dst_root, exist_ok=True)
     for d in [("L1-raw", L1_DIR), ("L2-semantic", L2_DIR)]:
         dst = os.path.join(dst_root, d[0])
-        if os.path.exists(dst): shutil.rmtree(dst)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
         shutil.copytree(d[1], dst)
     for f in [registry_path, os.path.join(WORKDIR, "repo-manifest.json")]:
-        if os.path.isfile(f): shutil.copy2(f, os.path.join(dst_root, os.path.basename(f)))
+        if os.path.isfile(f):
+            shutil.copy2(f, os.path.join(dst_root, os.path.basename(f)))
 
 if __name__ == "__main__":
     if not os.path.isdir(L1_DIR):
-        print(f"[03] FAIL: L1 input directory not found: {L1_DIR}"); sys.exit(1)
+        print(f"[03] FAIL: L1 input directory not found: {L1_DIR}")
+        sys.exit(1)
     
     TS = datetime.datetime.now(datetime.UTC).isoformat()
     l2_list, reg, r_path = pass_1_normalize_all(TS)

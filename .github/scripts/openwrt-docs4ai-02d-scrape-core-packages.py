@@ -141,10 +141,14 @@ for cat_path in sorted(glob.glob(os.path.join(REPO, "package", "*"))):
         if m.get("DESCRIPTION"):
             content_lines.append(f"{m['DESCRIPTION']}\n")
         rows = []
-        if m.get("PKG_VERSION"):    rows.append(f"| Version | {m['PKG_VERSION']} |")
-        if m.get("PKG_LICENSE"):    rows.append(f"| License | {m['PKG_LICENSE']} |")
-        if m.get("PKG_MAINTAINER"): rows.append(f"| Maintainer | {m['PKG_MAINTAINER']} |")
-        if m.get("PKG_SOURCE_URL"): rows.append(f"| Source URL | {m['PKG_SOURCE_URL'][:120]} |")
+        if m.get("PKG_VERSION"):
+            rows.append(f"| Version | {m['PKG_VERSION']} |")
+        if m.get("PKG_LICENSE"):
+            rows.append(f"| License | {m['PKG_LICENSE']} |")
+        if m.get("PKG_MAINTAINER"):
+            rows.append(f"| Maintainer | {m['PKG_MAINTAINER']} |")
+        if m.get("PKG_SOURCE_URL"):
+            rows.append(f"| Source URL | {m['PKG_SOURCE_URL'][:120]} |")
         if rows:
             content_lines.append("| Field | Value |\n|---|---|\n" + "\n".join(rows) + "\n")
         if e["readme"]:

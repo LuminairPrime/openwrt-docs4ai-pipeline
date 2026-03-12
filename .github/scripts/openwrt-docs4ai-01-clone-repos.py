@@ -23,7 +23,7 @@ import json
 sys.stdout.reconfigure(line_buffering=True)
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from lib import repo_manifest
+from lib import repo_manifest  # noqa: E402
 
 WORKDIR = os.environ.get("WORKDIR", os.path.join(os.getcwd(), "tmp"))
 SKIP_BUILDROOT = os.environ.get("SKIP_BUILDROOT", "false").lower() == "true"

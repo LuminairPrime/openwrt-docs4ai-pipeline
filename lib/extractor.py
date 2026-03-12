@@ -19,7 +19,8 @@ def write_l1_markdown(module, origin_type, slug, content, metadata=None):
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write(content)
         
-    if metadata is None: metadata = {}
+    if metadata is None:
+        metadata = {}
     metadata["content_hash"] = hashlib.sha256(content.encode("utf-8")).hexdigest()[:8]
     
     with open(meta_path, 'w', encoding='utf-8') as f:

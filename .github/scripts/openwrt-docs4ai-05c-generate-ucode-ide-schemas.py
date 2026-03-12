@@ -84,8 +84,10 @@ def generate_ts_sig(f, is_global=False):
                     params.append("".join(current).strip())
                     current = []
                 else:
-                    if char in "[({": bracket_level += 1
-                    if char in "])}": bracket_level -= 1
+                    if char in "[({":
+                        bracket_level += 1
+                    if char in "])}":
+                        bracket_level -= 1
                     current.append(char)
             params.append("".join(current).strip())
             
