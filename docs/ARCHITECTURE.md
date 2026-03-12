@@ -31,7 +31,7 @@ The repository also has a dual-role documentation boundary: maintainer guidance 
 | `L1` | Raw normalized markdown plus sidecar metadata | `tmp/L1-raw/` during build, optionally copied to `openwrt-condensed-docs/L1-raw/` for inspection | Generated |
 | `L2` | Semantic markdown with YAML frontmatter and cross-links | `tmp/L2-semantic/` during build, optionally copied to `openwrt-condensed-docs/L2-semantic/` for inspection | Generated |
 | `L3` | Navigational and operational outputs | `openwrt-condensed-docs/` and module subdirectories | Published |
-| `L4` | Monolithic reference files | `openwrt-condensed-docs/{module}/` | Published |
+| `L4` | Complete-reference index files plus optional sharded parts | `openwrt-condensed-docs/{module}/` | Published |
 | `L5` | Telemetry and drift outputs | `openwrt-condensed-docs/` | Published |
 
 ## Naming Conventions
@@ -65,7 +65,7 @@ The repository also has a dual-role documentation boundary: maintainer guidance 
 3. `02b` through `02h` extract source-specific content into L1 and remain gated on `01` because they consume cloned repositories.
 4. `03` normalizes L1 into L2 and promotes stable intermediates into the output tree.
 5. `04` optionally enriches staged L2 files with AI summary metadata and performs its own AI-store preflight.
-6. `05a` assembles the publishable skeletons and monolithic references.
+6. `05a` assembles the publishable skeletons and complete-reference outputs, sharding oversized modules into smaller part files while preserving the stable index filename.
 7. `05b`, `05c`, and `05d` generate companion publication artifacts from the stabilized post-`03` snapshot.
 8. `06` generates routing indexes after `05a` has produced the publishable reference assets.
 9. `07` generates the HTML landing page after `06` has produced the routing indexes.

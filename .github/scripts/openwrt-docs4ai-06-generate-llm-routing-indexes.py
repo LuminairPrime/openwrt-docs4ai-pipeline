@@ -265,12 +265,32 @@ def main():
 
         monolith_name = f"{module}-complete-reference.md"
         monolith_path = os.path.join(out_mod_dir, monolith_name)
+        monolith_part_paths = sorted(
+            glob.glob(
+                os.path.join(out_mod_dir, f"{module}-complete-reference.part-*.md")
+            )
+        )
         if os.path.isfile(monolith_path):
+            monolith_description = (
+                f"Sharded complete reference index for {module} with links to smaller part files."
+                if monolith_part_paths
+                else f"Complete monolithic reference for {module} when a larger context window is available."
+            )
             recommended_entries.append(
                 build_generated_entry(
                     f"{module}/{monolith_name}",
-                    f"Complete monolithic reference for {module} when a larger context window is available.",
+                    monolith_description,
                     "l4-monolith",
+                )
+            )
+
+        for index, part_path in enumerate(monolith_part_paths, start=1):
+            part_name = os.path.basename(part_path)
+            recommended_entries.append(
+                build_generated_entry(
+                    f"{module}/{part_name}",
+                    f"Part {index} of the sharded complete reference for {module} when the full module exceeds the token budget.",
+                    "l4-monolith-part",
                 )
             )
 

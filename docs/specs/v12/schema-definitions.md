@@ -145,6 +145,7 @@ Required characteristics:
   - each module `llms.txt`
   - each `*-skeleton.md`
   - each `*-complete-reference.md`
+  - each `*-complete-reference.part-*.md` when sharding is present
   - each published `.d.ts`
   - every `L2-semantic/{module}/*.md`
 - bullet format:
@@ -153,7 +154,7 @@ Required characteristics:
 - [<relative-path>](./<relative-path>): <short description> (~<tokens> tokens, <kind>)
 ```
 
-Typical `kind` values include `l2-source`, `l3-agent-guide`, `l3-generated-readme`, `l3-module-index`, `l3-skeleton`, `l3-ide-schema`, and `l4-monolith`.
+Typical `kind` values include `l2-source`, `l3-agent-guide`, `l3-generated-readme`, `l3-module-index`, `l3-skeleton`, `l3-ide-schema`, `l4-monolith`, and `l4-monolith-part`.
 
 #### Module `llms.txt`
 
@@ -170,7 +171,7 @@ Required characteristics:
 
 Preferred section semantics:
 
-- `Recommended Entry Points` lists the module skeleton and monolithic reference when present
+- `Recommended Entry Points` lists the module skeleton, the stable complete-reference index, and any sharded part files when present
 - `Tooling Surfaces` lists generated `.d.ts` or other IDE-oriented helper files when present
 - `Source Documents` lists each L2 document for the module
 
@@ -179,6 +180,7 @@ Bullet formats:
 ```text
 - [<module>-skeleton.md](./<module>-skeleton.md): <short description> (~<tokens> tokens, l3-skeleton)
 - [<module>-complete-reference.md](./<module>-complete-reference.md): <short description> (~<tokens> tokens, l4-monolith)
+- [<module>-complete-reference.part-01.md](./<module>-complete-reference.part-01.md): <short description> (~<tokens> tokens, l4-monolith-part)
 - [<module>.d.ts](./<module>.d.ts): <short description> (~<tokens> tokens, l3-ide-schema)
 - [<filename>.md](../L2-semantic/<module>/<filename>.md): <short description> (~<tokens> tokens, l2-source)
 ```
@@ -191,15 +193,15 @@ Required guidance points:
 
 - begin at root `llms.txt`
 - prefer module `llms.txt` once the target subsystem is known
-- prefer `*-skeleton.md` before monolithic references when context is tight
-- treat generated module indexes, skeletons, monoliths, and `.d.ts` files as published navigation surfaces
+- prefer `*-skeleton.md` before complete-reference indexes or part files when context is tight
+- treat generated module indexes, skeletons, complete-reference indexes, part files, and `.d.ts` files as published navigation surfaces
 - avoid implying that a separate source-repo root `llms.txt` already exists
 
 ### L4
 
 - Location: `openwrt-condensed-docs/{module}/`
-- Format: monolithic markdown files
-- Rule: one top-level YAML block per monolith, not repeated L2 frontmatter sections
+- Format: one stable complete-reference index per module plus optional sharded part files for oversized modules
+- Rule: one top-level YAML block per generated L4 file, not repeated L2 frontmatter sections
 
 ### L5
 

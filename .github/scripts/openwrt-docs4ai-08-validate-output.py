@@ -48,6 +48,12 @@ WIKI_RESIDUAL_HTML_PATTERNS = {
     "footnote aside": re.compile(r"<aside\b[^>]*\bfootnotes\b", re.IGNORECASE),
 }
 PLACEHOLDER_DESCRIPTIONS = {"description unavailable.", "no description"}
+KNOWN_UCODE_FALSE_POSITIVES = {
+    (
+        "L2-semantic/luci-examples/example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md",
+        "return must be inside function body",
+    ),
+}
 
 
 def extract_ucode_imports(code):
@@ -120,6 +126,16 @@ def warn_on_placeholder_descriptions(entries, source_label, soft_warn):
                 break
 
 
+def is_known_ucode_false_positive(rel_path, stderr_text):
+    """Return True for one exact upstream ucode AST false positive we accept."""
+    normalized_path = rel_path.replace("\\", "/")
+    normalized_stderr = (stderr_text or "").strip()
+    for expected_path, expected_fragment in KNOWN_UCODE_FALSE_POSITIVES:
+        if normalized_path == expected_path and expected_fragment in normalized_stderr:
+            return True
+    return False
+
+
 def validate_root_llms_contract(outdir, modules, hard_fail, soft_warn):
     path = os.path.join(outdir, "llms.txt")
     if not os.path.isfile(path):
@@ -187,6 +203,10 @@ def validate_module_llms_contract(outdir, modules, hard_fail, soft_warn):
             candidate = os.path.join(module_dir, suffix)
             if os.path.isfile(candidate):
                 recommended_expected.append(f"./{suffix}")
+        for match in glob.glob(
+            os.path.join(module_dir, f"{module}-complete-reference.part-*.md")
+        ):
+            recommended_expected.append(f"./{os.path.basename(match)}")
 
         if recommended_expected and "## Recommended Entry Points" not in content:
             hard_fail(f"Module llms.txt missing Recommended Entry Points section: {module}/llms.txt")
@@ -248,6 +268,11 @@ def validate_llms_full_contract(outdir, modules, hard_fail, soft_warn):
                 candidate = os.path.join(module_dir, pattern)
                 if os.path.isfile(candidate):
                     expected_links.add(f"./{module}/{pattern}")
+
+        for match in glob.glob(
+            os.path.join(module_dir, f"{module}-complete-reference.part-*.md")
+        ):
+            expected_links.add(f"./{module}/{os.path.basename(match)}")
 
         for l2_path in glob.glob(os.path.join(outdir, "L2-semantic", module, "*.md")):
             expected_links.add(f"./L2-semantic/{module}/{os.path.basename(l2_path)}")
@@ -435,6 +460,8 @@ def validate_outdir(outdir):
 
             os.unlink(tmp_path)
             if result.returncode != 0:
+                if is_known_ucode_false_positive(rel_path, result.stderr):
+                    return
                 soft_warn(f"uCode Syntax Error in {rel_path}: {result.stderr.strip()}")
 
     if js_binary or ucode_binary:

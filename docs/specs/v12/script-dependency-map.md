@@ -244,7 +244,7 @@ scratch-first review, validation, audit, and promotion live in
 | Phase | Assembly |
 | Layer | L2 → L3/L4 |
 | Reads | `OUTDIR/L2-semantic/**/*.md` (includes AI fields if 04 ran) |
-| Writes | `OUTDIR/{module}/{module}-complete-reference.md`, `{module}-skeleton.md` |
+| Writes | `OUTDIR/{module}/{module}-complete-reference.md`, optional `{module}-complete-reference.part-*.md`, and `{module}-skeleton.md` |
 | Depends on | 03 (04 recommended but optional) |
 | Depended on by | 06, 08 |
 | AI data | **Reads** `ai_summary`, `ai_when_to_use` from L2 frontmatter |
@@ -307,7 +307,7 @@ scratch-first review, validation, audit, and promotion live in
 |-----------|-------|
 | Phase | Aggregation / Indexing |
 | Layer | L4 → L3 |
-| Reads | `OUTDIR/` (L4 references from 05a) |
+| Reads | `OUTDIR/` (L4 complete-reference indexes and optional sharded parts from 05a) |
 | Writes | `OUTDIR/llms.txt`, `OUTDIR/llms-full.txt`, `OUTDIR/{module}/llms.txt` |
 | Depends on | 05a (04 recommended for richer entries) |
 | Depended on by | 07, 08 |

@@ -40,8 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -55,7 +55,7 @@ jobs:
           GITHUB_ENV: ${{ github.env }}
         run: python .github/scripts/openwrt-docs4ai-01-clone-repos.py
       - name: Upload L0 Repos & Manifest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: L0-repos
           path: |
@@ -68,8 +68,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -80,7 +80,7 @@ jobs:
       - name: Mark extractor start
         run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
       - name: Cache Wiki Metadata
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ env.WORKDIR }}/.cache
@@ -178,7 +178,7 @@ jobs:
           echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
       - name: Upload L1 Artifacts (02a)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: L1-02a-scrape-wiki.py
           path: ${{ env.WORKDIR }}/L1-raw/
@@ -186,7 +186,7 @@ jobs:
           if-no-files-found: ignore
       - name: Upload extractor status (02a)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: extract-status-02a-scrape-wiki.py
           path: ${{ env.WORKDIR }}/extract-status/02a-scrape-wiki.py.json
@@ -228,8 +228,8 @@ jobs:
             module: "openwrt-hotplug"
             skip_with_buildroot: "true"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -241,7 +241,7 @@ jobs:
       - name: Mark extractor start
         run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
       - name: Download L0
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: L0-repos
           path: ${{ env.WORKDIR }}
@@ -337,7 +337,7 @@ jobs:
           echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
       - name: Upload L1 Artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: L1-${{ matrix.script }}
           path: ${{ env.WORKDIR }}/L1-raw/
@@ -345,7 +345,7 @@ jobs:
           if-no-files-found: ignore
       - name: Upload extractor status (${{ matrix.script }})
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: extract-status-${{ matrix.script }}
           path: ${{ env.WORKDIR }}/extract-status/${{ matrix.script }}.json
@@ -363,7 +363,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Prepare extract summary workspace
@@ -372,7 +372,7 @@ jobs:
           mkdir -p "$WORKDIR/extract-summary"
       - name: Download extractor status manifests
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: extract-status-*
           path: ${{ env.WORKDIR }}/extract-status/
@@ -460,7 +460,7 @@ jobs:
           md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
       - name: Upload extract summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: extract-summary
           path: ${{ env.WORKDIR }}/extract-summary/
@@ -474,10 +474,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -487,24 +487,24 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq build-essential cmake libjson-c-dev pkg-config
       - name: Download L0 (for manifest/registry)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: L0-repos
           path: ${{ env.WORKDIR }}
       - name: Download all L1 results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: L1-*
           path: ${{ env.WORKDIR }}/L1-raw/
           merge-multiple: true
       - name: Download extract summary
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: extract-summary
           path: ${{ env.WORKDIR }}/extract-summary/
       - name: Cache AI Summaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ai-summaries-cache.json
           key: ai-cache-${{ runner.os }}-${{ github.run_id }}
@@ -752,7 +752,7 @@ jobs:
           PY
       - name: Upload process summary
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: process-summary
           path: ${{ env.WORKDIR }}/run-summary/
@@ -770,7 +770,7 @@ jobs:
           echo "Staging contract failed. See process-summary artifact for details."
           exit 1
       - name: Upload Final Staging
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: final-staging
           path: ${{ env.OUTDIR }}
@@ -786,11 +786,11 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Download Staging
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: final-staging
           path: ${{ env.OUTDIR }}
@@ -827,7 +827,7 @@ jobs:
         with:
           enablement: true
       - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: public
       - name: Deploy to GitHub Pages
@@ -841,7 +841,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Prepare summary directories
@@ -850,13 +850,13 @@ jobs:
           mkdir -p "$WORKDIR/extract-summary"
       - name: Download extract summary artifact
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: extract-summary
           path: ${{ env.WORKDIR }}/extract-summary/
       - name: Download process summary artifact
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: process-summary
           path: ${{ env.WORKDIR }}/run-summary/
@@ -961,7 +961,7 @@ jobs:
           (run_summary_dir / "pipeline-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
       - name: Upload pipeline summary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pipeline-summary
           path: |
