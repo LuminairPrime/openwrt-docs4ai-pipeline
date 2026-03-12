@@ -1,14 +1,12 @@
 # openwrt-docs4ai Generated Pipeline Output
 
-**Pipeline Run Date:** 2026-03-11T14:47:03.727299+00:00
+**Pipeline Run Date:** 2026-03-12T08:36:19.175514+00:00
 **Baseline Version:** Auto-generated via CI/CD
 
 This repository branch contains the automatically generated, stable L3, L4, and L5 documentation layers for OpenWrt. 
 
-To ingest this repository into an AI context window (e.g. Claude, GPT-4, Cursor), begin your prompt by referencing:
+To ingest this generated corpus into an AI context window, begin at [llms.txt](./llms.txt).
 
-```
-https://openwrt.github.io/openwrt-docs4ai/llms.txt
-```
+If you already know the target subsystem, continue from that module's `llms.txt`. Use [llms-full.txt](./llms-full.txt) only when you need the exhaustive flat catalog.
 
-For AI Agents iterating on workflows, please read [AGENTS.md](./AGENTS.md) for structural mapping and rules.
+For AI agents navigating the published output tree, read [AGENTS.md](./AGENTS.md) for routing rules, context budgeting guidance, and source-boundary notes.

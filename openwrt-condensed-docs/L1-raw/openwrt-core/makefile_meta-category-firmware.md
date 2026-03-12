@@ -94,7 +94,7 @@ This package contains the microcode needed to use the network engines in IXP4xx 
 
 | Field | Value |
 |---|---|
-| Version | 20260221 |
+| Version | 20260309 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 

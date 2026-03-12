@@ -3,9 +3,9 @@ title: 'OpenWrt Buildroot: kernel packages'
 module: openwrt-core
 origin_type: makefile_meta
 token_count: 2744
-version: 4f107d7
+version: 1f30a32
 source_file: L1-raw/openwrt-core/makefile_meta-category-kernel.md
-last_pipeline_run: '2026-03-11T14:46:50.602050+00:00'
+last_pipeline_run: '2026-03-12T08:36:03.790881+00:00'
 upstream_path: package/kernel
 language: makefile
 ---

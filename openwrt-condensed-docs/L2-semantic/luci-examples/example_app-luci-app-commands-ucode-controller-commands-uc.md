@@ -3,9 +3,9 @@ title: commands.uc
 module: luci-examples
 origin_type: example_app
 token_count: 1625
-version: 8e3bc67
+version: e08008c
 source_file: L1-raw/luci-examples/example_app-luci-app-commands-ucode-controller-commands-uc.md
-last_pipeline_run: '2026-03-11T14:46:50.602050+00:00'
+last_pipeline_run: '2026-03-12T08:36:03.790881+00:00'
 upstream_path: applications/luci-app-commands/ucode/controller/commands.uc
 language: ucode
 ---

@@ -3,7 +3,7 @@ module: "openwrt-core"
 total_token_count: 23140
 section_count: 7
 is_monolithic: true
-generated: "2026-03-11T14:47:03.532830+00:00"
+generated: "2026-03-12T08:36:18.949895+00:00"
 ---
 
 # openwrt-core Complete Reference
@@ -637,7 +637,7 @@ This package contains the microcode needed to use the network engines in IXP4xx 
 
 | Field | Value |
 |---|---|
-| Version | 20260221 |
+| Version | 20260309 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
