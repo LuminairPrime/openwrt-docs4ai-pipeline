@@ -5,7 +5,7 @@ origin_type: example_app
 token_count: 318
 version: 3da0ac5
 source_file: L1-raw/luci-examples/example_app-luci-app-example-htdocs-luci-static-resources-view-example-htmlview-js.md
-last_pipeline_run: '2026-03-12T13:29:57.345766+00:00'
+last_pipeline_run: '2026-03-12T14:09:22.059148+00:00'
 upstream_path: applications/luci-app-example/htdocs/luci-static/resources/view/example/htmlview.js
 language: javascript
 ai_summary: The `htmlview.js` module is a JavaScript component for the LuCI framework in OpenWrt, designed to create a dynamic HTML view based on UCI configuration data. It includes functions for loading UCI configurations, rendering HTML elements, and displaying specific configuration options. The `load` function retrieves the 'example' configuration, while the `render` function constructs an HTML structure that presents the configuration data. This module is particularly useful for developers looking to create custom web interfaces for managing OpenWrt settings.

@@ -5,7 +5,7 @@ origin_type: js_source
 token_count: 69
 version: 3da0ac5
 source_file: L1-raw/luci/js_source-api-ui.md
-last_pipeline_run: '2026-03-12T13:29:57.345766+00:00'
+last_pipeline_run: '2026-03-12T14:09:22.059148+00:00'
 upstream_path: modules/luci-base/htdocs/luci-static/resources/ui.js
 language: javascript
 ai_summary: Provides the LuCI client-side UI widget and notification layer. Implements ui.addNotification(), ui.showModal(), ui.hideModal(), ui.addTab(), ui.showTabs(); defines typed input widgets (Textfield, Combobox, Dropdown, DynamicList, FileUpload, Select, Checkbox) and live-state helpers (NetworkMenu, PacketMonitor); also manages the XHR indicator lifecycle.
