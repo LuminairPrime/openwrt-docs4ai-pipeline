@@ -12,10 +12,14 @@ Notes: Preserves the existing OUTDIR contract while producing the V5a layout
 
 from __future__ import annotations
 
+import datetime
 import glob
+import html
 import os
 import shutil
 import sys
+from pathlib import Path
+from urllib.parse import quote
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from lib import config
@@ -34,6 +38,14 @@ ROOT_RELEASE_FILES = [
     "README.md",
     "AGENTS.md",
     "index.html",
+]
+RELEASE_TREE_ROOT_SECTION = "__root__"
+RELEASE_TREE_ROOT_FILES = [
+    "index.html",
+    "README.md",
+    "llms.txt",
+    "llms-full.txt",
+    "AGENTS.md",
 ]
 
 
@@ -70,6 +82,19 @@ def read_text(path: str) -> str:
 def module_legacy_paths(module: str) -> list[tuple[str, str]]:
     """Return module-local path rewrites for copied text content."""
     return [
+        (f"{module}-skeleton.md", config.MODULE_MAP_FILENAME),
+        (
+            f"{module}-complete-reference.md",
+            config.MODULE_BUNDLED_REF_FILENAME,
+        ),
+        (
+            f"{module}-complete-reference.part-",
+            PART_PREFIX,
+        ),
+        (
+            f"{module}.d.ts",
+            f"{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
+        ),
         (f"./{module}-skeleton.md", f"./{config.MODULE_MAP_FILENAME}"),
         (
             f"./{module}-complete-reference.md",
@@ -189,6 +214,308 @@ def rewrite_chunked_reference_text(content: str, module: str, modules: list[str]
 def rewrite_root_text(content: str, modules: list[str]) -> str:
     """Rewrite one root-level text file to the V5a layout."""
     return apply_replacements(content, root_legacy_paths(modules))
+
+
+def release_root_file_sort_key(name: str) -> tuple[int, str]:
+    """Keep release-tree root files in a human-first order."""
+    try:
+        return RELEASE_TREE_ROOT_FILES.index(name), name
+    except ValueError:
+        return len(RELEASE_TREE_ROOT_FILES), name
+
+
+def release_section_file_sort_key(rel_path: str) -> tuple[int, str]:
+    """Sort release-tree module files by router, map, bundled docs, and details."""
+    parts = rel_path.split("/")
+    filename = parts[-1]
+
+    if filename == "llms.txt":
+        return 0, filename
+    if filename == config.MODULE_MAP_FILENAME:
+        return 1, filename
+    if filename == config.MODULE_BUNDLED_REF_FILENAME:
+        return 2, filename
+    if filename.startswith(PART_PREFIX):
+        return 3, filename
+    if len(parts) > 1 and parts[1] == config.MODULE_TYPES_DIRNAME and filename.endswith(".d.ts"):
+        return 4, rel_path
+    if len(parts) > 1 and parts[1] == config.MODULE_CHUNKED_REF_DIRNAME:
+        return 5, rel_path
+    return 6, rel_path
+
+
+def iter_release_section_files(root: Path, section: str) -> list[str]:
+    """Return publishable file paths for one release-tree top-level section."""
+    if section == RELEASE_TREE_ROOT_SECTION:
+        root_files = {path.name for path in root.iterdir() if path.is_file()}
+        root_files.add("index.html")
+        return sorted(root_files, key=release_root_file_sort_key)
+
+    section_dir = root / section
+    if not section_dir.is_dir():
+        return []
+
+    return sorted(
+        (
+            path.relative_to(root).as_posix()
+            for path in section_dir.rglob("*")
+            if path.is_file()
+        ),
+        key=release_section_file_sort_key,
+    )
+
+
+def collect_release_sections(root: Path, modules: list[str]) -> list[tuple[str, list[str]]]:
+    """Collect release-tree sections using module order from the staged output."""
+    sections: list[tuple[str, list[str]]] = []
+
+    root_files = iter_release_section_files(root, RELEASE_TREE_ROOT_SECTION)
+    if root_files:
+        sections.append((RELEASE_TREE_ROOT_SECTION, root_files))
+
+    known_modules = set(modules)
+    for module in modules:
+        files = iter_release_section_files(root, module)
+        if files:
+            sections.append((module, files))
+
+    extra_sections = sorted(
+        path.name
+        for path in root.iterdir()
+        if path.is_dir() and path.name not in known_modules
+    )
+    for section in extra_sections:
+        files = iter_release_section_files(root, section)
+        if files:
+            sections.append((section, files))
+
+    return sections
+
+
+def describe_release_section(section: str, file_count: int) -> str:
+    """Return a human-readable description for one release-tree section."""
+    if section == RELEASE_TREE_ROOT_SECTION:
+        base = (
+            "Top-level routing files, catalogs, and landing pages for the "
+            "published release tree."
+        )
+    else:
+        base = (
+            f"Release-ready routing files, bundled references, "
+            f"chunked-reference pages, and generated type surfaces for {section}."
+        )
+
+    noun = "file" if file_count == 1 else "files"
+    return f"{base} This section currently lists {file_count} published {noun}."
+
+
+def release_section_heading(section: str) -> str:
+    """Return the visible heading label for one release-tree section."""
+    return "Root Files" if section == RELEASE_TREE_ROOT_SECTION else section
+
+
+def release_section_slug(section: str) -> str:
+    """Return an anchor-safe slug for one release-tree section."""
+    return "root-files" if section == RELEASE_TREE_ROOT_SECTION else section
+
+
+def render_release_section_nav(sections: list[tuple[str, list[str]]]) -> str:
+    """Render a simple jump list for the release-tree landing page."""
+    items = []
+    for section, files in sections:
+        items.append(
+            "<li><a href=\"#{slug}\">{label}</a> <span>({count})</span></li>".format(
+                slug=html.escape(release_section_slug(section)),
+                label=html.escape(release_section_heading(section)),
+                count=len(files),
+            )
+        )
+    return "".join(items)
+
+
+def render_release_section(section: str, files: list[str]) -> str:
+    """Render one top-level release-tree section as HTML."""
+    items = []
+    for rel_path in files:
+        items.append(
+            "<li><a href=\"{href}\">{label}</a></li>".format(
+                href=quote(rel_path),
+                label=html.escape(f"./{rel_path}"),
+            )
+        )
+
+    return "".join(
+        [
+            f"<section id=\"{html.escape(release_section_slug(section))}\">",
+            f"<h2>{html.escape(release_section_heading(section))}</h2>",
+            f"<p>{html.escape(describe_release_section(section, len(files)))}</p>",
+            "<ul class=\"path-list\">",
+            "".join(items),
+            "</ul>",
+            "</section>",
+        ]
+    )
+
+
+def build_release_tree_index_html(root: Path, modules: list[str]) -> str:
+    """Build a filesystem-derived index.html for the assembled release-tree."""
+    generated_at = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC")
+    sections = collect_release_sections(root, modules)
+    publish_file_count = sum(len(files) for _section, files in sections)
+    rendered_sections = "".join(
+        render_release_section(section, files) for section, files in sections
+    )
+    section_nav = render_release_section_nav(sections)
+
+    return f"""<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+  <title>openwrt-docs4ai release tree</title>
+  <style>
+    :root {{
+      color-scheme: light;
+      --bg: #fbfbf7;
+      --ink: #1f2328;
+      --muted: #5a6472;
+      --line: #d7d9d0;
+      --panel: #f1f0e8;
+      --link: #0f5c47;
+    }}
+
+    * {{ box-sizing: border-box; }}
+
+    body {{
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, \"Times New Roman\", serif;
+      line-height: 1.6;
+    }}
+
+    main {{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }}
+
+    h1 {{
+      margin: 0 0 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--line);
+      font-size: clamp(2rem, 4vw, 3rem);
+    }}
+
+    h2 {{
+      margin: 2rem 0 0.5rem;
+      font-size: 1.5rem;
+    }}
+
+    p {{
+      margin: 0 0 1rem;
+      color: var(--muted);
+      max-width: 72ch;
+    }}
+
+    section {{
+      margin-top: 2rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--line);
+    }}
+
+    .path-list {{
+      margin: 0;
+      padding-left: 1.25rem;
+    }}
+
+    .path-list li {{
+      margin: 0.25rem 0;
+    }}
+
+        .section-nav {{
+            margin: 1.25rem 0 0;
+            padding: 1rem 1.25rem;
+            background: var(--panel);
+            border: 1px solid var(--line);
+        }}
+
+        .section-nav h2 {{
+            margin-top: 0;
+            font-size: 1.1rem;
+        }}
+
+        .section-nav ul {{
+            margin: 0;
+            padding-left: 1.25rem;
+            columns: 2 18rem;
+            column-gap: 2rem;
+        }}
+
+        .section-nav li {{
+            margin: 0.2rem 0;
+        }}
+
+        .section-nav span {{
+            color: var(--muted);
+            font-size: 0.95rem;
+        }}
+
+    .path-list a {{
+      color: var(--link);
+      font-family: \"Cascadia Code\", Consolas, \"Courier New\", monospace;
+      text-decoration-thickness: 1px;
+      overflow-wrap: anywhere;
+    }}
+
+    .meta {{
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>openwrt-docs4ai release tree</h1>
+    <p>
+      This page is a filesystem-derived browse index for the published
+      openwrt-docs4ai release tree. The link text mirrors the packaged
+      layout inside this directory and each section maps to one
+      top-level area of the public release surface.
+    </p>
+        <p>
+            The current publish snapshot contains {publish_file_count} files across
+            {len(sections)} top-level sections, including module routers,
+            maps, bundled references, chunked-reference pages, and generated
+            type surfaces where available.
+        </p>
+        <nav class=\"section-nav\" aria-label=\"Section navigation\">
+            <h2>Jump to section</h2>
+            <ul>
+                {section_nav}
+            </ul>
+        </nav>
+    {rendered_sections}
+    <div class=\"meta\">
+      Generated: {generated_at}<br>
+      Pipeline version: v12
+    </div>
+  </main>
+</body>
+</html>
+"""
+
+
+def write_release_tree_index(modules: list[str]) -> None:
+    """Generate a release-tree-native landing page from assembled output."""
+    release_root = Path(RELEASE_TREE_DIR)
+    write_text(
+        str(release_root / "index.html"),
+        build_release_tree_index_html(release_root, modules),
+    )
 
 
 def is_module_dir(path: str, name: str) -> bool:
@@ -326,6 +653,8 @@ def copy_module_release_tree(module: str, modules: list[str]) -> None:
 def copy_root_release_files(modules: list[str]) -> None:
     """Copy rewritten root routing and landing files into release-tree/."""
     for name in ROOT_RELEASE_FILES:
+        if name == "index.html":
+            continue
         src_path = os.path.join(OUTDIR, name)
         dst_path = os.path.join(RELEASE_TREE_DIR, name)
         if not os.path.isfile(src_path):
@@ -389,6 +718,7 @@ def main() -> int:
         copy_module_release_tree(module, modules)
 
     copy_root_release_files(modules)
+    write_release_tree_index(modules)
     copy_support_tree()
     log("OK", f"assembled {len(modules)} modules into release-tree")
     return 0

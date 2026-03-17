@@ -18,6 +18,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from urllib.parse import unquote
 
 import yaml
 
@@ -33,6 +34,10 @@ RELATIVE_MD_LINK_RE = re.compile(
 LLMS_ENTRY_RE = re.compile(
     r"^- \[(?P<label>[^\]\n]+)\]\((?P<link>[^)\n]+)\): (?P<tail>.+)$",
     re.MULTILINE,
+)
+HTML_HREF_RE = re.compile(
+    r'<a\b[^>]*\bhref=["\']([^"\']+)["\']',
+    re.IGNORECASE,
 )
 UCODE_IMPORT_RE = re.compile(
     r"^\s*import(?:\s+(?:\*\s+as\s+[A-Za-z_][\w$]*|\{[^}]+\}|[A-Za-z_][\w$]*)(?:\s*,\s*(?:\{[^}]+\}|\*\s+as\s+[A-Za-z_][\w$]*))?\s+from)?\s+['\"]([^'\"]+)['\"]\s*;",
@@ -105,6 +110,79 @@ def parse_llms_entries(content):
     return [match.groupdict() for match in LLMS_ENTRY_RE.finditer(content)]
 
 
+def summarize_paths(paths, limit=5):
+    """Return a short comma-separated preview for failure messages."""
+    preview = list(paths[:limit])
+    if len(paths) > limit:
+        preview.append(f"... (+{len(paths) - limit} more)")
+    return ", ".join(preview)
+
+
+def is_release_tree_enabled():
+    return os.environ.get("ENABLE_RELEASE_TREE", str(config.ENABLE_RELEASE_TREE)).lower() == "true"
+
+
+def expected_publish_links(outdir):
+    """Return the set of files that the HTML mirror index must expose."""
+    links = set()
+    excluded_dirs = set()
+    if is_release_tree_enabled():
+        excluded_dirs.update(
+            {
+                os.path.basename(config.RELEASE_TREE_DIR),
+                os.path.basename(config.SUPPORT_TREE_DIR),
+            }
+        )
+
+    for root, _dirs, files in os.walk(outdir):
+        if excluded_dirs:
+            _dirs[:] = [name for name in _dirs if name not in excluded_dirs]
+        for name in files:
+            rel = os.path.relpath(os.path.join(root, name), outdir).replace("\\", "/")
+            links.add(rel)
+    return links
+
+
+def normalize_html_href(href):
+    """Normalize a local HTML href into an OUTDIR-relative path."""
+    target = href.split("#", 1)[0].strip()
+    if not target or target.startswith(("http://", "https://", "mailto:", "/")):
+        return None
+    return os.path.normpath(unquote(target)).replace("\\", "/").lstrip("./")
+
+
+def validate_index_html_contract(outdir, hard_fail):
+    """Ensure index.html mirrors the published filesystem tree."""
+    path = os.path.join(outdir, "index.html")
+    if not os.path.isfile(path):
+        return
+
+    content = open(path, "r", encoding="utf-8").read()
+    if "./openwrt-condensed-docs/" not in content:
+        hard_fail("index.html missing the mirrored display-path prefix")
+
+    actual_links = {
+        normalized
+        for href in HTML_HREF_RE.findall(content)
+        if (normalized := normalize_html_href(href)) is not None
+    }
+    expected_links = expected_publish_links(outdir)
+
+    missing_links = sorted(expected_links - actual_links)
+    if missing_links:
+        hard_fail(
+            "index.html missing mirrored publish links: "
+            f"{summarize_paths(missing_links)}"
+        )
+
+    unexpected_links = sorted(actual_links - expected_links)
+    if unexpected_links:
+        hard_fail(
+            "index.html contains hrefs outside the publish tree: "
+            f"{summarize_paths(unexpected_links)}"
+        )
+
+
 def expected_module_names(outdir):
     l2_root = os.path.join(outdir, "L2-semantic")
     if not os.path.isdir(l2_root):
@@ -115,6 +193,107 @@ def expected_module_names(outdir):
         if os.path.isdir(os.path.join(l2_root, name))
         and glob.glob(os.path.join(l2_root, name, "*.md"))
     )
+
+
+def expected_release_module_names(release_tree_dir):
+    if not os.path.isdir(release_tree_dir):
+        return []
+    return sorted(
+        name
+        for name in os.listdir(release_tree_dir)
+        if os.path.isdir(os.path.join(release_tree_dir, name))
+        and os.path.isfile(os.path.join(release_tree_dir, name, "llms.txt"))
+    )
+
+
+def validate_release_tree_contract(outdir, hard_fail, soft_warn):
+    release_tree_name = os.path.basename(config.RELEASE_TREE_DIR)
+    release_tree_dir = os.path.join(outdir, release_tree_name)
+    if not os.path.isdir(release_tree_dir):
+        soft_warn(f"Release tree not present; skipping release-tree validation: {release_tree_name}")
+        return
+
+    required_root_files = ["README.md", "AGENTS.md", "llms.txt", "llms-full.txt", "index.html"]
+    for file_name in required_root_files:
+        path = os.path.join(release_tree_dir, file_name)
+        if not os.path.isfile(path):
+            hard_fail(f"release-tree missing root file: {release_tree_name}/{file_name}")
+
+    root_llms_path = os.path.join(release_tree_dir, "llms.txt")
+    if os.path.isfile(root_llms_path) and os.path.getsize(root_llms_path) <= 512:
+        hard_fail("release-tree root llms.txt is unexpectedly small")
+
+    modules = expected_release_module_names(release_tree_dir)
+    if len(modules) < 4:
+        hard_fail(f"release-tree expected at least 4 module directories, found {len(modules)}")
+
+    legacy_dir_hits = []
+    legacy_file_hits = []
+    for root, dirs, files in os.walk(release_tree_dir):
+        for dir_name in dirs:
+            if dir_name in {"L1-raw", "L2-semantic", "openwrt-condensed-docs"}:
+                rel = os.path.relpath(os.path.join(root, dir_name), release_tree_dir)
+                legacy_dir_hits.append(rel.replace("\\", "/"))
+        for file_name in files:
+            if file_name.endswith("-skeleton.md") or file_name.endswith("-complete-reference.md"):
+                rel = os.path.relpath(os.path.join(root, file_name), release_tree_dir)
+                legacy_file_hits.append(rel.replace("\\", "/"))
+
+    if legacy_dir_hits:
+        hard_fail(
+            "release-tree contains legacy path names: "
+            f"{summarize_paths(sorted(legacy_dir_hits))}"
+        )
+    if legacy_file_hits:
+        hard_fail(
+            "release-tree contains legacy file names: "
+            f"{summarize_paths(sorted(legacy_file_hits))}"
+        )
+
+    for file_name in required_root_files:
+        path = os.path.join(release_tree_dir, file_name)
+        if not os.path.isfile(path):
+            continue
+        with open(path, "r", encoding="utf-8") as handle:
+            content = handle.read()
+        if "openwrt-condensed-docs" in content:
+            hard_fail(f"release-tree root file leaks legacy name: {release_tree_name}/{file_name}")
+
+    for module in modules:
+        module_dir = os.path.join(release_tree_dir, module)
+        required_module_paths = [
+            ("llms.txt", os.path.isfile),
+            (config.MODULE_MAP_FILENAME, os.path.isfile),
+            (config.MODULE_BUNDLED_REF_FILENAME, os.path.isfile),
+            (config.MODULE_CHUNKED_REF_DIRNAME, os.path.isdir),
+        ]
+        for name, predicate in required_module_paths:
+            path = os.path.join(module_dir, name)
+            if not predicate(path):
+                hard_fail(f"release-tree missing module path: {module}/{name}")
+
+        chunked_dir = os.path.join(module_dir, config.MODULE_CHUNKED_REF_DIRNAME)
+        if os.path.isdir(chunked_dir) and not glob.glob(os.path.join(chunked_dir, "*.md")):
+            hard_fail(
+                "release-tree chunked-reference is empty: "
+                f"{module}/{config.MODULE_CHUNKED_REF_DIRNAME}"
+            )
+
+        module_llms_path = os.path.join(module_dir, "llms.txt")
+        if os.path.isfile(module_llms_path):
+            with open(module_llms_path, "r", encoding="utf-8") as handle:
+                content = handle.read()
+            legacy_markers = [
+                f"{module}-skeleton.md",
+                f"{module}-complete-reference.md",
+                f"../L2-semantic/{module}/",
+            ]
+            leaked = [marker for marker in legacy_markers if marker in content]
+            if leaked:
+                hard_fail(
+                    f"release-tree module llms.txt leaks legacy links for {module}: "
+                    f"{', '.join(leaked)}"
+                )
 
 
 def warn_on_placeholder_descriptions(entries, source_label, soft_warn):
@@ -422,6 +601,9 @@ def validate_outdir(outdir):
     validate_module_llms_contract(outdir, modules, hard_fail, soft_warn)
     validate_llms_full_contract(outdir, modules, hard_fail, soft_warn)
     validate_agents_contract(outdir, hard_fail)
+    validate_index_html_contract(outdir, hard_fail)
+    if is_release_tree_enabled():
+        validate_release_tree_contract(outdir, hard_fail, soft_warn)
 
     js_binary = shutil.which("node")
     ucode_binary = shutil.which("ucode")
