@@ -13,20 +13,27 @@ def build_release_tree(outdir: Path, validate, modules: list[str] | None = None)
     release_tree = outdir / Path(validate.config.RELEASE_TREE_DIR).name
     release_tree.mkdir(parents=True, exist_ok=True)
 
+    llms_full_entries = [
+        "- [README.md](./README.md): release readme (~10 tokens, l3-root)",
+        "- [AGENTS.md](./AGENTS.md): agent routing (~10 tokens, l3-root)",
+    ]
+    html_links = [
+        '<a href="README.md">./README.md</a>',
+        '<a href="AGENTS.md">./AGENTS.md</a>',
+        '<a href="llms.txt">./llms.txt</a>',
+        '<a href="llms-full.txt">./llms-full.txt</a>',
+        '<a href="index.html">./index.html</a>',
+    ]
     llms_entries = "\n".join(
         f"- [{module}](./{module}/llms.txt): {module} entry (~10 tokens)"
         for module in modules
     )
     release_tree.joinpath("llms.txt").write_text(
         "# openwrt-docs4ai - LLM Routing Index\n\n"
+        "[llms-full.txt](./llms-full.txt)\n\n"
         "## Modules\n\n"
         f"{llms_entries}\n\n"
         + ("routing-contract\n" * 40),
-        encoding="utf-8",
-    )
-    release_tree.joinpath("llms-full.txt").write_text(
-        "# openwrt-docs4ai - Complete Flat Catalog\n\n"
-        f"{llms_entries}\n",
         encoding="utf-8",
     )
     release_tree.joinpath("README.md").write_text(
@@ -34,20 +41,9 @@ def build_release_tree(outdir: Path, validate, modules: list[str] | None = None)
         encoding="utf-8",
     )
     release_tree.joinpath("AGENTS.md").write_text(
-        "# Agents\n\nStart with llms.txt, then read each module map.\n",
-        encoding="utf-8",
-    )
-    release_tree.joinpath("index.html").write_text(
-        """
-<!DOCTYPE html>
-<html lang="en">
-<body>
-  <a href="README.md">./README.md</a>
-  <a href="llms.txt">./llms.txt</a>
-  <a href="llms-full.txt">./llms-full.txt</a>
-</body>
-</html>
-""".strip(),
+        "# Agents\n\n"
+        "Start with llms.txt and llms-full.txt, then read [module]/llms.txt for map.md, "
+        "bundled-reference.md, chunked-reference/, and types/*.d.ts.\n",
         encoding="utf-8",
     )
 
@@ -86,6 +82,42 @@ def build_release_tree(outdir: Path, validate, modules: list[str] | None = None)
             f"# {module} Topic\n\nTargeted content for {module}.\n",
             encoding="utf-8",
         )
+        llms_full_entries.extend(
+            [
+                f"- [llms.txt](./{module}/llms.txt): module router (~10 tokens, l3-module-index)",
+                f"- [map.md](./{module}/map.md): navigation map (~10 tokens, l3-map)",
+                f"- [bundled-reference.md](./{module}/bundled-reference.md): bundled reference (~10 tokens, l4-bundled)",
+                f"- [topic.md](./{module}/chunked-reference/topic.md): topic page (~10 tokens, l2-source)",
+            ]
+        )
+        html_links.extend(
+            [
+                f'<a href="{module}/llms.txt">./{module}/llms.txt</a>',
+                f'<a href="{module}/map.md">./{module}/map.md</a>',
+                f'<a href="{module}/bundled-reference.md">./{module}/bundled-reference.md</a>',
+                f'<a href="{module}/chunked-reference/topic.md">./{module}/chunked-reference/topic.md</a>',
+            ]
+        )
+
+    llms_full_content = "\n".join(llms_full_entries)
+    release_tree.joinpath("llms-full.txt").write_text(
+        "# openwrt-docs4ai - Complete Flat Catalog\n\n"
+        f"{llms_full_content}\n",
+        encoding="utf-8",
+    )
+    release_tree.joinpath("index.html").write_text(
+        "\n".join(
+            [
+                "<!DOCTYPE html>",
+                '<html lang="en">',
+                "<body>",
+                *[f"  {link}" for link in html_links],
+                "</body>",
+                "</html>",
+            ]
+        ),
+        encoding="utf-8",
+    )
 
     return release_tree
 

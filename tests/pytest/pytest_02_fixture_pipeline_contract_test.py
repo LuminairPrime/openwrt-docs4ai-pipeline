@@ -16,6 +16,7 @@ ROUTING_PIPELINE = [
     "openwrt-docs4ai-05d-generate-api-drift-changelog.py",
     "openwrt-docs4ai-06-generate-llm-routing-indexes.py",
     "openwrt-docs4ai-07-generate-web-index.py",
+    "openwrt-docs4ai-05e-assemble-release-tree.py",
     "openwrt-docs4ai-08-validate-output.py",
 ]
 
@@ -38,31 +39,33 @@ def run_fixture_pipeline(tmp_path):
 
 def test_fixture_pipeline_generates_structured_llm_routing_outputs(tmp_path):
     outdir = run_fixture_pipeline(tmp_path)
+    publish_dir = outdir / "release-tree" if (outdir / "release-tree").is_dir() else outdir
 
     assert_fixture_outputs(str(outdir), expect_ai=False)
 
-    root_llms = (outdir / "llms.txt").read_text(encoding="utf-8")
+    root_llms = (publish_dir / "llms.txt").read_text(encoding="utf-8")
     assert "./ucode/llms.txt" in root_llms
     assert "./procd/llms.txt" in root_llms
 
-    module_llms = (outdir / "ucode" / "llms.txt").read_text(encoding="utf-8")
+    module_llms = (publish_dir / "ucode" / "llms.txt").read_text(encoding="utf-8")
     assert "## Recommended Entry Points" in module_llms
     assert "## Tooling Surfaces" in module_llms
     assert "## Source Documents" in module_llms
 
-    llms_full = (outdir / "llms-full.txt").read_text(encoding="utf-8")
+    llms_full = (publish_dir / "llms-full.txt").read_text(encoding="utf-8")
     assert "./AGENTS.md" in llms_full
     assert "./README.md" in llms_full
-    assert "./ucode/ucode.d.ts" in llms_full
-    assert "./L2-semantic/wiki/wiki_page-service-events.md" in llms_full
+    assert "./ucode/types/ucode.d.ts" in llms_full
+    assert "./wiki/chunked-reference/wiki_page-service-events.md" in llms_full
 
 
 def test_validator_rejects_module_indexes_missing_source_documents(tmp_path):
     outdir = run_fixture_pipeline(tmp_path)
-    broken_index = outdir / "ucode" / "llms.txt"
+    publish_dir = outdir / "release-tree" if (outdir / "release-tree").is_dir() else outdir
+    broken_index = publish_dir / "ucode" / "llms.txt"
     broken_index.write_text(
         broken_index.read_text(encoding="utf-8").replace(
-            "- [c_source-api-fs.md](../L2-semantic/ucode/c_source-api-fs.md)",
+            "- [c_source-api-fs.md](./chunked-reference/c_source-api-fs.md)",
             "- [c_source-api-fs.md](./missing.md)",
             1,
         ),
@@ -72,6 +75,14 @@ def test_validator_rejects_module_indexes_missing_source_documents(tmp_path):
     validate = load_script_module(
         "validator_fixture_contract", "openwrt-docs4ai-08-validate-output.py"
     )
-    _, hard_failures, _ = validate.validate_outdir(str(outdir))
+    hard_failures: list[str] = []
+    validate.validate_release_tree_contract(
+        str(outdir),
+        hard_failures.append,
+        lambda _message: None,
+    )
 
-    assert any("Module llms.txt missing L2 source entries for ucode" in failure for failure in hard_failures)
+    assert any(
+        "release-tree module llms.txt missing source entries for ucode" in failure
+        for failure in hard_failures
+    )

@@ -143,6 +143,16 @@ def expected_publish_links(outdir):
     return links
 
 
+def expected_release_publish_links(release_tree_dir):
+    """Return the set of files that the release-tree HTML index must expose."""
+    links = set()
+    for root, _dirs, files in os.walk(release_tree_dir):
+        for name in files:
+            rel = os.path.relpath(os.path.join(root, name), release_tree_dir)
+            links.add(rel.replace("\\", "/"))
+    return links
+
+
 def normalize_html_href(href):
     """Normalize a local HTML href into an OUTDIR-relative path."""
     target = href.split("#", 1)[0].strip()
@@ -179,6 +189,38 @@ def validate_index_html_contract(outdir, hard_fail):
     if unexpected_links:
         hard_fail(
             "index.html contains hrefs outside the publish tree: "
+            f"{summarize_paths(unexpected_links)}"
+        )
+
+
+def validate_release_index_html_contract(release_tree_dir, hard_fail):
+    """Ensure release-tree/index.html mirrors the direct release filesystem."""
+    path = os.path.join(release_tree_dir, "index.html")
+    if not os.path.isfile(path):
+        return
+
+    content = open(path, "r", encoding="utf-8").read()
+    if "./openwrt-condensed-docs/" in content:
+        hard_fail("release-tree index.html leaks the legacy display-path prefix")
+
+    actual_links = {
+        normalized
+        for href in HTML_HREF_RE.findall(content)
+        if (normalized := normalize_html_href(href)) is not None
+    }
+    expected_links = expected_release_publish_links(release_tree_dir)
+
+    missing_links = sorted(expected_links - actual_links)
+    if missing_links:
+        hard_fail(
+            "release-tree index.html missing mirrored publish links: "
+            f"{summarize_paths(missing_links)}"
+        )
+
+    unexpected_links = sorted(actual_links - expected_links)
+    if unexpected_links:
+        hard_fail(
+            "release-tree index.html contains hrefs outside the publish tree: "
             f"{summarize_paths(unexpected_links)}"
         )
 
@@ -294,6 +336,22 @@ def validate_release_tree_contract(outdir, hard_fail, soft_warn):
                     f"release-tree module llms.txt leaks legacy links for {module}: "
                     f"{', '.join(leaked)}"
                 )
+
+    validate_root_llms_contract(release_tree_dir, modules, hard_fail, soft_warn)
+    validate_release_module_llms_contract(
+        release_tree_dir,
+        modules,
+        hard_fail,
+        soft_warn,
+    )
+    validate_release_llms_full_contract(
+        release_tree_dir,
+        modules,
+        hard_fail,
+        soft_warn,
+    )
+    validate_release_agents_contract(release_tree_dir, hard_fail)
+    validate_release_index_html_contract(release_tree_dir, hard_fail)
 
 
 def warn_on_placeholder_descriptions(entries, source_label, soft_warn):
@@ -412,6 +470,120 @@ def validate_module_llms_contract(outdir, modules, hard_fail, soft_warn):
         warn_on_placeholder_descriptions(entries, f"{module}/llms.txt", soft_warn)
 
 
+def validate_release_module_llms_contract(
+    release_tree_dir,
+    modules,
+    hard_fail,
+    soft_warn,
+):
+    for module in modules:
+        module_dir = os.path.join(release_tree_dir, module)
+        module_index_path = os.path.join(module_dir, "llms.txt")
+        if not os.path.isfile(module_index_path):
+            hard_fail(f"Missing release-tree module llms.txt: {module}/llms.txt")
+            continue
+
+        content = open(module_index_path, "r", encoding="utf-8").read()
+        if not content.startswith(f"# {module} module"):
+            hard_fail(
+                f"release-tree module llms.txt has unexpected title: {module}/llms.txt"
+            )
+        if "> **Total Context:**" not in content:
+            hard_fail(
+                f"release-tree module llms.txt missing total-context banner: {module}/llms.txt"
+            )
+        if "## Source Documents" not in content:
+            hard_fail(
+                f"release-tree module llms.txt missing Source Documents section: {module}/llms.txt"
+            )
+
+        entries = parse_llms_entries(content)
+        if not entries:
+            hard_fail(
+                f"release-tree module llms.txt contains no parseable entries: {module}/llms.txt"
+            )
+            continue
+
+        actual_links = {entry["link"] for entry in entries}
+        expected_source_links = {
+            f"./{config.MODULE_CHUNKED_REF_DIRNAME}/{os.path.basename(path)}"
+            for path in glob.glob(
+                os.path.join(
+                    module_dir,
+                    config.MODULE_CHUNKED_REF_DIRNAME,
+                    "*.md",
+                )
+            )
+        }
+        missing_source_links = sorted(expected_source_links - actual_links)
+        if missing_source_links:
+            hard_fail(
+                "release-tree module llms.txt missing source entries for "
+                f"{module}: {', '.join(missing_source_links)}"
+            )
+
+        recommended_expected = []
+        for file_name in [
+            config.MODULE_MAP_FILENAME,
+            config.MODULE_BUNDLED_REF_FILENAME,
+        ]:
+            candidate = os.path.join(module_dir, file_name)
+            if os.path.isfile(candidate):
+                recommended_expected.append(f"./{file_name}")
+        for match in glob.glob(
+            os.path.join(
+                module_dir,
+                config.MODULE_BUNDLED_REF_FILENAME.removesuffix(".md") + ".part-*.md",
+            )
+        ):
+            recommended_expected.append(f"./{os.path.basename(match)}")
+
+        if recommended_expected and "## Recommended Entry Points" not in content:
+            hard_fail(
+                "release-tree module llms.txt missing Recommended Entry Points "
+                f"section: {module}/llms.txt"
+            )
+
+        missing_recommended = sorted(
+            link for link in recommended_expected if link not in actual_links
+        )
+        if missing_recommended:
+            hard_fail(
+                "release-tree module llms.txt missing recommended entry points "
+                f"for {module}: {', '.join(missing_recommended)}"
+            )
+
+        tooling_expected = [
+            f"./{config.MODULE_TYPES_DIRNAME}/{os.path.basename(path)}"
+            for path in glob.glob(
+                os.path.join(
+                    module_dir,
+                    config.MODULE_TYPES_DIRNAME,
+                    "*.d.ts",
+                )
+            )
+        ]
+        if tooling_expected and "## Tooling Surfaces" not in content:
+            hard_fail(
+                f"release-tree module llms.txt missing Tooling Surfaces section: {module}/llms.txt"
+            )
+
+        missing_tooling = sorted(
+            link for link in tooling_expected if link not in actual_links
+        )
+        if missing_tooling:
+            hard_fail(
+                "release-tree module llms.txt missing tooling-surface entries "
+                f"for {module}: {', '.join(missing_tooling)}"
+            )
+
+        warn_on_placeholder_descriptions(
+            entries,
+            f"release-tree/{module}/llms.txt",
+            soft_warn,
+        )
+
+
 def validate_llms_full_contract(outdir, modules, hard_fail, soft_warn):
     path = os.path.join(outdir, "llms-full.txt")
     if not os.path.isfile(path):
@@ -463,6 +635,90 @@ def validate_llms_full_contract(outdir, modules, hard_fail, soft_warn):
     warn_on_placeholder_descriptions(entries, "llms-full.txt", soft_warn)
 
 
+def validate_release_llms_full_contract(
+    release_tree_dir,
+    modules,
+    hard_fail,
+    soft_warn,
+):
+    path = os.path.join(release_tree_dir, "llms-full.txt")
+    if not os.path.isfile(path):
+        return
+
+    content = open(path, "r", encoding="utf-8").read()
+    if not content.startswith("# openwrt-docs4ai - Complete Flat Catalog"):
+        hard_fail("release-tree llms-full.txt missing the expected flat-catalog title")
+
+    entries = parse_llms_entries(content)
+    if not entries:
+        hard_fail("release-tree llms-full.txt contains no parseable catalog entries")
+        return
+
+    actual_links = [entry["link"] for entry in entries]
+    if len(actual_links) != len(set(actual_links)):
+        hard_fail("release-tree llms-full.txt contains duplicate catalog links")
+
+    expected_links = set()
+    for root_name in ["AGENTS.md", "README.md"]:
+        if os.path.isfile(os.path.join(release_tree_dir, root_name)):
+            expected_links.add(f"./{root_name}")
+
+    for module in modules:
+        expected_links.add(f"./{module}/llms.txt")
+
+        module_dir = os.path.join(release_tree_dir, module)
+        for file_name in [
+            config.MODULE_MAP_FILENAME,
+            config.MODULE_BUNDLED_REF_FILENAME,
+        ]:
+            candidate = os.path.join(module_dir, file_name)
+            if os.path.isfile(candidate):
+                expected_links.add(f"./{module}/{file_name}")
+
+        for match in glob.glob(
+            os.path.join(
+                module_dir,
+                config.MODULE_BUNDLED_REF_FILENAME.removesuffix(".md") + ".part-*.md",
+            )
+        ):
+            expected_links.add(f"./{module}/{os.path.basename(match)}")
+
+        for match in glob.glob(
+            os.path.join(
+                module_dir,
+                config.MODULE_TYPES_DIRNAME,
+                "*.d.ts",
+            )
+        ):
+            expected_links.add(
+                f"./{module}/{config.MODULE_TYPES_DIRNAME}/{os.path.basename(match)}"
+            )
+
+        for chunk_path in glob.glob(
+            os.path.join(
+                module_dir,
+                config.MODULE_CHUNKED_REF_DIRNAME,
+                "*.md",
+            )
+        ):
+            expected_links.add(
+                f"./{module}/{config.MODULE_CHUNKED_REF_DIRNAME}/{os.path.basename(chunk_path)}"
+            )
+
+    missing_links = sorted(expected_links - set(actual_links))
+    if missing_links:
+        hard_fail(
+            "release-tree llms-full.txt missing catalog entries: "
+            f"{', '.join(missing_links)}"
+        )
+
+    warn_on_placeholder_descriptions(
+        entries,
+        "release-tree/llms-full.txt",
+        soft_warn,
+    )
+
+
 def validate_agents_contract(outdir, hard_fail):
     path = os.path.join(outdir, "AGENTS.md")
     if not os.path.isfile(path):
@@ -480,6 +736,29 @@ def validate_agents_contract(outdir, hard_fail):
     missing = [marker for marker in required_markers if marker not in content]
     if missing:
         hard_fail(f"AGENTS.md missing routing guidance markers: {', '.join(missing)}")
+
+
+def validate_release_agents_contract(release_tree_dir, hard_fail):
+    path = os.path.join(release_tree_dir, "AGENTS.md")
+    if not os.path.isfile(path):
+        return
+
+    content = open(path, "r", encoding="utf-8").read()
+    required_markers = [
+        "llms.txt",
+        "llms-full.txt",
+        "[module]/llms.txt",
+        config.MODULE_MAP_FILENAME,
+        config.MODULE_BUNDLED_REF_FILENAME,
+        f"{config.MODULE_CHUNKED_REF_DIRNAME}/",
+        f"{config.MODULE_TYPES_DIRNAME}/*.d.ts",
+    ]
+    missing = [marker for marker in required_markers if marker not in content]
+    if missing:
+        hard_fail(
+            "release-tree AGENTS.md missing routing guidance markers: "
+            f"{', '.join(missing)}"
+        )
 
 
 def validate_outdir(outdir):

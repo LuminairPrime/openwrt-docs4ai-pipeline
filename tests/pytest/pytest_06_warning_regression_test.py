@@ -17,9 +17,6 @@ def test_workflow_uses_node24_native_action_majors() -> None:
         "actions/cache@v5",
         "actions/upload-artifact@v6",
         "actions/download-artifact@v7",
-        "actions/upload-pages-artifact@v4",
-        "actions/configure-pages@v5",
-        "actions/deploy-pages@v4",
     ]
     removed_versions = [
         "actions/checkout@v4",
@@ -28,12 +25,19 @@ def test_workflow_uses_node24_native_action_majors() -> None:
         "actions/upload-artifact@v4",
         "actions/download-artifact@v4",
         "actions/upload-pages-artifact@v3",
+        "actions/upload-pages-artifact@v4",
+        "actions/configure-pages@v5",
+        "actions/deploy-pages@v4",
     ]
 
     for action_ref in expected_versions:
         assert action_ref in workflow_text
     for action_ref in removed_versions:
         assert action_ref not in workflow_text
+
+    assert "Publish GitHub Pages branch mirror" in workflow_text
+    assert "GH_PAGES_BRANCH: gh-pages" in workflow_text
+    assert "git worktree add" in workflow_text
 
 
 def test_assemble_references_shards_oversized_modules() -> None:
@@ -92,22 +96,25 @@ def test_validate_routing_requires_sharded_part_links(tmp_path: Path) -> None:
         "openwrt-docs4ai-08-validate-output.py",
     )
 
-    outdir = tmp_path
-    module_dir = outdir / "wiki"
-    l2_dir = outdir / "L2-semantic" / "wiki"
+    release_tree_dir = tmp_path
+    module_dir = release_tree_dir / "wiki"
+    chunked_dir = module_dir / validate.config.MODULE_CHUNKED_REF_DIRNAME
     module_dir.mkdir(parents=True)
-    l2_dir.mkdir(parents=True)
+    chunked_dir.mkdir(parents=True)
 
-    (l2_dir / "sample.md").write_text(
+    (chunked_dir / "sample.md").write_text(
         "---\ntoken_count: 10\n---\n# Sample\n\nBody text.\n",
         encoding="utf-8",
     )
-    (module_dir / "wiki-skeleton.md").write_text("# skeleton\n", encoding="utf-8")
-    (module_dir / "wiki-complete-reference.md").write_text(
+    (module_dir / validate.config.MODULE_MAP_FILENAME).write_text(
+        "# map\n",
+        encoding="utf-8",
+    )
+    (module_dir / validate.config.MODULE_BUNDLED_REF_FILENAME).write_text(
         "# complete reference index\n",
         encoding="utf-8",
     )
-    (module_dir / "wiki-complete-reference.part-01.md").write_text(
+    (module_dir / "bundled-reference.part-01.md").write_text(
         "# complete reference part 1\n",
         encoding="utf-8",
     )
@@ -120,26 +127,26 @@ def test_validate_routing_requires_sharded_part_links(tmp_path: Path) -> None:
                 "",
                 "## Recommended Entry Points",
                 "",
-                "- [wiki-skeleton.md](./wiki-skeleton.md): skeleton (~1 tokens, l3-skeleton)",
-                "- [wiki-complete-reference.md](./wiki-complete-reference.md): index (~1 tokens, l4-monolith)",
+                "- [map.md](./map.md): map (~1 tokens, l3-map)",
+                "- [bundled-reference.md](./bundled-reference.md): index (~1 tokens, l4-bundled)",
                 "",
                 "## Source Documents",
                 "",
-                "- [sample.md](../L2-semantic/wiki/sample.md): sample (~1 tokens, l2-source)",
+                "- [sample.md](./chunked-reference/sample.md): sample (~1 tokens, l2-source)",
                 "",
             ]
         ),
         encoding="utf-8",
     )
-    (outdir / "llms-full.txt").write_text(
+    (release_tree_dir / "llms-full.txt").write_text(
         "\n".join(
             [
                 "# openwrt-docs4ai - Complete Flat Catalog",
                 "",
                 "- [wiki/llms.txt](./wiki/llms.txt): module index (~1 tokens, l3-module-index)",
-                "- [wiki-skeleton.md](./wiki/wiki-skeleton.md): skeleton (~1 tokens, l3-skeleton)",
-                "- [wiki-complete-reference.md](./wiki/wiki-complete-reference.md): index (~1 tokens, l4-monolith)",
-                "- [sample.md](./L2-semantic/wiki/sample.md): sample (~1 tokens, l2-source)",
+                "- [map.md](./wiki/map.md): map (~1 tokens, l3-map)",
+                "- [bundled-reference.md](./wiki/bundled-reference.md): index (~1 tokens, l4-bundled)",
+                "- [sample.md](./wiki/chunked-reference/sample.md): sample (~1 tokens, l2-source)",
                 "",
             ]
         ),
@@ -147,19 +154,73 @@ def test_validate_routing_requires_sharded_part_links(tmp_path: Path) -> None:
     )
 
     hard_failures: list[str] = []
-    validate.validate_module_llms_contract(
-        str(outdir),
+    validate.validate_release_module_llms_contract(
+        str(release_tree_dir),
         ["wiki"],
         hard_failures.append,
         lambda _message: None,
     )
-    validate.validate_llms_full_contract(
-        str(outdir),
+    validate.validate_release_llms_full_contract(
+        str(release_tree_dir),
         ["wiki"],
         hard_failures.append,
         lambda _message: None,
     )
 
     assert any(
-        "wiki-complete-reference.part-01.md" in failure for failure in hard_failures
+        "bundled-reference.part-01.md" in failure for failure in hard_failures
+    )
+
+
+def test_validate_index_html_requires_full_publish_mirror(tmp_path: Path) -> None:
+    validate = load_script_module(
+        "validator_index_html_mirror_contract",
+        "openwrt-docs4ai-08-validate-output.py",
+    )
+
+    release_tree_dir = tmp_path
+    (release_tree_dir / "README.md").write_text("# README\n", encoding="utf-8")
+    (release_tree_dir / "AGENTS.md").write_text("# AGENTS\n", encoding="utf-8")
+    (release_tree_dir / "llms.txt").write_text(
+        "# openwrt-docs4ai - LLM Routing Index\n\n"
+        "[llms-full.txt](./llms-full.txt)\n\n"
+        "## Modules\n\n"
+        "- [wiki](./wiki/llms.txt): wiki entry (~1 tokens)\n",
+        encoding="utf-8",
+    )
+    (release_tree_dir / "llms-full.txt").write_text(
+        "# openwrt-docs4ai - Complete Flat Catalog\n\n"
+        "- [README.md](./README.md): readme (~1 tokens)\n"
+        "- [wiki/llms.txt](./wiki/llms.txt): module index (~1 tokens)\n",
+        encoding="utf-8",
+    )
+    (release_tree_dir / "wiki").mkdir()
+    (release_tree_dir / "wiki" / "llms.txt").write_text(
+        "# wiki module\n"
+        "> **Total Context:** ~1 tokens\n\n"
+        "## Source Documents\n\n"
+        "- [topic.md](./chunked-reference/topic.md): topic (~1 tokens, l2-source)\n",
+        encoding="utf-8",
+    )
+    (release_tree_dir / "index.html").write_text(
+        """
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <a href="README.md">./README.md</a>
+</body>
+</html>
+""".strip(),
+        encoding="utf-8",
+    )
+
+    hard_failures: list[str] = []
+    validate.validate_release_index_html_contract(
+        str(release_tree_dir),
+        hard_failures.append,
+    )
+
+    assert any(
+        "release-tree index.html missing mirrored publish links" in failure
+        for failure in hard_failures
     )

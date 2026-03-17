@@ -766,6 +766,7 @@ def finalize_direct_release_tree(modules: list[str]) -> None:
     if overlay_paths:
         log("OK", f"applied release-include overlay: {summarize_paths(overlay_paths)}")
 
+    write_release_tree_index(modules)
     copy_support_tree()
     log("OK", f"finalized direct release-tree for {len(modules)} modules")
 

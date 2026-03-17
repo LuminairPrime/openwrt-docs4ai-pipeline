@@ -243,51 +243,122 @@ def read_text(path):
         return handle.read()
 
 
+def publish_root(outdir):
+    release_tree = os.path.join(outdir, "release-tree")
+    if os.path.isdir(release_tree):
+        return release_tree
+    return outdir
+
+
+def support_root(outdir):
+    support_tree = os.path.join(outdir, "support-tree")
+    if os.path.isdir(support_tree):
+        return support_tree
+    return outdir
+
+
 def expected_outputs(outdir):
+    publish_dir = publish_root(outdir)
+    support_dir = support_root(outdir)
+    uses_release_tree = publish_dir != outdir
+    uses_support_tree = support_dir != outdir
+    changes_path = (
+        os.path.join(support_dir, "telemetry", "CHANGES.md")
+        if uses_support_tree
+        else os.path.join(outdir, "CHANGES.md")
+    )
+    changelog_path = (
+        os.path.join(support_dir, "telemetry", "changelog.json")
+        if uses_support_tree
+        else os.path.join(outdir, "changelog.json")
+    )
+    signature_inventory_path = (
+        os.path.join(support_dir, "telemetry", "signature-inventory.json")
+        if uses_support_tree
+        else os.path.join(outdir, "signature-inventory.json")
+    )
+
     return [
-        os.path.join(outdir, "L1-raw", "ucode", "c_source-api-fs.md"),
-        os.path.join(outdir, "L2-semantic", "wiki", "wiki_page-service-events.md"),
-        os.path.join(outdir, "llms.txt"),
-        os.path.join(outdir, "llms-full.txt"),
-        os.path.join(outdir, "AGENTS.md"),
-        os.path.join(outdir, "README.md"),
-        os.path.join(outdir, "index.html"),
-        os.path.join(outdir, "CHANGES.md"),
-        os.path.join(outdir, "changelog.json"),
-        os.path.join(outdir, "signature-inventory.json"),
-        os.path.join(outdir, "procd", "llms.txt"),
-        os.path.join(outdir, "uci", "llms.txt"),
-        os.path.join(outdir, "ucode", "llms.txt"),
-        os.path.join(outdir, "wiki", "llms.txt"),
-        os.path.join(outdir, "ucode", "ucode-complete-reference.md"),
-        os.path.join(outdir, "ucode", "ucode-skeleton.md"),
-        os.path.join(outdir, "ucode", "ucode.d.ts"),
+        os.path.join(
+            support_dir if uses_support_tree else outdir,
+            "raw" if uses_support_tree else "L1-raw",
+            "ucode",
+            "c_source-api-fs.md",
+        ),
+        os.path.join(
+            support_dir if uses_support_tree else outdir,
+            "semantic-pages" if uses_support_tree else "L2-semantic",
+            "wiki",
+            "wiki_page-service-events.md",
+        ),
+        os.path.join(publish_dir, "llms.txt"),
+        os.path.join(publish_dir, "llms-full.txt"),
+        os.path.join(publish_dir, "AGENTS.md"),
+        os.path.join(publish_dir, "README.md"),
+        os.path.join(publish_dir, "index.html"),
+        changes_path,
+        changelog_path,
+        signature_inventory_path,
+        os.path.join(publish_dir, "procd", "llms.txt"),
+        os.path.join(publish_dir, "uci", "llms.txt"),
+        os.path.join(publish_dir, "ucode", "llms.txt"),
+        os.path.join(publish_dir, "wiki", "llms.txt"),
+        os.path.join(
+            publish_dir,
+            "ucode",
+            "bundled-reference.md" if uses_release_tree else "ucode-complete-reference.md",
+        ),
+        os.path.join(
+            publish_dir,
+            "ucode",
+            "map.md" if uses_release_tree else "ucode-skeleton.md",
+        ),
+        os.path.join(
+            publish_dir,
+            "ucode",
+            "types",
+            "ucode.d.ts",
+        ) if uses_release_tree else os.path.join(publish_dir, "ucode", "ucode.d.ts"),
     ]
 
 
 def assert_fixture_outputs(outdir, expect_ai=False):
+    publish_dir = publish_root(outdir)
+    support_dir = support_root(outdir)
+    uses_release_tree = publish_dir != outdir
+    semantic_root = os.path.join(
+        support_dir,
+        "semantic-pages" if support_dir != outdir else "L2-semantic",
+    )
+
     missing = [path for path in expected_outputs(outdir) if not os.path.exists(path)]
     if missing:
         joined = "\n".join(missing)
         raise AssertionError(f"Missing expected output files:\n{joined}")
 
-    procd_l2 = read_text(os.path.join(outdir, "L2-semantic", "procd", "c_source-init-service.md"))
+    procd_l2 = read_text(os.path.join(semantic_root, "procd", "c_source-init-service.md"))
     if "../uci/c_source-api-config.md" not in procd_l2:
         raise AssertionError("Expected cross-link from procd fixture to the UCI fixture output")
 
-    wiki_l2 = read_text(os.path.join(outdir, "L2-semantic", "wiki", "wiki_page-service-events.md"))
+    wiki_l2 = read_text(os.path.join(semantic_root, "wiki", "wiki_page-service-events.md"))
     if "[!WARNING]" not in wiki_l2:
         raise AssertionError("Expected deprecated-symbol warning to be injected into the wiki fixture output")
 
-    monolith = read_text(os.path.join(outdir, "ucode", "ucode-complete-reference.md"))
+    monolith_name = "bundled-reference.md" if uses_release_tree else "ucode-complete-reference.md"
+    monolith = read_text(os.path.join(publish_dir, "ucode", monolith_name))
     if "ucode fs module" not in monolith or "ucode uloop module" not in monolith:
         raise AssertionError("Expected the ucode monolith to contain both seeded ucode documents")
 
-    dts = read_text(os.path.join(outdir, "ucode", "ucode.d.ts"))
+    dts_path = (
+        os.path.join(publish_dir, "ucode", "types", "ucode.d.ts")
+        if uses_release_tree
+        else os.path.join(publish_dir, "ucode", "ucode.d.ts")
+    )
+    dts = read_text(dts_path)
     if 'declare module "fs"' not in dts or 'declare module "uloop"' not in dts:
         raise AssertionError("Expected ucode.d.ts to contain declarations for both seeded ucode modules")
 
-    root_llms = read_text(os.path.join(outdir, "llms.txt"))
+    root_llms = read_text(os.path.join(publish_dir, "llms.txt"))
     for fragment in [
         "# openwrt-docs4ai - LLM Routing Index",
         "[llms-full.txt](./llms-full.txt)",
@@ -297,46 +368,108 @@ def assert_fixture_outputs(outdir, expect_ai=False):
         if fragment not in root_llms:
             raise AssertionError(f"Expected root llms.txt to contain: {fragment}")
 
-    module_llms = read_text(os.path.join(outdir, "ucode", "llms.txt"))
+    module_llms = read_text(os.path.join(publish_dir, "ucode", "llms.txt"))
+    source_link = (
+        "./chunked-reference/c_source-api-fs.md"
+        if uses_release_tree
+        else "../L2-semantic/ucode/c_source-api-fs.md"
+    )
+    map_link = "./map.md" if uses_release_tree else "./ucode-skeleton.md"
+    bundled_link = (
+        "./bundled-reference.md"
+        if uses_release_tree
+        else "./ucode-complete-reference.md"
+    )
+    types_link = "./types/ucode.d.ts" if uses_release_tree else "./ucode.d.ts"
     for fragment in [
         "# ucode module",
         "> **Total Context:**",
         "## Recommended Entry Points",
         "## Tooling Surfaces",
         "## Source Documents",
-        "./ucode-skeleton.md",
-        "./ucode-complete-reference.md",
-        "./ucode.d.ts",
-        "../L2-semantic/ucode/c_source-api-fs.md",
+        map_link,
+        bundled_link,
+        types_link,
+        source_link,
     ]:
         if fragment not in module_llms:
             raise AssertionError(f"Expected ucode/llms.txt to contain: {fragment}")
 
-    full_catalog = read_text(os.path.join(outdir, "llms-full.txt"))
+    full_catalog = read_text(os.path.join(publish_dir, "llms-full.txt"))
+    full_catalog_dts = (
+        "./ucode/types/ucode.d.ts"
+        if uses_release_tree
+        else "./ucode/ucode.d.ts"
+    )
+    full_catalog_source = (
+        "./ucode/chunked-reference/c_source-api-fs.md"
+        if uses_release_tree
+        else "./L2-semantic/ucode/c_source-api-fs.md"
+    )
     for fragment in [
         "# openwrt-docs4ai - Complete Flat Catalog",
         "./AGENTS.md",
         "./README.md",
         "./ucode/llms.txt",
-        "./ucode/ucode.d.ts",
-        "./L2-semantic/ucode/c_source-api-fs.md",
+        full_catalog_dts,
+        full_catalog_source,
     ]:
         if fragment not in full_catalog:
             raise AssertionError(f"Expected llms-full.txt to contain: {fragment}")
 
-    agents = read_text(os.path.join(outdir, "AGENTS.md"))
-    if "[module]/llms.txt" not in agents:
-        raise AssertionError("Expected AGENTS.md to describe module llms routing")
+    agents = read_text(os.path.join(publish_dir, "AGENTS.md"))
+    agent_fragments = ["[module]/llms.txt"]
+    if uses_release_tree:
+        agent_fragments.extend(["chunked-reference/", "bundled-reference.md"])
+    for fragment in agent_fragments:
+        if fragment not in agents:
+            raise AssertionError(f"Expected AGENTS.md to describe: {fragment}")
 
-    generated_readme = read_text(os.path.join(outdir, "README.md"))
-    if "./llms.txt" not in generated_readme or "./llms-full.txt" not in generated_readme:
-        raise AssertionError("Expected generated README.md to route readers to llms indexes")
+    generated_readme = read_text(os.path.join(publish_dir, "README.md"))
+    readme_fragments = ["./llms.txt"]
+    if uses_release_tree:
+        readme_fragments.extend(["./AGENTS.md", "./ucode/map.md"])
+    else:
+        readme_fragments.extend(["./llms-full.txt", "./index.html"])
+    for fragment in readme_fragments:
+        if fragment not in generated_readme:
+            raise AssertionError(
+                f"Expected generated README.md to route readers to: {fragment}"
+            )
+
+    index_html = read_text(os.path.join(publish_dir, "index.html"))
+    index_fragments = [
+        "Jump to section",
+        "./llms.txt",
+        "./index.html",
+    ]
+    if uses_release_tree:
+        index_fragments.extend(
+            [
+                "openwrt-docs4ai release tree",
+                "./ucode/map.md",
+                "./wiki/chunked-reference/wiki_page-service-events.md",
+            ]
+        )
+    else:
+        index_fragments.extend(
+            [
+                "openwrt-condensed-docs publish tree",
+                "./openwrt-condensed-docs/llms.txt",
+                "./openwrt-condensed-docs/ucode/ucode-skeleton.md",
+                "./openwrt-condensed-docs/L2-semantic/wiki/wiki_page-service-events.md",
+            ]
+        )
+    for fragment in index_fragments:
+        if fragment not in index_html:
+            raise AssertionError(f"Expected index.html to contain: {fragment}")
 
     if expect_ai:
-        ucode_l2 = read_text(os.path.join(outdir, "L2-semantic", "ucode", "c_source-api-fs.md"))
+        ucode_l2 = read_text(os.path.join(semantic_root, "ucode", "c_source-api-fs.md"))
         if "ai_summary:" not in ucode_l2 or "ai_when_to_use:" not in ucode_l2:
             raise AssertionError("Expected cached AI metadata to be injected into the ucode fs fixture")
 
-        skeleton = read_text(os.path.join(outdir, "ucode", "ucode-skeleton.md"))
+        map_name = "map.md" if uses_release_tree else "ucode-skeleton.md"
+        skeleton = read_text(os.path.join(publish_dir, "ucode", map_name))
         if "> **Summary:**" not in skeleton:
             raise AssertionError("Expected AI summary metadata to propagate into the generated skeleton")
