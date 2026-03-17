@@ -17,6 +17,7 @@ def test_workflow_uses_node24_native_action_majors() -> None:
         "actions/cache@v5",
         "actions/upload-artifact@v6",
         "actions/download-artifact@v7",
+        "actions/create-github-app-token@v2",
     ]
     removed_versions = [
         "actions/checkout@v4",
@@ -38,6 +39,12 @@ def test_workflow_uses_node24_native_action_majors() -> None:
     assert "Publish GitHub Pages branch mirror" in workflow_text
     assert "GH_PAGES_BRANCH: gh-pages" in workflow_text
     assert "git worktree add" in workflow_text
+    assert "openwrt-docs4ai/corpus" in workflow_text
+    assert "openwrt-docs4ai/openwrt-docs4ai.github.io" in workflow_text
+    assert "release-inputs/pages-include" in workflow_text
+    assert "Build dated distribution ZIP" in workflow_text
+    assert "gh release upload" in workflow_text
+    assert "--clobber" in workflow_text
 
 
 def test_assemble_references_shards_oversized_modules() -> None:

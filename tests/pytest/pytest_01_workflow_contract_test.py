@@ -97,17 +97,45 @@ def test_workflow_defaults_to_read_only_contents_permission():
     assert workflow["permissions"] == {"contents": "read"}
 
 
-def test_only_deploy_job_elevates_pages_permissions():
+def test_only_deploy_job_elevates_contents_write_permissions():
     workflow = load_workflow_yaml()
     jobs = workflow["jobs"]
 
-    assert jobs["deploy"]["permissions"] == {
-        "contents": "write",
-        "pages": "write",
-        "id-token": "write",
-    }
+    assert jobs["deploy"]["permissions"] == {"contents": "write"}
 
     for job_name, job_config in jobs.items():
         if job_name == "deploy":
             continue
         assert "permissions" not in job_config
+
+
+def test_deploy_serializes_publication_targets():
+    workflow = load_workflow_yaml()
+    deploy = workflow["jobs"]["deploy"]
+
+    assert deploy["concurrency"] == {
+        "group": "openwrt-docs4ai-deploy",
+        "cancel-in-progress": False,
+    }
+
+
+def test_external_distribution_is_gated_to_main_and_secrets():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    deploy_block = get_workflow_job_block(workflow_text, "deploy")
+
+    assert "Determine external distribution eligibility" in deploy_block
+    assert 'refs/heads/main' in deploy_block
+    assert "DIST_APP_ID_PRESENT" in deploy_block
+    assert "DIST_APP_PRIVATE_KEY_PRESENT" in deploy_block
+
+
+def test_external_distribution_runs_after_source_pages_mirror():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    deploy_block = get_workflow_job_block(workflow_text, "deploy")
+
+    source_pages_index = deploy_block.index("Publish GitHub Pages branch mirror")
+    external_distribution_index = deploy_block.index(
+        "Determine external distribution eligibility"
+    )
+
+    assert source_pages_index < external_distribution_index

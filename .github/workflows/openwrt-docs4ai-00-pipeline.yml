@@ -33,6 +33,10 @@ env:
   WORKDIR: ${{ github.workspace }}/tmp
   OUTDIR: ${{ github.workspace }}/staging
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+  DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+  DIST_TARGET_BRANCH: main
+  DIST_ZIP_ROOT_DIR: openwrt-docs4ai
 
 jobs:
   # ── Phase 1: Setup & Clone ───────────────────────────
@@ -785,12 +789,13 @@ jobs:
   deploy:
     needs: process
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    concurrency:
+      group: openwrt-docs4ai-deploy
+      cancel-in-progress: false
     permissions:
       contents: write
-      pages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -816,29 +821,266 @@ jobs:
             git pull --rebase origin main
             git push
           fi
-      - name: Prepare Public Pages
+      - name: Publish GitHub Pages branch mirror
+        env:
+          GH_PAGES_BRANCH: gh-pages
         run: |
-          mkdir -p public
-          # Exclude L1/L2 intermediate layers from public site
-          rsync -a --exclude="L1-raw" --exclude="L2-semantic" "$OUTDIR/" public/
-      - name: Validate Public Pages exclusions
-        run: |
-          if [ -d "public/L1-raw" ] || [ -d "public/L2-semantic" ]; then
-            echo "FAIL: public output contains excluded intermediate layers"
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          publish_root="$GITHUB_WORKSPACE/$PUBLISH_DIR"
+          branch_dir="$RUNNER_TEMP/gh-pages-worktree"
+
+          if [ ! -d "$publish_root" ]; then
+            echo "FAIL: publish root not found: $publish_root"
             exit 1
           fi
-          echo "OK: public output excludes L1-raw and L2-semantic"
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+
+          rm -rf "$branch_dir"
+
+          if git ls-remote --exit-code --heads origin "$GH_PAGES_BRANCH" >/dev/null 2>&1; then
+            git fetch --depth=1 origin "$GH_PAGES_BRANCH"
+            git worktree add --force -B "$GH_PAGES_BRANCH" "$branch_dir" "origin/$GH_PAGES_BRANCH"
+          else
+            git worktree add --detach "$branch_dir"
+            (
+              cd "$branch_dir"
+              git checkout --orphan "$GH_PAGES_BRANCH"
+              find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+            )
+          fi
+
+          rsync -a --delete --exclude=".git" "$publish_root/" "$branch_dir/"
+          touch "$branch_dir/.nojekyll"
+
+          (
+            cd "$branch_dir"
+            git add --all
+            if git diff --cached --quiet; then
+              echo "No gh-pages changes to publish."
+              exit 0
+            fi
+
+            git commit -m "docs: refresh pages mirror $(date -u +%Y-%m-%d)"
+            git push --set-upstream origin "$GH_PAGES_BRANCH"
+          )
+      - name: Determine external distribution eligibility
+        id: distribution_gate
+        env:
+          DIST_APP_ID_PRESENT: ${{ secrets.DIST_APP_ID != '' }}
+          DIST_APP_PRIVATE_KEY_PRESENT: ${{ secrets.DIST_APP_PRIVATE_KEY != '' }}
+        run: |
+          set -euo pipefail
+
+          enabled="true"
+          reason=""
+
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            enabled="false"
+            reason="external distribution publishes only from refs/heads/main"
+          elif [ "$DIST_APP_ID_PRESENT" != "true" ] || [ "$DIST_APP_PRIVATE_KEY_PRESENT" != "true" ]; then
+            enabled="false"
+            reason="distribution app secrets are not configured"
+          fi
+
+          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+          echo "reason=$reason" >> "$GITHUB_OUTPUT"
+
+          if [ "$enabled" != "true" ]; then
+            echo "Skipping external distribution publish: $reason"
+          fi
+      - name: Prepare distribution metadata
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        id: distribution_meta
+        run: |
+          set -euo pipefail
+
+          dist_date="$(date -u +%Y-%m-%d)"
+          notes_path="$RUNNER_TEMP/corpus-release-notes.md"
+
+          cat > "$notes_path" <<EOF
+          Automated distribution snapshot.
+
+          - Source repository: ${GITHUB_REPOSITORY}
+          - Source commit: ${GITHUB_SHA}
+          - Workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+
+          echo "dist_date=$dist_date" >> "$GITHUB_OUTPUT"
+          echo "release_tag=v$dist_date" >> "$GITHUB_OUTPUT"
+          echo "release_name=openwrt-docs4ai $dist_date" >> "$GITHUB_OUTPUT"
+          echo "zip_name=openwrt-docs4ai-$dist_date.zip" >> "$GITHUB_OUTPUT"
+          echo "zip_root_dir=$DIST_ZIP_ROOT_DIR" >> "$GITHUB_OUTPUT"
+          echo "source_sha_short=$(echo "$GITHUB_SHA" | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          echo "notes_path=$notes_path" >> "$GITHUB_OUTPUT"
+      - name: Validate external distribution staging
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+
+          release_tree="$OUTDIR/release-tree"
+
+          if [ ! -d "$release_tree" ]; then
+            echo "FAIL: release-tree missing: $release_tree"
+            exit 1
+          fi
+
+          if [ ! -f "$release_tree/llms.txt" ]; then
+            echo "FAIL: release-tree missing llms.txt"
+            exit 1
+          fi
+
+          if [ ! -f "$release_tree/index.html" ]; then
+            echo "FAIL: release-tree missing index.html"
+            exit 1
+          fi
+
+          llms_size="$(wc -c < "$release_tree/llms.txt" | tr -d '[:space:]')"
+          if [ "$llms_size" -le 512 ]; then
+            echo "FAIL: release-tree llms.txt is unexpectedly small ($llms_size bytes)"
+            exit 1
+          fi
+
+          module_count="$(find "$release_tree" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d '[:space:]')"
+          if [ "$module_count" -lt 4 ]; then
+            echo "FAIL: release-tree has too few module directories ($module_count)"
+            exit 1
+          fi
+
+          if find "$release_tree" \( -name 'L1-raw' -o -name 'L2-semantic' -o -name 'openwrt-condensed-docs' \) -print | grep -q .; then
+            echo "FAIL: release-tree contains legacy paths"
+            exit 1
+          fi
+      - name: Build dated distribution ZIP
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        id: distribution_zip
+        run: |
+          set -euo pipefail
+
+          release_tree="$OUTDIR/release-tree"
+          zip_stage="$RUNNER_TEMP/dist-zip"
+          zip_root="$zip_stage/$DIST_ZIP_ROOT_DIR"
+          zip_path="$RUNNER_TEMP/${{ steps.distribution_meta.outputs.zip_name }}"
+
+          rm -rf "$zip_stage"
+          mkdir -p "$zip_root"
+          rsync -a --delete "$release_tree/" "$zip_root/"
+          rm -f "$zip_path"
+
+          (
+            cd "$zip_stage"
+            zip -qr "$zip_path" "$DIST_ZIP_ROOT_DIR"
+          )
+
+          echo "zip_path=$zip_path" >> "$GITHUB_OUTPUT"
+      - name: Create corpus distribution token
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        id: corpus_app_token
+        uses: actions/create-github-app-token@v2
         with:
-          enablement: true
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v4
+          app-id: ${{ secrets.DIST_APP_ID }}
+          private-key: ${{ secrets.DIST_APP_PRIVATE_KEY }}
+          owner: openwrt-docs4ai
+          repositories: corpus
+      - name: Checkout corpus distribution repository
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        uses: actions/checkout@v5
         with:
-          path: public
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          repository: ${{ env.DIST_RELEASE_REPO }}
+          token: ${{ steps.corpus_app_token.outputs.token }}
+          ref: ${{ env.DIST_TARGET_BRANCH }}
+          path: external-targets/corpus
+          fetch-depth: 0
+      - name: Publish corpus distribution repository
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        id: publish_corpus
+        run: |
+          set -euo pipefail
+
+          release_tree="$OUTDIR/release-tree"
+          repo_dir="$GITHUB_WORKSPACE/external-targets/corpus"
+
+          git -C "$repo_dir" config user.name "github-actions[bot]"
+          git -C "$repo_dir" config user.email "github-actions[bot]@users.noreply.github.com"
+
+          rsync -a --delete --exclude=".git" "$release_tree/" "$repo_dir/"
+
+          git -C "$repo_dir" add --all
+          if git -C "$repo_dir" diff --cached --quiet; then
+            echo "No corpus changes to publish."
+          else
+            git -C "$repo_dir" commit -m "docs: publish corpus ${{ steps.distribution_meta.outputs.dist_date }} (source ${{ steps.distribution_meta.outputs.source_sha_short }})"
+            git -C "$repo_dir" pull --rebase origin "$DIST_TARGET_BRANCH"
+            git -C "$repo_dir" push origin "HEAD:$DIST_TARGET_BRANCH"
+          fi
+
+          echo "head_sha=$(git -C "$repo_dir" rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Publish corpus release asset
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ steps.corpus_app_token.outputs.token }}
+        run: |
+          set -euo pipefail
+
+          release_tag="${{ steps.distribution_meta.outputs.release_tag }}"
+          release_name="${{ steps.distribution_meta.outputs.release_name }}"
+          notes_path="${{ steps.distribution_meta.outputs.notes_path }}"
+          zip_path="${{ steps.distribution_zip.outputs.zip_path }}"
+          target_sha="${{ steps.publish_corpus.outputs.head_sha }}"
+          notes_body="$(cat "$notes_path")"
+
+          if gh release view "$release_tag" --repo "$DIST_RELEASE_REPO" >/dev/null 2>&1; then
+            gh release edit "$release_tag" --repo "$DIST_RELEASE_REPO" --title "$release_name" --notes "$notes_body"
+          else
+            gh release create "$release_tag" --repo "$DIST_RELEASE_REPO" --target "$target_sha" --title "$release_name" --notes "$notes_body"
+          fi
+
+          gh release upload "$release_tag" "$zip_path" --repo "$DIST_RELEASE_REPO" --clobber
+      - name: Create external Pages distribution token
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        id: pages_app_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.DIST_APP_ID }}
+          private-key: ${{ secrets.DIST_APP_PRIVATE_KEY }}
+          owner: openwrt-docs4ai
+          repositories: openwrt-docs4ai.github.io
+      - name: Checkout external Pages distribution repository
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ env.DIST_PAGES_REPO }}
+          token: ${{ steps.pages_app_token.outputs.token }}
+          ref: ${{ env.DIST_TARGET_BRANCH }}
+          path: external-targets/pages
+          fetch-depth: 0
+      - name: Publish external Pages distribution repository
+        if: steps.distribution_gate.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+
+          release_tree="$OUTDIR/release-tree"
+          repo_dir="$GITHUB_WORKSPACE/external-targets/pages"
+          pages_include_dir="$GITHUB_WORKSPACE/release-inputs/pages-include"
+
+          git -C "$repo_dir" config user.name "github-actions[bot]"
+          git -C "$repo_dir" config user.email "github-actions[bot]@users.noreply.github.com"
+
+          rsync -a --delete --exclude=".git" "$release_tree/" "$repo_dir/"
+          if [ -d "$pages_include_dir" ]; then
+            rsync -a "$pages_include_dir/" "$repo_dir/"
+          fi
+
+          git -C "$repo_dir" add --all
+          if git -C "$repo_dir" diff --cached --quiet; then
+            echo "No external Pages changes to publish."
+          else
+            git -C "$repo_dir" commit -m "docs: publish pages ${{ steps.distribution_meta.outputs.dist_date }} (source ${{ steps.distribution_meta.outputs.source_sha_short }})"
+            git -C "$repo_dir" pull --rebase origin "$DIST_TARGET_BRANCH"
+            git -C "$repo_dir" push origin "HEAD:$DIST_TARGET_BRANCH"
+          fi
 
   # ── Final Summary: Always emit run-state artifact ───────
   pipeline_summary:
