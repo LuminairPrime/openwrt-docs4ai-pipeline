@@ -557,6 +557,34 @@ def collect_modules() -> list[str]:
     return modules
 
 
+def collect_release_tree_modules() -> list[str]:
+    """Discover module directories already written into release-tree/."""
+    if not os.path.isdir(RELEASE_TREE_DIR):
+        return []
+
+    modules = []
+    for name in sorted(os.listdir(RELEASE_TREE_DIR)):
+        module_dir = os.path.join(RELEASE_TREE_DIR, name)
+        if not os.path.isdir(module_dir):
+            continue
+        required_paths = [
+            os.path.join(module_dir, "llms.txt"),
+            os.path.join(module_dir, config.MODULE_MAP_FILENAME),
+            os.path.join(module_dir, config.MODULE_BUNDLED_REF_FILENAME),
+            os.path.join(module_dir, config.MODULE_CHUNKED_REF_DIRNAME),
+        ]
+        if all(os.path.exists(path) for path in required_paths):
+            modules.append(name)
+    return modules
+
+
+def release_tree_is_ready(modules: list[str]) -> bool:
+    """Return True when late stages already emitted direct release-tree output."""
+    if not modules:
+        return False
+    return all(os.path.isfile(os.path.join(RELEASE_TREE_DIR, name)) for name in ROOT_RELEASE_FILES)
+
+
 def copy_rewritten_text(src: str, dst: str, rewrite) -> None:
     """Copy one text file after applying a rewrite function."""
     write_text(dst, rewrite(read_text(src)))
@@ -726,6 +754,22 @@ def copy_support_tree() -> None:
             log("WARN", f"missing support telemetry file: {name}")
 
 
+def finalize_direct_release_tree(modules: list[str]) -> None:
+    """Finalize a release-tree already emitted directly by late stages."""
+    reset_directory(SUPPORT_TREE_DIR)
+    for module in modules:
+        src_dir = os.path.join(OUTDIR, module)
+        if os.path.isdir(src_dir):
+            copy_module_types(module, src_dir, os.path.join(RELEASE_TREE_DIR, module))
+
+    overlay_paths = apply_release_include_overlay()
+    if overlay_paths:
+        log("OK", f"applied release-include overlay: {summarize_paths(overlay_paths)}")
+
+    copy_support_tree()
+    log("OK", f"finalized direct release-tree for {len(modules)} modules")
+
+
 def main() -> int:
     """Assemble release-tree/ and support-tree/ from the staged old contract."""
     if not config.ENABLE_RELEASE_TREE:
@@ -735,6 +779,11 @@ def main() -> int:
     if not os.path.isdir(OUTDIR):
         log("FAIL", f"OUTDIR not found: {OUTDIR}")
         return 1
+
+    direct_modules = collect_release_tree_modules()
+    if release_tree_is_ready(direct_modules):
+        finalize_direct_release_tree(direct_modules)
+        return 0
 
     modules = collect_modules()
     if not modules:

@@ -18,6 +18,7 @@ import datetime
 import glob
 import os
 import re
+import shutil
 import sys
 from typing import Any
 
@@ -35,6 +36,9 @@ except ImportError:
 OUTDIR = config.OUTDIR
 L2_DIR = os.path.join(OUTDIR, "L2-semantic")
 MAX_MONOLITH_TOKENS = 100_000
+ENABLE_RELEASE_TREE = config.ENABLE_RELEASE_TREE
+RELEASE_TREE_DIR = config.RELEASE_TREE_DIR
+RELEASE_PART_PREFIX = config.MODULE_BUNDLED_REF_FILENAME.removesuffix(".md") + ".part-"
 
 
 def rewrite_relative_links(module: str, body_text: str) -> str:
@@ -50,6 +54,30 @@ def rewrite_relative_links(module: str, body_text: str) -> str:
         body_with_fixed_links,
     )
     return body_with_fixed_links
+
+
+def rewrite_release_relative_links(body_text: str) -> str:
+    """Rewrite L2-relative markdown links for release-tree bundled outputs."""
+    body_with_fixed_links = re.sub(
+        r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+)/([^)]*?\.md)\)',
+        rf'[\1](../\2/{config.MODULE_CHUNKED_REF_DIRNAME}/\3)',
+        body_text,
+    )
+    body_with_fixed_links = re.sub(
+        r'\[(.*?)\]\(\./(.*?\.md)\)',
+        rf'[\1](./{config.MODULE_CHUNKED_REF_DIRNAME}/\2)',
+        body_with_fixed_links,
+    )
+    return body_with_fixed_links
+
+
+def rewrite_release_chunked_links(content: str) -> str:
+    """Rewrite cross-module L2 links for copied chunked-reference pages."""
+    return re.sub(
+        r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+)/([^)]*?\.md)\)',
+        rf'[\1](../../\2/{config.MODULE_CHUNKED_REF_DIRNAME}/\3)',
+        content,
+    )
 
 
 def append_skeleton_lines(
@@ -110,6 +138,7 @@ def load_l2_sections(
                 "path": fpath,
                 "token_count": token_count,
                 "body_text": rewrite_relative_links(module, body_text),
+                "release_body_text": rewrite_release_relative_links(body_text),
             }
         )
         append_skeleton_lines(skeleton_lines, frontmatter, body_text)
@@ -166,9 +195,12 @@ def build_reference_layout(
     return layout
 
 
-def join_reference_sections(sections: list[dict[str, Any]]) -> str:
+def join_reference_sections(
+    sections: list[dict[str, Any]],
+    body_key: str = "body_text",
+) -> str:
     """Join section bodies into one deterministic L4 markdown payload."""
-    joined = "\n\n---\n\n".join(str(section["body_text"]) for section in sections)
+    joined = "\n\n---\n\n".join(str(section[body_key]) for section in sections)
     return joined.rstrip() + "\n"
 
 
@@ -282,6 +314,125 @@ def write_sharded_reference_part(
         handle.write(join_reference_sections(part["sections"]))
 
 
+def write_release_complete_reference(
+    path: str,
+    module: str,
+    total_tokens: int,
+    section_count: int,
+    generated_at: str,
+    sections: list[dict[str, Any]],
+) -> None:
+    """Write the release-tree bundled reference for one module."""
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        write_yaml_frontmatter(
+            handle,
+            {
+                "module": module,
+                "total_token_count": total_tokens,
+                "section_count": section_count,
+                "is_monolithic": True,
+                "generated": generated_at,
+            },
+        )
+        handle.write(f"# {module} Bundled Reference\n\n")
+        handle.write(f"> **Contains:** {section_count} documents concatenated\n")
+        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n\n---\n\n")
+        handle.write(join_reference_sections(sections, body_key="release_body_text"))
+
+
+def write_release_sharded_reference_index(
+    path: str,
+    module: str,
+    total_tokens: int,
+    section_count: int,
+    generated_at: str,
+    parts: list[dict[str, Any]],
+) -> None:
+    """Write the release-tree bundled-reference index for an oversized module."""
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        write_yaml_frontmatter(
+            handle,
+            {
+                "module": module,
+                "total_token_count": total_tokens,
+                "section_count": section_count,
+                "is_monolithic": False,
+                "is_sharded_index": True,
+                "part_count": len(parts),
+                "generated": generated_at,
+            },
+        )
+        handle.write(f"# {module} Bundled Reference\n\n")
+        handle.write(
+            f"> **Contains:** {section_count} documents across {len(parts)} sharded parts\n"
+        )
+        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n")
+        handle.write(
+            f"> **Sharding Rule:** The module exceeded the {MAX_MONOLITH_TOKENS} token budget, so use one of the smaller parts below for deep context.\n\n"
+        )
+        handle.write("## Reference Parts\n\n")
+        for part in parts:
+            filename = f"{RELEASE_PART_PREFIX}{int(part['part_number']):02d}.md"
+            handle.write(
+                "- [{filename}](./{filename}): Part {part_number} of {part_count} "
+                "(~{token_count} tokens, {section_count} documents)\n".format(
+                    filename=filename,
+                    part_number=part["part_number"],
+                    part_count=part["part_count"],
+                    token_count=part["token_count"],
+                    section_count=part["section_count"],
+                )
+            )
+        handle.write("\n")
+
+
+def write_release_sharded_reference_part(
+    path: str,
+    module: str,
+    generated_at: str,
+    part: dict[str, Any],
+) -> None:
+    """Write one release-tree bundled-reference shard."""
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        write_yaml_frontmatter(
+            handle,
+            {
+                "module": module,
+                "total_token_count": part["token_count"],
+                "section_count": part["section_count"],
+                "is_monolithic": False,
+                "is_sharded_part": True,
+                "part_number": part["part_number"],
+                "part_count": part["part_count"],
+                "generated": generated_at,
+            },
+        )
+        handle.write(
+            f"# {module} Bundled Reference (Part {part['part_number']} of {part['part_count']})\n\n"
+        )
+        handle.write(f"> **Contains:** {part['section_count']} documents\n")
+        handle.write(f"> **Tokens:** ~{part['token_count']} (cl100k_base)\n")
+        handle.write(
+            f"> **Index:** [./{config.MODULE_BUNDLED_REF_FILENAME}](./{config.MODULE_BUNDLED_REF_FILENAME})\n\n---\n\n"
+        )
+        handle.write(join_reference_sections(part["sections"], body_key="release_body_text"))
+
+
+def write_release_map(
+    path: str,
+    module: str,
+    generated_at: str,
+    skeleton_lines: list[str],
+) -> None:
+    """Write the release-tree navigation map for one module."""
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(f"# {module} Navigation Map\n\n")
+        handle.write(f"> **Contains:** Headers and function signatures for {module}.\n")
+        handle.write(f"> **Generated:** {generated_at}\n\n---\n\n")
+        handle.write("\n".join(skeleton_lines).strip())
+        handle.write("\n")
+
+
 def write_skeleton(
     path: str,
     module: str,
@@ -296,6 +447,19 @@ def write_skeleton(
         handle.write("\n".join(skeleton_lines).strip())
         handle.write("\n")
 
+
+def copy_release_chunked_pages(md_files: list[str], out_mod_dir: str) -> None:
+    """Copy L2 semantic pages into the release-tree chunked-reference folder."""
+    chunked_dir = os.path.join(out_mod_dir, config.MODULE_CHUNKED_REF_DIRNAME)
+    os.makedirs(chunked_dir, exist_ok=True)
+
+    for fpath in md_files:
+        with open(fpath, "r", encoding="utf-8") as handle:
+            content = handle.read().strip()
+        out_path = os.path.join(chunked_dir, os.path.basename(fpath))
+        with open(out_path, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(rewrite_release_chunked_links(content).rstrip() + "\n")
+
 def main() -> int:
     """Assemble publishable L4 references and L3 skeletons from staged L2 files."""
     if not os.path.isdir(L2_DIR):
@@ -306,6 +470,11 @@ def main() -> int:
     if not modules:
         print("[05a] FAIL: No modules found in L2 semantic directory.")
         return 1
+
+    if ENABLE_RELEASE_TREE:
+        if os.path.isdir(RELEASE_TREE_DIR):
+            shutil.rmtree(RELEASE_TREE_DIR)
+        os.makedirs(RELEASE_TREE_DIR, exist_ok=True)
 
     generated_at = datetime.datetime.now(datetime.UTC).isoformat()
     warn_count = 0
@@ -373,6 +542,52 @@ def main() -> int:
 
         write_skeleton(l3_skeleton_path, module, generated_at, skeleton_lines)
         outputs_generated += 1
+
+        if ENABLE_RELEASE_TREE:
+            release_mod_dir = os.path.join(RELEASE_TREE_DIR, module)
+            os.makedirs(release_mod_dir, exist_ok=True)
+
+            release_reference_path = os.path.join(
+                release_mod_dir,
+                config.MODULE_BUNDLED_REF_FILENAME,
+            )
+            release_map_path = os.path.join(
+                release_mod_dir,
+                config.MODULE_MAP_FILENAME,
+            )
+
+            if layout["sharded"]:
+                write_release_sharded_reference_index(
+                    release_reference_path,
+                    module,
+                    int(layout["total_token_count"]),
+                    int(layout["section_count"]),
+                    generated_at,
+                    layout["parts"],
+                )
+
+                for part in layout["parts"]:
+                    write_release_sharded_reference_part(
+                        os.path.join(
+                            release_mod_dir,
+                            f"{RELEASE_PART_PREFIX}{int(part['part_number']):02d}.md",
+                        ),
+                        module,
+                        generated_at,
+                        part,
+                    )
+            else:
+                write_release_complete_reference(
+                    release_reference_path,
+                    module,
+                    int(layout["total_token_count"]),
+                    int(layout["section_count"]),
+                    generated_at,
+                    sections,
+                )
+
+            write_release_map(release_map_path, module, generated_at, skeleton_lines)
+            copy_release_chunked_pages(md_files, release_mod_dir)
 
         if layout["sharded"]:
             print(

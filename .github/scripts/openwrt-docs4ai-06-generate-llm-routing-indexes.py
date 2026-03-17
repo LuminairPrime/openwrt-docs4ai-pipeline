@@ -13,6 +13,7 @@ Notes: Root llms.txt remains a decision tree, while llms-full.txt and module
 import glob
 import os
 import re
+import shutil
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
@@ -33,6 +34,9 @@ except ImportError:
 
 OUTDIR = config.OUTDIR
 L2_DIR = os.path.join(OUTDIR, "L2-semantic")
+RELEASE_TREE_DIR = config.RELEASE_TREE_DIR
+ENABLE_RELEASE_TREE = config.ENABLE_RELEASE_TREE
+RELEASE_PART_PREFIX = config.MODULE_BUNDLED_REF_FILENAME.removesuffix(".md") + ".part-"
 DESCRIPTION_FALLBACK = "Description unavailable."
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 
@@ -193,6 +197,116 @@ def render_section(title, entries):
 
 def module_sort_key(module_name):
     return (MODULE_CATEGORIES.get(module_name, "Other Components"), module_name)
+
+
+def apply_replacements(content, replacements):
+    updated = content
+    for old, new in replacements:
+        updated = updated.replace(old, new)
+    return updated
+
+
+def rewrite_release_module_llms(content, module):
+    return apply_replacements(
+        content,
+        [
+            (f"{module}-skeleton.md", config.MODULE_MAP_FILENAME),
+            (
+                f"{module}-complete-reference.md",
+                config.MODULE_BUNDLED_REF_FILENAME,
+            ),
+            (
+                f"{module}-complete-reference.part-",
+                RELEASE_PART_PREFIX,
+            ),
+            (
+                f"{module}.d.ts",
+                f"{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
+            ),
+            (f"./{module}-skeleton.md", f"./{config.MODULE_MAP_FILENAME}"),
+            (
+                f"./{module}-complete-reference.md",
+                f"./{config.MODULE_BUNDLED_REF_FILENAME}",
+            ),
+            (
+                f"./{module}-complete-reference.part-",
+                f"./{RELEASE_PART_PREFIX}",
+            ),
+            (
+                f"../L2-semantic/{module}/",
+                f"./{config.MODULE_CHUNKED_REF_DIRNAME}/",
+            ),
+            (
+                f"./{module}.d.ts",
+                f"./{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
+            ),
+        ],
+    )
+
+
+def rewrite_release_llms_full(content, modules):
+    replacements = []
+    for module in modules:
+        replacements.extend(
+            [
+                (
+                    f"./{module}/{module}-skeleton.md",
+                    f"./{module}/{config.MODULE_MAP_FILENAME}",
+                ),
+                (
+                    f"./{module}/{module}-complete-reference.md",
+                    f"./{module}/{config.MODULE_BUNDLED_REF_FILENAME}",
+                ),
+                (
+                    f"./{module}/{module}-complete-reference.part-",
+                    f"./{module}/{RELEASE_PART_PREFIX}",
+                ),
+                (
+                    f"./L2-semantic/{module}/",
+                    f"./{module}/{config.MODULE_CHUNKED_REF_DIRNAME}/",
+                ),
+                (
+                    f"./{module}/{module}.d.ts",
+                    f"./{module}/{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
+                ),
+            ]
+        )
+    return apply_replacements(content, replacements)
+
+
+def write_release_tree_routes(modules):
+    os.makedirs(RELEASE_TREE_DIR, exist_ok=True)
+
+    shutil.copy2(
+        os.path.join(OUTDIR, "llms.txt"),
+        os.path.join(RELEASE_TREE_DIR, "llms.txt"),
+    )
+
+    with open(os.path.join(OUTDIR, "llms-full.txt"), "r", encoding="utf-8") as handle:
+        llms_full_content = handle.read()
+    with open(
+        os.path.join(RELEASE_TREE_DIR, "llms-full.txt"),
+        "w",
+        encoding="utf-8",
+        newline="\n",
+    ) as handle:
+        handle.write(rewrite_release_llms_full(llms_full_content, modules))
+
+    for module in modules:
+        src_path = os.path.join(OUTDIR, module, "llms.txt")
+        if not os.path.isfile(src_path):
+            continue
+        dst_dir = os.path.join(RELEASE_TREE_DIR, module)
+        os.makedirs(dst_dir, exist_ok=True)
+        with open(src_path, "r", encoding="utf-8") as handle:
+            module_content = handle.read()
+        with open(
+            os.path.join(dst_dir, "llms.txt"),
+            "w",
+            encoding="utf-8",
+            newline="\n",
+        ) as handle:
+            handle.write(rewrite_release_module_llms(module_content, module))
 
 
 def main():
@@ -475,6 +589,9 @@ def main():
                 )
                 + "\n"
             )
+
+    if ENABLE_RELEASE_TREE:
+        write_release_tree_routes(sorted(module_registry))
 
     print("[06] Complete: Generated llms.txt, llms-full.txt, and module-level indexes.")
     return 0

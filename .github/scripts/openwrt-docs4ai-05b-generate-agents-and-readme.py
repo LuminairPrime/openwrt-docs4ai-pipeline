@@ -23,6 +23,8 @@ sys.stdout.reconfigure(line_buffering=True)
 OUTDIR = config.OUTDIR
 REGISTRY_PATH = os.path.join(OUTDIR, "cross-link-registry.json")
 L2_DIR = os.path.join(OUTDIR, "L2-semantic")
+RELEASE_TREE_DIR = config.RELEASE_TREE_DIR
+ENABLE_RELEASE_TREE = config.ENABLE_RELEASE_TREE
 TS = datetime.datetime.now(datetime.UTC).isoformat()
 
 print("[05b] Generating AGENTS.md and README.md")
@@ -122,13 +124,60 @@ readme_content = f"""# openwrt-docs4ai Generated Pipeline Output
 **Pipeline Run Date:** {TS}
 **Baseline Version:** Auto-generated via CI/CD
 
-This repository branch contains the automatically generated, stable L3, L4, and L5 documentation layers for OpenWrt. 
+This repository branch contains the automatically generated, stable L3, L4, and L5 documentation layers for OpenWrt.
 
 To ingest this generated corpus into an AI context window, begin at [llms.txt](./llms.txt).
 
 If you already know the target subsystem, continue from that module's `llms.txt`. Use [llms-full.txt](./llms-full.txt) only when you need the exhaustive flat catalog.
 
+For a human-readable, filesystem-derived browse view of the published tree, open [index.html](./index.html).
+
 For AI agents navigating the published output tree, read [AGENTS.md](./AGENTS.md) for routing rules, context budgeting guidance, and source-boundary notes.
+"""
+
+release_agents_content = f"""# AGENTS.md — AI Agent Instructions for the openwrt-docs4ai release tree
+
+## Repository Structure
+- `llms.txt` — Start here. Root router covering every published module.
+- `llms-full.txt` — Exhaustive flat catalog of published module routes and chunked-reference topics.
+- `[module]/llms.txt` — Module-specific router with preferred entry points and topic pages.
+- `[module]/{config.MODULE_MAP_FILENAME}` — Navigation map for quick orientation within one module.
+- `[module]/{config.MODULE_BUNDLED_REF_FILENAME}` — Broad bundled reference for one module.
+- `[module]/{config.MODULE_CHUNKED_REF_DIRNAME}/` — Targeted topic pages copied from the semantic layer.
+- `[module]/{config.MODULE_TYPES_DIRNAME}/*.d.ts` — Optional IDE schema surface when a module exports types.
+
+## Conventions
+- All token counts use `cl100k_base` encoding.
+- Cross-references use relative Markdown links.
+- `chunked-reference/` and `bundled-reference.md` contain the same authoritative programming content in different packaging forms.
+
+## Rules & Constraints
+1. **Entry Point:** Always begin navigation at `llms.txt`.
+2. **Module Routing:** Once the target subsystem is known, switch to that module's `llms.txt` before reading the flat catalog.
+3. **Context Budgets:** Prefer `map.md` for orientation, `bundled-reference.md` for broad ingestion, and `chunked-reference/` topic files for targeted lookups.
+4. **Tooling Surfaces:** Treat generated `types/*.d.ts` files as published helper surfaces, not incidental by-products.
+5. **No Hallucination:** DO NOT invent APIs, parameters, or configuration rules that do not appear in the published module files.
+
+## Current Context
+- **Module Count:** {module_count}
+- **Total Token Count:** ~{total_tokens}
+- **Indexed Symbols:** {symbol_count}
+"""
+
+release_readme_content = f"""# openwrt-docs4ai Release Tree
+
+**Pipeline Run Date:** {TS}
+**Baseline Version:** Auto-generated via CI/CD
+
+This release tree packages the OpenWrt programming corpus for humans, IDE tooling, and LLM workflows.
+
+Start at [llms.txt](./llms.txt) for root routing across modules. If you already know the target subsystem, continue from that module's `llms.txt`.
+
+Within each module, use `map.md` for orientation, `bundled-reference.md` for broad context, and `chunked-reference/` for targeted lookups.
+
+For a human-readable, filesystem-derived browse view of the published tree, open [index.html](./index.html).
+
+For AI agents navigating the published output tree, read [AGENTS.md](./AGENTS.md) for routing rules and context-budget guidance.
 """
 
 with open(os.path.join(OUTDIR, "AGENTS.md"), "w", encoding="utf-8", newline="\n") as f:
@@ -136,5 +185,13 @@ with open(os.path.join(OUTDIR, "AGENTS.md"), "w", encoding="utf-8", newline="\n"
 
 with open(os.path.join(OUTDIR, "README.md"), "w", encoding="utf-8", newline="\n") as f:
     f.write(readme_content)
+
+if ENABLE_RELEASE_TREE:
+    os.makedirs(RELEASE_TREE_DIR, exist_ok=True)
+    with open(os.path.join(RELEASE_TREE_DIR, "AGENTS.md"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(release_agents_content)
+
+    with open(os.path.join(RELEASE_TREE_DIR, "README.md"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(release_readme_content)
 
 print("[05b] Complete.")
