@@ -5,7 +5,7 @@ origin_type: c_source
 token_count: 11211
 version: 3d482fb
 source_file: L1-raw/ucode/c_source-api-module-fs.md
-last_pipeline_run: '2026-03-20T04:40:03.869041+00:00'
+last_pipeline_run: '2026-03-20T05:00:26.684670+00:00'
 upstream_path: lib/fs.c
 language: c
 ---
