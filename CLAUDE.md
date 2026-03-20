@@ -41,6 +41,16 @@ python tests/run_pytest.py tests/pytest/pytest_01_workflow_contract_test.py
 python tests/run_pytest.py -k "test_name_pattern"
 ```
 
+## Review Discipline
+
+This repository is a documentation production pipeline, not a long-running user-facing application. Most regressions are recoverable and show up quickly in execution-time evidence: focused pytest failures, deterministic smoke failures, Ruff or Pyright diagnostics, actionlint errors, and GitHub Actions summary artifacts.
+
+- Prefer the cheapest proof that can fail: focused pytest, deterministic smoke, `tests/check_linting.py`, then pinned CI artifact triage.
+- Treat reviewer agents as optional spot-checks, not the primary safety mechanism.
+- For most changes, use at most one reviewer-style pass. Do not stack `code-reviewer` and `python-reviewer` by default on the same diff.
+- If a bug can be reproduced from runtime evidence or CI artifacts, fix from that evidence instead of spending extra tokens on repeated speculative review rounds.
+- Re-run reviewer agents only after a substantial redesign or when local and CI evidence is still ambiguous.
+
 ## CI Operations
 
 Always pin to your commit SHA — a successful deploy triggers a bot commit (`docs: v12 auto-update YYYY-MM-DD`) that starts a new "latest" run.
@@ -115,6 +125,7 @@ Before editing numbered scripts or the workflow:
 - **Dependencies:** Keep `requirements.txt` as a small direct list; do not pin by default
 - **Docs cross-links:** Use relative Markdown links, not inline code spans, for navigational references
 - **Public contract:** `release-tree/` is the only publishable layout; `support-tree/` is internal-only support state.
+- **Review budget:** optimize for fast local proof and CI artifact triage before invoking expensive reviewer agents.
 
 ## Known Deferred Items
 

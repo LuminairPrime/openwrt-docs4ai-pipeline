@@ -85,6 +85,13 @@ Current Option B hardening adds per-extractor status manifests, disables matrix 
 - Local smoke tests should isolate `WORKDIR` and `OUTDIR` so the repository is not corrupted during development.
 - GitHub Actions remains a second-stage verification target after local proof, and it is now also the normal publication path for generated outputs.
 
+## Failure Model And Review Economy
+
+- This repository is a batch documentation pipeline with recoverable failures, not an always-on application runtime.
+- The dominant defect classes in this codebase are workflow wiring mistakes, output-contract regressions, path/layout mismatches, and validation gaps; these are usually exposed quickly by focused pytest, deterministic smoke, actionlint, and CI summary artifacts.
+- Engineering should optimize for low-cost feedback loops. Concrete execution evidence is generally more valuable here than repeated speculative review.
+- Reviewer agents are optional spot-checks, not the primary correctness layer. Repeated overlapping review loops are discouraged unless local tests and CI artifacts still leave the root cause ambiguous.
+
 ## Remote Promotion Contract
 
 - The `process` job builds generated artifacts into `staging/` (`OUTDIR`) and uploads that tree as `final-staging`.

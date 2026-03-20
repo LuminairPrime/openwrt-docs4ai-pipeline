@@ -58,6 +58,17 @@ See `tests/README.md` for the full layout and direct entry points.
 
 These runners are intentionally local-first. Remote GitHub Actions validation still depends on a pushed commit and the run-pinning procedure in `CI Operations`.
 
+## Resource-Conscious Review Discipline
+
+This project is a batch documentation pipeline with recoverable failures, not a latency-sensitive production application. In practice, most real regressions are cheaper to find from execution-time evidence than from repeated speculative review.
+
+- Start with focused pytest, deterministic smoke, and `tests/check_linting.py`.
+- If remote proof is needed, pin the exact GitHub Actions run to your commit SHA and read `pipeline-summary`, `process-summary`, and `extract-summary` before raw logs.
+- Use reviewer agents sparingly. For most diffs, one reviewer pass is enough; many diffs need none.
+- Do not run overlapping reviewer agents in a loop by default. `code-reviewer` plus `python-reviewer` on the same change should be the exception, not the baseline.
+- Prefer runtime and CI artifacts when the failure is already observable there. This repo tolerates iterative fixes driven by concrete logs better than token-heavy pre-emptive review loops.
+- Skip reviewer-agent passes for docs-only edits, isolated test updates, and straightforward workflow-wiring fixes unless the evidence is ambiguous.
+
 ## Terminal Testing Discipline
 
 When validating this project from the terminal, prefer deterministic, bounded commands over ad hoc shell control flow.
@@ -243,6 +254,7 @@ gh run view <run_id> --json jobs,conclusion,url
 - **Do not pull full logs before the run finishes** — logs are noisy and incomplete mid-run; wait for `gh run watch` to exit cleanly before any log inspection.
 - **Do not skip the artifact triage phase** — `pipeline-summary`, `process-summary`, and `extract-summary` exist precisely to avoid log forensics; read them first and fall back to raw logs only for unexplained failures.
 - **Do not assume a deploy auto-commit is your commit** — verify by checking `headSha` on the run, not by run order.
+- **Do not burn review budget after the failure is already visible** — once local or CI artifacts identify the failing stage, debug from that evidence instead of invoking more reviewer agents.
 
 ## Environment Variables
 
