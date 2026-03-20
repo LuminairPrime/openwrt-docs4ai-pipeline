@@ -5,7 +5,7 @@ origin_type: makefile_meta
 token_count: 2031
 version: a1f5273
 source_file: L1-raw/openwrt-core/makefile_meta-category-system.md
-last_pipeline_run: '2026-03-20T01:28:00.439321+00:00'
+last_pipeline_run: '2026-03-20T04:25:17.118665+00:00'
 upstream_path: package/system
 language: makefile
 ai_summary: The OpenWrt Buildroot system packages module provides a collection of essential packages for system management and functionality within the OpenWrt environment. Key packages include 'opkg', a lightweight package management system that handles installation and removal of packages, and 'ca-certificates', which ensures secure connections by providing trusted CA certificates. Other notable packages are 'fstools' for filesystem management, 'fwtool' for firmware upgrades, and 'mtd' for managing flash memory devices. Each package is maintained by specific developers and is available from designated source URLs.
