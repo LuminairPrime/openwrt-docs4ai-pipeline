@@ -1,0 +1,120 @@
+I am answering this completely from the perspective of an IDE AI agent with zero prior knowledge of this project. All decisions and opinions are based on what I would infer from filenames alone, with no additional context.
+
+
+---
+
+## 1. Order of root files I would open
+As an AI agent, this is the exact priority order I would use:
+1.  `llms.txt` - This is the single highest priority file. It is an explicit standard that tells me exactly which files I should read. I will open this before anything else, no exceptions.
+2.  `AGENTS.md` - This is explicitly addressed to me, so it is the next highest priority.
+3.  `llms-full.txt` - If I have a large enough context window, I will pull this next.
+4.  `README.md` - Only if the above files do not answer my questions.
+5.  `index.html` - I will almost never open this. It is for humans.
+
+
+---
+
+## 2. File choice inside a module
+a.  **Fast orientation**: The map/skeleton/overview file. 100% of the time. This is exactly what it is for.
+b.  **Targeted API lookup**: The folder of smaller pages. I will find the exact page I need and open only that. There is no reason to open the large file for this.
+c.  **Broad subsystem understanding**: The large single file. It is vastly more efficient to pull one file into context than many separate files, and I will always choose this option if I need to understand the whole subsystem.
+
+
+---
+
+## 3. Easiest naming family to understand immediately
+Plain twin grammar is the easiest to understand, followed very closely by Authority-first. The absolute hardest to understand is Implementation-shaped, followed by Source-docs family.
+
+The key advantage of Plain twin grammar is that it makes the relationship between the two reference forms completely unambiguous at a glance.
+
+
+---
+
+## 4. Best at communicating equal authority
+Authority-first is the clear best, followed very closely by Plain twin grammar.
+
+The worst by far is Implementation-shaped, followed by Source-docs family. The key difference is that Authority-first uses the word "complete" on both, which is an extremely strong signal that they are equivalent. Plain twin grammar is almost as good, because it uses exactly parallel language.
+
+Any naming family that uses words like "source", "combined" or "concatenated" will always imply the large file is a derivative, and therefore less authoritative.
+
+
+---
+
+## 5. Best at communicating small vs large context use
+Usage-first is the unambiguous winner here. "targeted-source-docs" and "full-context-reference" tell you exactly when to use which. No other family comes close.
+
+
+---
+
+## 6. Actively misleading words
+Ranked by severity:
+1.  `concatenated`: The single worst word. Universally implies a non-authoritative build artifact. Agents will consistently deprioritize this file and assume the smaller pages are the only real source of truth.
+2.  `source-docs`: Implies that the smaller pages are the original source, and the large file is a derivative. Creates an implicit hierarchy that you are explicitly trying to avoid.
+3.  `skeleton`: Implies that the file is incomplete and only an outline. Agents will assume they need to go elsewhere for full information.
+4.  `combined`: Better than concatenated, but still implies the large file is a derivative of the smaller ones.
+
+
+---
+
+## 7. Best name for the orientation file
+`map` is by far the best.
+
+*   `overview` implies it is a high level summary that leaves out details.
+*   `skeleton` implies it is incomplete.
+*   `map` implies exactly what the file is: a complete, authoritative guide to where everything else is located.
+
+
+---
+
+## 8. Best name for the large reference file
+`single-file` is by far the best.
+
+It is a completely neutral description of the form of the file, with no implication about how it was created. `combined` and `concatenated` both imply it is a derivative work.
+
+
+---
+
+## 9. Best folder name for the smaller pages
+`individual-files-reference` is the best, followed by `complete-reference-pages`.
+
+`source-docs` and `targeted-source-docs` are both problematic for the reasons mentioned above.
+
+
+---
+
+## 10. Are module local README files needed?
+No. They will be almost completely ignored by AI agents. The map file provides exactly the orientation that a README would provide, and it is much better named and much more likely to be found and used.
+
+The only people who will read the module README are humans.
+
+
+---
+
+## 11. Proposed ideal naming family
+This takes the best parts of all the candidates and fixes all the major problems:
+
+| Smaller-page folder | Map file | Large reference file |
+| --- | --- | --- |
+| reference-pages/ | map.md | single-file-reference.md |
+
+This is better than all the existing candidates for several reasons:
+1.  **Perfect parallelism**: The two reference options share almost exactly the same name, and only differ by the one attribute that is different. This is the single strongest possible signal that they are equally authoritative and differ only by packaging.
+2.  **Zero hierarchy**: There is no word that suggests one is a derivative of the other. They are both reference material, just in different forms.
+3.  **Perfect predictability**: The filenames are exactly the same in every single module. An agent will learn this pattern once and apply it perfectly to every module.
+4.  **Clear usage guidance**: It is immediately obvious that if you need one thing you go to reference-pages, and if you need everything you open the single file.
+5.  **No misleading words**: It avoids all of the problematic words identified above.
+
+Additionally, I would strongly recommend removing the module name from the filenames inside the module folder. This makes the pattern identical across all modules, which is a massive win for predictability.
+
+
+---
+
+## Final top recommendations
+To reduce confusion and prevent programming mistakes:
+1.  Never use the word `concatenated` or `combined` to describe the large file. Always use `single-file`.
+2.  Always name the orientation file `map.md`.
+3.  Make the filenames exactly the same in every module. Do not include the module name in the filenames inside the module folder.
+4.  Avoid any language that implies one form of the reference is more authoritative than the other.
+5.  Consistency is far more important than perfect descriptive names.
+
+Would you like me to expand on any of these points, or draft an example module structure using this proposed naming family?

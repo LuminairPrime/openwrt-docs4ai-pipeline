@@ -1,0 +1,89 @@
+**Perspective: IDE-integrated AI coding tool (no prior knowledge of the project)**
+
+I am an agent that just got dropped into this filesystem. My only signals are filenames, folder names, and the content I read. I want to move with zero guesswork on a system I barely know (OpenWrt).
+
+### 1. Root files — opening order
+
+1. **README.md** — First, always. I need the 30-second "what is this thing and how am I supposed to use it?"
+2. **AGENTS.md** — Second. This is explicitly addressed to me. Highest signal-to-noise possible.
+3. **llms.txt** — Third. This appears to be the primary, curated ingestion file.
+4. **llms-full.txt** — Only if I need maximum breadth or the smaller one felt insufficient.
+5. `index.html` — Only if I want a browsable view (nice-to-have, not primary).
+
+### 2. Inside a module folder — what I open first
+
+**a. Fast orientation**  
+The map file (whatever it's called). This is my "table of contents + mental model" file.
+
+**b. Targeted API lookup**  
+I go straight into the smaller topic pages folder. I want the *narrowest, most authoritative* file on the exact topic.
+
+**c. Broad subsystem understanding**  
+The large reference file. One big context window is often better for seeing connections across subsystems.
+
+### 3–5. Naming family evaluation
+
+| Criteria                              | Winner                          | Why |
+|---------------------------------------|----------------------------------|-----|
+| Easiest to understand from filenames alone | **Plain twin grammar** | The contrast between `*-individual-files-reference/` and `*-single-file-reference.md` is immediately obvious even to a fresh model. |
+| Best communicates equal authority + different packaging | **Authority-first** | "complete-reference-pages" + "single-file-complete-reference" says "same content, different form" most cleanly. |
+| Best communicates small-context vs large-context | **Usage-first** | "quick-orientation-map" + "full-context-reference" speaks directly to how LLMs actually consume files. |
+
+**Words that are actively misleading or dangerous:**
+
+- **Skeleton** — Strongly implies "incomplete" or "template". Terrible for authoritative content.
+- **Source-docs** / **source-pages** — Will make me think this is the actual OpenWrt source code. Catastrophic confusion vector.
+- **Concatenated** — Smells like a build artifact, not canonical documentation.
+- **Targeted-source-docs** — Too long and still contains the poisonous "source" word.
+
+### 6. Word choice for specific files
+
+- **Quick orientation file**: **"map"** wins clearly. "Map" is the best word in software for "thing that helps you navigate." "Overview" is acceptable but weaker. "Skeleton" is bad.
+- **Large reference file**: **"complete"** or **"full"** are best. "Single-file" is descriptive but slightly mechanical. "Combined" and "concatenated" are weak.
+- **Folder for smaller pages**: **"complete-reference-pages"** is the strongest of the listed options. "individual-files-reference" is also decent but a bit clunky.
+
+### 7. Module-local READMEs?
+
+Yes, you still want them. Even with perfect naming, a one-paragraph `README.md` in each module that says:
+
+> "This module contains authoritative documentation for X. Use `*-map.md` for orientation, the `complete-reference-pages/` folder for precise lookups, and `*-complete-reference.md` for broad context."
+
+...is extremely high value. It acts as a local router and confirmation.
+
+### 8. My proposed naming family (best overall)
+
+**Family name: "Canonical Reference"**
+
+Folder structure:
+
+```bash
+<module>/
+├── README.md
+├── <module>-map.md                    # quick orientation + mental model
+├── <module>-complete-reference.md     # the big authoritative file
+├── complete-reference-pages/          # atomic, topic-focused pages
+│   ├── networking.md
+│   ├── ubus.md
+│   ├── ...
+├── types/
+└── llms.txt                           # optional module-level ingestion hint
+```
+
+**Why this is better:**
+
+- "complete-reference-pages" + "complete-reference.md" very strongly signals *same content, different packaging*.
+- "map" is the single best word for the orientation file.
+- No dangerous words (no skeleton, no source, no concatenated).
+- The large file and folder both contain the word "complete-reference" → strong family resemblance.
+- Short enough to be practical, clear enough for a model seeing this for the first time.
+
+### Final concrete recommendations (maximizing correctness on rare systems)
+
+1. **Maximize name overlap** between the large file and the folder (`complete-reference-*`).
+2. **Never** use "source", "skeleton", "concatenated", or "structural" in public names.
+3. Make the quick orientation file a true **map** — it should contain the mental model, not just a list of files.
+4. Keep filenames relatively short. Long names reduce scannability.
+5. Use consistent prefixes: either all start with `<module>-` or none do. Mixed is worse.
+6. Consider adding one more root-level file: `REFERENCE-STRATEGY.md` that explains the entire naming philosophy to agents. This would be extremely high-leverage.
+
+The goal is that an AI that has *never seen this project before* should still open the right file first, every time. The "Canonical Reference" scheme above currently achieves the best combination of immediate clarity, authority signaling, and context-window awareness.

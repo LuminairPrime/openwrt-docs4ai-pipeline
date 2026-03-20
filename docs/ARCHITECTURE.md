@@ -6,7 +6,7 @@ This repository is a documentation production pipeline, not an application runti
 
 The primary engineering goal for the current stage is maintainable correctness on Windows with verified remote publication behavior. Local validation remains the first gate, and GitHub Actions is now a confirmed verification and deployment layer rather than an unproven future target.
 
-The repository also has a dual-role documentation boundary: maintainer guidance lives in the source tree under `docs/`, while the generated AI-facing navigation surface lives under `openwrt-condensed-docs/`. The generated-corpus routing contract is authoritative for `llms.txt`, `llms-full.txt`, module `llms.txt`, and `AGENTS.md`; a source-repo root `llms.txt` remains explicitly deferred.
+The repository also has a dual-role documentation boundary: maintainer guidance lives in the source tree under `docs/`, while the generated AI-facing navigation surface lives under `openwrt-condensed-docs/`. The generated-corpus routing contract is authoritative for `llms.txt`, `llms-full.txt`, module `llms.txt`, and `AGENTS.md`; a source-repo root `llms.txt` remains explicitly deferred. The project is transitioning to a V5a release-tree contract that separates the publishable output (`release-tree/`) from internal pipeline artifacts, and renames public-facing files to use generic names (`map.md`, `bundled-reference.md`, `chunked-reference/`) instead of module-prefixed names.
 
 ## Repository Zones
 
@@ -22,6 +22,9 @@ The repository also has a dual-role documentation boundary: maintainer guidance 
 | `openwrt-condensed-docs/` | Published output root | Stable output tree for generated artifacts and local inspection. |
 | `tmp/` | Ephemeral working area | Never authoritative. Safe to delete between runs. |
 | `templates/` | Static content templates | Only keep templates that are actually consumed by the live pipeline. |
+| `release-tree/` | V5a publishable output root | Generated when `ENABLE_RELEASE_TREE=true`; direct-root layout with no `openwrt-condensed-docs/` wrapper. |
+| `support-tree/` | V5a ephemeral CI support artifacts | Not persistent; may be uploaded as CI artifact. |
+| `release-inputs/` | Source-controlled overlay directories | `release-include/` (common), `pages-include/` (Pages-specific), `release-repo-include/` (reserved). |
 
 ## Layer Model
 
@@ -33,6 +36,7 @@ The repository also has a dual-role documentation boundary: maintainer guidance 
 | `L3` | Navigational and operational outputs | `openwrt-condensed-docs/` and module subdirectories | Published |
 | `L4` | Complete-reference index files plus optional sharded parts | `openwrt-condensed-docs/{module}/` | Published |
 | `L5` | Telemetry and drift outputs | `openwrt-condensed-docs/` | Published |
+| `L3/L4 (V5a)` | Under V5a, L3/L4 output moves from `openwrt-condensed-docs/{module}/` to `release-tree/{module}/` with renamed files (`map.md`, `bundled-reference.md`, `chunked-reference/`). | `release-tree/{module}/` | Generated when `ENABLE_RELEASE_TREE=true` |
 
 ## Naming Conventions
 
@@ -57,6 +61,7 @@ The repository also has a dual-role documentation boundary: maintainer guidance 
 - `openwrt-condensed-docs/` is the stable output root for generated documentation.
 - `docs/` is for maintainers and project documentation only.
 - `tmp/` is scratch space and must never be treated as durable state.
+- Under V5a, `release-tree/` becomes the publishable output root. `openwrt-condensed-docs/` remains as the internal pipeline working directory but the name never appears in any public surface.
 
 ## Execution Contract
 
@@ -66,9 +71,10 @@ The repository also has a dual-role documentation boundary: maintainer guidance 
 4. `03` normalizes L1 into L2 and promotes stable intermediates into the output tree.
 5. `04` optionally enriches staged L2 files with AI summary metadata and performs its own AI-store preflight.
 6. `05a` assembles the publishable skeletons and complete-reference outputs, sharding oversized modules into smaller part files while preserving the stable index filename.
+6a. `05e` (V5a, feature-flagged) assembles the validated `release-tree/` from existing pipeline output, renaming files to the new contract (`map.md`, `bundled-reference.md`, `chunked-reference/`).
 7. `05b`, `05c`, and `05d` generate companion publication artifacts from the stabilized post-`03` snapshot.
 8. `06` generates routing indexes after `05a` has produced the publishable reference assets.
-9. `07` generates the HTML landing page after `06` has produced the routing indexes.
+9. `07` generates the HTML landing page directly from the staged publish tree, grouping files by top-level product area instead of deriving its structure from `llms.txt`.
 10. `08` validates the entire output tree.
 
 Current Option B hardening adds per-extractor status manifests, disables matrix fail-fast for repo-backed extractors, and emits extract plus pipeline summary artifacts for faster triage.
@@ -85,7 +91,9 @@ Current Option B hardening adds per-extractor status manifests, disables matrix 
 - The `process` job builds generated artifacts into `staging/` (`OUTDIR`) and uploads that tree as `final-staging`.
 - The `deploy` job promotes `final-staging` into `openwrt-condensed-docs/` with `rsync -a --delete`.
 - Generated-output commits use the `docs: v12 auto-update YYYY-MM-DD` format and are written by the GitHub Actions bot only when the staged tree changed.
-- GitHub Pages publishes a `public/` copy of staging that excludes `L1-raw` and `L2-semantic`, so those intermediate layers remain committed in-repo without being exposed on the public site.
+- The `deploy` job then mirrors `openwrt-condensed-docs/` into the dedicated `gh-pages` branch and writes `.nojekyll` there so GitHub Pages serves the same packaged tree, including `L1-raw` and `L2-semantic`, without Jekyll rewriting.
+
+Under V5a, deployment additionally publishes the validated `release-tree/` to external targets: `openwrt-docs4ai.github.io` (GitHub Pages) and the `corpus` release repository. The existing source-repo deploy behavior remains intact regardless of V5a deployment status (locked decision D13).
 
 ## Active Documents
 
@@ -93,6 +101,8 @@ Current Option B hardening adds per-extractor status manifests, disables matrix 
 - `DEVELOPMENT.md`: maintainer quick start and local workflow reference.
 - `docs/ARCHITECTURE.md`: durable architecture and naming contract.
 - `docs/specs/v12/`: active v12 specifications, current status, execution map, active bug log, and stabilization plan.
+- `docs/specs/v12/release-tree-contract.md`: V5a public output contract.
+- `docs/specs/v12/feature-flag-contract.md`: V5a feature flag semantics.
 
 ## Archive Policy
 

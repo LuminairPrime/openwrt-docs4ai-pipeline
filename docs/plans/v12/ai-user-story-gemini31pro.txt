@@ -1,0 +1,48 @@
+From the perspective of an IDE-integrated AI coding tool, my primary objectives are to orient myself quickly, avoid wasting context window tokens on irrelevant text, and locate exact API signatures or code examples to generate accurate code. 
+
+Here are the concrete answers to your questions based on your candidate structure:
+
+### 1. Which files would you open first at root, and why?
+1. **`llms.txt`** / **`AGENTS.md`**: I would open these first. The `.txt` and `.md` extensions are native to my processing, and these names signal that they contain instructions, routing information, and project rules explicitly formatted for me. 
+2. **`llms-full.txt`**: If my context window is large enough, I might just ingest this single file immediately to get the entire project context in one tool call.
+3. **`README.md`**: As a fallback to understand the human-readable purpose of the project.
+
+### 2. Inside a module folder, what file would you open first for:
+*   **a. broad subsystem understanding:** `<module>-single-file-complete-reference.md`. If I need to understand how the subsystem fits together, reading a single concatenated file gives me the best cross-references and context in one continuous stream without having to issue multiple file-read tool calls.
+*   **b. targeted API lookup:** `complete-reference-pages/<topic>.md`. If I already know exactly what function or class I need (perhaps identified via the skeleton), I want the smallest possible file to save context tokens.
+*   **c. minimal-token orientation:** `<module>-structural-skeleton.md`. If I just need to see what is available (like a Table of Contents) without the payload of explanations and examples.
+
+### 3. Do the names immediately communicate their role?
+*   **`structural-skeleton`**: **Partially.** To an AI, "skeleton" often implies boilerplate code or a starter template (e.g., a scaffold). It does not immediately scream "Table of Contents" or "Documentation Map."
+*   **`single-file-complete-reference`**: **Yes.** It is slightly verbose, but completely unambiguous.
+*   **`complete-reference-pages`**: **Yes.** It clearly implies a directory of chunked reference documentation.
+
+### 4. Which release files would you ignore completely?
+*   **`index.html`**: HTML contains massive amounts of DOM token noise (tags, styling, scripts) that dilute semantic meaning and burn through my context window. I will always prefer Markdown or plain text equivalents.
+*   **Duplicate content**: If I decide to use the `single-file-complete-reference.md`, I will completely ignore the `complete-reference-pages/` directory (and vice versa) to prevent redundant token ingestion. 
+
+### 5. Which files are essential for your use?
+*   **`llms.txt` / `AGENTS.md`**: Essential for initial orientation.
+*   **The reference content**: Either the single-file or the pages, depending on my current task.
+*   **`types/`**: **Highly essential.** Typed helper files (like `.d.ts` or similar definitions) are the absolute best way for an AI to prevent hallucinations. They offer strict, machine-readable API signatures in highly compact, token-efficient formats.
+
+### 6. Would you prefer module folders at repository root, or under `modules/`?
+**Under `modules/`.** 
+When I list directory contents (via a `list_dir` or `tree` tool call), I process the output as text. If 50 different OpenWrt subsystems are sitting at the root alongside `README.md` and `llms.txt`, the directory list becomes noisy. Grouping them under `modules/` keeps the root clean and allows me to navigate hierarchically, which saves tokens.
+
+### 7. What names would reduce ambiguity further?
+*   Change `<module>-structural-skeleton.md` to **`<module>-api-map.md`**, **`<module>-toc.md`**, or **`<module>-index.md`**. This guarantees I treat it as a navigation aid rather than a code scaffold.
+*   Change `<module>-single-file-complete-reference.md` to **`<module>-reference-full.md`** or **`<module>-bundle.md`**.
+*   Change `complete-reference-pages/` to **`pages/`**, **`topics/`**, or **`reference/`**.
+*   Consider merging `AGENTS.md` and `llms.txt`. The emerging standard is `llms.txt` for AI guidance; splitting them might cause me to miss one if I'm programmed to only look for the standard `llms.txt` file.
+
+### 8. Do you need metadata files such as `repo-manifest.json` in the release?
+**Generally, no.** Unless I am equipped with a highly specific custom tool designed to parse your proprietary JSON schema, a well-formatted markdown index (`api-map.md` or `llms.txt`) is much easier for a generalized LLM to comprehend. JSON structural syntax costs extra tokens (brackets, quotes) compared to a clean Markdown list of files and their descriptions.
+
+### 9. Do you see any remaining confusion about which files are authoritative versus convenience packaging?
+**Yes, a major one regarding automated semantic search.** 
+Because `single-file-complete-reference.md` and `complete-reference-pages/` contain the *exact same text*, any automated RAG (Retrieval-Augmented Generation) system or vector codebase search performed by the IDE will return **double results**. 
+
+When I run a search for an API function, the IDE will hand me two snippets of identical text from two different files. This wastes context space and confuses me as to which file I should read or edit. 
+
+**Solution:** You must heavily document this duplication in `llms.txt`, instructing the AI explicitly: *"Note to AI: The `<module>-bundle.md` and `pages/` directory contain identical information. Choose one based on your token limits, do not read both."* Alternatively, consider providing a `.cursorignore` or `.copilotignore` that hides the `pages/` folder from the IDE's semantic indexer while keeping it available for direct file reads.

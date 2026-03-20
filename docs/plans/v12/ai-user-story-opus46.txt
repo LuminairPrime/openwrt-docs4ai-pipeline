@@ -1,0 +1,284 @@
+AI User Story — IDE-Integrated AI Coding Tool Perspective
+Model: Claude Opus 4.6 (GitHub Copilot)
+Date: 2026-03-15
+=========================================================
+
+Context: I am answering as an IDE-integrated AI coding tool with no prior
+knowledge of this project, evaluating the proposed release structure purely
+by filenames, folder names, and stated design claims.
+
+
+1. Which files would I open first at root, and why?
+----------------------------------------------------
+
+In order:
+
+  1. llms.txt — This is the standard machine-readable site index defined by
+     the llms.txt specification. As an AI tool, I am trained to look for this
+     file first because it provides a structured map of all available content
+     with URLs and descriptions. It is the fastest way to orient myself to
+     what exists and where to find it.
+
+  2. AGENTS.md — This file signals that it contains instructions or context
+     specifically for AI agents. I would read it immediately because it may
+     define conventions, tool-use patterns, or constraints I should follow
+     when working with this documentation set.
+
+  3. README.md — Standard project entry point. I would scan it for a project
+     overview, module listing, and any usage instructions, but I would expect
+     llms.txt to be more directly actionable for my purposes.
+
+  4. llms-full.txt — I would note its existence but defer opening it unless
+     I need a comprehensive dump of all content in a single pass (e.g., for
+     a broad question spanning multiple modules).
+
+Files I would NOT open first: index.html (designed for human browsers, not
+for my consumption), repo-manifest.json (metadata, not documentation).
+
+
+2. Inside a module folder, what file would I open first?
+---------------------------------------------------------
+
+  a. Broad subsystem understanding:
+     <module>-single-file-complete-reference.md
+
+     Rationale: The name "complete reference" tells me this is the
+     authoritative, comprehensive document. "Single-file" tells me I can
+     ingest the entire module's documentation in one file open. For building
+     a mental model of a subsystem before writing code, this is ideal — one
+     read gives me everything.
+
+  b. Targeted API lookup:
+     complete-reference-pages/<topic>.md
+
+     Rationale: When a user asks me about a specific API, function, or
+     subsystem feature, I do not want to parse a monolithic file. The page
+     set lets me open only the relevant page, saving tokens and reducing
+     noise. I would use the module's llms.txt or README.md to identify which
+     page covers the API in question, then open that specific page.
+
+  c. Minimal-token orientation:
+     <module>-structural-skeleton.md
+
+     Rationale: The word "skeleton" signals a stripped-down, high-level
+     outline. If I just need to understand what a module contains — its
+     major sections, API surface shape, and file/directory structure —
+     without consuming the full reference, this is the right file. It is
+     the cheapest way to decide whether this module is relevant to the
+     user's current task.
+
+
+3. Do the names immediately communicate their role?
+----------------------------------------------------
+
+Mostly yes, with caveats:
+
+  - "structural-skeleton": YES. "Skeleton" is universally understood as a
+    stripped-down structural outline. "Structural" reinforces that it
+    preserves the shape of the real content. I would immediately understand
+    this is a lightweight navigation/orientation file.
+
+  - "single-file-complete-reference": YES, but it is verbose. The name
+    correctly communicates two things: (1) it is complete/authoritative,
+    and (2) it is a single file. The hyphenation makes it scannable. No
+    ambiguity about what I would get by opening it.
+
+  - "complete-reference-pages": MOSTLY YES. "Pages" (plural, in a folder)
+    clearly means multiple files. "Complete reference" matches the
+    single-file variant, which correctly implies they share the same
+    content. The only minor friction: on first encounter, I might briefly
+    wonder whether the pages contain ADDITIONAL content beyond the
+    single-file version, or are strictly equivalent. The design claim that
+    they are "the same programming documentation in different packaging
+    forms" resolves this, but the filename alone does not make it
+    unambiguous.
+
+
+4. Which release files would I ignore completely?
+--------------------------------------------------
+
+  - index.html: This is for human web browsers. I have no use for rendered
+    HTML when structured Markdown is available. I would never open this.
+
+  - repo-manifest.json: Unless I am building tooling that needs to
+    programmatically enumerate modules or check versions, this file has no
+    value during a coding assistance session. I would ignore it entirely
+    during normal operation. (Exception: if a user asks "what version of
+    the docs is this?" I might check it.)
+
+  - Any .d.ts files in types/ folders: I would ignore these UNLESS the user
+    is working in TypeScript or a JS-based environment AND is interacting
+    with the specific API those types describe. They are highly specialized.
+
+  - changelog.json, signature-inventory.json, cross-link-registry.json:
+    These are internal pipeline metadata. If they appear in the release,
+    I would ignore them. They add noise without helping me answer coding
+    questions.
+
+
+5. Which files are essential for my use?
+-----------------------------------------
+
+Tier 1 — Always needed:
+  - Root llms.txt (my primary entry point and navigation index)
+  - Root AGENTS.md (tells me how to behave with this doc set)
+  - Per-module llms.txt (module-level navigation)
+  - Per-module structural-skeleton (fast orientation)
+
+Tier 2 — Needed per task:
+  - <module>-single-file-complete-reference.md (when I need full context
+    for a module)
+  - complete-reference-pages/<topic>.md (when I need targeted lookup)
+
+Tier 3 — Occasionally useful:
+  - Root README.md (human-oriented overview, sometimes has info not in
+    llms.txt)
+  - Per-module README.md (may contain module-specific conventions)
+  - llms-full.txt (when I need to search across ALL modules at once)
+
+Everything else is non-essential for coding assistance.
+
+
+6. Would I prefer module folders at repository root, or under modules/?
+------------------------------------------------------------------------
+
+Under modules/.
+
+Reasons:
+
+  a. Namespace clarity: A flat root with 8+ module folders plus root files
+     creates visual clutter. When I list the root directory, I want to see
+     the structural files (README, AGENTS, llms.txt) without them being
+     buried among module folders.
+
+  b. Predictable discovery: modules/ is a single, obvious container. I can
+     list its contents to discover all available modules in one operation.
+     If modules are at root alongside non-module files, I need heuristics
+     to distinguish module folders from infrastructure folders.
+
+  c. Glob-friendly: I can reference modules/*/llms.txt or
+     modules/*/structural-skeleton.md in tooling and prompts. A flat root
+     structure makes glob patterns fragile because I must exclude non-module
+     directories.
+
+  d. Scalability: If more modules are added later, the root stays clean.
+
+The only argument for root-level modules is fewer path segments (shorter
+paths), but that is a trivial saving compared to the clarity benefits.
+
+
+7. What names would reduce ambiguity further?
+----------------------------------------------
+
+Current name                        → Suggested alternative
+─────────────────────────────────────────────────────────────────────
+structural-skeleton                 → skeleton (shorter, equally clear;
+                                      "structural" is implied by context)
+
+single-file-complete-reference      → reference-full
+                                      (shorter; "full" implies complete
+                                      and single-file by convention)
+
+complete-reference-pages/           → reference-pages/
+                                      (shorter; "complete" is redundant
+                                      since the pages collectively ARE
+                                      the complete reference)
+
+llms-full.txt                       → OK as-is. The relationship to
+                                      llms.txt is immediately clear.
+
+AGENTS.md                           → OK as-is. Industry-standard name.
+
+repo-manifest.json                  → OK as-is, if kept in release.
+
+The pattern would then be:
+  modules/<module>/
+    README.md
+    llms.txt
+    <module>-skeleton.md
+    <module>-reference-full.md
+    reference-pages/
+      <topic>.md
+    types/
+
+This reduces character count in filenames by ~40% while preserving all
+semantic information. Shorter names also mean shorter paths in tool output,
+which matters when I display file references to users.
+
+
+8. Do I need metadata files such as repo-manifest.json in the release?
+-----------------------------------------------------------------------
+
+No, not for coding assistance.
+
+repo-manifest.json is useful for:
+  - Tooling that auto-updates documentation sets
+  - Version checking and cache invalidation
+  - CI/CD pipelines that consume the docs
+
+It is NOT useful for:
+  - Answering "how do I configure a UCI firewall rule?"
+  - Looking up LuCI API signatures
+  - Understanding OpenWrt's init system
+
+If the release targets AI coding tools as the primary consumer,
+repo-manifest.json is optional ballast. I would recommend:
+  - Include it, but document in AGENTS.md that AI tools should ignore it
+  - OR move it to a metadata/ subfolder so it is clearly separated from
+    documentation content
+
+The cost of including it is near zero (I will just ignore it), so there is
+no strong reason to exclude it if other tooling benefits from it.
+
+
+9. Do I see remaining confusion about authoritative vs. convenience?
+---------------------------------------------------------------------
+
+One point of confusion remains:
+
+  The relationship between <module>-single-file-complete-reference.md and
+  complete-reference-pages/ needs to be stated explicitly in a place I will
+  definitely read — specifically in each module's llms.txt or README.md.
+
+  Without that statement, here is my uncertainty on first encounter:
+    - Are the pages a SUBSET of the single-file reference?
+    - Are they a SUPERSET (pages have extra content)?
+    - Are they IDENTICAL content, just split?
+    - If they diverge, which is authoritative?
+
+  My recommendation: Add a one-line note in each module's llms.txt:
+
+    # <module>-reference-full.md and reference-pages/ contain identical
+    # content. The single file is for broad ingestion; the page set is
+    # for targeted lookup. Neither is more authoritative than the other.
+
+  This costs ~30 tokens to read and eliminates all ambiguity permanently.
+
+  Beyond that, the structure is clean. The separation of concerns is clear:
+    - llms.txt = navigation
+    - skeleton = orientation
+    - reference = authoritative content (two packaging forms)
+    - types/ = optional typed helpers
+    - AGENTS.md = behavioral instructions for AI tools
+
+  I see no other sources of confusion. The design is well-organized for
+  AI consumption.
+
+
+Summary Assessment
+-------------------
+
+This release structure is well-designed for IDE-integrated AI coding tools.
+The three-tier approach (skeleton → single-file reference → page set) maps
+directly to how I operate: orient cheaply, then load detail as needed. The
+llms.txt convention at root and module level gives me a machine-readable
+entry point. AGENTS.md gives me behavioral context.
+
+The main improvements I would suggest are:
+  1. Shorten filenames (skeleton, reference-full, reference-pages/)
+  2. Use modules/ as a container rather than flat root
+  3. Add an explicit equivalence note for the two reference formats
+  4. Exclude or isolate pipeline metadata (changelog.json, etc.)
+
+With those changes, this would be one of the most AI-tool-friendly
+documentation structures I have encountered.

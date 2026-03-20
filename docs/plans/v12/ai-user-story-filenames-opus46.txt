@@ -1,0 +1,206 @@
+
+
+## Naming Review — IDE-Integrated AI Coding Tool Perspective
+
+### 1. Root file open order
+
+1. **`llms.txt`** — Machine-readable index. This is my programmatic entry point; I look for it by convention before anything else.
+2. **`AGENTS.md`** — Behavioral instructions for me. I need to know constraints before I start ingesting content.
+3. **README.md** — Human-oriented overview. Useful for understanding product scope, but I expect `llms.txt` to be more actionable.
+4. **`llms-full.txt`** — Deferred. I would only open this if I needed to search across all modules simultaneously (rare; usually I know which module I need).
+5. **`index.html`** — Never. I don't render HTML; structured Markdown is my input format.
+
+---
+
+### 2. Inside a module folder, first file for each task
+
+**a. Fast orientation:** The map file, regardless of what it's called. I want to spend ~200 tokens understanding the module's shape before deciding whether to go deeper.
+
+**b. Targeted API lookup:** The smaller-page folder. I would use `llms.txt` to identify the right page, then open only that page. This is my most common operation — a user asks about a specific UCI option or LuCI API call, and I need the narrowest relevant document.
+
+**c. Broad subsystem understanding:** The large reference file. When a user asks "how does the OpenWrt firewall system work?" I need the full picture in one read. One file open is cheaper than enumerating and reading 15 pages.
+
+---
+
+### 3. Which naming family is easiest to understand immediately from filenames alone?
+
+**Plain twin grammar** is the clearest on pure filename legibility.
+
+`<module>-single-file-reference.md` vs `<module>-individual-files-reference/` creates an unmistakable one-vs-many contrast. I don't need to read any documentation to understand what I'll get from each. The names are self-describing at the filesystem level.
+
+**Authority-first** is a close second, but "complete-reference-pages" requires a small inference step: "pages" means "multiple files in a folder." That inference is easy for a human but adds a parsing step for me when I'm pattern-matching filenames against a task.
+
+**Implementation-shaped** is the weakest. "Concatenated" describes how the file was built, not what it's for. I don't care about build mechanics.
+
+---
+
+### 4. Which family best communicates equal authority, different packaging?
+
+**Authority-first** wins here, and it's not close.
+
+The shared stem "complete-reference" in both `single-file-complete-reference` and `complete-reference-pages` is the strongest signal that these are the same content in different containers. The grammar literally says: "this is the complete reference (as one file)" and "these are the complete reference (as pages)." The shared noun phrase makes equivalence obvious.
+
+**Source-docs family** also does this reasonably well — `source-docs/` and `source-docs-combined-reference` share the "source-docs" stem, which implies the combined file is derived from (and equivalent to) the source docs.
+
+**Plain twin grammar** is weaker here. "Single-file-reference" and "individual-files-reference" share "reference" but the modifier words ("single-file" vs "individual-files") focus on the *container* rather than asserting content equivalence. I might wonder whether the single-file version is a summary or subset.
+
+---
+
+### 5. Which family best communicates small-context vs large-context use?
+
+**Usage-first** is purpose-built for this and it shows.
+
+- `targeted-source-docs/` → "I should open specific pages for narrow questions"
+- `<module>-full-context-reference.md` → "I should open this when I need the whole picture"
+- `<module>-quick-orientation-map.md` → "I should open this when I need to orient fast"
+
+Every name describes **when to use the file**, not what the file is. That's exactly the decision I make on every tool invocation: "given this user question, which file serves me best?"
+
+The weakness: "targeted" and "full-context" are usage hints, not content descriptions. If I'm a tool that doesn't understand the project's intent, these names are slightly less self-evident than "single-file" vs "pages."
+
+---
+
+### 6. Which words are actively misleading or likely to cause mistakes?
+
+**"Concatenated"** — This is a build-process word. It tells me the file was made by joining smaller files. That's an implementation detail I don't need, and worse, it might make me think the file is a mechanical paste-up with possible seam artifacts (duplicate headers, broken cross-references). It undermines confidence in the file as a first-class document.
+
+**"Source-docs"** — Ambiguous in a programming context. "Source" could mean "source code documentation" (docs extracted from source), "the source of truth" (authoritative docs), or "source files" (the original smaller files). In a project about programming a system, "source" is an overloaded word.
+
+**"Skeleton"** — Mild risk. In programming, "skeleton" often means "boilerplate code template" (a project skeleton, a function skeleton). For a documentation map file, "skeleton" might briefly confuse me into thinking it's a code template. The structural interpretation is correct but not the first association in a programming context.
+
+**"Complete"** in "complete-reference-pages" — Minor risk. If I see a folder called "complete-reference-pages" containing 12 files, I might briefly wonder whether each page is individually "complete" (self-contained) or whether the set collectively is "complete." The intended meaning is the latter, but the grammar is slightly ambiguous.
+
+**"Individual-files-reference"** — The word "individual" is unusual in filesystem naming. It reads more like a description in a specification document than a folder name. It would slow down my pattern matching.
+
+---
+
+### 7. Is `skeleton`, `map`, or `overview` the clearest name for the quick orientation file?
+
+**`map`** is the best choice.
+
+| Word | Strengths | Weaknesses |
+|------|-----------|------------|
+| `map` | Universally understood as "shows you where things are without being the things themselves." Implies navigation, structure, and spatial relationships. Short. | Could be confused with data structure `Map` in some contexts, but filename context makes this unlikely. |
+| `skeleton` | Implies stripped-down structure. | In programming, "skeleton" primarily means "boilerplate code template." A `uci-skeleton.md` could be mistaken for a UCI configuration template. |
+| `overview` | Familiar and safe. | Vague. An "overview" could be a narrative introduction, a feature summary, or a structural map. Does not specifically promise structure-preserving content. |
+
+For a project targeting AI coding tools working on a rare system, **`map`** has the best signal-to-noise ratio. It promises: "this file shows you the layout so you can navigate to what you need." That's exactly what the orientation file does.
+
+A strong runner-up would be **`outline`**, which is less ambiguous than `skeleton` and more structurally specific than `overview`.
+
+---
+
+### 8. Is `single-file`, `combined`, or `concatenated` the clearest word for the large reference file?
+
+**`single-file`** is the clearest, but it can be shortened.
+
+| Word | Verdict |
+|------|---------|
+| `single-file` | Clear. States the packaging form directly. My only reservation: it's a modifier about the container, not the content. But since the content description ("reference") follows, this works. |
+| `combined` | Acceptable but slightly ambiguous. "Combined" implies merging, which could mean summarized, synthesized, or simply joined. It doesn't promise the same content as the pages. |
+| `concatenated` | Reject. Build-process jargon. Implies mechanical joining. Undermines confidence in the document's quality. |
+
+**My actual recommendation:** Drop the packaging modifier from the filename entirely and rely on the extension and context. If every module has `<module>-reference.md` (one file) and `reference-pages/` (folder), the one-file-vs-folder contrast is self-evident from the filesystem. No modifier needed.
+
+If a modifier is required for clarity, **`full`** is better than `single-file`: `<module>-full-reference.md`. It's shorter, it implies completeness, and "full" naturally contrasts with the smaller pages.
+
+---
+
+### 9. Clearest folder name for the smaller-page set?
+
+**`reference-pages/`** — which isn't in the candidate list, but should be.
+
+Evaluating the candidates:
+
+| Name | Verdict |
+|------|---------|
+| `complete-reference-pages/` | Good content signal, but "complete" is redundant when the pages collectively ARE the complete reference. |
+| `targeted-source-docs/` | Good usage signal, but "source-docs" is ambiguous (see Q6). "Targeted" describes how to use it, not what it contains. |
+| `<module>-individual-files-reference/` | Too verbose. Module name in folder name is redundant when the folder is already inside `<module>/`. |
+| `source-docs/` | Ambiguous (see Q6). |
+| `source-pages/` | "Source" is still overloaded. |
+
+**`reference-pages/`** is the sweet spot:
+- "Reference" matches the large file's "reference" stem → signals content equivalence
+- "Pages" signals multiple files → signals the packaging form
+- No redundant module prefix (it's already inside the module folder)
+- Short, scannable, grep-friendly
+
+---
+
+### 10. Do I need module-local README files?
+
+**Yes, but they should be minimal.**
+
+The module-local README.md serves a purpose that `llms.txt` does not: it can state things in natural language that a structured router cannot. Specifically:
+
+1. **Equivalence statement**: "The full reference and the reference pages contain identical content in different packaging forms."
+2. **Module scope**: "This module covers UCI, the Unified Configuration Interface for OpenWrt."
+3. **Usage guidance**: "For targeted lookups, use reference-pages/. For broad ingestion, use the full reference."
+
+This costs ~100 tokens to read and eliminates ambiguity that filenames alone cannot resolve. `llms.txt` is a link index; it routes me to files but doesn't explain relationships between them.
+
+A module README that exceeds ~30 lines is too long. It should be a signpost, not a document.
+
+---
+
+### 11. My proposed naming family
+
+**Navigation-reference family:**
+
+```
+<module>/
+  README.md
+  llms.txt
+  <module>-map.md
+  <module>-full-reference.md
+  reference-pages/
+    <topic>.md
+  types/
+    <optional typed helpers>
+```
+
+| Element | Name | Rationale |
+|---------|------|-----------|
+| Orientation file | `<module>-map.md` | "Map" is the clearest navigation metaphor (see Q7). Short, unambiguous, no programming-term collision in this context. |
+| Large reference file | `<module>-full-reference.md` | "Full" implies completeness without describing build mechanics. "Reference" is the shared stem with the page folder. The filename reads naturally: "the full reference for this module." |
+| Smaller-page folder | `reference-pages/` | "Reference" ties it to the full-reference file (signals equivalence). "Pages" signals multiple files. No module prefix needed inside the module folder. |
+
+**Why this family:**
+
+1. **Shared stem "reference"** in both the file and the folder makes content equivalence self-evident without needing to read documentation.
+2. **"Map"** for the orientation file is semantically distinct from both "reference" artifacts, making the three-tier purpose hierarchy clear: orient → decide → ingest.
+3. **No build-process words** (no "concatenated," "extracted," "generated," "skeleton").
+4. **No ambiguous words** (no "source," no "complete" as a redundant modifier).
+5. **Short names** — every character in a path costs tokens. `<module>-map.md` is 60% shorter than `<module>-quick-orientation-map.md` with zero information loss.
+6. **Grep-friendly** — searching for `*-map.md` finds all orientation files; searching for `*-full-reference.md` finds all large references; searching for `reference-pages/` finds all page folders.
+
+**The three-second test:** A developer or AI tool seeing this folder listing for the first time should be able to answer "what is each file for?" in three seconds:
+
+```
+uci/
+  README.md          → intro and usage notes
+  llms.txt           → machine-readable page index
+  uci-map.md         → structural map for quick orientation
+  uci-full-reference.md  → complete reference in one file
+  reference-pages/   → same reference split into topic pages
+  types/             → optional type definitions
+```
+
+That reads cleanly. No file requires explanation beyond its name.
+
+---
+
+### Summary recommendation
+
+| Decision | Recommendation |
+|----------|---------------|
+| Map file | `<module>-map.md` |
+| Large reference | `<module>-full-reference.md` |
+| Page folder | `reference-pages/` |
+| Module README | Keep, but cap at ~30 lines; must state equivalence of full-reference and reference-pages |
+| Naming family | Navigation-reference (proposed above) |
+| Words to avoid | "concatenated," "skeleton," "source-docs," "individual" |
+| Words that work | "map," "full," "reference," "pages" |
+
+The core principle: **name files for what they help you do, not for how they were built.** An AI tool choosing between files is making a decision about *intent* (orient / lookup / ingest), not about *build process* (extracted / concatenated / generated). Names should match the decision, not the pipeline.

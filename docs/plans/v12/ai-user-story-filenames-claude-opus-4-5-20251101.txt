@@ -1,0 +1,243 @@
+# Naming Review: Perspective of an IDE-Integrated AI Coding Tool
+
+I'll answer each question from the perspective of an AI coding assistant encountering this project for the first time.
+
+---
+
+## 1. Root File Opening Order
+
+My opening order would be:
+
+1. **`llms.txt`** — This is a recognized convention; I'd expect routing instructions and project structure overview specifically designed for my consumption
+2. **`README.md`** — Standard entry point for project purpose, scope, and human-readable orientation
+3. **`AGENTS.md`** — Likely contains behavioral guidance, constraints, or workflows specific to AI tools
+4. **`llms-full.txt`** — When I need deeper context than the base `llms.txt` provides
+5. **`index.html`** — Only if I suspected navigation structure or cross-references not captured elsewhere
+
+**Rationale:** I prioritize files explicitly designed for LLMs first, then fall back to human documentation. The `llms.txt` convention signals "start here" for tools like me.
+
+---
+
+## 2. Module-Level File Opening by Task
+
+Given this structure:
+```
+<module>/
+  README.md
+  llms.txt
+  <map file>
+  <large reference file>
+  <folder of smaller topic pages>
+```
+
+### a. Fast orientation
+**Map file** → The structural/skeleton/map file is purpose-built for this. I'd look for words like `map`, `overview`, `skeleton`, or `structure` in the filename.
+
+### b. Targeted API lookup
+**Folder of smaller topic pages** → I'd navigate to the specific topic file. Smaller files mean I can load exactly what's relevant without context-window waste.
+
+### c. Broad subsystem understanding
+**Large reference file** → When I need to understand how pieces connect or find something when I don't know which topic it belongs to, the combined file lets me search across everything at once.
+
+---
+
+## 3. Easiest Naming Family to Understand Immediately
+
+**Plain twin grammar** is clearest:
+```
+<module>-individual-files-reference/
+<module>-map.md
+<module>-single-file-reference.md
+```
+
+**Why:** The contrast is explicit and parallel. "Individual files" vs "single file" creates an obvious grammatical opposition. No domain knowledge required. No metaphors to parse.
+
+**Runner-up:** Authority-first (`complete-reference-pages/` vs `single-file-complete-reference.md`) works well because `complete-reference` anchors both, making the equivalence clear.
+
+---
+
+## 4. Best Family for "Equally Authoritative, Different Packaging"
+
+**Authority-first** communicates this best:
+```
+complete-reference-pages/
+<module>-single-file-complete-reference.md
+```
+
+**Why:** The repeated word `complete-reference` signals identical authority. The only variation is `pages` (plural, separate) vs `single-file` (combined). This grammar says "same content, different container."
+
+**Plain twin grammar** is second—it emphasizes the structural difference but doesn't explicitly assert equal authority.
+
+---
+
+## 5. Best Family for Small-Context vs Large-Context Use
+
+**Usage-first** wins here:
+```
+targeted-source-docs/
+<module>-quick-orientation-map.md
+<module>-full-context-reference.md
+```
+
+**Why:** `targeted` and `full-context` are explicit context-window hints. This family is optimized for my decision-making: "Am I context-limited? Use targeted. Do I have room? Use full-context."
+
+This is the *only* family that directly names the usage pattern rather than describing file structure.
+
+---
+
+## 6. Misleading or Mistake-Prone Words
+
+| Word | Problem |
+|------|---------|
+| **`skeleton`** | Suggests incomplete/scaffolding code, not a navigation aid. I might skip it thinking it's boilerplate. |
+| **`concatenated`** | Implies mechanical assembly; suggests the file might have artifacts, duplicated headers, or less editorial care. Undermines authority-equivalence. |
+| **`source-docs`** | Ambiguous. "Source" could mean source code, upstream documentation, or original/canonical. On OpenWrt specifically, I might confuse this with kernel source or upstream package docs. |
+| **`implementation-shaped`** | Exposes build process thinking; I might wonder if this reflects implementation details I shouldn't rely on. |
+| **`targeted`** | Slightly ambiguous—targeted at what? Could mean "curated subset" rather than "suitable for targeted lookup." |
+| **`pages`** | Web-centric; might confuse when files are `.md` not `.html`. |
+
+### Actively Dangerous for OpenWrt Context:
+- **`source`** — OpenWrt has actual source packages, source feeds, and source-based builds. Using `source-docs` risks confusion with `package/*/src/` or similar.
+- **`combined`** — In OpenWrt, "combined" images are a specific firmware format. Could cause momentary confusion.
+
+---
+
+## 7. Clearest Name for Quick Orientation File
+
+**Ranking: `map` > `overview` > `skeleton`**
+
+| Term | Assessment |
+|------|------------|
+| **`map`** | Best. Implies navigation, wayfinding, structure-at-a-glance. Doesn't suggest content depth. I'd open this expecting "where is everything?" |
+| **`overview`** | Good but slightly suggests prose summary. I might expect a written explanation rather than structural pointers. |
+| **`skeleton`** | Problematic. Implies incomplete scaffolding or stub code. In a coding context, I associate this with `skeleton.py` files meant to be filled in. |
+
+**Recommendation:** Use `map`. Consider `<module>-map.md` or `<module>-structural-map.md`.
+
+---
+
+## 8. Clearest Word for Large Reference File
+
+**Ranking: `single-file` > `combined` > `concatenated`**
+
+| Term | Assessment |
+|------|------------|
+| **`single-file`** | Best. Describes the form factor without implying anything about how it was created. Neutral on authority. |
+| **`combined`** | Acceptable. Implies editorial merging. Slight OpenWrt collision risk (combined firmware images). |
+| **`concatenated`** | Worst. Implies mechanical assembly, possible redundancy, potential formatting artifacts. Makes me trust it less. |
+
+**Recommendation:** Use `single-file`. It's format-descriptive without being process-descriptive.
+
+---
+
+## 9. Clearest Folder Name for Smaller-Page Set
+
+**Ranking: `reference-pages/` > `individual-files-reference/` > `complete-reference-pages/` > `source-docs/` > `targeted-source-docs/`**
+
+| Name | Assessment |
+|------|------------|
+| **`reference-pages/`** | Simple, clear, no jargon. Communicates "documentation broken into pages." |
+| **`individual-files-reference/`** | Very explicit but verbose. Works well for contrast with `single-file-reference.md`. |
+| **`complete-reference-pages/`** | Good authority signal, but `complete` might make me wonder "as opposed to incomplete where?" |
+| **`source-docs/`** | Ambiguous (see Q6). Avoid. |
+| **`targeted-source-docs/`** | Inherits `source-docs` ambiguity plus adds `targeted` vagueness. |
+
+**Recommendation:** Use `reference-pages/` for simplicity, or `individual-files-reference/` if explicit contrast with the single-file variant is paramount.
+
+---
+
+## 10. Module-Local README vs llms.txt + Filenames
+
+**Verdict: Include module-local README files.**
+
+**Reasons:**
+1. **Fallback for non-LLM tools:** Humans or tools without `llms.txt` awareness will look for README.
+2. **Module-specific context:** The root `llms.txt` may route me here, but I still benefit from a local README explaining module scope, boundaries, and assumptions.
+3. **Disambiguation:** For a rare system like OpenWrt, a README can state explicitly "this module covers X, not Y" — preventing me from making incorrect assumptions based on superficial filename matching.
+4. **Authority statement:** The README is the natural place to state "the files in `reference-pages/` and `<module>-single-file-reference.md` contain identical information in different packaging."
+
+**However:** Keep them terse. A 10-line README that points to the map file is sufficient. Don't duplicate content.
+
+---
+
+## 11. Proposed Alternative Naming Family
+
+### "Reference-Form" Family
+
+```
+<module>/
+  README.md
+  llms.txt
+  <module>-map.md
+  <module>-reference.md                  # single-file form
+  reference-pages/                       # multi-file form
+    topic-a.md
+    topic-b.md
+  types/
+    ...
+```
+
+**Key principles:**
+
+1. **Shared root word:** Both the single file and folder use `reference`. This asserts equal authority.
+
+2. **Form-factor suffix:** The single file is just `<module>-reference.md`. The folder is `reference-pages/`. The "pages" suffix is the only differentiator—minimal and clear.
+
+3. **Simple map name:** `<module>-map.md` is short and unambiguous.
+
+4. **No process words:** Avoids `concatenated`, `combined`, `source`, `targeted`.
+
+5. **No metaphors:** Avoids `skeleton`, `tree`, `bundle`.
+
+**Example for a `uci` module:**
+```
+uci/
+  README.md
+  llms.txt
+  uci-map.md
+  uci-reference.md
+  reference-pages/
+    uci-basics.md
+    uci-config-files.md
+    uci-api.md
+    uci-shell-commands.md
+  types/
+    uci-types.d.ts
+```
+
+**Why this works for an AI tool on a rare system:**
+
+- **Zero ambiguity:** I know `uci-reference.md` and `reference-pages/` contain the same reference material.
+- **Clear entry point:** `uci-map.md` is obviously for orientation.
+- **Confidence signal:** The parallel naming tells me this is a designed system, not ad-hoc docs. I'll trust it more.
+- **Context-window decision:** I can instantly choose—need one topic? `reference-pages/uci-api.md`. Need everything? `uci-reference.md`.
+
+---
+
+## Concrete Recommendations Summary
+
+| Element | Recommendation | Rationale |
+|---------|----------------|-----------|
+| **Map file** | `<module>-map.md` | Short, navigational, no false implications |
+| **Large file** | `<module>-reference.md` | Neutral on assembly method, authoritative |
+| **Page folder** | `reference-pages/` | Parallel to large file, clear form-factor distinction |
+| **Module README** | Yes, include | Fallback + explicit authority statement |
+| **Words to avoid** | `skeleton`, `concatenated`, `source-docs`, `combined` | Misleading or collision-prone for OpenWrt |
+| **Root opening order** | llms.txt → README → AGENTS.md | LLM-specific routing first |
+
+### Final Suggested Structure
+
+```
+<module>/
+  README.md                    # 10-line orientation + authority statement
+  llms.txt                     # routing for AI tools
+  <module>-map.md              # structural navigation
+  <module>-reference.md        # single-file complete reference
+  reference-pages/             # same content, separate files
+    <topic>.md
+    ...
+  types/                       # optional typed helpers
+    ...
+```
+
+This minimizes guesswork, maximizes confidence, and works well regardless of context-window constraints—exactly what I need when programming against a rare system where I can't rely on training priors.

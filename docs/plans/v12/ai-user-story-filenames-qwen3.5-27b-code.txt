@@ -1,0 +1,84 @@
+Based on my analysis of this documentation architecture for AI coding agents, here are my recommendations:
+
+Direct Answers to Your Questions
+1. Root File Opening Order
+text
+
+README.md → AGENTS.md → llms.txt → llms-full.txt → index.html
+Reasoning: Purpose → AI-specific instructions → Context constraints → Full context → Entry point
+
+2. First File to Open by Use Case
+a. Fast orientation: <module>-map.md (the structural overview file)
+b. Targeted API lookup: The smaller-page folder (e.g., complete-reference-pages/)
+c. Broad subsystem understanding: The large reference file
+3. Easiest Family to Understand from Filenames Alone
+Plain twin grammar wins here. The pattern <module>-individual-files-reference/ vs <module>-single-file-reference.md makes the duality explicit without requiring prior knowledge.
+
+4. Best at Communicating Equal Authority
+Authority-first or Plain twin grammar tie. Both make clear these are two forms of the same canonical content. The key is using parallel naming patterns.
+
+5. Best at Communicating Small vs Large Context
+Usage-first with "quick-orientation" vs "full-context" makes the intent crystal clear for AI agents deciding which file fits their context window.
+
+6. Potentially Misleading Words
+❌ "Skeleton" – Suggests incompleteness or work-in-progress
+❌ "Source-docs" – Implies these are the original sources, not derived docs
+⚠️ "Concatenated" – Too technical; not all agents may parse this as "combined into one file"
+⚠️ "Map" – Could be confused with dependency maps or sitemaps
+7. Best Word for Quick Orientation File
+"Map" is actually the winner here, but only if used consistently as <module>-map.md. It's short, standard, and agents learn the pattern quickly.
+
+8. Best Word for Large Reference File
+"Single-file" is clearest. It directly states the structural difference: one file vs. many files.
+
+9. Best Folder Name for Smaller Pages
+"complete-reference-pages" from the Authority-first family. It's explicit that this is the full reference, just split across files.
+
+10. Module-local README Files Needed?
+Yes, absolutely required. Even with perfect naming, AI agents need:
+
+Module purpose in one sentence
+When to use single-file vs multi-page version
+Any module-specific constraints
+11. My Proposed Naming Family
+text
+
+<module>/
+  README.md
+  llms.txt
+  <module>-index.md              # Quick orientation (renamed from "map")
+  <module>-full-reference.md     # Large combined file
+  reference-pages/                # Smaller canonical pages
+    01-overview.md
+    02-api.md
+    03-examples.md
+  types/
+Why this works better:
+
+-index.md instead of -map.md – "Index" is a well-established pattern for entry points
+-full-reference.md instead of "single-file" – Shorter, equally clear
+reference-pages/ – Simpler than "complete-reference-pages"
+Numbered files (01-, 02-, 03-) – Explicit load order for the small pages
+Overall Recommendation
+I'd hybridize the best of each family:
+
+text
+
+<module>/
+  README.md
+  llms.txt
+  <module>-index.md                    # Quick start / orientation
+  <module>-full-reference.md            # All content, one file
+  reference-pages/                      # Split into canonical pages
+    01-introduction.md
+    02-core-concepts.md
+    03-api.md
+  types/
+Key principles applied:
+
+Parallel naming: Both are "reference" material, just different forms
+Explicit relationships: The names make clear these are the same content, different packaging
+No pipeline leaks: No internal build step names exposed
+AI-agent friendly: Patterns are learnable and consistent across modules
+This approach should minimize AI agent confusion when working with OpenWrt's unique constraints.
+

@@ -129,5 +129,18 @@ A random slice audit of 10 generated files on 2026-03-09 found that the outputs 
 
 ### Next Priority
 
-Keep the remaining dockerman soft warning deferred unless stronger evidence appears, and prioritize explicit AI-summary storage architecture decisions plus performance and maintainability optimizations that do not destabilize the now-verified path.
+The next active work item is the V5a public distribution and release-tree refactor. This refactor:
+
+- Introduces a `release-tree/` / `support-tree/` dual output model
+- Renames public-facing files (`map.md`, `bundled-reference.md`, `chunked-reference/`)
+- Eliminates `openwrt-condensed-docs` from all public surfaces
+- Deploys to external GitHub organization repos (`openwrt-docs4ai.github.io`, `corpus`)
+
+Implementation follows a 7-phase rollback-safe plan controlled by the `ENABLE_RELEASE_TREE` feature flag. See:
+
+- [V5a plan](../plans/v12/public-distribution-mirror-plan-2026-03-15-V5a.md) for the full implementation specification
+- [release-tree-contract.md](release-tree-contract.md) for the durable public output contract
+- [feature-flag-contract.md](feature-flag-contract.md) for feature flag semantics
+
+The remaining dockerman soft warning and AI-summary architecture decisions remain deferred and are not blocked by V5a work.
 

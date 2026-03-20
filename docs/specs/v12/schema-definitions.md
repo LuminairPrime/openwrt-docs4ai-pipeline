@@ -4,6 +4,12 @@
 
 This document defines the active filesystem and data contracts for the v12 pipeline.
 
+## Transition Status
+
+This document is being updated to reflect the V5a release-tree contract. During the transition (controlled by the `ENABLE_RELEASE_TREE` feature flag), both the current and new contracts may be active. Sections marked with "(V5a)" describe the new contract. Sections marked "(current)" describe the pre-V5a state. Once the transition is complete (Phase 7), current-only sections will be removed.
+
+For the standalone V5a contract reference, see [release-tree-contract.md](release-tree-contract.md).
+
 ## Top-Level Paths
 
 - `WORKDIR` defaults to `tmp`
@@ -21,6 +27,8 @@ This document defines the generated-corpus contract only. A source-repo root `ll
 
 The active publication policy keeps L1 and L2 under `openwrt-condensed-docs` for inspection, debugging, and AI-context use. L0 remains unpublished because raw clones and raw fetched inputs are materially larger and are not needed as durable outputs.
 
+(V5a) The `openwrt-condensed-docs` name is internal to the source repo only. It must not appear in any public path, URL, or visible label. In the V5a contract, public surfaces expose only the `release-tree/` direct-root layout. The `openwrt-condensed-docs` working root remains present as internal CI state and maps to `support-tree/` in the release assembly; it is never published directly.
+
 ## Layer Contracts
 
 ### L0
@@ -32,7 +40,8 @@ The active publication policy keeps L1 and L2 under `openwrt-condensed-docs` for
 ### L1
 
 - Location during build: `tmp/L1-raw/{module}/`
-- Retained output location: `openwrt-condensed-docs/L1-raw/{module}/`
+- Retained output location (current, pre-V5a): `openwrt-condensed-docs/L1-raw/{module}/`
+- Retained output location (V5a): `support-tree/raw/{module}/` — not published to any public surface
 - File naming: `{origin_type}-{slug}.md`
 - Sidecar naming: `{origin_type}-{slug}.meta.json`
 - Rules:
@@ -62,7 +71,8 @@ Recommended fields when known:
 ### L2
 
 - Location during build: `tmp/L2-semantic/{module}/`
-- Retained output location: `openwrt-condensed-docs/L2-semantic/{module}/`
+- Retained output location (current, pre-V5a): `openwrt-condensed-docs/L2-semantic/{module}/`
+- Retained output location (V5a): `support-tree/semantic-pages/{module}/` — not published directly; L2 topic pages are redistributed into each module's `chunked-reference/` folder inside `release-tree/`
 - Format: markdown with YAML frontmatter
 - Rules:
   - YAML must be parsed and written safely
@@ -96,15 +106,28 @@ Recommended fields when known:
 
 ### L3
 
-- Location: `openwrt-condensed-docs/` root and module subdirectories
-- Primary outputs:
-  - `llms.txt`
-  - `llms-full.txt`
-  - `AGENTS.md`
-  - `README.md`
-  - `index.html`
-  - `*-skeleton.md`
-  - `*.d.ts`
+- Location (current, pre-V5a): `openwrt-condensed-docs/` root and module subdirectories
+- Location (V5a): `release-tree/` root and `release-tree/{module}/` subdirectories
+
+Primary outputs (current, pre-V5a):
+
+- `llms.txt`
+- `llms-full.txt`
+- `AGENTS.md`
+- `README.md`
+- `index.html`
+- `*-skeleton.md`
+- `*.d.ts`
+
+Primary outputs (V5a):
+
+- `llms.txt`
+- `llms-full.txt`
+- `AGENTS.md`
+- `README.md`
+- `index.html`
+- `{module}/map.md` — replaces `{module}-skeleton.md`; provides a navigation map for the module
+- `{module}/types/{module}.d.ts` — IDE schema, moved into per-module `types/` subdirectory
 
 ### L3 LLM Routing Contract
 
@@ -139,7 +162,7 @@ Required characteristics:
 - optional introductory blockquote lines are allowed
 - flat bullet list sorted by relative path
 - catalog entries must include all generated AI-facing helper files and all L2 markdown documents that belong to the published corpus
-- required catalog coverage:
+- required catalog coverage (current, pre-V5a):
   - `AGENTS.md`
   - generated `README.md`
   - each module `llms.txt`
@@ -148,6 +171,15 @@ Required characteristics:
   - each `*-complete-reference.part-*.md` when sharding is present
   - each published `.d.ts`
   - every `L2-semantic/{module}/*.md`
+- required catalog coverage (V5a):
+  - `AGENTS.md`
+  - generated `README.md`
+  - each module `llms.txt`
+  - each `{module}/map.md`
+  - each `{module}/bundled-reference.md`
+  - each `{module}/bundled-reference.part-{NN}.md` when sharding is present
+  - each published `{module}/types/{module}.d.ts`
+  - every `{module}/chunked-reference/{topic}.md` (replaces `L2-semantic/{module}/*.md`)
 - bullet format:
 
 ```text
@@ -155,6 +187,8 @@ Required characteristics:
 ```
 
 Typical `kind` values include `l2-source`, `l3-agent-guide`, `l3-generated-readme`, `l3-module-index`, `l3-skeleton`, `l3-ide-schema`, `l4-monolith`, and `l4-monolith-part`.
+
+(V5a) `l3-skeleton` entries reference `map.md`; `l4-monolith` entries reference `bundled-reference.md`; `l2-source` entries reference `{module}/chunked-reference/{topic}.md`.
 
 #### Module `llms.txt`
 
@@ -171,11 +205,11 @@ Required characteristics:
 
 Preferred section semantics:
 
-- `Recommended Entry Points` lists the module skeleton, the stable complete-reference index, and any sharded part files when present
+- `Recommended Entry Points` lists the module navigation map (or skeleton), the stable bundled reference (or complete-reference) index, and any sharded part files when present
 - `Tooling Surfaces` lists generated `.d.ts` or other IDE-oriented helper files when present
 - `Source Documents` lists each L2 document for the module
 
-Bullet formats:
+Bullet formats (current, pre-V5a):
 
 ```text
 - [<module>-skeleton.md](./<module>-skeleton.md): <short description> (~<tokens> tokens, l3-skeleton)
@@ -185,6 +219,18 @@ Bullet formats:
 - [<filename>.md](../L2-semantic/<module>/<filename>.md): <short description> (~<tokens> tokens, l2-source)
 ```
 
+Bullet formats (V5a):
+
+```text
+- [map.md](./map.md): <short description> (~<tokens> tokens, l3-skeleton)
+- [bundled-reference.md](./bundled-reference.md): <short description> (~<tokens> tokens, l4-monolith)
+- [bundled-reference.part-01.md](./bundled-reference.part-01.md): <short description> (~<tokens> tokens, l4-monolith-part)
+- [<module>.d.ts](./types/<module>.d.ts): <short description> (~<tokens> tokens, l3-ide-schema)
+- [<filename>.md](./chunked-reference/<filename>.md): <short description> (~<tokens> tokens, l2-source)
+```
+
+Note (V5a): module names are not repeated in child filenames inside the module folder. `map.md` and `bundled-reference.md` are fixed filenames, not module-prefixed. Source document links resolve relative to the module folder via `chunked-reference/` rather than `../L2-semantic/{module}/`.
+
 #### `AGENTS.md`
 
 `AGENTS.md` must remain consistent with the routing contract above.
@@ -193,23 +239,82 @@ Required guidance points:
 
 - begin at root `llms.txt`
 - prefer module `llms.txt` once the target subsystem is known
-- prefer `*-skeleton.md` before complete-reference indexes or part files when context is tight
-- treat generated module indexes, skeletons, complete-reference indexes, part files, and `.d.ts` files as published navigation surfaces
+- (current, pre-V5a) prefer `*-skeleton.md` before complete-reference indexes or part files when context is tight
+- (V5a) prefer `map.md` before `bundled-reference.md` or part files when context is tight; `map.md` is the stable per-module navigation entry point
+- treat generated module indexes, navigation maps (or skeletons), bundled references (or complete-reference indexes), part files, and `.d.ts` files as published navigation surfaces
+- (V5a) `bundled-reference.md` and `map.md` are fixed filenames inside each module folder; they are not module-prefixed
 - avoid implying that a separate source-repo root `llms.txt` already exists
 
 ### L4
 
-- Location: `openwrt-condensed-docs/{module}/`
-- Format: one stable complete-reference index per module plus optional sharded part files for oversized modules
+- Location (current, pre-V5a): `openwrt-condensed-docs/{module}/`
+- Location (V5a): `release-tree/{module}/`
+- Format (current, pre-V5a): one stable `{module}-complete-reference.md` per module plus optional sharded `{module}-complete-reference.part-*.md` files for oversized modules
+- Format (V5a): one stable `bundled-reference.md` per module plus optional sharded `bundled-reference.part-{NN}.md` files for oversized modules; sharded parts sit alongside `bundled-reference.md`, not inside `chunked-reference/`
 - Rule: one top-level YAML block per generated L4 file, not repeated L2 frontmatter sections
 
 ### L5
 
-- Location: `openwrt-condensed-docs/`
+- Location (current, pre-V5a): `openwrt-condensed-docs/`
+- Location (V5a): `support-tree/telemetry/` — not published to any public surface
 - Outputs:
   - `CHANGES.md`
   - `changelog.json`
   - `signature-inventory.json`
+
+## V5a Output Topology
+
+(V5a) The pipeline main output root contains two distinct subtrees. Only `release-tree/` is publishable. `support-tree/` is ephemeral CI state and must never appear in any public surface.
+
+### `release-tree/` — publishable output, direct-root layout
+
+The `release-tree/` subtree is the complete public product. It uses a direct-root layout where every module folder sits at root with no wrapper directory. The `release-tree/` root itself becomes the repository root for GitHub Pages and the ZIP expansion root.
+
+```text
+release-tree/
+├── README.md
+├── AGENTS.md
+├── llms.txt
+├── llms-full.txt
+├── index.html
+├── {module}/
+│   ├── llms.txt
+│   ├── map.md
+│   ├── bundled-reference.md
+│   ├── chunked-reference/
+│   │   └── {topic}.md ...
+│   └── types/           (optional)
+│       └── {module}.d.ts
+└── ... (more modules)
+```
+
+Items guaranteed absent from `release-tree/`:
+
+- `L1-raw/`
+- `L2-semantic/`
+- `openwrt-condensed-docs/` (any reference or path segment)
+- `*-skeleton.md`
+- `*-complete-reference.md`
+- Any `.meta.json` sidecar
+- `CHANGES.md`, `changelog.json`, `signature-inventory.json`, `repo-manifest.json`, `cross-link-registry.json`
+
+### `support-tree/` — ephemeral CI support artifacts
+
+`support-tree/` holds all artifacts that are useful for debugging and CI inspection but are intentionally excluded from the public product. Its internal layout may change without notice and is not a stable contract.
+
+Typical contents:
+
+| Path | Former location (pre-V5a) |
+| --- | --- |
+| `support-tree/raw/` | `openwrt-condensed-docs/L1-raw/` |
+| `support-tree/semantic-pages/` | `openwrt-condensed-docs/L2-semantic/` |
+| `support-tree/telemetry/CHANGES.md` | `openwrt-condensed-docs/CHANGES.md` |
+| `support-tree/telemetry/changelog.json` | `openwrt-condensed-docs/changelog.json` |
+| `support-tree/telemetry/signature-inventory.json` | `openwrt-condensed-docs/signature-inventory.json` |
+| `support-tree/manifests/repo-manifest.json` | `openwrt-condensed-docs/repo-manifest.json` |
+| `support-tree/manifests/cross-link-registry.json` | `openwrt-condensed-docs/cross-link-registry.json` |
+
+For the full V5a layout contract and phased implementation plan, see [release-tree-contract.md](release-tree-contract.md) and the source plan at `docs/plans/v12/public-distribution-mirror-plan-2026-03-15-V5a.md`.
 
 ## Enumerated Origin Types
 

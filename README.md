@@ -11,7 +11,7 @@ This repository pulls documentation from multiple OpenWrt-related sources, norma
 - IDE and tooling support
 - long-term monthly refresh automation
 
-The current development stage is verified stabilization and operational hardening. Local-first validation remains the engineering baseline, and GitHub Actions is now a confirmed remote execution and publication path rather than an unproven future target.
+The current development stage is verified stabilization and operational hardening. Local-first validation remains the engineering baseline, and GitHub Actions is now a confirmed remote execution and publication path rather than an unproven future target. A V5a release-tree refactor is in progress to publish the generated corpus to dedicated external distribution targets.
 
 ## Source Families
 
@@ -25,9 +25,12 @@ The current development stage is verified stabilization and operational hardenin
 
 Generated artifacts live under `openwrt-condensed-docs/`.
 
+The project is transitioning to a V5a release-tree contract where the publishable product is assembled into a `release-tree/` directory with a clean, direct-root layout. Public-facing filenames use generic names (`map.md`, `bundled-reference.md`, `chunked-reference/`) instead of module-prefixed names. The generated product will be deployed to `openwrt-docs4ai.github.io` (GitHub Pages) and a `corpus` release repository. During the transition, `openwrt-condensed-docs/` remains the internal pipeline output root.
+
 - `L1-raw/` contains normalized raw markdown plus sidecar metadata.
 - `L2-semantic/` contains semantic markdown with YAML frontmatter and cross-links.
 - Root and per-module outputs contain maps, monoliths, skeletons, HTML landing pages, and telemetry.
+- GitHub Pages mirrors that same generated product tree from `gh-pages` rather than publishing a filtered subset.
 
 The exact output set is defined in `docs/ARCHITECTURE.md` and `docs/specs/v12/`.
 
@@ -39,6 +42,7 @@ The exact output set is defined in `docs/ARCHITECTURE.md` and `docs/specs/v12/`.
 - Use `python tools/manage_ai_store.py --option review` for the maintained scratch-first AI-store workflow.
 - Read `docs/ARCHITECTURE.md` for repository structure and naming rules.
 - Read `docs/specs/v12/` for the active v12 technical specifications.
+- Read `docs/specs/v12/release-tree-contract.md` for the V5a public output contract.
 - Treat `docs/archive/v12/` as historical context only.
 
 ## Status
@@ -48,8 +52,9 @@ The repository now has both local and remote v12 verification from the 2026-03-0
 - local deterministic smoke coverage is passing
 - the sequential local runner is passing
 - remote GitHub Actions runs are verified through warm-cache wiki run `22877413563`, with `0` hard failures and `1` soft warning
-- push, schedule, and manual workflow runs auto-promote staged generated outputs back into `openwrt-condensed-docs/`; GitHub Pages excludes `L1-raw` and `L2-semantic`
+- push, schedule, and manual workflow runs auto-promote staged generated outputs back into `openwrt-condensed-docs/`; GitHub Pages mirrors that same tree from `gh-pages` with `.nojekyll` branch publishing
 - the remaining work is concentrated in one deferred dockerman ucode soft warning, bounded wiki-derived cleanup, and deciding whether extra corpus telemetry is worth the complexity
+- the V5a release-tree refactor is the next active engineering work item, introducing a dual output model (`release-tree/` + `support-tree/`) and external distribution deployment
 
 ## License
 

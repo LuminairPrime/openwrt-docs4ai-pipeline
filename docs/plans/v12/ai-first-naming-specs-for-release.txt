@@ -1,0 +1,107 @@
+
+
+
+# Technical Specification: AI-First Documentation Naming Contract
+
+**Project:** OpenWrt AI Programming Reference Pack
+**Target Audience:** Autonomous AI Coding Agents (Claude Code, GitHub Copilot, Cursor, etc.), RAG Pipelines, and LLMs.
+**Objective:** Define a deterministic, token-efficient, and semantically unambiguous file naming schema that allows AI agents to navigate, retrieve, and comprehend OpenWrt programming documentation with zero hallucinations and minimal tool calls.
+
+---
+
+## 1. Core Design Principles
+
+1. **Zero-Shot Traversal (Fixed Schema):** Filenames inside a module folder must be strictly identical across all modules. This allows an AI agent to predict file paths deterministically without wasting tokens or tool calls on `list_dir` operations.
+2. **Token Economy (No Redundancy):** The module's namespace is defined solely by its directory name. Repeating the module name inside child files/folders is strictly forbidden to prevent context window bloat.
+3. **AI-Native Utility Grammar:** Filenames must describe *how* the AI should consume the data (e.g., `chunked` for RAG/search, `bundled` for full-context reads), rather than *how* the build pipeline generated them (e.g., not `concatenated`).
+4. **Equal Authority Verification:** The directory structure and filenames must neutrally reflect that the split files and the large single file contain the exact same authoritative content. This contract is sealed via an explicit `llms.txt` instruction.
+
+---
+
+## 2. Directory Structure & File Contract
+
+The release tree must strictly adhere to the following schema. 
+
+### Ideal Tree Example
+
+```text
+/
+├── llms.txt                      # Global AI routing and rules
+├── AGENTS.md                     # Optional: Workflow and tool behavior directives
+└── modules/
+    ├── network/
+    │   ├── map.md                # 1. Orientation & routing
+    │   ├── bundled-reference.md  # 2. Full-context payload
+    │   └── chunked-reference/    # 3. Targeted-lookup payload
+    │       ├── interfaces.md     # Topic-specific file
+    │       ├── switch.md         # Topic-specific file
+    │       └── wireless.md       # Topic-specific file
+    │
+    └── uci/
+        ├── map.md                
+        ├── bundled-reference.md  
+        └── chunked-reference/    
+            ├── data-types.md     
+            └── read-write.md     
+```
+
+---
+
+## 3. Component Specifications & Justifications
+
+### A. The Module Container
+**Format:** `modules/<module-name>/`
+**Rule:** The folder name is the sole source of the namespace. 
+**Justification:** Modern IDEs and RAG systems automatically inject the relative file path into the AI's prompt (e.g., `File: modules/network/map.md`). Repeating the name (e.g., `network-map.md`) wastes tokens and breaks the fixed schema rule.
+
+### B. The Orientation File
+**Format:** `map.md`
+**Rule:** Every module must contain a `map.md` at its root.
+**Justification:** `map` is the universal, unambiguous term for navigation and topology. 
+* *Anti-pattern avoided:* Do not use `skeleton` (implies incomplete boilerplate code) or `index` (often implies a web UI entry point or a bare list rather than structural routing).
+
+### C. The Full-Context Payload
+**Format:** `bundled-reference.md`
+**Rule:** This file must contain the entirety of the module's documentation concatenated into a single, cohesive document.
+**Justification:** `bundled` is a standard term in AI contexts that means "multiple pieces wrapped together for a single ingestion event." Combining it with `-reference` establishes its authority.
+* *Anti-pattern avoided:* Do not use `concatenated` or `combined` (exposes build pipeline mechanics and implies secondary/derived authority). Do not use `complete` (implies the chunked files are incomplete).
+
+### D. The Targeted-Lookup Payload
+**Format:** `chunked-reference/`
+**Rule:** This directory contains the exact same text as `bundled-reference.md`, split by logical topic. 
+**Justification:** `chunked` is the native vocabulary of LLM Retrieval-Augmented Generation (RAG). It signals to the AI exactly *why* this folder exists: for targeted, minimal-token API lookups. 
+* *Anti-pattern avoided:* Do not use `source-docs` (causes severe ambiguity with actual OpenWrt C/Lua source code directories, and implies a false hierarchy of authority).
+
+### E. The Topic Files
+**Format:** `<topic>.md` (e.g., `wireless.md`)
+**Rule:** Files inside `chunked-reference/` must be named strictly by their semantic topic. No module prefixes, no numerical order prefixes (unless sequence is strictly required for comprehension).
+
+---
+
+## 4. The `llms.txt` Authority Override Contract
+
+Because `bundled` implies aggregation, an AI might incorrectly assume `chunked-reference/` is the canonical "source" and `bundled-reference.md` is a lossy build artifact. 
+
+To prevent this hallucination, the global `llms.txt` (and/or a module-local `llms.txt` if implemented) **must** contain a variant of the following instruction block:
+
+```markdown
+# AI INSTRUCTION: Documentation Packaging & Authority
+This repository contains reference documentation optimized for LLM context windows. 
+
+Inside any module directory, you will find two identical forms of documentation:
+1. `chunked-reference/`: Contains discrete topic files. Use these for targeted API lookups to save context tokens.
+2. `bundled-reference.md`: Contains the exact same information combined into a single file. Read this when you need broad subsystem understanding.
+
+CRITICAL: `chunked-reference/` and `bundled-reference.md` are equally authoritative peers. They contain the exact same content. Do not read both for the same task. Navigate via the `map.md` file in each module.
+```
+
+---
+
+## 5. Strict Anti-Patterns (Do Not Merge)
+
+If future maintainers attempt to change the schema, the following practices must be blocked in code review:
+
+1. **Prefixing inside modules:** (e.g., `uci/uci-map.md`). *Why: Breaks zero-shot traversal, wastes tokens.*
+2. **"Source" in doc names:** (e.g., `source-docs/`). *Why: Collides with OpenWrt source code mental models.*
+3. **"Skeleton" in doc names:** (e.g., `skeleton.md`). *Why: Triggers AI training biases for empty scaffolding code.*
+4. **Pipeline Jargon:** (e.g., `L2-semantic/`, `concatenated-reference.md`). *Why: The AI consumer does not care how the sausage was made; pipeline words undermine the document's authority.*

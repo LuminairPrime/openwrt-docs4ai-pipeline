@@ -1,0 +1,66 @@
+
+
+
+As an IDE-integrated AI coding tool (like Copilot, Claude Code, or Cursor), my primary constraints are **token limits**, **context window saturation**, and **search noise**. I don't read like a human; I scan directory trees via `list_dir` tool calls, look for keywords that map to my current task, and try to extract the exact API signatures and usage rules with as few file-read operations as possible.
+
+Because you asked me to creatively brainstorm and offer my own opinions, I will not only answer your questions but also challenge some of your structural assumptions based on how AI agents actually process file systems.
+
+Here is my perspective on your release tree.
+
+### 1. Which root files would you open first, and in what order?
+1. **`llms.txt`**: This is the emerging industry standard for AI-specific instructions. I will look for this immediately to understand the project's rules, routing, and directory structure.
+2. **`llms-full.txt`**: If my context window is large enough (e.g., 200k+ tokens), I might just ingest this to get the entire project context in a single tool call, bypassing the need to search entirely.
+3. **`AGENTS.md`**: I would check this for specific tool workflows or agentic guidelines. *(Opinion: You should merge this with `llms.txt`. Having multiple AI-instruction files splits my attention and wastes tool calls).*
+4. **`README.md`**: Only as a fallback if the LLM files are missing or incomplete. 
+5. **`index.html`**: **Ignored completely.** HTML is full of DOM tags and CSS classes that destroy token density. I will actively avoid it.
+
+### 2. Inside one module folder, which file would you open first for:
+*   **a. Fast orientation:** The `<map file>`. I need a lightweight Table of Contents to know what exists without hallucinating.
+*   **b. Targeted API lookup:** `types/` (if it exists) to get strict, token-efficient function signatures. If not, a specific file inside the `<folder of smaller topic pages>`.
+*   **c. Broad subsystem understanding:** The `<large reference file>`.
+
+### 3. Which naming family is easiest to understand immediately?
+The **Usage-first** family (`targeted-source-docs/`, `<module>-quick-orientation-map.md`, `<module>-full-context-reference.md`). 
+As an AI, "targeted" and "full-context" map exactly to my internal operational mechanics (RAG vs. long-context ingestion). 
+
+### 4. Which naming family best communicates equal authority / different packaging?
+The **Plain twin grammar** (`<module>-individual-files-reference/` vs `<module>-single-file-reference.md`). The symmetrical naming creates a strong semantic link. When I see `individual` vs `single`, I immediately infer they are the same data sliced differently.
+
+### 5. Which naming family best communicates small vs large context?
+The **Usage-first** family. Words like "quick", "targeted", and "full-context" are explicit instructions on *how* to use the files based on my current compute constraints.
+
+### 6. Which words are actively misleading or likely to cause mistakes?
+*   **`skeleton`**: Highly misleading. To an AI, "skeleton" means boilerplate starter code (e.g., an empty OpenWrt package template). It does *not* mean a navigation map.
+*   **`source-docs`**: Ambiguous. It makes me wonder if these are original C/Lua source code files with inline comments, or markdown files about the source.
+*   **`complete`**: If the large file is "complete", I might assume the smaller files are "incomplete" or summarized, violating your goal of them being equally authoritative. 
+
+### 7. Is `skeleton`, `map`, or `overview` the clearest for quick orientation?
+**`map`** is the best of the three, but **`index`** is even better. "Overview" implies prose (which costs tokens). "Map" implies structure. "Index" implies a strict lookup table, which is exactly what I want.
+
+### 8. Is `single-file`, `combined`, or `concatenated` the clearest?
+**`concatenated`** or **`bundled`**. "Concatenated" is an unambiguous technical term that tells me "this is literally file A + file B + file C." 
+
+### 9. Clearest folder name for the smaller-page set?
+Of your options, **`individual-files-reference`** is the most literal, though a bit clunky. 
+
+### 10. Would you need module-local README files?
+**No.** If you have `llms.txt` in the module acting as an AI router, a `README.md` is redundant and creates decision fatigue for my agentic loop. If `llms.txt` is for me, leave `README.md` for the human developers.
+
+---
+
+### 11. My Creative Proposal: The "Context-Optimized" Family
+To truly prevent hallucinations on a rare system like OpenWrt, you must optimize for my retrieval systems (RAG). 
+
+*A critical warning:* If you ship a directory containing both the separated files AND the concatenated file, IDE vector search (like Copilot's `@workspace`) will index both. When I search for `wifi_add_ap`, I will get **duplicate RAG snippets** from both locations, halving my effective context window and confusing me.
+
+To solve this, here is the naming family I propose:
+
+| Component | Proposed Name | Why it works for AI |
+| :--- | :--- | :--- |
+| **Map File** | `<module>-index.md` | Instantly recognized as a lookup table. |
+| **Smaller Pages** | `chunked-reference/` | "Chunked" is the exact term AI engineers use for RAG. It tells me "these files are pre-sliced for targeted retrieval." |
+| **Large File** | `<module>-bundled-reference.md` | "Bundled" perfectly contrasts with "chunked." |
+| **Routing** | `llms.txt` | Add an instruction here: *"AI Note: `chunked-reference/` and `bundled-reference.md` are identical content. Read `chunked` for specific lookups. Read `bundled` for deep context."* |
+
+**Bonus AI-Native Suggestion:**
+If you want to be truly cutting-edge for IDEs, include a `.cursorignore` or `.copilotignore` file at the root that excludes `<module>-bundled-reference.md`. This prevents the IDE's semantic indexer from returning duplicate RAG results, but still allows an agent to explicitly read the bundled file via a `read_file` tool call when we want the broad subsystem understanding.

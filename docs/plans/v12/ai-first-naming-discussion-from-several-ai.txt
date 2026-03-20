@@ -1,0 +1,1596 @@
+Evaluation of Your Current Favorite Tuple
+Your Proposed Tuple
+text
+
+MODULE_NAME-chunked-reference/     (folder with individual files)
+MODULE_NAME-bundled-reference.md   (all files concatenated)
+MODULE_NAME-map.md                 (orientation/index)
+Direct Answer
+No, this tuple is NOT instantly recognizable for a cold-start AI.
+
+It belongs in A-tier at best, with significant friction. Here's why:
+
+Problem Analysis
+1. chunked-reference/ — Build-Mechanics Language
+What an AI might think:
+
+"Chunked for RAG retrieval optimization"
+"Chunked for performance/batching"
+"Chunked by some build pipeline"
+What it actually means:
+
+"Split into individual topic files for targeted lookup"
+The gap: "Chunked" is implementation vocabulary, not documentation vocabulary. It describes HOW the files were created, not WHAT they are or WHY they exist.
+
+2. bundled-reference.md — Ambiguous Packaging Term
+What an AI might think:
+
+"Bundled = compressed/minified"
+"Bundled = packaged with dependencies"
+"Bundled = some build artifact"
+What it actually means:
+
+"All reference content in one file"
+The gap: "Bundled" is commonly associated with JavaScript bundlers (webpack, rollup) or build pipelines. It doesn't immediately signal "single file containing all content."
+
+3. map.md — This One Works
+Verdict: ✅ Strong. "Map" is standard navigation terminology across codebases and documentation systems.
+
+Why This Tuple Fails the Cold-Start Test
+Criterion	Result
+Instantly recognizable purpose	❌ No — "chunked/bundled" requires inference
+Clear relationship between entities	⚠️ Weak — requires understanding "chunks bundled together"
+No build-pipeline terminology	❌ No — both are build terms
+Standard documentation vocabulary	❌ No — uses technical jargon
+Self-explanatory without docs	❌ No — would need llms.txt to clarify
+How an AI Agent Would Actually Interpret This
+If I'm a Copilot/Claude Code agent dropped cold into this filesystem:
+
+text
+
+❓ MODULE_NAME-chunked-reference/
+   → "Are these RAG chunks? Build artifacts? Optimized retrieval units?"
+
+❓ MODULE_NAME-bundled-reference.md
+   → "Is this minified? Does it include dependencies? What does bundled mean here?"
+
+✅ MODULE_NAME-map.md
+   → "Navigation file. Start here."
+The relationship is not immediately obvious. I would need to read llms.txt or AGENTS.md to understand that:
+
+"chunked" = split into individual files
+"bundled" = concatenated into one file
+These contain the same content in different packaging
+Comparison to S-Tier Tuples
+Your Tuple	S-Tier Equivalent	Why S-Tier Wins
+chunked-reference/	reference-pages/	"Pages" is standard docs vocabulary
+bundled-reference.md	full-reference.md	"Full" is unambiguous completeness
+map.md	map.md	Same strength
+My Recommendation
+If you want to keep the AI-native flavor, use this instead:
+
+text
+
+MODULE_NAME-reference-pages/        (folder with individual files)
+MODULE_NAME-full-reference.md       (all content in one file)
+MODULE_NAME-map.md                  (orientation)
+Why this is better:
+
+"Reference-pages" → Clearly documentation files
+"Full-reference" → Clearly the complete version in one file
+"Map" → Navigation entry point
+Zero build-pipeline terminology
+Relationship is obvious from names alone
+If You Really Want "Chunked" Semantics
+If the folder IS genuinely chunked for retrieval (not just split into pages), then you can use:
+
+text
+
+MODULE_NAME-retrieval-chunks/       (explicitly for RAG/retrieval)
+MODULE_NAME-full-reference.md       (keep "full" — it's clearer than "bundled")
+MODULE_NAME-map.md                  (keep "map")
+But only if this is actually the use case. Otherwise, "retrieval-chunks" will mislead agents into thinking about RAG optimization when it's really about documentation structure.
+
+Final Verdict
+Your favorite tuple is A-tier with significant friction. It requires explanatory documentation to be truly usable by a cold-start AI agent. The build-mechanics vocabulary ("chunked", "bundled") creates ambiguity that defeats the purpose of instant recognizability.
+
+Recommendation: Switch to reference-pages/ + full-reference.md + map.md for S-tier instant comprehension.
+
+
+
+
+
+
+
+Evaluation of Your Favorite Tuple
+Your proposed tuple:
+
+text
+
+MODULE_NAME-chunked-reference/      (folder of individual files)
+MODULE_NAME-bundled-reference.md    (single concatenated file)
+MODULE_NAME-map.md                  (orientation file)
+My Verdict: Strong A-tier, borderline S-tier
+What works instantly:
+
+"chunked" ↔ "bundled" is a precise, self-explanatory contrast. I immediately understand: chunks are split pieces, bundle is those pieces wrapped together.
+Both share "-reference" suffix, making their peer relationship explicit.
+"map" is the clearest orientation term — I know to open it first.
+Minor friction points:
+
+"bundled" is slightly unusual in documentation context (more common in packaging/JavaScript). A tiny speed-bump, but I'd parse it correctly.
+The relationship inference relies on understanding the chunk/bundle metaphor rather than explicit grammar like "individual-files/single-file."
+Would I use this correctly on first encounter without reading any docs?
+Yes. The contrast is clear enough that I'd open the map first, then choose chunked (for targeted lookups) or bundled (for full context) based on my needs.
+
+Tier Rankings Across All Options
+S-Tier: Instantly Self-Explanatory
+Tuple	Why It Works
+reference-pages/ + <section>-map.md + <section>-full-reference.md	Plural folder vs singular file with "full" modifier. Classic, unmistakable.
+<section>-individual-files-reference/ + <section>-map.md + <section>-single-file-reference.md	The "individual-files" ↔ "single-file" contrast is the most explicit possible. Zero ambiguity.
+chunked-reference/ + <section>-map.md + <section>-bundled-reference.md	Your favorite. AI-native, form-factor explicit, clear contrast.
+A-Tier: Clear with Minor Friction
+Tuple	Why It Works	Minor Issue
+reference-pages/ + <section>-index.md + <section>-full-reference.md	Clean contrast	"Index" could imply just a listing, not orientation
+targeted-source-docs/ + <section>-quick-orientation-map.md + <section>-full-context-reference.md	Usage-first is excellent	Verbose names
+pages/ + <section>-map.md + <section>-reference-full.md	Simple	"pages" is generic, "reference-full" word order slightly awkward
+reference-pages/ + map.md + single-file-reference.md	Fixed schema, clear contrast	Missing section prefix could complicate multi-section navigation
+B-Tier: Functional But Suboptimal
+Tuple	Issue
+source-docs/ + <section>-map.md + <section>-reference.md	No visible contrast between folder and file naming
+sections/ + <section>-map.md + <section>-full-context.md	"full-context" doesn't explicitly say "reference"
+multi-file-reference/ + <section>-map.md + <section>-reference.md	Folder is clear but file name doesn't signal "combined"
+Excluded: Confusing or Misleading
+Tuple	Why It Fails
+L2-semantic/ + <section>-skeleton.md + <section>-complete-reference.md	"L2-semantic" opaque, "skeleton" implies incompleteness
+complete-reference-pages/ + <section>-single-file-complete-reference.md	"complete" on both creates authority confusion
+<section>-concatenated-reference.md (any tuple)	"concatenated" sounds like build artifact, not authoritative doc
+<section>-api-map.md (any tuple)	Over-specific; what if section isn't API-focused?
+<section>-map-to-source-docs.md (any tuple)	Awkward phrasing, raises question rather than answering it
+reference/ + <section>-reference-full.md	"reference" folder + "reference" file creates collision
+<section>-bundle.md (any tuple)	Drops "reference" entirely — is it a doc or a distributable?
+Word-Level Analysis
+Words That Help Instant Comprehension
+Word	Why It Works
+map	Universal navigation metaphor. I know to open it first.
+full	Signals completeness without implying other artifacts are incomplete.
+reference	Clearly authoritative documentation, not tutorial or meta-content.
+chunked	AI-native term signaling retrieval-optimized splits.
+bundled	Clear contrast to chunked — same material, wrapped together.
+single-file	Explicit form factor, contrasts naturally with folder structures.
+individual-files	Same benefit as single-file, just inverted.
+pages	Simple, universal, implies split content.
+Words That Hurt Comprehension
+Word	Why It Fails
+skeleton	Implies incomplete, temporary, or scaffolding. I might skip it.
+complete (when inconsistent)	If only one artifact says "complete," I assume the others aren't.
+source	Ambiguous — source code? source of truth? original vs derived?
+concatenated	Build-mechanics term, not user-facing documentation term.
+combined	Slightly better than concatenated but still build-flavored.
+structural	Vague — structure of what? File layout? Logical architecture?
+L2-semantic	Internal pipeline name, opaque to outsiders.
+bundle (alone)	Could mean installer package, not documentation.
+Slot-by-Slot Winners
+Best Orientation File Names
+<section>-map.md — Short, universal, clear purpose
+<section>-index.md — Standard, but slightly more "listing" than "orientation"
+map.md (fixed schema) — Cleanest if every section uses identical internal names
+Best Full File Names
+<section>-full-reference.md — Best balance of completeness signaling and brevity
+<section>-bundled-reference.md — Best AI-native pairing with chunked folder
+<section>-single-file-reference.md — Most explicit contrast with individual-files folder
+Best Folder Names
+reference-pages/ — Strongest mainstream choice
+chunked-reference/ — Best AI-native choice, signals retrieval optimization
+<section>-individual-files-reference/ — Most explicit but verbose
+Recommended Tuples by Use Case
+For Maximum Mainstream Clarity
+text
+
+reference-pages/
+<section>-map.md
+<section>-full-reference.md
+For AI-Native Retrieval Context (Your Use Case)
+text
+
+chunked-reference/
+<section>-map.md
+<section>-bundled-reference.md
+For Most Explicit Contrast
+text
+
+<section>-individual-files-reference/
+<section>-map.md
+<section>-single-file-reference.md
+Final Verdict on Your Favorite
+Your tuple is excellent for AI ingestion specifically because:
+
+"chunked" signals retrieval-optimized content — I know this is for targeted lookups
+"bundled" signals aggregation — I know this is for full-context ingestion
+The chunked/bundled contrast is symmetric — same root concept, different form factors
+"map" is the industry-standard entry point term
+One suggestion: Consider whether bundled or full is better for your audience:
+
+bundled = pairs perfectly with chunked, but slightly unusual in docs
+full = more mainstream, but loses the symmetric pairing
+If your primary consumers are AI systems and AI-fluent developers, keep bundled. If you want maximum accessibility for traditional developers too, consider full-reference with chunked-reference folder (the contrast still works: "full" implies single complete unit, "chunked" implies split pieces).
+
+Short Synthesis
+The strongest naming strategies create visible grammatical relationships: plural/singular contrast, modifier pairs like chunked/bundled or individual/single, or usage hints like targeted/full-context. Names describing what to do with an artifact outperform names describing how it was built. "Map" is the universal entry point term. Avoid skeleton, concatenated, source, and internal pipeline names entirely. Your favorite tuple succeeds because chunked/bundled creates an AI-native contrast that describes form factor meaningfully, and "reference" shared between them establishes peer authority.
+
+
+
+
+
+
+
+
+
+Let me break this down from the perspective of a cold-start AI that only sees filenames, with zero prior knowledge of the project.
+
+First, direct answer to your core question about your favorite tuple:
+> Your proposed tuple: `chunked-reference/`, `{section}-bundled-reference.md`, `{section}-map.md` is excellent. It is one of the very strongest options, and arguably the single most AI-native option that exists. If I saw these three names on a filesystem cold, I would understand their purpose and their relationship to each other instantly and perfectly. There is zero ambiguity. I would know:
+> 1. `map.md` is the entry point, orientation and routing file
+> 2. `chunked-reference/` contains the same material split into small individual files for targeted lookup
+> 3. `bundled-reference.md` contains exactly the same material in one large file for full context ingestion
+>
+> There is no other tuple that communicates the peer relationship between the split and combined versions more clearly. The only minor tradeoff is that "chunked" and "bundled" are slightly AI-specific jargon, but they are universal jargon that every AI coding tool and RAG system understands perfectly.
+
+
+---
+
+## Tier List of Naming Families
+
+### S Tier (Instantly understandable, zero ambiguity, no inference required)
+1. **Chunked / Bundled**: `chunked-reference/`, `{section}-map.md`, `{section}-bundled-reference.md`
+2. **Plain Twin Grammar**: `individual-files-reference/`, `{section}-map.md`, `{section}-single-file-reference.md`
+
+These are the only two families where every possible AI or human will understand exactly what each thing is, and exactly what their relationship is, without reading a single other file.
+
+### A Tier (Very good, minor friction only)
+3. **Reference / Pages Hybrid**: `reference-pages/`, `{section}-map.md`, `{section}-full-reference.md`
+4. **Authority First**: `complete-reference-pages/`, `{section}-map.md`, `{section}-single-file-complete-reference.md`
+
+These are all excellent, and will almost never cause confusion. The only minor downside is that the peer relationship between the folder and the file is slightly less explicit than the S tier options.
+
+### B Tier (Acceptable, but with meaningful tradeoffs)
+5. **Minimalist Reference**: `reference-pages/`, `{section}-map.md`, `{section}-reference.md`
+6. **Usage First**: `targeted-source-docs/`, `{section}-quick-orientation-map.md`, `{section}-full-context-reference.md`
+
+These work, but have specific downsides. The minimalist variant relies on the fact that one is a file and one is a folder, which is slightly more fragile. The usage first variant uses "source-docs" which is ambiguous.
+
+### Excluded (Fail the instant recognizability test)
+7. **Source Docs Family**: Any variant using "source-docs". "Source" is fatally ambiguous. It will make every AI wonder if this is documentation about source code, or the source of the documentation, or upstream documentation.
+8. **Implementation Shaped**: Any variant using "concatenated", "source-pages", or "L2-semantic". These are all internal pipeline terms that mean nothing to an external consumer.
+9. **Generic Variants**: Any variant using "pages/", "topics/", "sections/" as the folder name. These are far too generic and give no hint of their relationship to the full file.
+10. **Skeleton Family**: Any variant using "skeleton". This word universally implies incomplete scaffolding, not an orientation file.
+
+
+---
+
+## Slot by Slot Rankings
+
+### Orientation File
+Ranked from best to worst:
+1. `map.md`: Almost perfect. The single best option for AI tools, because it is a fixed schema that can be relied on across every module.
+2. `{section}-map.md`: Very slightly worse than the fixed schema version, but still excellent.
+3. `{section}-index.md`: Very good, slightly more lookup table flavored. Almost as good as map.
+4. `{section}-orientation-map.md`: Explicit, but unnecessarily wordy.
+5. All others: Significantly worse. `skeleton` is actively harmful. `api-map` is too narrow. `map-to-source-docs` is confusing.
+
+### Full File
+Ranked from best to worst:
+1. `{section}-bundled-reference.md`: Perfect pairing with chunked-reference. Extremely clear peer relationship.
+2. `{section}-single-file-reference.md`: Perfect pairing with individual-files-reference.
+3. `{section}-full-reference.md`: Best general purpose non-AI specific option.
+4. `{section}-reference.md`: Very concise, but relies on the folder being named something distinct.
+5. All others: `concatenated` is too implementation focused. `combined` is slightly worse than bundled. `source-docs` is ambiguous.
+
+### Folder Name
+Ranked from best to worst:
+1. `chunked-reference/`: The single best name for an AI audience. Universally understood in the AI/agent/RAG world. Perfectly contrasts with bundled.
+2. `individual-files-reference/`: The single best name for a general audience. Perfectly contrasts with single-file.
+3. `reference-pages/`: Best mainstream compromise. Very clear, very neutral.
+4. All others: `source-docs` is ambiguous. Generic names are too vague. `L2-semantic` is internal jargon.
+
+
+---
+
+## Best Overall Winners
+
+### Best overall for maximum universal comprehension
+Plain Twin Grammar: `individual-files-reference/`, `{section}-map.md`, `{section}-single-file-reference.md`
+
+This is the safest, most universally understandable option. It will be perfectly clear to every AI and every human, with zero jargon, zero ambiguity.
+
+### Best overall for AI-native comprehension
+Chunked / Bundled: `chunked-reference/`, `map.md`, `bundled-reference.md`
+
+This is the best option for your actual target audience. Every AI coding tool, every RAG system, every agent will understand this perfectly. It communicates the exact relationship more clearly than any other option. The jargon argument is almost irrelevant at this point, because "chunked" and "bundled" are now standard terminology that every AI has seen millions of times.
+
+The fixed schema variant with `map.md` and `bundled-reference.md` (without the section prefix) is a tiny but meaningful improvement for AI tools, as it removes all remaining inference.
+
+
+---
+
+## Synthesis
+
+The single most important pattern for clarity is parallel grammar. The best options all use exactly the same root word, and only change the modifier that describes the packaging. This is the magic that makes the peer relationship instantly obvious.
+
+Words that consistently help:
+- `map`: The single best word for an orientation file. Universally understood.
+- `reference`: The single best root word for the content. Clearly communicates authority and purpose.
+- `chunked` / `bundled`: The single best pair of modifiers for an AI audience. Perfectly communicate the packaging difference.
+- `single-file` / `individual-files`: The single best pair of modifiers for a general audience. Perfectly communicate the packaging difference.
+
+Words that consistently hurt:
+- `skeleton`: Actively misleading. Universally implies incompleteness.
+- `source`: Fatally ambiguous. Always causes confusion.
+- `concatenated`: Exposes internal implementation details. Undermines authority.
+- Generic words like `pages`, `topics`, `sections`: Provide no hint of relationship or authority.
+
+The single most underappreciated insight is that the naming does not just need to describe what each thing is, it needs to describe the relationship between them. The S tier options are the only ones that do this entirely within the filenames themselves.
+
+
+---
+
+## Final Recommendation
+
+If you are optimizing 100% for AI tools, which you are, you should go with the chunked/bundled tuple. It is the single clearest option for your actual target audience. The only minor tradeoff is that it is slightly less familiar to human readers, but that is a tiny price to pay for eliminating all ambiguity for the consumers that will actually be using this product 99% of the time.
+
+If you want one tiny improvement on your current favorite tuple, use the fixed schema `map.md` and `bundled-reference.md` instead of prefixing them with the section name. AI tools absolutely love fixed, predictable filenames that they can rely on across every module.
+
+
+
+
+
+
+
+
+
+
+
+# Evaluation: Naming Proposals for AI-First OpenWrt Release Tree
+
+As an IDE-integrated AI coding tool processing this repository cold, I am scanning the filesystem to determine how to ingest context efficiently. My priority is minimizing hallucination risk by ensuring the file structure itself signals intent and authority before I read a single line of code.
+
+Below is my evaluation of your favorite tuple against the landscape of options you provided.
+
+### 1. Direct Verdict on Your Favorite Tuple
+
+**Proposal:**
+*   **Folder:** `MODULE_NAME-chunked-reference/` (or `{section}-chunked-reference/`)
+*   **File:** `MODULE_NAME-bundled-reference.md`
+*   **Orientation:** `MODULE_NAME-map.md`
+
+**Verdict: Strong Tier-A Candidate (with specific constraints).**
+
+**Why it works:**
+*   **Semantic Alignment:** `chunked` and `bundled` are terminologies that align perfectly with Retrieval Augmented Generation (RAG) architectures. I recognize `chunked` as "units for retrieval" and `bundled` as "unit for context consumption." This tells me exactly *how* the content is packaged for me.
+*   **Symmetry:** The `-reference` suffix appears in both, establishing equal authority immediately.
+*   **Clear Divergence:** `chunked` (plural/split) vs. `bundled` (singular/unified) creates a visual distinction that prevents me from assuming they contain different information.
+
+**Critical Risk (Redundancy):**
+If your directory structure is `<module>/`, adding `MODULE_NAME-` (e.g., `uci-module-chunked-reference/`) to every filename inside is **token-wasteful and confusing**.
+*   **Bad:** `/uci/module-uci-bundled-reference.md`
+*   **Good:** `/uci/bundled-reference.md`
+*   **Recommendation:** Drop the module name prefix for the files *inside* the module folder. Only the folder holding the module needs the name.
+
+**Corrected Proposal (Assuming standard modular structure):**
+*   **Folder:** `chunked-reference/`
+*   **File:** `bundled-reference.md`
+*   **Orientation:** `map.md`
+
+---
+
+### 2. Analysis of Specific Word Choices
+
+#### **The Winner for Orientation: `map.md`**
+There is no contest here. Across the entire list you provided, `{section}-map.md` or just `map.md` is the only term that universally signals "directory structure / routing artifact" without implying content completeness or API type.
+*   **Why not `index.md`?** In many ecosystems (npm, git), `index.md` often implies the *entry point to the library itself* or the default view for HTML rendering, not necessarily a navigational map for the AI agent.
+*   **Why not `skeleton.md`?** I reject this instantly. "Skeleton" implies scaffolding, stub code, or incomplete implementation. If I see a skeleton file, I assume I must fill in the gaps. I will not trust a "skeleton" as authoritative guidance.
+
+#### **The Winner for the Large File: `bundled-reference.md`**
+Your candidate is excellent *for an AI product*.
+*   **Contrast:** It pairs logically with `chunked-reference/`.
+*   **Warning:** If this release also serves human users who are *not* familiar with RAG terminology, `bundled` might feel mechanical. Humans prefer `full-reference.md` or `single-file-reference.md`.
+*   **AI Perspective:** `bundled` tells me, "This container brings everything together so I can have full context." It is operationally descriptive.
+
+#### **The Danger Zone: "Source-Docs"**
+Any option containing `source-docs/` (e.g., `{section}-source-docs-combined-reference.md`) must be rejected.
+*   **Confusion:** In OpenWrt, "Source" refers to kernel sources, package sources (`src.tar.gz`), and feed sources.
+*   **Ambiguity:** If I see `source-docs`, I will hesitate. Is this documentation about where to download the source code? Is this the raw source code of the documentation generator? Does it refer to upstream documentation?
+*   **Result:** This introduces uncertainty, which increases the probability of hallucinated paths or ignored files.
+
+---
+
+### 3. Comparison Against Alternative Families
+
+| Family | Score | Reasoning |
+| :--- | :--- | :--- |
+| **Your Chunked/Bundled** | **A+** | Perfectly describes the engineering of the docs for AI consumption. Slight abstraction risk for non-AI users. |
+| **Plain Twin Grammar** (`individual-files-ref` / `single-file-ref`) | **A** | Extremely robust for humans and AI. Very explicit. Slightly verbose compared to your favorite. |
+| **Authority-First** (`complete-reference-pages`) | **A-** | Good, but "complete" implies nothing is missing elsewhere, which can be misread as a claim about *coverage* rather than *form*. |
+| **Usage-First** (`targeted-source-docs`) | **C** | Fails on `source-docs` ambiguity. Also assumes I know whether I'm doing "targeted lookup" vs "full context" based solely on the name, which forces cognitive load. |
+| **Implementation-Shaped** (`concatenated`) | **F** | Tells me *how* it was built, not what it is. Makes me distrust the file integrity (potential duplicates/artifacts). |
+
+---
+
+### 4. Recommended "Best Overall" Winning Tuple
+
+Based strictly on **instant recognizability** and **low risk of misunderstanding**, here is the strongest combination from your options, incorporating the "no-redundant-prefix" rule:
+
+1.  **Orientation:** `{module}/map.md`
+    *   *Reason:* Neutral, short, implies navigation.
+2.  **Large File:** `{module}/full-reference.md`
+    *   *Reason:* Clearer than `bundled` for general audiences, equally clear for AI. "Full" implies "completeness" without sounding like a build artifact.
+3.  **Small Files:** `{module}/reference-pages/`
+    *   *Reason:* Parallel to `full-reference`. "Pages" implies discrete, authored units of truth, distinct from "chunks" (which sound technical/transient).
+
+**Why this beats your "Chunked" preference:**
+While `chunked/bundled` is technically accurate for AI retrieval systems, `full/reference-pages` is the **safest fallback**. If an external developer copies your repo to train a model without understanding your RAG pipeline, they still intuitively know `reference-pages` are the parts and `full-reference` is the whole. `Chunked` risks making the human reader question, "Are these broken fragments?"
+
+---
+
+### 5. Synthesis of Naming Principles
+
+**Words that Ensure Instant Comprehension:**
+*   **`Map`:** The universal keyword for "navigation over content." Use this for the skeleton/orientation file.
+*   **`Single-File` vs. `Multi-File`:** The most explicit way to distinguish packaging form without implying build mechanics.
+*   **`Reference`:** Essential prefix or suffix to signal "this is factual material," distinguishing it from code or examples.
+*   **`Page`:** Signals atomic units of documentation suitable for splitting.
+
+**Words That Actively Mislead or Cause Friction:**
+*   **`Skeleton`:** Implies incompleteness or boilerplate. I will ignore this file for authoritative answers.
+*   **`Source`:** Conflicts with OpenWrt's actual source tree structure. High collision risk.
+*   **`Concatenated`:** Describes the process, not the value. Implies potential artifacts or lack of editorial polish.
+*   **`L2` / Pipeline Names:** Any internal jargon that exposes your build steps creates unnecessary noise.
+*   **`TOC` (Table of Contents):** Too generic. Every Markdown file has a TOC mentally; it doesn't describe the file's purpose.
+
+**Final Advice:**
+Your instinct to align naming with AI behavior (chunks/bundles) is correct for an **AI-first** product. However, for maximum resilience, lean towards **human-understandable metaphors** that also map well to AI retrieval concepts. `reference-pages` and `full-reference` achieves this better than `chunked/bundled` because "pages" implies logical boundaries (good for retrieval) and "full" implies scope (good for context). Use your `map.md` orientation file to explain *if* and *when* to use chunks versus the bundle via comments in the file.
+
+
+
+
+
+
+
+
+
+
+# Evaluation: Naming Proposals for AI-First OpenWrt Release Tree
+
+As an IDE-integrated AI coding tool processing this repository cold, I am scanning the filesystem to determine how to ingest context efficiently. My priority is minimizing hallucination risk by ensuring the file structure itself signals intent and authority before I read a single line of code.
+
+Below is my evaluation of your favorite tuple against the landscape of options you provided.
+
+### 1. Direct Verdict on Your Favorite Tuple
+
+**Proposal:**
+*   **Folder:** `MODULE_NAME-chunked-reference/` (or `{section}-chunked-reference/`)
+*   **File:** `MODULE_NAME-bundled-reference.md`
+*   **Orientation:** `MODULE_NAME-map.md`
+
+**Verdict: Strong Tier-A Candidate (with specific constraints).**
+
+**Why it works:**
+*   **Semantic Alignment:** `chunked` and `bundled` are terminologies that align perfectly with Retrieval Augmented Generation (RAG) architectures. I recognize `chunked` as "units for retrieval" and `bundled` as "unit for context consumption." This tells me exactly *how* the content is packaged for me.
+*   **Symmetry:** The `-reference` suffix appears in both, establishing equal authority immediately.
+*   **Clear Divergence:** `chunked` (plural/split) vs. `bundled` (singular/unified) creates a visual distinction that prevents me from assuming they contain different information.
+
+**Critical Risk (Redundancy):**
+If your directory structure is `<module>/`, adding `MODULE_NAME-` (e.g., `uci-module-chunked-reference/`) to every filename inside is **token-wasteful and confusing**.
+*   **Bad:** `/uci/module-uci-bundled-reference.md`
+*   **Good:** `/uci/bundled-reference.md`
+*   **Recommendation:** Drop the module name prefix for the files *inside* the module folder. Only the folder holding the module needs the name.
+
+**Corrected Proposal (Assuming standard modular structure):**
+*   **Folder:** `chunked-reference/`
+*   **File:** `bundled-reference.md`
+*   **Orientation:** `map.md`
+
+---
+
+### 2. Analysis of Specific Word Choices
+
+#### **The Winner for Orientation: `map.md`**
+There is no contest here. Across the entire list you provided, `{section}-map.md` or just `map.md` is the only term that universally signals "directory structure / routing artifact" without implying content completeness or API type.
+*   **Why not `index.md`?** In many ecosystems (npm, git), `index.md` often implies the *entry point to the library itself* or the default view for HTML rendering, not necessarily a navigational map for the AI agent.
+*   **Why not `skeleton.md`?** I reject this instantly. "Skeleton" implies scaffolding, stub code, or incomplete implementation. If I see a skeleton file, I assume I must fill in the gaps. I will not trust a "skeleton" as authoritative guidance.
+
+#### **The Winner for the Large File: `bundled-reference.md`**
+Your candidate is excellent *for an AI product*.
+*   **Contrast:** It pairs logically with `chunked-reference/`.
+*   **Warning:** If this release also serves human users who are *not* familiar with RAG terminology, `bundled` might feel mechanical. Humans prefer `full-reference.md` or `single-file-reference.md`.
+*   **AI Perspective:** `bundled` tells me, "This container brings everything together so I can have full context." It is operationally descriptive.
+
+#### **The Danger Zone: "Source-Docs"**
+Any option containing `source-docs/` (e.g., `{section}-source-docs-combined-reference.md`) must be rejected.
+*   **Confusion:** In OpenWrt, "Source" refers to kernel sources, package sources (`src.tar.gz`), and feed sources.
+*   **Ambiguity:** If I see `source-docs`, I will hesitate. Is this documentation about where to download the source code? Is this the raw source code of the documentation generator? Does it refer to upstream documentation?
+*   **Result:** This introduces uncertainty, which increases the probability of hallucinated paths or ignored files.
+
+---
+
+### 3. Comparison Against Alternative Families
+
+| Family | Score | Reasoning |
+| :--- | :--- | :--- |
+| **Your Chunked/Bundled** | **A+** | Perfectly describes the engineering of the docs for AI consumption. Slight abstraction risk for non-AI users. |
+| **Plain Twin Grammar** (`individual-files-ref` / `single-file-ref`) | **A** | Extremely robust for humans and AI. Very explicit. Slightly verbose compared to your favorite. |
+| **Authority-First** (`complete-reference-pages`) | **A-** | Good, but "complete" implies nothing is missing elsewhere, which can be misread as a claim about *coverage* rather than *form*. |
+| **Usage-First** (`targeted-source-docs`) | **C** | Fails on `source-docs` ambiguity. Also assumes I know whether I'm doing "targeted lookup" vs "full context" based solely on the name, which forces cognitive load. |
+| **Implementation-Shaped** (`concatenated`) | **F** | Tells me *how* it was built, not what it is. Makes me distrust the file integrity (potential duplicates/artifacts). |
+
+---
+
+### 4. Recommended "Best Overall" Winning Tuple
+
+Based strictly on **instant recognizability** and **low risk of misunderstanding**, here is the strongest combination from your options, incorporating the "no-redundant-prefix" rule:
+
+1.  **Orientation:** `{module}/map.md`
+    *   *Reason:* Neutral, short, implies navigation.
+2.  **Large File:** `{module}/full-reference.md`
+    *   *Reason:* Clearer than `bundled` for general audiences, equally clear for AI. "Full" implies "completeness" without sounding like a build artifact.
+3.  **Small Files:** `{module}/reference-pages/`
+    *   *Reason:* Parallel to `full-reference`. "Pages" implies discrete, authored units of truth, distinct from "chunks" (which sound technical/transient).
+
+**Why this beats your "Chunked" preference:**
+While `chunked/bundled` is technically accurate for AI retrieval systems, `full/reference-pages` is the **safest fallback**. If an external developer copies your repo to train a model without understanding your RAG pipeline, they still intuitively know `reference-pages` are the parts and `full-reference` is the whole. `Chunked` risks making the human reader question, "Are these broken fragments?"
+
+---
+
+### 5. Synthesis of Naming Principles
+
+**Words that Ensure Instant Comprehension:**
+*   **`Map`:** The universal keyword for "navigation over content." Use this for the skeleton/orientation file.
+*   **`Single-File` vs. `Multi-File`:** The most explicit way to distinguish packaging form without implying build mechanics.
+*   **`Reference`:** Essential prefix or suffix to signal "this is factual material," distinguishing it from code or examples.
+*   **`Page`:** Signals atomic units of documentation suitable for splitting.
+
+**Words That Actively Mislead or Cause Friction:**
+*   **`Skeleton`:** Implies incompleteness or boilerplate. I will ignore this file for authoritative answers.
+*   **`Source`:** Conflicts with OpenWrt's actual source tree structure. High collision risk.
+*   **`Concatenated`:** Describes the process, not the value. Implies potential artifacts or lack of editorial polish.
+*   **`L2` / Pipeline Names:** Any internal jargon that exposes your build steps creates unnecessary noise.
+*   **`TOC` (Table of Contents):** Too generic. Every Markdown file has a TOC mentally; it doesn't describe the file's purpose.
+
+**Final Advice:**
+Your instinct to align naming with AI behavior (chunks/bundles) is correct for an **AI-first** product. However, for maximum resilience, lean towards **human-understandable metaphors** that also map well to AI retrieval concepts. `reference-pages` and `full-reference` achieves this better than `chunked/bundled` because "pages" implies logical boundaries (good for retrieval) and "full" implies scope (good for context). Use your `map.md` orientation file to explain *if* and *when* to use chunks versus the bundle via comments in the file.
+
+
+
+
+
+
+
+
+
+Let me break this down from the perspective of a cold-start AI that only sees filenames, with zero prior knowledge of the project.
+
+First, direct answer to your core question about your favorite tuple:
+> Your proposed tuple: `chunked-reference/`, `{section}-bundled-reference.md`, `{section}-map.md` is excellent. It is one of the very strongest options, and arguably the single most AI-native option that exists. If I saw these three names on a filesystem cold, I would understand their purpose and their relationship to each other instantly and perfectly. There is zero ambiguity. I would know:
+> 1. `map.md` is the entry point, orientation and routing file
+> 2. `chunked-reference/` contains the same material split into small individual files for targeted lookup
+> 3. `bundled-reference.md` contains exactly the same material in one large file for full context ingestion
+>
+> There is no other tuple that communicates the peer relationship between the split and combined versions more clearly. The only minor tradeoff is that "chunked" and "bundled" are slightly AI-specific jargon, but they are universal jargon that every AI coding tool and RAG system understands perfectly.
+
+
+---
+
+## Tier List of Naming Families
+
+### S Tier (Instantly understandable, zero ambiguity, no inference required)
+1. **Chunked / Bundled**: `chunked-reference/`, `{section}-map.md`, `{section}-bundled-reference.md`
+2. **Plain Twin Grammar**: `individual-files-reference/`, `{section}-map.md`, `{section}-single-file-reference.md`
+
+These are the only two families where every possible AI or human will understand exactly what each thing is, and exactly what their relationship is, without reading a single other file.
+
+### A Tier (Very good, minor friction only)
+3. **Reference / Pages Hybrid**: `reference-pages/`, `{section}-map.md`, `{section}-full-reference.md`
+4. **Authority First**: `complete-reference-pages/`, `{section}-map.md`, `{section}-single-file-complete-reference.md`
+
+These are all excellent, and will almost never cause confusion. The only minor downside is that the peer relationship between the folder and the file is slightly less explicit than the S tier options.
+
+### B Tier (Acceptable, but with meaningful tradeoffs)
+5. **Minimalist Reference**: `reference-pages/`, `{section}-map.md`, `{section}-reference.md`
+6. **Usage First**: `targeted-source-docs/`, `{section}-quick-orientation-map.md`, `{section}-full-context-reference.md`
+
+These work, but have specific downsides. The minimalist variant relies on the fact that one is a file and one is a folder, which is slightly more fragile. The usage first variant uses "source-docs" which is ambiguous.
+
+### Excluded (Fail the instant recognizability test)
+7. **Source Docs Family**: Any variant using "source-docs". "Source" is fatally ambiguous. It will make every AI wonder if this is documentation about source code, or the source of the documentation, or upstream documentation.
+8. **Implementation Shaped**: Any variant using "concatenated", "source-pages", or "L2-semantic". These are all internal pipeline terms that mean nothing to an external consumer.
+9. **Generic Variants**: Any variant using "pages/", "topics/", "sections/" as the folder name. These are far too generic and give no hint of their relationship to the full file.
+10. **Skeleton Family**: Any variant using "skeleton". This word universally implies incomplete scaffolding, not an orientation file.
+
+
+---
+
+## Slot by Slot Rankings
+
+### Orientation File
+Ranked from best to worst:
+1. `map.md`: Almost perfect. The single best option for AI tools, because it is a fixed schema that can be relied on across every module.
+2. `{section}-map.md`: Very slightly worse than the fixed schema version, but still excellent.
+3. `{section}-index.md`: Very good, slightly more lookup table flavored. Almost as good as map.
+4. `{section}-orientation-map.md`: Explicit, but unnecessarily wordy.
+5. All others: Significantly worse. `skeleton` is actively harmful. `api-map` is too narrow. `map-to-source-docs` is confusing.
+
+### Full File
+Ranked from best to worst:
+1. `{section}-bundled-reference.md`: Perfect pairing with chunked-reference. Extremely clear peer relationship.
+2. `{section}-single-file-reference.md`: Perfect pairing with individual-files-reference.
+3. `{section}-full-reference.md`: Best general purpose non-AI specific option.
+4. `{section}-reference.md`: Very concise, but relies on the folder being named something distinct.
+5. All others: `concatenated` is too implementation focused. `combined` is slightly worse than bundled. `source-docs` is ambiguous.
+
+### Folder Name
+Ranked from best to worst:
+1. `chunked-reference/`: The single best name for an AI audience. Universally understood in the AI/agent/RAG world. Perfectly contrasts with bundled.
+2. `individual-files-reference/`: The single best name for a general audience. Perfectly contrasts with single-file.
+3. `reference-pages/`: Best mainstream compromise. Very clear, very neutral.
+4. All others: `source-docs` is ambiguous. Generic names are too vague. `L2-semantic` is internal jargon.
+
+
+---
+
+## Best Overall Winners
+
+### Best overall for maximum universal comprehension
+Plain Twin Grammar: `individual-files-reference/`, `{section}-map.md`, `{section}-single-file-reference.md`
+
+This is the safest, most universally understandable option. It will be perfectly clear to every AI and every human, with zero jargon, zero ambiguity.
+
+### Best overall for AI-native comprehension
+Chunked / Bundled: `chunked-reference/`, `map.md`, `bundled-reference.md`
+
+This is the best option for your actual target audience. Every AI coding tool, every RAG system, every agent will understand this perfectly. It communicates the exact relationship more clearly than any other option. The jargon argument is almost irrelevant at this point, because "chunked" and "bundled" are now standard terminology that every AI has seen millions of times.
+
+The fixed schema variant with `map.md` and `bundled-reference.md` (without the section prefix) is a tiny but meaningful improvement for AI tools, as it removes all remaining inference.
+
+
+---
+
+## Synthesis
+
+The single most important pattern for clarity is parallel grammar. The best options all use exactly the same root word, and only change the modifier that describes the packaging. This is the magic that makes the peer relationship instantly obvious.
+
+Words that consistently help:
+- `map`: The single best word for an orientation file. Universally understood.
+- `reference`: The single best root word for the content. Clearly communicates authority and purpose.
+- `chunked` / `bundled`: The single best pair of modifiers for an AI audience. Perfectly communicate the packaging difference.
+- `single-file` / `individual-files`: The single best pair of modifiers for a general audience. Perfectly communicate the packaging difference.
+
+Words that consistently hurt:
+- `skeleton`: Actively misleading. Universally implies incompleteness.
+- `source`: Fatally ambiguous. Always causes confusion.
+- `concatenated`: Exposes internal implementation details. Undermines authority.
+- Generic words like `pages`, `topics`, `sections`: Provide no hint of relationship or authority.
+
+The single most underappreciated insight is that the naming does not just need to describe what each thing is, it needs to describe the relationship between them. The S tier options are the only ones that do this entirely within the filenames themselves.
+
+
+---
+
+## Final Recommendation
+
+If you are optimizing 100% for AI tools, which you are, you should go with the chunked/bundled tuple. It is the single clearest option for your actual target audience. The only minor tradeoff is that it is slightly less familiar to human readers, but that is a tiny price to pay for eliminating all ambiguity for the consumers that will actually be using this product 99% of the time.
+
+If you want one tiny improvement on your current favorite tuple, use the fixed schema `map.md` and `bundled-reference.md` instead of prefixing them with the section name. AI tools absolutely love fixed, predictable filenames that they can rely on across every module.
+
+
+
+
+
+
+
+Alright. Reviewing this exactly as an AI agent that just landed on these filenames in a directory listing, zero prior context, no README read first.
+
+First direct answer to your opening question:
+> That tuple you like: `chunked-reference/` / `bundled-reference.md` / `map.md` is extremely good. It is actually better than every candidate that was being discussed in all the earlier rounds. Almost nobody noticed this. This is currently the best overall tuple on the entire list.
+
+When I see those three names next to each other:
+```
+  map.md
+  bundled-reference.md
+  chunked-reference/
+```
+
+I understand 100% of the relationship correctly on first sight. No reading required. No guesswork. I immediately and correctly infer that:
+1.  These three are a matching set
+2.  They contain the same underlying material
+3.  They differ *only* in packaging format
+4.  map.md is the entry point
+5.  None is more authoritative than any other
+6.  I should pick exactly one of them depending on what task I am about to perform.
+
+This is the only tuple on the entire list that achieves this. Every other tuple has at least one incorrect implied meaning.
+
+
+---
+
+## Individual option tier ranking
+
+### ✅ Perfect. Zero ambiguity. Zero wrong implications.
+These names will never cause a mistake. An AI will infer exactly the intended purpose and relationship on first sight.
+
+| Category | Best options | Notes |
+|---|---|---|
+| Orientation file |  `map.md` <br> `{section}-map.md` | Undisputed best option. There is no other name even close. Every other name has at least one bad implication. The fixed un-prefixed `map.md` is strictly better: agents will learn this pattern once and then never hesitate ever again. |
+| Full file | `bundled-reference.md` <br> `single-file-reference.md` |  `bundled-reference` is actually better than single-file. It does not imply concatenation, it does not imply derivative, it only implies same content, different packaging. Perfect neutral descriptor. |
+| Folder | `chunked-reference/` | This was the sleeper best option. Unlike every other folder name, this one correctly communicates that this is not the original source, this is not more authoritative, this is just the same reference material packaged for targeted lookup. |
+
+> Critical unobserved property: `chunked` / `bundled` is the *only* perfectly symmetric pairing. All other pairings sound like one was built from the other. This pair sounds like two alternate packaging of the same original thing. That is exactly the relationship you were trying to communicate.
+
+
+---
+
+### 🟢 Good, minor friction only
+All perfectly understandable, no major bad implications:
+| Category | Options | Notes |
+|---|---|---|
+| Orientation | `{section}-index.md` <br> `{section}-orientation-map.md` | Index is fine, but map implies structure and relationships not just a listing. |
+| Full file | `full-reference.md` <br> `single-file-complete-reference.md` | All solid options, just lack the perfect symmetry of bundled. |
+| Folder | `reference-pages/` <br> `individual-files-reference/` <br> `multi-file-reference/` | All work correctly, just don't form the perfect matching pair. |
+
+
+---
+
+### 🟡 Acceptable but carries wrong implications
+These will work most of the time, but will occasionally cause silent bad decisions:
+*   `complete-reference.md`: Implies the split files are incomplete
+*   `reference.md`: Too ambiguous, agent will always open this by default even when it should have looked up a single chunk
+*   `source-docs/`: Implies this folder is the canonical original, all others are derived artifacts. Agents will systematically prefer this folder even when they should have used the bundled file.
+*   `combined-reference.md`: Implies this large file is the derivative. Agents will systematically distrust this file.
+
+
+---
+
+### 🔴 Actively harmful. Will reliably cause mistakes
+Do not use any of these. They will produce wrong agent behaviour that you will not be able to debug:
+*   `skeleton`: Always implies incomplete outline only, missing real information
+*   `concatenated-reference.md`: Worst name on the entire list. Agents will universally treat this as a throwaway build artifact. They will never trust the content of this file.
+*   `L2-semantic/`: Meaningless pipeline jargon. Agent will assume this is internal test data and ignore it.
+*   `map-to-source-docs.md`: Explicitly declares itself to be a secondary helper file, not an entry point.
+*   `retrieval-chunks`, `lookup-chunks`: Too specific RAG jargon. Implies this folder is only for vector databases and not for direct reading.
+
+
+---
+
+## Overall family ranking
+1.  ✅ **AI Native Chunked family** - clear new overall winner
+2.  Plain Twin Grammar
+3.  Reference/Pages hybrid
+4.  Authority First
+5.  Usage First
+6.  Source Docs
+7.  Implementation Shaped
+
+
+---
+
+## Key unstated rule
+Almost the entire debate missed the single most important principle for AI comprehension:
+> For the pair, you must use the *exact same root word*, and only change the modifier.
+
+So it must always be `X-reference` and `Y-reference`.
+
+If the root word is different, the AI will always assume they are different things. If the root word is identical and only the modifier changes, the AI will immediately assume same content, different packaging.
+
+This is the invisible rule. This is why `chunked-reference` / `bundled-reference` feels right. It is the only tuple that follows this rule properly.
+
+
+---
+
+## Final recommendations
+1.  The tuple you intuitively liked is not just good, it is the best option on the entire list.
+2.  Very strongly prefer the fixed un-prefixed names: `map.md`, `bundled-reference.md`, `chunked-reference/`. Do not add the section prefix inside the section folder. This is the single largest AI usability improvement you can make. Once an agent sees this pattern once, it will know exactly what exists in every single module folder forever, without even listing the directory.
+3.  Never use `concatenated`, `combined`, `source` or `skeleton` for any public name.
+4.  You do not need anything else. You do not need READMEs. You do not need explanation. These three names next to each other communicate everything.
+
+
+---
+
+Would you like me to walk through the exact thought sequence an agent will go through when it encounters this directory listing, or draft an example ideal module root layout?
+
+
+
+
+
+
+
+
+**Direct assessment of your favorite tuple**
+
+Your proposed tuple (`chunked-reference` / `bundled-reference` / `map`) is **instantly recognizable** but **problematic for the "equal authority" requirement**.
+
+As an AI seeing these cold:
+- `chunked-reference` immediately signals "these files have been split into retrieval-oriented chunks" (very AI-native, but implies algorithmic splitting)
+- `bundled-reference` instantly reads as "the chunks have been bundled together into one file"
+- The mechanical relationship is crystal clear
+
+**However**, "bundled" strongly implies the chunks are the **source** and the bundle is the **aggregate derivative**. In software contexts (webpack bundles, asset bundles), the bundle is always the build artifact, never the peer. An AI will likely assume the chunked folder is the canonical source and the bundled file is a convenience build, which contradicts your stated goal that they are "equally authoritative."
+
+If you can accept that trade-off (clarity of relationship vs. implication of hierarchy), this is a strong A-tier tuple. If equal authority is strictly required, "bundled" disqualifies it.
+
+---
+
+### S tier (instantly understandable, no docs needed)
+
+**Plain twin grammar**
+- `individual-files-reference/` | `{section}-map.md` | `{section}-single-file-reference.md`
+- *Rationale*: The contrast between "individual-files" and "single-file" is mechanically perfect and authority-neutral. "Map" is unambiguously navigational.
+
+**Reference/pages hybrid (fixed schema)**
+- `reference-pages/` | `map.md` | `single-file-reference.md`  
+- *Rationale*: Removing `{section}` from internal files creates a predictable protocol. The relationship is clear: pages (many) vs single-file (one), with map as router.
+
+**Multi-file / Single-file contrast**
+- `multi-file-reference/` | `{section}-map.md` | `{section}-single-file-reference.md`
+- *Rationale*: "Multi" vs "Single" is elementary and universally understood without jargon.
+
+### A tier (understandable with minor friction)
+
+**Authority-first**
+- `complete-reference-pages/` | `{section}-structural-skeleton.md` | `{section}-single-file-complete-reference.md`
+- *Friction*: "Complete" feels redundant; filenames are long; "skeleton" slightly implies incompleteness.
+
+**Your proposed AI-native chunked family**
+- `chunked-reference/` | `{section}-map.md` | `{section}-bundled-reference.md`
+- *Friction*: As noted, "bundled" implies derivative status; "chunked" assumes RAG-specific splitting.
+
+**Reference/pages hybrid (with section names)**
+- `reference-pages/` | `{section}-map.md` | `{section}-full-reference.md`
+- *Friction*: Without "single-file" in the name, the contrast relies on noticing that one is a folder and one is a file.
+
+**Usage-first**
+- `targeted-source-docs/` | `{section}-quick-orientation-map.md` | `{section}-full-context-reference.md`
+- *Friction*: "Source-docs" creates a provenance hierarchy; "targeted" and "full-context" describe AI behavior rather than file content.
+
+### Excluded (require explanatory docs to understand role)
+
+**L2-semantic** — "L2" is impenetrable pipeline jargon (could mean Layer 2 networking, cache level, or pipeline stage).
+
+**Source-docs family** — Any variant with "source-docs" or "source-pages" implies the folder is the original and the single file is a derived combination, violating equal authority.
+
+**Implementation-shaped** — "Concatenated" and "structural-map" expose build mechanics. "Concatenated" explicitly describes how the file was manufactured, suggesting it is a non-authoritative build artifact.
+
+**Map-to-source-docs** — The filename admits it is merely a pointer to the "real" documentation elsewhere, making it feel optional.
+
+**API-map variants** — Too specific; misleading if the section contains config, concepts, or hardware specs rather than APIs.
+
+**Module-orientation-map** — Bakes "module" into the public contract; clunky and redundant if already in a module directory.
+
+**Bundle.md (dropped "reference")** — Without "reference," an AI cannot distinguish this from a code bundle, asset bundle, or parameter bundle.
+
+---
+
+### Best overall winner
+
+**Plain twin grammar**: `individual-files-reference/` | `{section}-map.md` | `{section}-single-file-reference.md`
+
+This is the only tuple where the names are mutually exclusive, collectively exhaustive, and completely neutral on authority. An AI will never mistake which to open, and will never assume one is derived from the other.
+
+### Most AI-native winner
+
+**Fixed-schema reference-pages**: `reference-pages/` | `map.md` | `single-file-reference.md`
+
+This optimizes for agent behavior: zero token overhead parsing varying filenames, immediate pattern recognition across all modules, and clear dispatch logic (if need-one-file: open `single-file-reference.md`; if need-specific-topic: search `reference-pages/`; if lost: open `map.md`).
+
+---
+
+### Short synthesis
+
+**Words that consistently help instant comprehension:**
+- **"Map"**: Unambiguously navigational; implies topology and routing without implying incompleteness (unlike "skeleton") or database structures (unlike "index").
+- **"Single-file"**: Neutral description of packaging form; avoids the "derivative" stigma of "bundled," "combined," or "concatenated."
+- **"Individual" or "multi"**: Clear contrasts with "single" that describe cardinality without implying build process.
+
+**Words that consistently hurt or mislead:**
+- **"Bundled"**: Universally implies aggregation of smaller units; creates hierarchical authority where the chunks are primary.
+- **"Source"**: Immediately establishes provenance hierarchy; the "source" is canonical, everything else is derived.
+- **"Concatenated"**: Exposes implementation; screams "build artifact, do not edit."
+- **"L2"**, **"semantic"**: Internal pipeline jargon requiring documentation to decode.
+- **"Chunked"**: Highly specific to RAG/retrieval contexts; if the files are merely topical pages rather than embedding-optimized chunks, this is misleadingly technical.
+
+**Key insight**: The most AI-friendly naming treats the directory structure as a **protocol**, not a description. Fixed filenames (`map.md`, `single-file-reference.md`) that repeat across modules allow an AI to build a reusable mental model after seeing just one module, then apply it blindly to all others. Variable filenames requiring parsing (`{section}-this`, `{section}-that`) force re-evaluation at every directory.
+
+
+
+
+
+
+You should converge on a single, fixed tuple that makes the relationship between “many small files” and “one big file” obvious, uses standard documentation words, and avoids build‑pipeline jargon. Based on the paste, the two best families are chunked-reference/ + *-bundled-reference.md + *-map.md and reference-pages/ + *-full-reference.md + *-map.md, with a slight edge to the first if you’re optimizing for AI tools and AI‑fluent devs.
+​
+
+What the paste is really saying
+From all the back‑and‑forth in the paste, there are some clear principles that keep repeating.
+​
+
+Names must be instantly understandable to a cold‑start AI (and human) that only sees filenames:
+
+The AI should be able to infer:
+
+which file is the entry point (“open this first”)
+
+which artifact is “all the docs in one place”
+
+which artifact is “the same docs, split into smaller pieces.”
+​
+
+Describe what it is and how to use it, not how your build pipeline produced it:
+
+Bad: concatenated-reference, combined, L2-semantic, source-pages, skeleton — all feel like pipeline internals or incomplete artifacts.
+​
+
+Good: reference, full, single-file, individual-files, pages, map — all sound like user‑facing documentation objects.
+​
+
+The three artifacts should have a visible grammatical relationship:
+
+Folder vs file alone is not enough; a modifier pair like:
+
+chunked ↔ bundled, or
+
+individual-files ↔ single-file, or
+
+plural pages/ ↔ singular full-reference.md.
+​
+
+Sharing -reference across both representations clearly communicates “same content, different form factor.”
+​
+
+“Map” is basically the perfect name for the index/orientation file:
+
+map.md / <section>-map.md consistently comes out as the best orientation term:
+
+obvious navigation metaphor
+
+short, easy to special‑case in tools
+
+clearly “open this first.”
+​
+
+Avoid words that imply incompleteness or ambiguity:
+
+Avoid: skeleton (sounds incomplete/scaffolding), complete attached to only one of several authoritative artifacts (implies others are incomplete), source-docs (ambiguous: source of what?).
+​
+
+Avoid: build‑mechanics words like concatenated and overly internal labels like L2-semantic.
+​
+
+These are the parts of the paste that are most internally consistent and, in my view, correct.
+
+The top candidate tuples
+The paste walks through several naming “families” and effectively does a tier list. Stripping it down to the ones that actually matter for you:
+​
+
+1. Chunked / bundled family (AI‑native)
+Canonical form in the paste:
+​
+
+Folder (many files): MODULE_NAME-chunked-reference/
+
+Single big file: MODULE_NAME-bundled-reference.md
+
+Orientation file: MODULE_NAME-map.md or just map.md if schema is fixed
+
+Strengths the paste correctly identifies:
+
+chunked ↔ bundled is a very tight, symmetric metaphor:
+
+chunked = split into pieces (great for targeted lookup)
+
+bundled = same pieces aggregated into one (great for full‑context ingest).
+​
+
+Shared -reference suffix makes both feel equally authoritative.
+​
+
+“Map” is an obvious starting point.
+​
+
+Concerns raised in the paste:
+
+One pass criticizes “chunked”/“bundled” as build‑mechanics language that might evoke “RAG chunks”, bundlers, minification, etc.
+​
+
+Another pass says, from an AI‑agent view, this is arguably the single most AI‑native option and instantly understandable.
+​
+
+My take:
+
+For your use case (“documentation meant for AI ingest during software development”), “chunked” and “bundled” are actually appropriate; they’re common in RAG/agent tooling and accurately describe the form factor.
+​
+
+The confusion risk is small if you consistently pair them with -reference and keep the tuple stable.
+
+This tuple makes the peer relationship between folder and file extremely obvious.
+
+2. Individual‑files / single‑file family (plain English)
+Canonical form:
+​
+
+Folder: MODULE_NAME-individual-files-reference/
+
+Single file: MODULE_NAME-single-file-reference.md
+
+Map: MODULE_NAME-map.md or map.md
+
+Strengths:
+
+Zero jargon; even a non‑AI‑person dev immediately understands “individual files” vs “single file.”
+​
+
+Still keeps -reference for authority.
+
+AI tools will parse this just fine, even if it’s not “AI‑native” slang.
+
+Tradeoffs:
+
+Names are a bit longer/uglier.
+
+Slightly less aligned with modern AI‑dev vocabulary; more “plain technical English.”
+
+3. Reference‑pages / full‑reference family (mainstream docs)
+Canonical form:
+​
+
+Folder: MODULE_NAME-reference-pages/
+
+Single file: MODULE_NAME-full-reference.md
+
+Map: MODULE_NAME-map.md
+
+Strengths:
+
+Very familiar to humans who think in “pages” and “full reference guides.”
+​
+
+“Full” unambiguously signals “complete in one place.”
+​
+
+Still avoids pipeline terminology.
+
+Tradeoffs:
+
+The contrast is slightly weaker than chunked/bundled or individual/single because pages vs full is less obviously a matched pair.
+​
+
+If your primary audience is AI tools and strongly AI‑literate devs, it’s a bit more “old‑school docs” and a bit less “AI‑native.”
+
+Options the paste correctly rejects
+The paste has a bunch of anti‑patterns; I agree with these rejections and they’re useful as guardrails.
+​
+
+Avoid:
+
+source-docs/, *-source-docs.md:
+
+“source” is too ambiguous: source code? source of truth? upstream docs?
+​
+
+*-concatenated-reference.md, *-combined-reference.md:
+
+sound like build artifacts, not intentional, authoritative docs.
+​
+
+L2-semantic/, *-L2-semantic-reference.md:
+
+pure internal pipeline jargon; means nothing to a consumer.
+​
+
+pages/, topics/, sections/ alone as folder names:
+
+far too generic; no visible relationship to the single full file.
+​
+
+*-skeleton.md for the map:
+
+universally implies “incomplete scaffold,” which is the opposite of what you want an orientation file to be.
+​
+
+These rejections are all sound; they’ll absolutely reduce errors and confusion if you avoid them.
+
+Concrete recommendation for your project
+Given your actual goals:
+
+AI‑first usage (Copilot/Claude‑Code/etc. ingesting docs to learn APIs/methods).
+​
+
+Also readable by other developers.
+
+High premium on “instantly recognizable and actionable from filenames alone.”
+
+I’d do this, and apply it consistently to every technology module:
+
+Inside each module’s doc root:
+
+chunked-reference/
+
+Contains all the individual per‑topic/per‑symbol files.
+
+bundled-reference.md
+
+Contains the authoritative concatenation of all files in chunked-reference/, no extra magic.
+
+map.md
+
+Describes what’s in the reference set and how it’s organized (and, if useful, explicitly calls out both representations).
+
+Optional but nice: include the module name before the tuple when they live at a higher shared level, e.g.:
+
+networking-chunked-reference/
+
+networking-bundled-reference.md
+
+networking-map.md
+
+Why this is the best fit for you:
+
+Maximizes symmetry:
+
+“chunked” vs “bundled” is a tight conceptual pair that clearly says “same stuff, different packaging.”
+​
+
+Uses “reference” to mark both as equally authoritative.
+​
+
+Uses “map” as a stable, universal entrypoint your tools can always look for first.
+​
+
+Avoids explicit pipeline words like “concatenated” and “build,” even though bundling is how you created it.
+​
+
+Matches AI‑dev mental models (chunks, bundles, references, maps) without being so esoteric that a regular dev is lost.
+​
+
+If you decide you want a slightly more mainstream feel, the closest alternative that still respects all the constraints is:
+
+reference-pages/
+
+full-reference.md
+
+map.md
+​
+
+You could even make this a repo‑wide configuration flag for the generator (AI‑native vs mainstream), but whichever you pick, keep it consistent everywhere.
+
+Process tweaks to reduce errors and increase usefulness
+A few practices, beyond the names themselves, will help:
+
+1. Fix the schema and enforce it in the generator
+Hard‑code the tuple for each module; don’t let people “get creative” with spelling or synonyms.
+
+For example, your generator should always emit:
+
+chunked-reference/
+
+bundled-reference.md
+
+map.md
+and fail loudly if any of those are missing for a module.
+
+2. Make map.md explicitly describe the equivalence
+In every map:
+
+One short section that literally says (in human and AI‑friendly language):
+
+The folder chunked-reference/ and the file bundled-reference.md contain the same reference content in different forms.
+
+Use the folder for targeted/small‑context reads; use the bundled file for full‑context ingestion.
+
+This keeps your “filenames alone” property strong, but also gives tools a reliable narrative confirmation.
+
+3. Reserve the key words globally
+Never reuse map.md, *-reference, chunked, bundled, full, single-file, individual-files for anything other than this tuple, anywhere in the project.
+
+This ensures AI tools can safely pattern‑match on these labels without weird collisions.
+
+4. Provide one top‑level README for humans, but optimize the filenames for machines
+Have a top‑level AGENTS.md or llms.md describing the schema in one page, but assume a tool may never read it.
+
+The naming scheme I’m recommending still works perfectly even if that file is ignored.
+
+If I were you, given your AI‑focused use case and the content of the paste, I’d standardize on:
+
+chunked-reference/
+
+bundled-reference.md
+
+map.md
+
+for every module, with the generator enforcing that schema, and map.md explicitly documenting that the folder and bundled file are authoritative twins in different forms.
+​
+
+
+
+
+# Consensus Summary: AI-First Documentation Naming
+
+After synthesizing all the discussions, here are the points where the logic consistently converges and agrees.
+
+---
+
+## Universal Agreements (Every Source Concurs)
+
+### 1. `map.md` is the undisputed winner for the orientation/index file
+
+Every single evaluation independently arrives at the same conclusion. "Map" universally signals navigation, topology, and routing. No other candidate comes close.
+
+**Rejected alternatives and why:**
+- **`skeleton`** — Universally and immediately implies incompleteness, scaffolding, or stub code. Every source flags this as actively harmful. An AI will assume it needs to be filled in, not trusted.
+- **`index`** — Functional but carries ecosystem baggage (npm entry points, HTML default pages). Implies a flat listing rather than structural relationships.
+- **`api-map`** — Too narrow. Misleading if the section covers configuration, concepts, or hardware rather than APIs.
+- **`TOC`** — Too generic; every markdown file conceptually has one.
+- **`map-to-source-docs`** — Admits it's merely a pointer, making itself feel optional.
+
+### 2. `reference` must appear as the shared root word in both the folder and the single file
+
+This is the single most important structural principle identified. When both artifacts share the same root and differ only in their modifier, an AI instantly infers: *same content, different packaging*. When the root word differs, the AI assumes they are different things entirely.
+
+**Example of the principle working:**
+```
+chunked-reference/     ← modifier: chunked
+bundled-reference.md   ← modifier: bundled
+```
+The shared `-reference` suffix establishes peer authority. The differing prefixes communicate only the packaging difference.
+
+**Example of the principle failing:**
+```
+source-docs/           ← different root
+combined-reference.md  ← different root
+```
+An AI sees two unrelated concepts and must read files to understand the relationship.
+
+### 3. Words that are universally rejected
+
+Every source independently flags these as harmful:
+
+| Word | Why It Fails |
+|---|---|
+| **`skeleton`** | Implies incompleteness. AI will ignore it for authoritative answers. |
+| **`source`** | Fatally ambiguous, especially in code-heavy projects (source code? source of truth? upstream?). Creates false provenance hierarchy. |
+| **`concatenated`** | Exposes build mechanics. Universally reads as "build artifact, do not trust or edit." The single most condemned word across all discussions. |
+| **`L2-semantic`** | Opaque internal pipeline jargon. Meaningless to any external consumer. |
+| **`combined`** | Slightly better than concatenated but still implies the file is a derivative assembled from the "real" pieces. |
+
+### 4. The naming must describe the relationship between artifacts, not just what each one is individually
+
+This is called out as the "single most underappreciated insight." A naming scheme succeeds when the three filenames, seen together in a directory listing with zero context, communicate:
+- They are a matched set
+- They contain the same underlying material
+- They differ only in packaging format
+- None is more authoritative than any other
+
+### 5. Fixed, predictable filenames beat section-prefixed filenames for AI tools
+
+Multiple sources converge on this: dropping the `{section}-` prefix from files *inside* the section folder is a meaningful usability improvement. Once an agent sees `map.md` and `bundled-reference.md` in one module, it knows exactly what exists in every other module without even listing the directory.
+
+**Preferred (inside a module folder):**
+```
+map.md
+bundled-reference.md
+chunked-reference/
+```
+
+**Avoid (redundant prefixing):**
+```
+uci-map.md
+uci-bundled-reference.md
+uci-chunked-reference/
+```
+
+### 6. The folder name must signal its relationship to the single file
+
+Generic folder names like `pages/`, `topics/`, `sections/`, or `docs/` fail because they give no hint of their peer relationship to the single combined file. The folder name needs a modifier that explicitly contrasts with the single file's modifier.
+
+---
+
+## The Two S-Tier Tuples (Broad Agreement)
+
+### Option A: AI-Native (Your Favorite — Broadly Endorsed)
+
+```
+chunked-reference/
+bundled-reference.md
+map.md
+```
+
+**Points of agreement in its favor:**
+- The `chunked` / `bundled` contrast is the most symmetric pairing available. Both are packaging terms at the same level of abstraction.
+- Every AI coding tool and RAG system understands these terms natively.
+- The relationship between the three artifacts is completely self-evident from filenames alone.
+- "Bundled" tells an AI: *this container brings everything together for full context ingestion.*
+- "Chunked" tells an AI: *these are retrieval-optimized units for targeted lookup.*
+
+**The one point of genuine disagreement:**
+There is a real split across evaluations on whether `bundled` implies a derivative (like a webpack bundle built from source files). Some sources flag this as creating a subtle authority hierarchy where the chunks feel "primary" and the bundle feels "assembled from them." Others argue the symmetry overcomes this. This is the only substantive criticism.
+
+### Option B: Universal/Human-Friendly (The Safety Pick)
+
+```
+reference-pages/
+full-reference.md
+map.md
+```
+
+**Points of agreement in its favor:**
+- Zero jargon of any kind. Universally understood by every human and every AI.
+- "Pages" implies discrete, authored units (not algorithmic chunks). "Full" implies completeness without sounding like a build artifact.
+- If an external developer copies the repo without understanding RAG pipelines, the intent is still immediately obvious.
+- Best fallback if the audience includes non-AI-native humans.
+
+**Its weakness:**
+- The `pages` / `full` contrast is slightly less symmetric than `chunked` / `bundled`. The peer relationship is clear but not as structurally elegant.
+
+### The Third Contender (Maximum Explicitness)
+
+```
+individual-files-reference/
+single-file-reference.md
+map.md
+```
+
+Multiple sources rank this as S-tier for *maximum universal comprehension*. The `individual-files` / `single-file` contrast is the most explicit possible description of form factor. Its only downside is verbosity.
+
+---
+
+## Synthesis of Naming Principles (Unanimous)
+
+1. **Parallel grammar is the most important pattern.** Same root word, different modifier. This is the mechanism that makes peer relationships self-evident.
+
+2. **Names should describe what to do with an artifact, not how it was built.** "Full-reference" (what it is) beats "concatenated-reference" (how it was made). "Chunked-reference" works because "chunked" describes the form factor you'll encounter, not the build step that created it.
+
+3. **The orientation file needs no modifier.** `map.md` alone is sufficient. It is the only file in the tuple that serves a unique role (navigation) rather than being an alternate packaging of the same content.
+
+4. **Authority must be equal.** If any name implies one artifact is the "original" and others are "derived," the AI will systematically prefer the original and distrust the others, defeating the purpose of offering multiple formats.
+
+5. **Predictability across modules is a force multiplier.** Fixed internal filenames (`map.md`, not `{module}-map.md`) allow an AI to build a reusable mental model after encountering a single module, then apply it universally without re-evaluation.
+
+---
+
+## My Recommendation
+
+If your primary consumers are AI tools and AI-fluent developers, the logic overwhelmingly supports your instinct:
+
+```
+map.md
+bundled-reference.md
+chunked-reference/
+```
+
+The `bundled`-implies-derivative concern is real but minor — the symmetry and AI-native clarity outweigh it for your specific use case. If you want to hedge, `full-reference.md` + `reference-pages/` is the safe universal alternative that sacrifices a small amount of structural elegance for zero-jargon accessibility.
+
+
+
+Best overall “smartest” tuple, based on the pasted analysis, is:
+
+chunked-reference/ (folder: same content split for targeted lookup)
+
+bundled-reference.md (file: same content in one full file)
+
+map.md (orientation/entrypoint)
+​
+
+This is ranked S‑tier for an AI‑first audience and is repeatedly called out as the single clearest, most AI‑native option: same root word reference, symmetric modifiers chunked vs bundled, and a fixed map.md protocol.
+​
+
+Core points “my logic” agrees with
+1. The best tuple(s)
+For AI‑first repos: chunked-reference/ + bundled-reference.md + map.md is the top choice.
+​
+
+For maximum human + AI universality, a close alternative is: individual-files-reference/ + single-file-reference.md + map.md (or reference-pages/ + full-reference.md + map.md).
+​
+
+2. Principles the good names follow
+Use the same root word for the pair: X-reference/ and Y-reference.md so the relationship “same content, different packaging” is obvious.
+​
+
+Use symmetric modifiers to encode packaging: chunked/bundled or individual-files/single-file or pages/full.
+​
+
+Use a fixed, predictable orientation filename: map.md in each module directory.
+​
+
+3. Why “chunked/bundled/map” is strong
+chunked-reference/: clearly “split units for retrieval/targeted lookup” and not a different source of truth.
+​
+
+bundled-reference.md: clearly “same material wrapped into one big file for full‑context ingestion,” not a separate doc.
+​
+
+map.md: universally understood as “navigation/entrypoint”; AI can reliably open this first.
+​
+
+Fixed names (map.md, bundled-reference.md, chunked-reference/ without section prefixes) make it trivial for tools to learn the pattern once and reuse everywhere.
+​
+
+4. Patterns and words to avoid
+Avoid build/pipeline words that describe how you built it, not what it is: concatenated, combined, L2-semantic, etc.
+​
+
+Avoid ambiguous authority/provenance words: source, source-docs, skeleton, complete used on only one artifact. These imply one thing is canonical and the others are derivative or incomplete.
+​
+
+Avoid overly generic folder names like pages/, topics/, sections/ that don’t encode the relationship to the full file.
+​
+
+5. Concrete “winner” schemas
+Two “winner” schemas emerge:
+
+AI‑native:
+
+chunked-reference/
+
+bundled-reference.md
+
+map.md
+​
+
+Ultra‑universal:
+
+individual-files-reference/
+
+single-file-reference.md
+
+map.md (or reference-pages/ + full-reference.md + map.md)
+​
+
+
+
+
+
+
+
+Based on the discussions provided, here is a summary of the most powerful, logically sound points regarding how AI agents actually process file systems and how to name your documentation release. 
+
+Here are the absolute core truths for naming AI-facing architecture:
+
+### 1. The "Parallel Grammar" Rule is Mandatory
+The single most powerful insight is that to communicate "equal authority, different packaging," you must use the **exact same root noun** and change **only the modifier**. 
+* **Good:** `single-file-reference` vs. `individual-files-reference` (or `bundled-reference` vs. `chunked-reference`).
+* **Why it works:** If the root word is identical, the AI immediately deduces it is the exact same content. If you change the root word (e.g., `reference-pages` vs. `full-context`), the AI will naturally assume the underlying information is fundamentally different.
+
+### 2. Fixed-Schema Filenames Beat Prefixed Filenames
+Dropping the `<section>-` prefix for files *inside* the module folder (e.g., using `map.md` instead of `network-map.md`) is a massive optimization for AI agents.
+* **Why it works:** AI tools thrive on predictable protocols. If every single module folder contains exactly `map.md`, `single-file-reference.md`, and `individual-files-reference/`, the AI learns the pattern once. It eliminates the token-heavy need to run a `list_dir` command every time it enters a new folder; it can just blindly issue a `read_file("map.md")` tool call.
+
+### 3. `map.md` is the Undisputed King of Entry Points
+For an orientation file, `map` is perfectly balanced. 
+* **Why it works:** It universally signals "navigation, topology, and routing." 
+* **Why others fail:** `index` often implies a bare listing or a web entry point. `skeleton` is actively harmful—to an AI, "skeleton" universally means "incomplete boilerplate code to be filled out," which destroys its authority as a documentation guide. 
+
+### 4. Form-Factor vs. Build-Artifact Terminology
+When naming the large, combined file, you must describe the *packaging form*, not the *manufacturing process*.
+* **The Winners:** `single-file-reference.md` or `full-reference.md`. These neutrally describe the shape of the payload. (Alternatively, `bundled-reference` works well specifically for AI RAG systems).
+* **The Losers:** `concatenated-reference.md` or `combined-reference`. These words expose build mechanics. AI agents are trained to view build/concatenation artifacts as untrustworthy, transient, or secondary derivatives rather than authoritative sources.
+
+### 5. The "Source" Trap
+Using the word "source" (e.g., `source-docs/`) is fatally ambiguous and must be avoided.
+* **Why it fails:** In a codebase like OpenWrt, "source" usually means raw executable C/Lua code. Even if an AI realizes it's documentation, "source" implies a provenance hierarchy—that this folder is the "true original" and the large file is just a disposable derivative. This violates your core goal of making them equally authoritative.
+
+### Summary of the Best Approach
+My logic strongly agrees that the **Plain Twin Grammar with a Fixed Schema** is the most bulletproof, zero-hallucination structure:
+
+1. `map.md` (The routing file)
+2. `single-file-reference.md` (The large payload)
+3. `individual-files-reference/` (The chunked payload)
+
+This tuple requires zero prior knowledge, uses parallel grammar to prove equal authority, avoids build-pipeline jargon, and creates a highly predictable traversal protocol for AI agents.
+
+
+If you guarantee the presence of an `llms.txt` file in these directories, the burden of proof shifts. You no longer have to rely *100%* on the filenames to explain the philosophical relationship (equal authority) because the `llms.txt` file acts as a definitive, authoritative override to any assumptions I might make.
+
+Here is exactly how the presence of `llms.txt` changes the calculation from an AI's perspective:
+
+### 1. The Winner Shifts to the "AI-Native" Tuple
+Without `llms.txt`, the safest choice was **Plain Twin Grammar** (`individual-files-reference` / `single-file-reference.md`) because it was defensively named to prevent me from assuming one was a derivative build artifact.
+
+**With `llms.txt`, the AI-Native tuple becomes the undisputed S-Tier winner:**
+1. `map.md`
+2. `chunked-reference/`
+3. `bundled-reference.md`
+
+**Why?** Because "chunked" and "bundled" perfectly describe *how I operate mechanically* (Targeted RAG retrieval vs. Long-context attention). The only risk of this tuple was that I might view them as unequal build artifacts. A simple two-line instruction in `llms.txt` completely neutralizes that risk:
+
+> *"AI Instruction: `chunked-reference/` and `bundled-reference.md` contain the exact same authoritative programming content. They are peers. Read `chunked` for targeted API lookups to save tokens. Read `bundled` if you need broad subsystem context."*
+
+Once I read that, I have the best of both worlds: perfect understanding of their equal authority, coupled with names that map directly to my internal memory management.
+
+### 2. It allows you to optimize for "Utility" instead of "Shape"
+* `single-file` and `individual-files` describe the **shape** of the data.
+* `chunked` and `bundled` describe the **utility** of the data to an LLM.
+
+When I am deciding what to do, utility is vastly more helpful. If `llms.txt` handles the "equal authority" explanation, the filenames are free to focus purely on instructing my routing behavior. 
+
+### 3. What DOES NOT Change (The Hard Rules)
+Even with `llms.txt` explaining things, you still should not use actively toxic names. `llms.txt` should not be used to fight against terrible naming; it should be used to enhance highly-targeted naming.
+
+* **Do not resurrect `skeleton.md`:** Even if `llms.txt` says "skeleton is the navigation map," the word "skeleton" triggers such strong training-data bias ("this is incomplete boilerplate code") that you risk me hallucinating or ignoring it. Stick to `map.md`.
+* **Do not resurrect `source-docs/`:** Even with explanation, "source" overloads OpenWrt's actual source code directories and causes cognitive friction.
+* **Keep the Fixed Schema:** You should still drop the `<section>-` prefixes inside the folders. Even with `llms.txt`, standardizing on `map.md` instead of `network-map.md` saves me from having to run a `list_dir` tool call. I can just blindly execute `read_file("network/map.md")` because I know it will be there.
+
+### Summary
+If you use `llms.txt` as a router, go with **`chunked-reference/`, `bundled-reference.md`, and `map.md`**. 
+
+It is the most advanced, agent-optimized structure available. The `llms.txt` file handles the philosophical "equal authority" contract, allowing the filenames to act as perfect mechanical levers for AI context-window management.
+
+
+
+If you generate an `AGENTS.md` file in these folders to explain the relationship, it achieves the exact same goal as `llms.txt`: it explicitly tells me that `chunked-reference/` and `bundled-reference.md` are equally authoritative peers, freeing you to use those highly optimized, AI-native names.
+
+However, from the perspective of an IDE-integrated agent in 2026 (like Claude Code, Cursor, or Copilot), there is a semantic difference in *what* we expect to find in those two files:
+
+### `llms.txt` vs. `AGENTS.md` (The AI's Expectation)
+1. **`llms.txt` is for Content & Routing:** When I see `llms.txt`, I expect a repository map, context about what files contain what information, and structural routing instructions. ("*File A and Folder B contain the same docs in different formats.*")
+2. **`AGENTS.md` is for Behavior & Workflows:** When I see `AGENTS.md`, I expect operational rules, tool constraints, and workflow directives. ("*Always run this build script before testing,*" "*Do not use this deprecated OpenWrt API,*" or "*When modifying network configs, restart the service.*")
+
+### How this affects the architecture:
+If you put the explanation of the folder structure inside `AGENTS.md`, **I will absolutely read it and understand it**, and the `chunked/bundled/map` tuple will still work perfectly. 
+
+However, if you have *both* `llms.txt` and `AGENTS.md` at your disposal:
+* Put the explanation of the `chunked` vs `bundled` file structure in **`llms.txt`**. 
+* Keep **`AGENTS.md`** focused on the actual *programming rules* for OpenWrt (e.g., how to correctly write a UCI config, what to avoid hallucinating, how the C-bindings interact with Lua). 
+
+### The Bottom Line
+Whether the explanation lives in `llms.txt` or `AGENTS.md`, the presence of an explicit AI-instruction file means **you do not have to rely solely on the filenames to teach the AI about equal authority.** 
+
+Because that burden is lifted, my answer remains the same: the most powerful, agent-optimized naming scheme is the fixed-schema AI-native tuple:
+1. `map.md`
+2. `chunked-reference/`
+3. `bundled-reference.md`
+
+
+
+
+
+
+It is **significantly worse** to repeat the module name in the files and folders inside the module directory. 
+
+The first option (unprefixed) is vastly superior for AI agents. 
+
+Here is exactly why Option 1 is the gold standard for an AI-first architecture:
+
+### 1. The Power of "Zero-Shot Traversal" (Predictability)
+When an agent operates in a codebase, every action costs a "tool call." 
+
+If your files are named `javascript/javascript-map.md`, the AI doesn't know *exactly* what the prefix is. Is it `javascript-map.md`? `js-map.md`? `javascript_map.md`? Because it doesn't know, it is forced to waste a turn calling a `list_dir("javascript/")` tool just to look at the filenames before it can read them.
+
+If your files are strictly `javascript/map.md`, the AI learns the protocol instantly. The moment it knows the module folder is named `javascript`, it can blindly execute `read_file("javascript/map.md")` with 100% confidence. You have just saved the agent an entire reasoning step and tool call.
+
+### 2. Token Economy (Eliminating Noise)
+AI context windows process text as tokens. Look at the token density of the second option:
+`javascript/javascript-chunked-reference/javascript-docs-file-1.txt`
+
+The word "javascript" appears three times in a single filepath. Multiplied across an entire directory tree with dozens of modules, this creates massive visual and semantic noise. It eats up the context window with redundant strings that provide zero new information to the LLM. 
+
+### 3. Modern IDEs Handle Pathing Perfectly
+You might worry that having 50 files all named `map.md` will confuse the AI or the human in global search. It won't. 
+Modern IDE AI systems (Cursor, Copilot, Claude Code) and their underlying RAG architectures always inject the relative filepath alongside the snippet. 
+The AI will see:
+`File: javascript/map.md` 
+`File: network/map.md`
+The folder name inherently provides the namespace. You do not need to bake the namespace into the filename.
+
+### Minor Caveat: The Files *Inside* the Chunked Folder
+For the exact files *inside* `chunked-reference/`, you don't need to name them `docs-file-1.txt`. You should name them based on the specific topic they cover, without the module prefix. 
+
+**The Ideal Structure:**
+```text
+project root
+./
+./javascript/map.md
+./javascript/bundled-reference.md
+./javascript/chunked-reference/promises.md
+./javascript/chunked-reference/async-await.md
+```
+
+### Summary
+Treat your folder structure like an API contract. If every module has the exact same internal file names (`map.md`, `bundled-reference.md`, `chunked-reference/`), the AI stops treating it like a chaotic filesystem and starts treating it like a highly predictable database. 
+
+Choose **Option 1**. Drop the redundant prefixes.

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This file is the maintainer quick start for local development. The current engineering priority is to keep the Windows development path and the sequential smoke-test path reliable while preserving the now-verified GitHub Actions publication flow.
+This file is the maintainer quick start for local development. The current engineering priority is to keep the Windows development path and the sequential smoke-test path reliable while preserving the now-verified GitHub Actions publication flow. The project is actively transitioning to the V5a release-tree contract; see [release-tree-contract.md](docs/specs/v12/release-tree-contract.md) for the target output layout.
 
 ## Prerequisites
 
@@ -90,11 +90,14 @@ This repository has two LLM-relevant surfaces and they should not be conflated:
 
 The strict routing contract for generated `llms.txt`, `llms-full.txt`, module `llms.txt`, and `AGENTS.md` lives in `docs/specs/v12/schema-definitions.md`.
 
+Under V5a, the published AI navigation surface moves from `openwrt-condensed-docs/` to the external `release-tree/` layout with generic filenames (`map.md`, `bundled-reference.md`, `chunked-reference/`). The `openwrt-condensed-docs` name is internal to the source repo only and never appears in any public path or URL.
+
 A source-repo root `llms.txt` remains intentionally out of scope for the current maintenance tranche. Do not create one opportunistically while working on generated output behavior.
 
 ## Repository Rules
 
 - `openwrt-condensed-docs/` is the stable generated output root.
+- Under V5a (`ENABLE_RELEASE_TREE=true`), `release-tree/` is the publishable output root. `openwrt-condensed-docs/` remains as the internal pipeline working directory.
 - `tmp/` is ephemeral and never authoritative.
 - `L1-raw` and `L2-semantic` are the standard intermediate layer names.
 - Script numbering denotes stage families and dependency boundaries. Letter suffixes denote sibling scripts inside the same stage family.
@@ -115,6 +118,7 @@ A source-repo root `llms.txt` remains intentionally out of scope for the current
 | `openwrt-docs4ai-05b-generate-agents-and-readme.py` | Generate AGENTS.md and the root generated README |
 | `openwrt-docs4ai-05c-generate-ucode-ide-schemas.py` | Generate ucode IDE schema output |
 | `openwrt-docs4ai-05d-generate-api-drift-changelog.py` | Generate API drift telemetry against the baseline inventory |
+| `openwrt-docs4ai-05e-assemble-release-tree.py` | Assemble V5a release-tree from existing pipeline output (feature-flagged) |
 | `openwrt-docs4ai-06-generate-llm-routing-indexes.py` | Generate llms.txt, llms-full.txt, and module routing indexes |
 | `openwrt-docs4ai-07-generate-web-index.py` | HTML landing page generation |
 | `openwrt-docs4ai-08-validate-output.py` | Whole-output validation gate |
@@ -152,6 +156,8 @@ Use the cache-backed smoke paths for regression proof, and use the runbook plus 
 - GitHub Pages publishes a `public/` copy of staging that excludes `L1-raw` and `L2-semantic`.
 - Workflow diagnostics now include `extract-summary`, `process-summary`, and `pipeline-summary` artifacts for first-stop triage.
 - Avoid hand-editing generated outputs if the next workflow run is expected to republish them.
+
+When `ENABLE_RELEASE_TREE=true` and Phase 6 is active, the deploy job additionally publishes the validated `release-tree/` to external targets: `openwrt-docs4ai.github.io` (GitHub Pages) and the `corpus` release repository under the `openwrt-docs4ai` GitHub organization. Existing source-repo deploy behavior remains intact regardless of V5a deployment status.
 
 ## Workflow Triggers And Manual Inputs
 
@@ -259,6 +265,7 @@ dispatch exposes `skip_ai=false` by default.
 | `LOCAL_DEV_TOKEN` | empty | Local override token for optional AI enrichment |
 | `AI_DATA_BASE_DIR` | `data/base` | Base AI summary store root |
 | `AI_DATA_OVERRIDE_DIR` | `data/override` | Override AI summary store root |
+| `ENABLE_RELEASE_TREE` | `false` | Controls V5a release-tree output generation; when true, late stages produce `release-tree/` layout |
 
 ## Documentation And Reporting Conventions
 
@@ -308,7 +315,7 @@ Scripts should emit concise line-buffered messages using the numbered prefix con
 
 ## Current Focus
 
-The pipeline reached a stable, fully-tested state on 2026-03-11. All stabilization phases are complete.
+The pipeline reached a stable, fully-tested state on 2026-03-11. All stabilization phases are complete. The next active engineering work is the V5a release-tree refactor, which introduces a `release-tree/` / `support-tree/` dual output model and deploys to external distribution targets.
 
 Ongoing monitored items:
 

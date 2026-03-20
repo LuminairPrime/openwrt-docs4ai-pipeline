@@ -1,0 +1,23 @@
+Module is usable as the current internal schema term, but it is not the right universal public word to bake into every generated filename.
+
+The repo already uses module as a partition key in metadata and routing contracts, not as a precise content taxonomy. You can see that in the required frontmatter fields in schema-definitions.md:50 and schema-definitions.md:78, and in the current requirement that each per-folder router be titled “module” in schema-definitions.md:163. A concrete wiki L2 document also uses module: wiki in frontmatter at wiki_page-guide-developer-procd-init-scripts.md:3. That tells me module currently means top-level corpus bucket, not necessarily software module.
+
+The problem is that the published corpus is clearly heterogeneous. The root router splits the top level into Core Daemons, Scripting & Logic, Ecosystem, and Manuals in llms.txt:7, llms.txt:12, llms.txt:16, and llms.txt:20. Wiki is explicitly filed under Manuals at llms.txt:21, so calling it a module is already semantically strained even though the generated page currently says “wiki module” at llms.txt:1. Procd is closer to a real module at llms.txt:1, but openwrt-core and luci-examples are much more like collections or sections than modules. The repo’s own guidance already wobbles between subsystem and module in AGENTS.md:4, AGENTS.md:6, and AGENTS.md:18.
+
+My recommendation is:
+
+Keep module only as an internal field for now if you want to avoid a schema migration.
+Do not rename public filenames to include the literal word module.
+If you need one universal public noun, use section. It fits wiki, openwrt-core, luci-examples, procd, uci, luci, and ucode without sounding wrong.
+Better still, omit the generic noun from filenames and use only the bucket name plus artifact role.
+That means names like:
+
+wiki-orientation-map.md
+wiki-combined-source-reference.md
+procd-orientation-map.md
+procd-combined-source-reference.md
+luci-orientation-map.md
+not names like:
+
+wiki-module-orientation-map.md
+openwrt-core-module-combined-reference.md

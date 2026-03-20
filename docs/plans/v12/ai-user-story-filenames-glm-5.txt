@@ -1,0 +1,155 @@
+This is an excellent question about AI-human documentation UX. Let me give you my honest analysis from the perspective of an AI coding tool encountering this structure cold.
+
+My Responses
+1. Root files I'd open first (in order):
+llms.txt — This is becoming a de facto standard. If it exists, it's almost certainly the entry point designed for me.
+AGENTS.md — The name explicitly signals "this is for you."
+README.md — Standard fallback.
+llms-full.txt — Only if I need comprehensive context and the above are insufficient.
+Recommendation: Ensure llms.txt clearly explains the project's file naming conventions in its first 20 lines. That's the "contract" I'll use to navigate everything else.
+
+2. Inside a module folder, first file I'd open:
+Goal	File I'd Open	Why
+a. Fast orientation	The map/structural file	I need a mental model before diving in
+b. Targeted API lookup	The smaller-pages folder (via filename scanning)	Faster to find the specific topic by filename
+c. Broad subsystem understanding	The large reference file	One ingest, complete picture
+3. Easiest naming family to understand immediately:
+Winner: Plain twin grammar
+
+text
+
+<module>-individual-files-reference/
+<module>-map.md
+<module>-single-file-reference.md
+The symmetry is instantly parseable: "individual-files" vs "single-file" tells me everything. No ambiguity about what's what.
+
+Runner-up: Usage-first — targeted-source-docs/ vs full-context-reference.md is excellent for communicating when to use each.
+
+4. Best family for "equally authoritative, different packaging":
+Winner: Source-docs family
+
+text
+
+source-docs/
+<module>-source-docs-combined-reference.md
+The word "combined" explicitly says "these are the same docs, merged." It doesn't imply one is more complete than the other. The authority lives in "source-docs" and the large file clearly derives from it.
+
+Avoid: "complete-reference-pages" — the word "complete" applied to the folder but not the single file suggests the folder is more complete.
+
+5. Best family for small-context vs large-context hinting:
+Winner: Usage-first
+
+text
+
+targeted-source-docs/        ← "targeted" = I need something specific
+<module>-full-context-reference.md  ← "full-context" = load everything
+These names describe my situation, not just the file structure. That's valuable guidance.
+
+6. Words that are actively misleading or dangerous:
+Word	Problem
+"skeleton"	Sounds incomplete, like scaffolding to be replaced. I might assume it's not authoritative.
+"concatenated"	Sounds like a build artifact, not a reference document. Implies "derived and therefore secondary."
+"complete" (when applied to only one form)	If the folder is "complete-reference-pages" but the large file doesn't have "complete," I'll assume the folder is more authoritative.
+"structural"	Vague. Could mean the file structure, or the logical structure, or a skeleton.
+7. Best word for the quick orientation file:
+Winner: map
+
+map.md or <module>-map.md is immediately understood
+A map is for orientation — you look at it before exploring
+Doesn't imply incompleteness like "skeleton"
+Acceptable: overview — but slightly softer, less structural
+
+Avoid: skeleton — actively misleading
+
+8. Best word for the large reference file:
+Winner: single-file
+
+text
+
+<module>-single-file-reference.md
+This creates perfect symmetry with a folder named individual-files/ or separate-files/. The contrast is self-explanatory.
+
+Acceptable: combined — neutral, accurate
+
+Avoid: concatenated — too mechanical
+
+9. Best folder name for the smaller-page set:
+Winner: pages/ or topics/
+
+Wait — none of your options are ideal. Let me critique:
+
+Option	Issue
+source-docs/	Good, but doesn't contrast clearly with the single file
+targeted-source-docs/	Excellent for usage hinting, but wordy
+complete-reference-pages/	"complete" is problematic
+individual-files-reference/	Explicit but clunky
+My suggestion: Keep it simple.
+
+text
+
+pages/              or    topics/
+Then the large file becomes:
+
+text
+
+<module>-full-reference.md
+The contrast is: "pages" (many) vs "full" (one consolidated).
+
+10. Do we need module-local README files?
+Probably not, IF:
+
+llms.txt at root clearly explains the naming convention
+File names are self-explanatory
+The map file starts with a 5-10 line summary of what this module covers
+But: A 10-line README per module is cheap insurance. If someone opens the folder directly without reading root llms.txt, a minimal README prevents confusion.
+
+Recommendation: Include them, but keep them to 10-15 lines max.
+
+11. My proposed naming family:
+Here's what I'd recommend for maximum clarity:
+
+text
+
+firewall/
+  README.md
+  llms.txt
+  firewall-map.md
+  firewall-reference.md          ← the large single file
+  pages/                         ← the smaller topic files
+    basics.md
+    zones.md
+    forwarding.md
+    nftables.md
+  types/
+    ...
+Why this works:
+
+File	Name	Meaning
+Map	firewall-map.md	"Start here for orientation"
+Large file	firewall-reference.md	"The complete reference" (singular)
+Small files	pages/	"Individual pages" (plural, clearly separate)
+The key insight: Use singular/plural contrast and let the container (folder vs file) do the work.
+
+If you want to be more explicit about the relationship:
+
+text
+
+firewall/
+  firewall-map.md
+  firewall-reference.md          ← "reference" = authoritative
+  pages/                         ← contains firewall-reference-pages/
+Or if you prefer the usage-first hinting:
+
+text
+
+firewall/
+  firewall-map.md
+  firewall-full-context.md       ← signals: use when you have room
+  sections/                      ← signals: use for targeted lookups
+Summary Recommendations
+Element	Recommended Name	Reason
+Quick orientation	<module>-map.md	Universally understood, implies navigation aid
+Large reference	<module>-reference.md or <module>-full-reference.md	Singular, authoritative
+Small pages folder	pages/ or sections/	Simple, contrasts with single file
+Root entry point	llms.txt with naming convention in first 20 lines	Standard, immediate guidance
+Final advice: The most important thing isn't which family you pick — it's consistency across all modules. Pick one convention and apply it uniformly. An AI tool will learn the pattern from the first module and apply it to all others. Inconsistency is what causes mistakes.

@@ -1,0 +1,122 @@
+# Review from an AI Coding Tool's Perspective
+
+I'll answer as Claude Code or similar, reasoning through what would minimize confusion when navigating unfamiliar territory.
+
+## 1. Root files opening order
+
+1. **AGENTS.md** first – I need to understand what I'm *for* and what constraints apply
+2. **README.md** second – overview of the whole project structure
+3. **llms.txt** third – compact facts about what's in here
+4. **index.html** if visual navigation helps (but honestly, I'd skim it)
+5. **llms-full.txt** only if I need exhaustive reference
+
+The agent-first approach makes sense because I need to know my role before exploring.
+
+## 2. Inside a module folder
+
+- **Fast orientation:** The structural file (currently "skeleton" or "map")
+- **Targeted API lookup:** The smaller-pages folder (I'll search within it)
+- **Broad subsystem understanding:** The large reference file
+
+## 3. Easiest to understand from filenames alone
+
+**Plain twin grammar** wins decisively. 
+
+`<module>-individual-files-reference/` + `<module>-single-file-reference.md` is immediately clear: "oh, one folder has many files, one file has them combined." The parallel structure screams "same content, different packaging."
+
+**Authority-first** is second place because "complete-reference-pages" vs "single-file-complete-reference" has repetition that hints at equivalence.
+
+The others use too much jargon or bury the payload.
+
+## 4. Best communicates equal authority + different form
+
+**Plain twin grammar** again, by a wide margin.
+
+The symmetric naming (`individual-files-reference` ↔ `single-file-reference`) is your best signal that these are siblings, not hierarchy. I immediately understand neither is "more correct."
+
+**Source-docs family** is second because "combined-reference" explicitly signals concatenation without loss.
+
+## 5. Best communicates small vs large context
+
+**Usage-first** is clearest here.
+
+`targeted-source-docs/` (search for what you need) vs `full-context-reference.md` (ingest everything) creates an intuitive mental model that matches my actual use case. "Targeted" speaks to me directly; "full-context" speaks to my token budget.
+
+## 6. Words that are actively misleading
+
+- **"skeleton"** – implies incompleteness or fragility. I'd worry it's a stub. Bad optics.
+- **"concatenated"** – too implementation-focused. I don't care *how* it was built, only that it's authoritative.
+- **"structural"** – vague; could mean architecture diagrams. Doesn't clearly mean "orientation guide."
+- **"individual"** – acceptable, but verbose; "separate" would be clearer.
+- **"complete"** – risky word because it implies the single-file version is *more* complete, contradicting the authority equivalence message.
+
+## 7. Map vs skeleton vs overview
+
+**"map"** is best.
+
+- *Map* = "here's the territory and how to navigate it" ✓
+- *Skeleton* = "this is incomplete" ✗
+- *Overview* = acceptable but vague (overview of what? the whole project?)
+
+"Map" also has the advantage of being short and programmer-friendly.
+
+## 8. Single-file vs combined vs concatenated
+
+**"combined"** is clearest and most neutral.
+
+- *Single-file* = technically accurate but doesn't explain the relationship to the folder
+- *Combined* = "these smaller pieces are brought together here" ✓ Implies equal authority
+- *Concatenated* = too low-level; signals you should care about implementation
+
+## 9. Clearest folder name for smaller pages
+
+**"source-docs"** is best among the options.
+
+- *Source-docs* = "canonical source material" ✓ Implies these are authoritative
+- *Targeted-source-docs* = adds needless adjective; I'll decide what's targeted
+- *Complete-reference-pages* = "complete" is the trap word mentioned above
+- *Individual-files-reference* = works, but "source-docs" is more concise
+
+## 10. Module-local READMEs necessary?
+
+**Yes, but minimal.** 
+
+A one-line pointer in each module's README would help:
+> "Start with `<module>-map.md` for orientation, or browse `source-docs/` for specific topics."
+
+Without this, I might miss the intended flow. The filenames alone create ambiguity about whether to start with the map or the folder.
+
+## 11. My proposed naming family: **"Reference Family"**
+
+```
+<module>/
+  README.md                              (start here)
+  <module>-map.md                        (quick orientation)
+  <module>-reference.md                  (large combined file)
+  source-docs/                           (smaller canonical pages)
+  types/
+```
+
+**Why this is better:**
+
+1. **Minimal jargon.** No "complete," "combined," "concatenated," or "structural."
+2. **Parallel naming signals equivalence.** Both end with `-<descriptor>.md`, both under the module name.
+3. **Directional clarity.** `-map.md` for "where am I?", `-reference.md` for "tell me everything."
+4. **`source-docs/` anchors authority.** Signals these are the canonical source material; the larger file is derived from these.
+5. **Scales mentally.** If you add a `-examples.md` or `-troubleshooting.md` later, the naming family still works.
+
+---
+
+## Concrete Risk Mitigation for OpenWrt Edge Cases
+
+Since OpenWrt is genuinely obscure in my training data, I have strong opinions on preventing mistakes:
+
+1. **Add an `ASSUMPTIONS.md`** at the module level listing what I should *not* assume (e.g., "this is not standard Linux," "package managers work differently," "these paths are not FHS-compliant").
+
+2. **Flag fragility explicitly.** If a code pattern has high failure risk on OpenWrt vs normal Linux, mark it in the filename or use a warning block: `[⚠️ OpenWrt-specific]`.
+
+3. **Version the reference.** I might be trained on old OpenWrt docs. Add dates: `<module>-reference-2024-03.md` or similar.
+
+4. **Make the map a true dependency graph.** Not just topics, but "read X before Y because Y requires X knowledge."
+
+This is a system where my confidence should be *lower* than normal, so your naming should make that explicit where it matters.
