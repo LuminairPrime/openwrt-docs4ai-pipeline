@@ -1,9 +1,9 @@
 ---
-module: "luci"
+module: luci
 total_token_count: 19723
 section_count: 10
 is_monolithic: true
-generated: "2026-03-12T18:07:37.690177+00:00"
+generated: '2026-03-20T01:28:16.926497+00:00'
 ---
 
 # luci Complete Reference
@@ -1839,5 +1839,3 @@ Erase the menu node
 | Param | Type |
 | --- | --- |
 | node | `Node` |
-
----
