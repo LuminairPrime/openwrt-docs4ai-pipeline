@@ -1,5 +1,5 @@
 # openwrt-core module
-> OpenWrt Buildroot: boot packages > **Source:** https://github.com/openwrt/openwrt/tree/master/package/boot --- apex Field Value --- --- Version 1.6.10-openwrt License GPL-2.0 Source URL https://github.com/linusw/apex.git > Source: https:...
+> OpenWrt buildroot core packages: early boot firmware, kernel module infrastructure, and base-files.
 > **Total Context:** ~23147 tokens
 
 ## Recommended Entry Points

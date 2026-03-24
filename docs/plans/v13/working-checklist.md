@@ -135,8 +135,8 @@ These were recorded at Phase 0 to avoid blocking on minor ambiguities. Revisit i
 - [x] Add `MODULE_DESCRIPTIONS` dict to `06-generate-llm-routing-indexes.py` with 9-module descriptions — done in Phase 6
 - [x] Update `06` to prefer `MODULE_DESCRIPTIONS` over heuristic for module-level summary — done in Phase 6
 - [x] Update `release-inputs/release-include/README.md` with module table using S1 curated text (expanded to ~60 lines)
-- [ ] Verify root `llms.txt` no longer says "CBI declarative form framework" for luci — requires pipeline run
-- [ ] Verify root `llms.txt` no longer references "21.02 release" for wiki — requires pipeline run
+- [x] Verify root `llms.txt` no longer says "CBI declarative form framework" for luci — confirmed: MODULE_DESCRIPTIONS active, no CBI in output
+- [x] Verify root `llms.txt` no longer references "21.02 release" for wiki — confirmed: no 21.02 in output
 
 ---
 
@@ -194,7 +194,7 @@ These were recorded at Phase 0 to avoid blocking on minor ambiguities. Revisit i
 - [x] Author `architecture-overview.md` full content (component diagram, build-time vs runtime table, ACL details, data flow, working example) — 324 lines
 - [x] Run each through pipeline (`02i` + `03`): all 3 ingested to L2-semantic/cookbook/ — verified 120/120 tests pass
 - [x] A-tier topics: procd-service-lifecycle.md (~80 lines), minimal-openwrt-package-makefile.md (~130 lines), uci-read-write-from-ucode.md (~130 lines), luci-form-with-uci.md (~180 lines) — all 7 cookbook files verified through pipeline, 120/120 tests pass
-- [ ] If era-guide needs external evidence not available in session: create `era-guide-evidence-needed.md`
+- [x] If era-guide needs external evidence not available in session: create `era-guide-evidence-needed.md` — N/A: evidence was available; era-guide authored without fallback file
 
 ---
 
@@ -205,7 +205,7 @@ These were recorded at Phase 0 to avoid blocking on minor ambiguities. Revisit i
 - [x] `lib/source_provenance.py` exists and used by all `02*` ingest scripts — Phase 3 done
 - [x] Cookbook flows correctly through `02i` → L1 → L2 → assembled output — verified Phase 13
 - [x] `origin_type: "authored"` used for cookbook (confirmed from 02-v13 §S4 line 561) — Phase 5/6 done
-- [ ] Root `llms.txt` descriptions fixed via `MODULE_DESCRIPTIONS` — requires full pipeline run to verify output
+- [x] Root `llms.txt` descriptions fixed via `MODULE_DESCRIPTIONS` — verified: no CBI/21.02 heuristic strings; MODULE_DESCRIPTIONS values confirmed active
 - [x] Per-module `AGENTS.md` files exist for `luci`, `ucode`, and `cookbook` — Phase 7 done
 - [x] Stage `08` catches internal dead links in the release-tree — Phase 9 done
 - [x] A8 implemented with 3 approved first-pass wiki exclusions — Phase 10 done
@@ -215,5 +215,5 @@ These were recorded at Phase 0 to avoid blocking on minor ambiguities. Revisit i
 - [x] Cookbook content authored only after pipeline + safety rails proven — done
 - [x] At least 3 S-tier cookbook topics pass content contract — 3/3 done Phase 13
 - [x] All tests pass: `python tests/run_pytest.py` — 120/120 ✅
-- [ ] Stage `08` validation passes on full release-tree — requires full CI pipeline run
+- [x] Stage `08` validation passes on full release-tree — CI run 23462646258 ✅ SUCCESS (all jobs including validate passed)
 - [x] No symlinks in `docs/docs-new/` — Phase 2 confirmed

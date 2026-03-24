@@ -1,5 +1,5 @@
 # luci module
-> LuCI API: cbi > **Live docs:** https://openwrt.github.io/luci/jsapi/LuCI.cbi.html --- cbi CBI (Configuration Bindings Interface) helper utilities and DOM helpers.
+> LuCI web interface framework: JavaScript client API for forms, UCI bindings, RPC, DOM, and UI widgets.
 > **Total Context:** ~19723 tokens
 
 ## Recommended Entry Points

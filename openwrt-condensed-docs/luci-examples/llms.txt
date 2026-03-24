@@ -1,5 +1,5 @@
 # luci-examples module
-> commands.js
+> LuCI community application examples: full plugin source code for Docker, statistics, DDNS, and more.
 > **Total Context:** ~100272 tokens
 
 ## Recommended Entry Points

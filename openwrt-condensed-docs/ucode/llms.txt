@@ -1,5 +1,5 @@
 # ucode module
-> ucode module: debug > **Live docs:** https://ucode.mein.io/module-debug.html --- Debugger Module This module provides runtime debug functionality for ucode scripts.
+> ucode scripting language: standard library, runtime modules (fs, ubus, uci, uloop, nl80211, rtnl), and C API.
 > **Total Context:** ~80860 tokens
 
 ## Recommended Entry Points

@@ -1,5 +1,5 @@
 # openwrt-hotplug module
-> OpenWrt Core Hotplug Events > **Extracted from:** default etc/hotplug.d/ scripts across the OpenWrt repository > **Note for LLMs:** Developers building apps use these scripts as templates.
+> Hotplug event subsystem: netifd-injected environment variables and /etc/hotplug.d/ script interfaces.
 > **Total Context:** ~1412 tokens
 
 ## Recommended Entry Points
