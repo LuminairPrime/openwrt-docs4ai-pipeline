@@ -1,5 +1,5 @@
 # procd module
-> procd init.d API Reference > **Extracted from:** procd.sh block comments procd.sh
+> OpenWrt process manager and init system: procd init scripts, service registration, and supervised process lifecycle.
 > **Total Context:** ~352 tokens
 
 ## Recommended Entry Points

@@ -1,5 +1,5 @@
 # wiki module
-> 21.02: Major cosmetic changes This page intends to give an overview over major cosmetic changes since 19.07, focusing on those that will require adjustments/adaption downstream.
+> OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support.
 > **Total Context:** ~200882 tokens
 
 ## Recommended Entry Points

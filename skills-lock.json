@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "codedocs": {
+      "source": "AbsolutelySkilled/AbsolutelySkilled",
+      "sourceType": "github",
+      "computedHash": "62e5a836dffe4a878a7e5891d3540ce5c3b71e6c463a9e10f34ed26d1b8174c4"
+    },
+    "developer-advocacy": {
+      "source": "AbsolutelySkilled/AbsolutelySkilled",
+      "sourceType": "github",
+      "computedHash": "61a2f42ecef866bb235ccdc3601b5415020faf827948944584f6d4ef2b0829bb"
+    },
+    "developer-experience": {
+      "source": "AbsolutelySkilled/AbsolutelySkilled",
+      "sourceType": "github",
+      "computedHash": "66deba741638e5d427e2e60bc4a7f7fc38312b4c6174fcd8d15788fc5bc16a95"
+    }
+  }
+}

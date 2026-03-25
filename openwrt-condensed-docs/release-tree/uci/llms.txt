@@ -1,5 +1,5 @@
 # uci module
-> UCI Default Schema: qos > **Source:** package/network/config/qos-scripts/files/etc/config/qos qos
+> Unified Configuration Interface: UCI CLI tool, API bindings, and default configuration schemas for OpenWrt packages.
 > **Total Context:** ~420 tokens
 
 ## Recommended Entry Points
