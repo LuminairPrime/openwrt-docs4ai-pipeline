@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repository Does
 
-**openwrt-docs4ai** is a documentation production pipeline — not an application runtime. It collects OpenWrt documentation from multiple upstream sources (wiki, git repos, APIs), normalizes it through a staged layer model (L0→L1→L2→L3/L4), and publishes compact outputs for humans, IDE tooling, and LLM workflows. GitHub Actions is the verified remote execution path; Windows is the primary local development environment. The active output model is the V5a release-tree contract, which separates publishable output from internal pipeline artifacts and deploys to external distribution targets.
+**openwrt-docs4ai** is a documentation production pipeline — not an application runtime. It collects OpenWrt documentation from multiple upstream sources (wiki, git repos, authored cookbook content, and APIs), normalizes it through a staged layer model (L0→L1→L2→L3/L4), and publishes compact outputs for humans, IDE tooling, and LLM workflows. GitHub Actions is the verified remote execution path; Windows is the primary local development environment. The active output model is the V6 release-tree contract, which separates publishable output from internal pipeline artifacts and deploys to external distribution targets.
 
 ## Prerequisites
 
@@ -103,7 +103,7 @@ Shared Python libraries live in `lib/` (`config.py`, `ai_store.py`, `ai_enrichme
 This repo has two distinct LLM-relevant surfaces — do not conflate them:
 
 - **Source repo** (`docs/`, `DEVELOPMENT.md`, `README.md`): Maintainer docs and implementation.
-- **Generated corpus** (`openwrt-condensed-docs/release-tree/` locally, `release-tree/` externally): Published AI navigation surface consumed by downstream tools. Routing contracts defined in `docs/specs/v12/schema-definitions.md`.
+- **Generated corpus** (`openwrt-condensed-docs/release-tree/` locally, `release-tree/` externally): Published AI navigation surface consumed by downstream tools. Routing contracts defined in `docs/specs/schema-definitions.md`.
 
 The `openwrt-condensed-docs` name is internal-only and must never appear in any public path.
 
@@ -113,7 +113,7 @@ A source-repo root `llms.txt` is intentionally out of scope. Do not create one.
 
 Before editing numbered scripts or the workflow:
 
-1. Read `docs/ARCHITECTURE.md`, `docs/specs/v12/schema-definitions.md`, and `docs/specs/v12/execution-map.md`.
+1. Read `docs/ARCHITECTURE.md`, `docs/specs/schema-definitions.md`, and `docs/specs/pipeline-stage-catalog.md`.
 2. For `05b`–`08` changes: inspect current `openwrt-condensed-docs/llms.txt`, `llms-full.txt`, and `AGENTS.md` first.
 3. For workflow changes: map the change to a specific trigger path (push/schedule/dispatch).
 
@@ -132,16 +132,16 @@ Before editing numbered scripts or the workflow:
 - `luci-app-dockerman` ucode validation warning (`REMOTE-008`): intentionally kept soft (truthful signal).
 - Mermaid template promotion: deferred until a concrete consumer exists.
 - `signature-inventory.json` module metadata: current `05d` fix suppresses false drift; richer schema is deferred.
-- V5a release-tree rollout is complete. Use `docs/specs/v12/release-tree-contract.md` for the live contract and `docs/specs/v12/feature-flag-contract.md` only for rollout history.
+- The live public contract is `docs/specs/release-tree-contract.md`. Archived V12 rollout material remains under `docs/archive/v12/specs/` for history only.
 
 ## Key Reference Files
 
 - `DEVELOPMENT.md` — full maintainer quick-start and CI operations detail
 - `docs/ARCHITECTURE.md` — durable architecture and naming contract
-- `docs/specs/v12/schema-definitions.md` — generated corpus filesystem and data contracts
-- `docs/specs/v12/execution-map.md` — stage dependency map
-- `docs/specs/v12/ai-summary-operations-runbook.md` — AI store workflow
+- `docs/specs/schema-definitions.md` — generated corpus filesystem and data contracts
+- `docs/specs/pipeline-stage-catalog.md` — stage ordering and rerun guidance
+- `docs/guides/runbook-ai-summary-operations.md` — AI store workflow
 - `tests/README.md` — test folder contract and runner/output mapping
-- `docs/specs/v12/release-tree-contract.md` — V5a public output contract
-- `docs/specs/v12/feature-flag-contract.md` — retired rollout history for the removed feature flag
-- `docs/plans/v12/public-distribution-mirror-plan-2026-03-15-V5a.md` — V5a implementation plan
+- `docs/specs/release-tree-contract.md` — live public output contract
+- `docs/archive/v12/specs/feature-flag-contract.md` — retired rollout history for the removed feature flag
+- `docs/archive/v12/plans/public-distribution-mirror-plan-2026-03-15-V5a.md` — archived V5a implementation plan

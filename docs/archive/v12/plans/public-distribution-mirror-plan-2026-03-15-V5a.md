@@ -555,7 +555,7 @@ with a moderate rollback cost, which is why it is last.
 When all phases are complete, the published product tree looks like this:
 
 ```text
-(repository root or ZIP in openwrt-docs4ai/)
+(repository root or ZIP root openwrt-docs4ai/)
 ├── README.md
 ├── AGENTS.md
 ├── llms.txt
@@ -655,3 +655,13 @@ Failure of any check blocks publish and fails the job visibly.
 
 ---
 
+## 11. Open Questions (Non-Blocking)
+
+These do not block implementation but should be revisited after Phase 5:
+
+1. Should the root `llms.txt` carry an explicit "router" title line as
+   suggested in V4a §8?
+2. Should `release-inputs/pages-include/` support a Pages-specific
+   `index.html` override for the site landing page?
+3. What is the long-term telemetry and changelog strategy for the public tree
+   once the support files are excluded?

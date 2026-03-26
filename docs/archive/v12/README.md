@@ -4,4 +4,4 @@ This directory stores superseded planning notes, review documents, prompt packs,
 
 These files are preserved for historical context and idea recovery only. They are not authoritative for the active implementation.
 
-Use `docs/ARCHITECTURE.md` and `docs/specs/v12/` for current engineering guidance.
+Use `docs/OVERVIEW.md`, `docs/ARCHITECTURE.md`, and the active files under `docs/specs/` for current engineering guidance.

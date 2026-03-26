@@ -136,4 +136,4 @@ DOCUMENT:
 - Use `--option promote` after reviewing scratch results, or `--option full` to run
   the full review-plus-promotion sequence in one command.
 - For detailed manual equivalents and fallback procedures, use
-  [docs/specs/v12/ai-summary-operations-runbook.md](../../docs/specs/v12/ai-summary-operations-runbook.md).
+  [docs/guides/runbook-ai-summary-operations.md](../../docs/guides/runbook-ai-summary-operations.md).

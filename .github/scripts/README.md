@@ -1,119 +1,74 @@
 # .github/scripts — Pipeline Scripts Reference
 
-This directory contains all openwrt-docs4ai pipeline scripts.
-Scripts are numbered 01–08 and run in order from acquisition through validation.
+This directory contains the numbered pipeline stages for openwrt-docs4ai.
 
-See [docs/specs/v12/script-dependency-map.md](../../docs/specs/v12/script-dependency-map.md)
-for the full dependency graph, input/output tables, and AI data flow diagram.
+Use these docs alongside it:
 
----
+- [docs/specs/pipeline-stage-catalog.md](../../docs/specs/pipeline-stage-catalog.md) for stage order and rerun guidance
+- [docs/specs/script-dependency-map.md](../../docs/specs/script-dependency-map.md) for the per-script read/write contract
+- [docs/specs/schema-definitions.md](../../docs/specs/schema-definitions.md) for field and output contracts
 
 ## Quick Reference
 
-| Script | Phase | Layer | Parallelisable | AI data |
-|--------|-------|-------|----------------|---------|
-| `01-clone-repos` | Acquisition | L0 | No | — |
-| `02a-scrape-wiki` | Extraction | L0→L1 | Yes | — |
-| `02b-scrape-ucode` | Extraction | L0→L1 | Yes | — |
-| `02c-scrape-jsdoc` | Extraction | L0→L1 | Yes | — |
-| `02d-scrape-core-packages` | Extraction | L0→L1 | Yes | — |
-| `02e-scrape-example-packages` | Extraction | L0→L1 | Yes | — |
-| `02f-scrape-procd-api` | Extraction | L0→L1 | Yes | — |
-| `02g-scrape-uci-schemas` | Extraction | L0→L1 | Yes | — |
-| `02h-scrape-hotplug-events` | Extraction | L0→L1 | Yes | — |
-| `03-normalize-semantic` | Process | L1→L2 | No | — |
-| `04-generate-ai-summaries` | AI Enrichment | L2→L2 | No | **Writes** base store |
-| `05a-assemble-references` | Assembly | L2→L3/L4 | Yes | Reads AI fields |
-| `05b-generate-agents-and-readme` | Indexing | L3 | Yes | — |
-| `05c-generate-ucode-ide-schemas` | Indexing | L3 | Yes | Reads `ai_summary` fallback |
-| `05d-generate-api-drift-changelog` | Telemetry | L5 | Yes | — |
-| `06-generate-llm-routing-indexes` | Aggregation | L4→L3 | No | Reads `ai_summary` fallback |
-| `07-generate-web-index` | Presentation | L3 | No | Indirect (from llms snippets) |
-| `08-validate-output` | Validation | L1–L5 | No | — |
-
----
-
-## Common Environment Variables
-
-Defaults below are direct local defaults. The hosted workflow overrides
-`WORKDIR` to `${{ github.workspace }}/tmp`, `OUTDIR` to staging, and usually
-sets `SKIP_AI` explicitly via workflow inputs.
-
-| Variable | Default | Used by |
-|----------|---------|---------|
-| `WORKDIR` | `tmp` | 01, 02*, 03, 06 |
-| `OUTDIR` | `openwrt-condensed-docs` | 03, 04, 05*, 06, 07, 08 |
-| `SKIP_WIKI` | `false` | 02a |
-| `WIKI_MAX_PAGES` | `300` | 02a |
-| `SKIP_BUILDROOT` | `false` | 01, 02d, 02e |
-| `SKIP_AI` | `true` | 04 |
-| `WRITE_AI` | `true` | 04 |
-| `MAX_AI_FILES` | `40` | 04 |
-| `GITHUB_TOKEN` | — | 04 |
-| `LOCAL_DEV_TOKEN` | — | 04 |
-| `AI_CACHE_PATH` | `ai-summaries-cache.json` | 04 |
-| `AI_DATA_BASE_DIR` | `data/base/` | 04 |
-| `AI_DATA_OVERRIDE_DIR` | `data/override/` | 04 |
-| `AI_VALIDATE_PAYLOAD` | `true` | 04 |
-| `VALIDATE_MODE` | `hard` | 08 |
-| `OPENWRT_COMMIT` | (set by 01) | 03, 06 |
-| `LUCI_COMMIT` | (set by 01) | 03, 06 |
-| `UCODE_COMMIT` | (set by 01) | 03, 06 |
-
----
+| Script | Role |
+| --- | --- |
+| `openwrt-docs4ai-01-clone-repos.py` | clone upstream source repos |
+| `openwrt-docs4ai-02a-scrape-wiki.py` | ingest wiki content |
+| `openwrt-docs4ai-02b-scrape-ucode.py` | extract ucode content |
+| `openwrt-docs4ai-02c-scrape-jsdoc.py` | extract LuCI API content |
+| `openwrt-docs4ai-02d-scrape-core-packages.py` | extract OpenWrt core docs |
+| `openwrt-docs4ai-02e-scrape-example-packages.py` | extract LuCI example content |
+| `openwrt-docs4ai-02f-scrape-procd-api.py` | extract procd content |
+| `openwrt-docs4ai-02g-scrape-uci-schemas.py` | extract UCI schema content |
+| `openwrt-docs4ai-02h-scrape-hotplug-events.py` | extract hotplug content |
+| `openwrt-docs4ai-02i-ingest-cookbook.py` | ingest hand-authored cookbook content |
+| `openwrt-docs4ai-03-normalize-semantic.py` | normalize L1 into L2 |
+| `openwrt-docs4ai-04-generate-ai-summaries.py` | optional AI enrichment |
+| `openwrt-docs4ai-05a-assemble-references.py` | assemble module reference surfaces |
+| `openwrt-docs4ai-05b-generate-agents-and-readme.py` | generate root companion docs |
+| `openwrt-docs4ai-05c-generate-ucode-ide-schemas.py` | generate ucode type declarations |
+| `openwrt-docs4ai-05d-generate-api-drift-changelog.py` | generate telemetry outputs |
+| `openwrt-docs4ai-05e-generate-luci-dts.py` | generate LuCI type declarations |
+| `openwrt-docs4ai-06-generate-llm-routing-indexes.py` | generate routing indexes |
+| `openwrt-docs4ai-07-generate-web-index.py` | finalize overlays and web landing page |
+| `openwrt-docs4ai-08-validate-output.py` | validate the staged output |
 
 ## Shared Libraries
 
-All scripts import from `lib/` (two directories up):
+Scripts import shared code from `lib/`, especially:
 
-```python
-import sys, os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from lib import config          # all scripts
-from lib import extractor       # 02a–02h
-from lib import ai_enrichment   # 04
-from lib import ai_store        # 04 and local tooling
-```
+- `lib/config.py`
+- `lib/extractor.py`
+- `lib/source_provenance.py`
+- `lib/ai_store.py`
+- `lib/ai_store_checks.py`
+- `lib/ai_store_workflow.py`
+- `lib/ai_enrichment.py`
 
-| Library | File | Description |
-|---------|------|-------------|
-| `config` | `lib/config.py` | Shared paths: OUTDIR, WORKDIR, L1/L2 dirs, AI data dirs |
-| `extractor` | `lib/extractor.py` | L1 source extraction helpers (frontmatter normalisation, meta writing) |
-| `ai_store` | `lib/ai_store.py` | AI summary data store: load, save, override resolution, legacy migration |
-| `ai_corpus` | `lib/ai_corpus.py` | Shared L2 frontmatter parsing and body-hash helpers |
-| `ai_store_checks` | `lib/ai_store_checks.py` | Shared AI store validation and audit logic |
-| `ai_store_workflow` | `lib/ai_store_workflow.py` | Scratch-first path management and promotion helpers |
-| `ai_enrichment` | `lib/ai_enrichment.py` | Reusable stage-04 AI enrichment runner with built-in preflight |
+Do not hardcode `tmp/`, `staging/`, or output paths directly when `lib.config` already defines them.
 
----
+## AI Summary Stage
 
-## AI Summary Feature (Script 04)
+Script `04` is the only numbered AI stage.
 
-Script 04 implements the AI-V1 data store design:
+- It reads `data/base/` and `data/override/`.
+- It can migrate legacy cache entries when needed.
+- It enriches L2 frontmatter with AI fields.
+- It may write new JSON records into `data/base/` when live generation is enabled.
 
-- Reads pre-seeded JSON from `data/base/<module>/<slug>.json`
-- Allows human overrides in `data/override/<module>/<slug>.json`
-- Falls back to legacy `ai-summaries-cache.json` and migrates entries on first match
-- Performs a built-in AI-store preflight before enrichment using the shared validation and audit libraries
-- Calls GitHub Models API (gpt-4o-mini) for files with no stored summary when `WRITE_AI=true`
-- Injects `ai_summary`, `ai_when_to_use`, `ai_related_topics` into L2 YAML frontmatter
-- The local scratch-first workflow now lives in `tools/manage_ai_store.py`
-- The hosted workflow exposes only the numbered `04` AI stage; maintenance and promotion helpers are intentionally non-numbered
+The maintained operator workflow lives outside the numbered pipeline in `tools/manage_ai_store.py`.
 
-Full design: [docs/specs/v12/ai-summary-feature-spec.md](../../docs/specs/v12/ai-summary-feature-spec.md)
+Use these references:
 
-Permanent operator workflow: [docs/specs/v12/ai-summary-operations-runbook.md](../../docs/specs/v12/ai-summary-operations-runbook.md)
+- [docs/guides/runbook-ai-summary-operations.md](../../docs/guides/runbook-ai-summary-operations.md)
+- [data/base/README.md](../../data/base/README.md)
+- [tools/README.md](../../tools/README.md)
 
-Local support tools: [tools/README.md](../../tools/README.md)
+## Adding A New Script
 
----
-
-## Adding a New Script
-
-1. Name it `openwrt-docs4ai-NN-descriptive-name.py`
-2. Add a module-level docstring with Purpose, Phase, Layers, Inputs, Outputs, Environment Variables, Dependencies, Notes
-3. Import `lib.config` for all path constants — never hardcode `tmp/` or `staging/` directly
-4. Add it to the GitHub Actions workflow YAML in `.github/workflows/`
-5. Update [docs/specs/v12/script-dependency-map.md](../../docs/specs/v12/script-dependency-map.md) with its
-   input/output tables and AI data column
-6. Update the quick reference table in this README
+1. Name it `openwrt-docs4ai-NN-descriptive-name.py`.
+2. Add a clear module-level docstring covering purpose, phase, inputs, outputs, environment variables, and notes.
+3. Use `lib.config` for shared paths.
+4. Wire it into the hosted workflow when appropriate.
+5. Update the active specs under `docs/specs/`.
+6. Update this README when the stage surface changes.

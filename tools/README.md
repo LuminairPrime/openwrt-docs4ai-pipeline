@@ -31,5 +31,5 @@ The CLI reuses the shared AI helper libraries in `lib/`:
 - `lib/ai_store_checks.py`
 - `lib/ai_store_workflow.py`
 
-See `docs/specs/v12/ai-summary-operations-runbook.md` for the durable operator
+See `docs/guides/runbook-ai-summary-operations.md` for the durable operator
 workflow and fallback procedures.

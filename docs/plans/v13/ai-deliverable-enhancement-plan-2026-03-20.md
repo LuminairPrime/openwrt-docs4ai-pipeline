@@ -8,7 +8,7 @@ OpenWrt corpus more useful for AI agents writing OpenWrt code.
 **Relationship:** Complements
 [the V13 discovery upgrade plan](discovery-upgrade-plan-2026-03-15.md) and
 stays within the current
-[release-tree contract](../../specs/v12/release-tree-contract.md) unless
+[release-tree contract](../../specs/release-tree-contract.md) unless
 explicitly noted.
 
 ---
@@ -235,8 +235,8 @@ After phases 1-6 land:
 
 If root-level files are introduced, update:
 
-- [release-tree-contract.md](../../specs/v12/release-tree-contract.md)
-- [schema-definitions.md](../../specs/v12/schema-definitions.md)
+- [release-tree-contract.md](../../specs/release-tree-contract.md)
+- [schema-definitions.md](../../specs/schema-definitions.md)
 - stage `07` index generation
 - stage `08` validation rules
 

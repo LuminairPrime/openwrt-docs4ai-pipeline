@@ -83,4 +83,4 @@ See [data/base/README.md](../base/README.md) for the full schema reference.
   `python tools/manage_ai_store.py --option review`
   followed by `--option promote`, or use `--option full` to run the combined path.
 - For detailed manual equivalents and fallback procedures, use
-  [docs/specs/v12/ai-summary-operations-runbook.md](../../docs/specs/v12/ai-summary-operations-runbook.md).
+  [docs/guides/runbook-ai-summary-operations.md](../../docs/guides/runbook-ai-summary-operations.md).

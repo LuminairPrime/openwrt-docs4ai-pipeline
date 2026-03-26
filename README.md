@@ -1,17 +1,17 @@
 # openwrt-docs4ai
 
-OpenWrt documentation collection and condensation pipeline for humans, tooling, and LLM workflows.
+OpenWrt documentation production pipeline for humans, tooling, and LLM workflows.
 
 ## What This Repository Does
 
-This repository pulls documentation from multiple OpenWrt-related sources, normalizes it into stable intermediate layers, and generates compact outputs intended for:
+This repository pulls documentation from multiple OpenWrt-related sources, normalizes it through stable layer boundaries, and publishes compact outputs intended for:
 
 - targeted human lookup
 - LLM context ingestion
 - IDE and tooling support
-- long-term monthly refresh automation
+- repeatable local and hosted regeneration
 
-The current development stage is verified stabilization and operational hardening. Local-first validation remains the engineering baseline, and GitHub Actions is now a confirmed remote execution and publication path rather than an unproven future target. A V5a release-tree refactor is in progress to publish the generated corpus to dedicated external distribution targets.
+The current maintainer surface is the V13 documentation set under `docs/`. The current public output contract is V6. The hosted workflow name still carries the historical `v12` label, but the active repository and output contracts do not.
 
 ## Source Families
 
@@ -19,42 +19,34 @@ The current development stage is verified stabilization and operational hardenin
 - `jow-/ucode`
 - `openwrt/luci`
 - `openwrt/openwrt`
-- OpenWrt-adjacent API and example sources extracted from those repositories
+- hand-authored cookbook content under `content/cookbook-source/`
 
 ## Output Model
 
-Generated artifacts live under `openwrt-condensed-docs/`.
+Generated artifacts live under `openwrt-condensed-docs/` locally.
 
-The project is transitioning to a V5a release-tree contract where the publishable product is assembled into a `release-tree/` directory with a clean, direct-root layout. Public-facing filenames use generic names (`map.md`, `bundled-reference.md`, `chunked-reference/`) instead of module-prefixed names. The generated product will be deployed to `openwrt-docs4ai.github.io` (GitHub Pages) and a `corpus` release repository. During the transition, `openwrt-condensed-docs/` remains the internal pipeline output root.
+- `L1-raw/` contains normalized raw Markdown plus sidecar metadata.
+- `L2-semantic/` contains semantic Markdown with YAML frontmatter and cross-links.
+- `release-tree/` is the only publishable surface.
+- `support-tree/` is internal pipeline state and is never published.
 
-- `L1-raw/` contains normalized raw markdown plus sidecar metadata.
-- `L2-semantic/` contains semantic markdown with YAML frontmatter and cross-links.
-- Root and per-module outputs contain maps, monoliths, skeletons, HTML landing pages, and telemetry.
-- GitHub Pages mirrors that same generated product tree from `gh-pages` rather than publishing a filtered subset.
+The exact output layout is defined in `docs/specs/release-tree-contract.md`.
 
-The exact output set is defined in `docs/ARCHITECTURE.md` and `docs/specs/v12/`.
+## Maintainer Guidance
 
-## Repository Guidance
-
-- Read `DEVELOPMENT.md` for local setup and testing.
-- Read `tests/README.md` for the test-tree layout, supported entry points, and result bundle locations.
-- Use `python tests/run_smoke_and_pytest.py` for the scripted maintainer validation path. It runs the focused pytest lane plus the maintained smoke stages in order and stores durable logs under `tmp/ci/local-validation/`.
-- Use `python tools/manage_ai_store.py --option review` for the maintained scratch-first AI-store workflow.
-- Read `docs/ARCHITECTURE.md` for repository structure and naming rules.
-- Read `docs/specs/v12/` for the active v12 technical specifications.
-- Read `docs/specs/v12/release-tree-contract.md` for the V5a public output contract.
-- Treat `docs/archive/v12/` as historical context only.
+- Read `docs/OVERVIEW.md` for the active maintainer doc map.
+- Read `DEVELOPMENT.md` for setup, validation, and CI operations.
+- Read `docs/ARCHITECTURE.md` for repository zones, layer model, and doc taxonomy.
+- Read `docs/specs/` for the active technical contracts.
+- Read `docs/guides/runbook-ai-summary-operations.md` for the AI-store workflow.
+- Treat `docs/archive/` as historical context only.
 
 ## Status
 
-The repository now has both local and remote v12 verification from the 2026-03-09 stabilization pass and the follow-up wiki hardening runs.
-
-- local deterministic smoke coverage is passing
-- the sequential local runner is passing
-- remote GitHub Actions runs are verified through warm-cache wiki run `22877413563`, with `0` hard failures and `1` soft warning
-- push, schedule, and manual workflow runs auto-promote staged generated outputs back into `openwrt-condensed-docs/`; GitHub Pages mirrors that same tree from `gh-pages` with `.nojekyll` branch publishing
-- the remaining work is concentrated in one deferred dockerman ucode soft warning, bounded wiki-derived cleanup, and deciding whether extra corpus telemetry is worth the complexity
-- the V5a release-tree refactor is the next active engineering work item, introducing a dual output model (`release-tree/` + `support-tree/`) and external distribution deployment
+- local deterministic validation remains the first gate
+- GitHub Actions is the verified remote execution and publication path
+- the cookbook module and LuCI type surface are now part of the active contract
+- publication targets consume the validated `release-tree/` surface rather than the full internal staging tree
 
 ## License
 

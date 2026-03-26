@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This file is the maintainer quick start for local development. The current engineering priority is to keep the Windows development path and the sequential smoke-test path reliable while preserving the now-verified GitHub Actions publication flow. The active publication model is the V5a release-tree contract; see [release-tree-contract.md](docs/specs/v12/release-tree-contract.md) for the output layout.
+This file is the maintainer quick start for local development. The current engineering priority is to keep the Windows development path and the sequential smoke-test path reliable while preserving the verified GitHub Actions publication flow. The active publication model is the V6 release-tree contract; see [release-tree-contract.md](docs/specs/release-tree-contract.md) for the output layout.
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ python tools/manage_ai_store.py --option full --keep-scratch
 
 The `--run-ai` path is cache-backed for local verification, so it can validate the placement and mutation behavior of script `04` without requiring a live model token.
 
-For real AI-summary generation, use `python tools/manage_ai_store.py --option review` or the detailed scratch-first workflow in [docs/specs/v12/ai-summary-operations-runbook.md](docs/specs/v12/ai-summary-operations-runbook.md). Do not treat `--run-ai` as proof of live API generation or permanent AI-store promotion.
+For real AI-summary generation, use `python tools/manage_ai_store.py --option review` or the detailed scratch-first workflow in [docs/guides/runbook-ai-summary-operations.md](docs/guides/runbook-ai-summary-operations.md). Do not treat `--run-ai` as proof of live API generation or permanent AI-store promotion.
 
 For one-off terminal invocations, either activate `.venv` once before testing or call the workspace interpreter directly via `C:/Users/MC/Documents/AirSentinel/openwrt-docs4ai-v12-copilot/.venv/Scripts/python.exe`. Do not assume the system `python` on `PATH` is the repo interpreter.
 
@@ -87,7 +87,7 @@ When validating this project from the terminal, prefer deterministic, bounded co
 Before editing pipeline scripts, generated outputs, or workflow behavior:
 
 1. Decide whether the change affects maintainer docs, generated-corpus contracts, workflow execution, or only local tests.
-2. Read this file, `docs/ARCHITECTURE.md`, `docs/specs/v12/schema-definitions.md`, and `docs/specs/v12/execution-map.md` before changing numbered scripts or the workflow.
+2. Read this file, `docs/ARCHITECTURE.md`, `docs/specs/schema-definitions.md`, and `docs/specs/pipeline-stage-catalog.md` before changing numbered scripts or the workflow.
 3. If the change touches scripts `05b` through `08`, inspect the currently generated AI-facing outputs first: `openwrt-condensed-docs/llms.txt`, `openwrt-condensed-docs/llms-full.txt`, `openwrt-condensed-docs/AGENTS.md`, and at least one representative `openwrt-condensed-docs/{module}/llms.txt`.
 4. If the change touches `.github/workflows/openwrt-docs4ai-00-pipeline.yml`, map the intended behavior to a specific trigger path: push on `main`, monthly schedule, or `workflow_dispatch` with explicit inputs.
 5. Run the smallest local proof first. Only use remote GitHub Actions runs after local validation passes.
@@ -99,7 +99,7 @@ This repository has two LLM-relevant surfaces and they should not be conflated:
 - The source repository is the implementation and maintainer-doc surface. Its authoritative docs live under `docs/`, `README.md`, and `DEVELOPMENT.md`.
 - The generated corpus under `openwrt-condensed-docs/` is the published AI navigation surface consumed by downstream tools and models.
 
-The strict routing contract for generated `llms.txt`, `llms-full.txt`, module `llms.txt`, and `AGENTS.md` lives in `docs/specs/v12/schema-definitions.md`.
+The strict routing contract for generated `llms.txt`, `llms-full.txt`, module `llms.txt`, and `AGENTS.md` lives in `docs/specs/schema-definitions.md`.
 
 The published AI navigation surface is the external `release-tree/` layout with generic filenames (`map.md`, `bundled-reference.md`, `chunked-reference/`). The `openwrt-condensed-docs` name is internal to the source repo only and never appears in any public path or URL.
 
@@ -147,7 +147,7 @@ Real AI-summary work is intentionally AI-store first and scratch first.
 
 - `data/base/` and `data/override/` are the authoritative AI-summary surfaces.
 - `openwrt-condensed-docs/` is downstream generated evidence.
-- The permanent workflow lives in [docs/specs/v12/ai-summary-operations-runbook.md](docs/specs/v12/ai-summary-operations-runbook.md).
+- The permanent workflow lives in [docs/guides/runbook-ai-summary-operations.md](docs/guides/runbook-ai-summary-operations.md).
 - The only numbered AI stage is `.github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py`.
 - Script `04` performs its own library-backed preflight against the selected AI store before applying or generating summaries.
 - The maintained one-command helper is `tools/manage_ai_store.py`.

@@ -121,7 +121,7 @@ to parse `llms.txt` or crawl the filesystem to understand what exists.
 ### 4.4 Current repo seams to reuse
 
 - [docs/ARCHITECTURE.md](../../ARCHITECTURE.md)
-- [docs/specs/v12/schema-definitions.md](../../specs/v12/schema-definitions.md)
+- [docs/specs/schema-definitions.md](../../specs/schema-definitions.md)
 - [openwrt-docs4ai-06-generate-llm-routing-indexes.py](../../../.github/scripts/openwrt-docs4ai-06-generate-llm-routing-indexes.py)
 - [openwrt-docs4ai-07-generate-web-index.py](../../../.github/scripts/openwrt-docs4ai-07-generate-web-index.py)
 - [repo-manifest.json](../../../openwrt-condensed-docs/repo-manifest.json)
@@ -203,8 +203,8 @@ the source attribution is.
 
 ### 5.4 Current repo seams to reuse
 
-- [ai-summary-feature-spec.md](../../specs/v12/ai-summary-feature-spec.md)
-- [ai-tooling-user-stories-and-test-plan.md](../../specs/v12/ai-tooling-user-stories-and-test-plan.md)
+- [ai-summary-feature-spec.md](../../archive/v12/specs/ai-summary-feature-spec.md)
+- [ai-tooling-user-stories-and-test-plan.md](../../archive/v12/specs/ai-tooling-user-stories-and-test-plan.md)
 - [openwrt-docs4ai-03-normalize-semantic.py](../../../.github/scripts/openwrt-docs4ai-03-normalize-semantic.py)
 - [openwrt-docs4ai-06-generate-llm-routing-indexes.py](../../../.github/scripts/openwrt-docs4ai-06-generate-llm-routing-indexes.py)
 - [ai_corpus.py](../../../lib/ai_corpus.py)
@@ -415,7 +415,7 @@ scripts.
 - [openwrt-docs4ai-02a-scrape-wiki.py](../../../.github/scripts/openwrt-docs4ai-02a-scrape-wiki.py)
 - [openwrt-docs4ai-03-normalize-semantic.py](../../../.github/scripts/openwrt-docs4ai-03-normalize-semantic.py)
 - [pytest_04_wiki_scraper_test.py](../../../tests/pytest/pytest_04_wiki_scraper_test.py)
-- [implementation-status.md](../../specs/v12/implementation-status.md)
+- [implementation-status.md](../../archive/v12/specs/implementation-status.md)
 
 ### 7.5 DevDocs inspiration
 
