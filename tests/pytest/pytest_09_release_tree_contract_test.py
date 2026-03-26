@@ -713,3 +713,45 @@ def test_source_exclusions_get_all_exclusions_returns_three_entries() -> None:
     assert len(entries) == 3
     sources = {e["source"] for e in entries}
     assert sources == {"wiki"}
+
+
+def test_cookbook_double_dot_cross_module_link_passes_validation(tmp_path: Path) -> None:
+    validate = load_script_module(
+        "validator_cookbook_double_dot_ok",
+        "openwrt-docs4ai-08-validate-output.py",
+    )
+    release_tree = tmp_path / "release-tree"
+    cookbook_chunked = release_tree / "cookbook" / validate.config.MODULE_CHUNKED_REF_DIRNAME
+    luci_chunked = release_tree / "luci-examples" / validate.config.MODULE_CHUNKED_REF_DIRNAME
+    cookbook_chunked.mkdir(parents=True)
+    luci_chunked.mkdir(parents=True)
+
+    broken_link = "../../luci-examples/chunked-reference/topic.md"
+    cookbook_chunked.joinpath("my-guide.md").write_text(
+        f"# My Guide\n\nSee [{broken_link}]({broken_link}).\n",
+        encoding="utf-8",
+    )
+    luci_chunked.joinpath("topic.md").write_text("# topic\n", encoding="utf-8")
+
+    hard_failures: list[str] = []
+    validate.check_dead_links(str(release_tree), hard_failures.append)
+    assert hard_failures == [], f"Expected no broken links, got: {hard_failures}"
+
+
+def test_cookbook_broken_cross_module_link_fails_validation(tmp_path: Path) -> None:
+    validate = load_script_module(
+        "validator_cookbook_broken_link",
+        "openwrt-docs4ai-08-validate-output.py",
+    )
+    release_tree = tmp_path / "release-tree"
+    cookbook_chunked = release_tree / "cookbook" / validate.config.MODULE_CHUNKED_REF_DIRNAME
+    cookbook_chunked.mkdir(parents=True)
+
+    cookbook_chunked.joinpath("my-guide.md").write_text(
+        "# My Guide\n\nSee [topic](../../luci-examples/chunked-reference/nonexistent.md).\n",
+        encoding="utf-8",
+    )
+
+    hard_failures: list[str] = []
+    validate.check_dead_links(str(release_tree), hard_failures.append)
+    assert any("my-guide.md" in f for f in hard_failures)

@@ -88,6 +88,9 @@ Within a cookbook page:
 - another cookbook topic uses `./other-topic.md`
 - the cookbook index uses `../map.md` or `../bundled-reference.md`
 - a reference page in another module uses `../../<module>/chunked-reference/<topic>.md`
+  — these are authored for the `release-tree/cookbook/chunked-reference/` position and
+  must not use a single `../` prefix. The assembly stage (`05a`) will pass them through
+  unchanged. Do not use `../module/file.md` from cookbook chunked pages.
 - a top-level shipped file such as root `llms.txt` uses `../../llms.txt`
 
 Never invent a future path. If the path is not part of the current contract, add the contract first or avoid the link.

@@ -414,3 +414,64 @@ def test_api_drift_legacy_baseline_suppresses_module_diff(tmp_path):
     assert added_mods == []
     assert removed_mods == []
     assert "## New Modules" not in markdown
+
+
+class TestRewriteRelativeLinks:
+    """rewrite_relative_links must not corrupt double-dot authored links."""
+
+    def test_single_level_cross_module_link_is_rewritten(self):
+        assemble = load_script_module("assemble_05a_1", "openwrt-docs4ai-05a-assemble-references.py")
+        result = assemble.rewrite_relative_links("cookbook", "[see](../luci-examples/topic.md)")
+        assert "L2-semantic" in result
+
+    def test_double_dot_link_is_passed_through_unchanged(self):
+        assemble = load_script_module("assemble_05a_2", "openwrt-docs4ai-05a-assemble-references.py")
+        link = "[see](../../luci-examples/chunked-reference/topic.md)"
+        result = assemble.rewrite_relative_links("cookbook", link)
+        assert result == link, f"Expected unchanged, got: {result}"
+
+    def test_dot_dot_is_not_treated_as_module_name(self):
+        assemble = load_script_module("assemble_05a_3", "openwrt-docs4ai-05a-assemble-references.py")
+        result = assemble.rewrite_relative_links("cookbook", "[see](../../luci-examples/file.md)")
+        assert "L2-semantic/../" not in result
+        assert "../../../" not in result
+
+
+class TestRewriteReleaseRelativeLinks:
+    """rewrite_release_relative_links must not corrupt double-dot authored links."""
+
+    def test_single_level_link_is_rewritten(self):
+        assemble = load_script_module("assemble_05a_4", "openwrt-docs4ai-05a-assemble-references.py")
+        result = assemble.rewrite_release_relative_links("[see](../luci-examples/topic.md)")
+        assert "chunked-reference" in result
+
+    def test_double_dot_link_is_passed_through_unchanged(self):
+        assemble = load_script_module("assemble_05a_5", "openwrt-docs4ai-05a-assemble-references.py")
+        link = "[see](../../luci-examples/chunked-reference/topic.md)"
+        result = assemble.rewrite_release_relative_links(link)
+        assert result == link
+
+    def test_dot_dot_is_not_injected_into_rewritten_path(self):
+        assemble = load_script_module("assemble_05a_6", "openwrt-docs4ai-05a-assemble-references.py")
+        result = assemble.rewrite_release_relative_links("[see](../../luci-examples/file.md)")
+        assert "../../../" not in result
+
+
+class TestRewriteReleaseChunkedLinks:
+    """rewrite_release_chunked_links must not corrupt double-dot authored links."""
+
+    def test_single_level_link_is_rewritten(self):
+        assemble = load_script_module("assemble_05a_7", "openwrt-docs4ai-05a-assemble-references.py")
+        result = assemble.rewrite_release_chunked_links("[see](../luci-examples/topic.md)")
+        assert "chunked-reference" in result
+
+    def test_double_dot_link_is_passed_through_unchanged(self):
+        assemble = load_script_module("assemble_05a_8", "openwrt-docs4ai-05a-assemble-references.py")
+        link = "[see](../../luci-examples/chunked-reference/topic.md)"
+        result = assemble.rewrite_release_chunked_links(link)
+        assert result == link
+
+    def test_dot_dot_is_not_injected_into_rewritten_path(self):
+        assemble = load_script_module("assemble_05a_9", "openwrt-docs4ai-05a-assemble-references.py")
+        result = assemble.rewrite_release_chunked_links("[see](../../luci-examples/file.md)")
+        assert "../../../" not in result

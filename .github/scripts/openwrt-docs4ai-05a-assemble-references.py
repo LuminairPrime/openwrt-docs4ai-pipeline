@@ -53,7 +53,7 @@ def release_part_filename(part_number: int) -> str:
 def rewrite_relative_links(module: str, body_text: str) -> str:
     """Rewrite L2-relative markdown links so they remain valid from L4 files."""
     body_with_fixed_links = re.sub(
-        r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+/.*?\.md)\)',
+        r'\[(.*?)\]\(\.\./((?!L2-semantic)[a-zA-Z0-9-]+/.*?\.md)\)',
         r'[\1](../L2-semantic/\2)',
         body_text,
     )
@@ -68,7 +68,7 @@ def rewrite_relative_links(module: str, body_text: str) -> str:
 def rewrite_release_relative_links(body_text: str) -> str:
     """Rewrite L2-relative markdown links for release-tree bundled outputs."""
     body_with_fixed_links = re.sub(
-        r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+)/([^)]*?\.md)\)',
+        r'\[(.*?)\]\(\.\./((?!L2-semantic)[a-zA-Z0-9-]+)/([^)]*?\.md)\)',
         rf'[\1](../\2/{config.MODULE_CHUNKED_REF_DIRNAME}/\3)',
         body_text,
     )
@@ -83,7 +83,7 @@ def rewrite_release_relative_links(body_text: str) -> str:
 def rewrite_release_chunked_links(content: str) -> str:
     """Rewrite cross-module L2 links for copied chunked-reference pages."""
     return re.sub(
-        r'\[(.*?)\]\(\.\./((?!L2-semantic)[^/)]+)/([^)]*?\.md)\)',
+        r'\[(.*?)\]\(\.\./((?!L2-semantic)[a-zA-Z0-9-]+)/([^)]*?\.md)\)',
         rf'[\1](../../\2/{config.MODULE_CHUNKED_REF_DIRNAME}/\3)',
         content,
     )

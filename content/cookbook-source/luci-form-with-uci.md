@@ -280,12 +280,14 @@ The ACL file must be:
 
 ```javascript
 // Calling an RPC method directly in render() instead of load():
-render: function() {
-    callGetStatus().then(function(status) {
-        // This runs AFTER render() returns -- the DOM is already built
-        // and you cannot update it from here without manually touching elements.
-    });
-}
+return view.extend({
+    render: function() {
+        callGetStatus().then(function(status) {
+            // This runs AFTER render() returns -- the DOM is already built
+            // and you cannot update it from here without manually touching elements.
+        });
+    }
+});
 ```
 
 **Why it fails:** `rpc.declare()` returns an async function. The result is not available synchronously. LuCI's view lifecycle provides `load()` specifically to fetch async data before `render()` is called. Put all RPC/network calls in `load()`, return the Promises, and receive the resolved values as parameters in `render()`.

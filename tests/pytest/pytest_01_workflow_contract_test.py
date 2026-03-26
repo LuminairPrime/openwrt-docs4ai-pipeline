@@ -177,3 +177,33 @@ def test_pipeline_summary_reports_validate_output_outcome():
 
     assert "process_summary.get('validate_output_outcome', 'unknown')" in pipeline_summary_block
     assert "- validate_output_outcome:" in pipeline_summary_block
+
+
+def test_pandoc_not_installed_in_extract_matrix():
+    import yaml
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    wf = yaml.safe_load(workflow_text)
+    extract_steps = wf.get("jobs", {}).get("extract", {}).get("steps", [])
+    for step in extract_steps:
+        run_text = step.get("run", "")
+        # Either the string is empty/None, or it doesn't have apt-get install pandoc
+        if run_text:
+            assert "apt-get install" not in run_text or "pandoc" not in run_text, (
+                f"extract matrix step '{step.get('name')}' installs pandoc unconditionally; "
+                "pandoc is only needed in the extract_wiki job."
+            )
+
+
+def test_jsdoc_npm_install_is_conditional_on_02c():
+    import yaml
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    wf = yaml.safe_load(workflow_text)
+    extract_steps = wf.get("jobs", {}).get("extract", {}).get("steps", [])
+    npm_steps = [s for s in extract_steps if s.get("run") and "jsdoc-to-markdown" in s.get("run", "")]
+    assert npm_steps, "No npm install step for jsdoc-to-markdown found in extract job"
+    for step in npm_steps:
+        condition = step.get("if", "")
+        assert "02c-scrape-jsdoc.py" in condition, (
+            f"jsdoc-to-markdown install step is not gated on matrix.script == '02c-scrape-jsdoc.py'. "
+            f"Got: if: {condition!r}"
+        )

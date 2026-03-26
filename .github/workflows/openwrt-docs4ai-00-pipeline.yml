@@ -347,10 +347,10 @@ jobs:
           python-version: "3.12"
           cache: 'pip'
       - name: Install dependencies
-        run: |
-          pip install -r .github/scripts/requirements.txt
-          sudo apt-get update -qq && sudo apt-get install -y -qq pandoc
-          npm install -g jsdoc-to-markdown
+        run: pip install -r .github/scripts/requirements.txt
+      - name: Install jsdoc-to-markdown (02c only)
+        if: matrix.script == '02c-scrape-jsdoc.py'
+        run: npm install -g jsdoc-to-markdown
       - name: Mark extractor start
         run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
       - name: Download L0
