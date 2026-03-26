@@ -194,7 +194,7 @@ def test_pandoc_not_installed_in_extract_matrix():
             )
 
 
-def test_jsdoc_npm_install_is_conditional_on_02c():
+def test_jsdoc_npm_install_is_conditional_on_02c_and_02b():
     import yaml
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     wf = yaml.safe_load(workflow_text)
@@ -203,7 +203,7 @@ def test_jsdoc_npm_install_is_conditional_on_02c():
     assert npm_steps, "No npm install step for jsdoc-to-markdown found in extract job"
     for step in npm_steps:
         condition = step.get("if", "")
-        assert "02c-scrape-jsdoc.py" in condition, (
-            f"jsdoc-to-markdown install step is not gated on matrix.script == '02c-scrape-jsdoc.py'. "
+        assert "02c-scrape-jsdoc.py" in condition and "02b-scrape-ucode.py" in condition, (
+            f"jsdoc-to-markdown install step is not gated on matrix.script == '02c...' and '02b...'. "
             f"Got: if: {condition!r}"
         )
