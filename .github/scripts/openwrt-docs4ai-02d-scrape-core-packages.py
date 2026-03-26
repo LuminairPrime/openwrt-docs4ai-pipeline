@@ -221,6 +221,8 @@ if mk_entries:
         "source_locator": "include/",
         "source_commit": OPENWRT_COMMIT,
         "language": "makefile",
+    }
+    extractor.write_l1_markdown("openwrt-core", "makefile_meta", slug, "\n".join(content_lines), metadata)
     outputs_generated += 1
     print(f"[02d] OK: include-mk ({len(mk_entries)} documented)")
 
