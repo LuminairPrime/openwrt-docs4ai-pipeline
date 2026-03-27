@@ -1,0 +1,33 @@
+content/cookbook-source/uci-read-write-from-ucode.md
+  9a36336657a50cc5 243
+.github/scripts/openwrt-docs4ai-05a-assemble-references.py
+  9a36336657a50cc5 71,76
+content/cookbook-source/procd-service-lifecycle.md
+  9a36336657a50cc5 200
+tests/pytest/pytest_00_pipeline_units_test.py
+  9a36336657a50cc5 485,487,489,491,493,495,497,499,501
+content/cookbook-source/luci-form-with-uci.md
+  9a36336657a50cc5 313
+content/cookbook-source/minimal-openwrt-package-makefile.md
+  9a36336657a50cc5 252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "5a574b42846ac4b6dea5b147d5638e27c1cca0a5",
+  "prompts": {
+    "9a36336657a50cc5": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "02f9df05-9cb1-491d-913c-412b65e281be",
+        "model": "copilot/gpt-5.4"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 40,
+      "total_deletions": 40,
+      "accepted_lines": 20,
+      "overriden_lines": 0
+    }
+  }
+}
