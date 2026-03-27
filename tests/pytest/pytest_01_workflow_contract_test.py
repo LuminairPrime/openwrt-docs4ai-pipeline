@@ -194,7 +194,7 @@ def test_pandoc_not_installed_in_extract_matrix():
             )
 
 
-def test_jsdoc_npm_install_is_gated_to_02c_only():
+def test_jsdoc_npm_install_is_conditional_on_02c_and_02b():
     workflow = load_workflow_yaml()
     extract_steps = workflow["jobs"]["extract"]["steps"]
     npm_steps = [s for s in extract_steps if "jsdoc-to-markdown" in s.get("run", "")]
@@ -204,8 +204,8 @@ def test_jsdoc_npm_install_is_gated_to_02c_only():
         assert "02c-scrape-jsdoc.py" in condition, (
             f"jsdoc-to-markdown install not gated to 02c. Got: if: {condition!r}"
         )
-        assert "02b-scrape-ucode.py" not in condition, (
-            f"jsdoc-to-markdown install should not be gated on 02b. Got: if: {condition!r}"
+        assert "02b-scrape-ucode.py" in condition, (
+            f"jsdoc-to-markdown install not gated to 02b. Got: if: {condition!r}"
         )
 
 
