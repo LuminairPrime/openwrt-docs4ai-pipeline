@@ -3,7 +3,7 @@ module: cookbook
 total_token_count: 18852
 section_count: 7
 is_monolithic: true
-generated: '2026-03-27T07:16:53.127109+00:00'
+generated: '2026-03-27T20:02:56.666251+00:00'
 ---
 
 # cookbook Bundled Reference
