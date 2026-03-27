@@ -1,0 +1,1192 @@
+process	UNKNOWN STEP	﻿2026-03-26T09:00:12.4020010Z Current runner version: '2.333.0'
+process	UNKNOWN STEP	2026-03-26T09:00:12.4067562Z ##[group]Runner Image Provisioner
+process	UNKNOWN STEP	2026-03-26T09:00:12.4068399Z Hosted Compute Agent
+process	UNKNOWN STEP	2026-03-26T09:00:12.4069064Z Version: 20260213.493
+process	UNKNOWN STEP	2026-03-26T09:00:12.4069695Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+process	UNKNOWN STEP	2026-03-26T09:00:12.4070441Z Build Date: 2026-02-13T00:28:41Z
+process	UNKNOWN STEP	2026-03-26T09:00:12.4071077Z Worker ID: {e7372658-f082-4c68-b260-079868f62e92}
+process	UNKNOWN STEP	2026-03-26T09:00:12.4071905Z Azure Region: westus
+process	UNKNOWN STEP	2026-03-26T09:00:12.4072513Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:12.4073928Z ##[group]Operating System
+process	UNKNOWN STEP	2026-03-26T09:00:12.4074670Z Ubuntu
+process	UNKNOWN STEP	2026-03-26T09:00:12.4075417Z 24.04.4
+process	UNKNOWN STEP	2026-03-26T09:00:12.4075918Z LTS
+process	UNKNOWN STEP	2026-03-26T09:00:12.4076475Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:12.4077064Z ##[group]Runner Image
+process	UNKNOWN STEP	2026-03-26T09:00:12.4077635Z Image: ubuntu-24.04
+process	UNKNOWN STEP	2026-03-26T09:00:12.4078240Z Version: 20260323.65.1
+process	UNKNOWN STEP	2026-03-26T09:00:12.4079426Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260323.65/images/ubuntu/Ubuntu2404-Readme.md
+process	UNKNOWN STEP	2026-03-26T09:00:12.4081004Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260323.65
+process	UNKNOWN STEP	2026-03-26T09:00:12.4081908Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:12.4083024Z ##[group]GITHUB_TOKEN Permissions
+process	UNKNOWN STEP	2026-03-26T09:00:12.4085095Z Contents: read
+process	UNKNOWN STEP	2026-03-26T09:00:12.4085820Z Metadata: read
+process	UNKNOWN STEP	2026-03-26T09:00:12.4086407Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:12.4088586Z Secret source: Actions
+process	UNKNOWN STEP	2026-03-26T09:00:12.4089290Z Prepare workflow directory
+process	UNKNOWN STEP	2026-03-26T09:00:12.4690793Z Prepare all required actions
+process	UNKNOWN STEP	2026-03-26T09:00:12.4728048Z Getting action download info
+process	UNKNOWN STEP	2026-03-26T09:00:13.0087857Z Download action repository 'actions/checkout@v5' (SHA:93cb6efe18208431cddfb8368fd83d5badbf9bfd)
+process	UNKNOWN STEP	2026-03-26T09:00:13.2366901Z Download action repository 'actions/setup-python@v6' (SHA:a309ff8b426b58ec0e2a45f0f869d46889d02405)
+process	UNKNOWN STEP	2026-03-26T09:00:13.4145238Z Download action repository 'actions/download-artifact@v7' (SHA:37930b1c2abaa49bbe596cd826c3c89aef350131)
+process	UNKNOWN STEP	2026-03-26T09:00:14.1067854Z Download action repository 'actions/cache@v5' (SHA:668228422ae6a00e4ad889ee87cd7109ec5666a7)
+process	UNKNOWN STEP	2026-03-26T09:00:14.3214431Z Download action repository 'actions/upload-artifact@v6' (SHA:b7c566a772e6b6bfb58ed0dc250532a479d7789f)
+process	UNKNOWN STEP	2026-03-26T09:00:14.7413128Z Complete job name: process
+process	UNKNOWN STEP	2026-03-26T09:00:14.8277716Z ##[group]Run actions/checkout@v5
+process	UNKNOWN STEP	2026-03-26T09:00:14.8278970Z with:
+process	UNKNOWN STEP	2026-03-26T09:00:14.8279660Z   fetch-depth: 2
+process	UNKNOWN STEP	2026-03-26T09:00:14.8280576Z   repository: LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:14.8281967Z   token: ***
+process	UNKNOWN STEP	2026-03-26T09:00:14.8282675Z   ssh-strict: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8283416Z   ssh-user: git
+process	UNKNOWN STEP	2026-03-26T09:00:14.8284183Z   persist-credentials: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8285468Z   clean: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8286272Z   sparse-checkout-cone-mode: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8287229Z   fetch-tags: false
+process	UNKNOWN STEP	2026-03-26T09:00:14.8288007Z   show-progress: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8288783Z   lfs: false
+process	UNKNOWN STEP	2026-03-26T09:00:14.8289478Z   submodules: false
+process	UNKNOWN STEP	2026-03-26T09:00:14.8290241Z   set-safe-directory: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8291549Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:14.8292288Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:14.8293792Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:14.8296038Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:14.8297636Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:14.8298885Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:14.8300155Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:14.8366653Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:14.8367643Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:14.8368696Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:14.9309082Z Syncing repository: LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:14.9311802Z ##[group]Getting Git version info
+process	UNKNOWN STEP	2026-03-26T09:00:14.9313488Z Working directory is '/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline'
+process	UNKNOWN STEP	2026-03-26T09:00:14.9316180Z [command]/usr/bin/git version
+process	UNKNOWN STEP	2026-03-26T09:00:14.9331164Z git version 2.53.0
+process	UNKNOWN STEP	2026-03-26T09:00:14.9386705Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:14.9401404Z Temporarily overriding HOME='/home/runner/work/_temp/579ce338-b155-4f4a-bf59-6f83bbf41c84' before making global git config changes
+process	UNKNOWN STEP	2026-03-26T09:00:14.9404712Z Adding repository directory to the temporary git global config as a safe directory
+process	UNKNOWN STEP	2026-03-26T09:00:14.9408117Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:14.9439570Z Deleting the contents of '/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline'
+process	UNKNOWN STEP	2026-03-26T09:00:14.9444007Z ##[group]Initializing the repository
+process	UNKNOWN STEP	2026-03-26T09:00:14.9448732Z [command]/usr/bin/git init /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:14.9538217Z hint: Using 'master' as the name for the initial branch. This default branch name
+process	UNKNOWN STEP	2026-03-26T09:00:14.9540694Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+process	UNKNOWN STEP	2026-03-26T09:00:14.9542511Z hint: to use in all of your new repositories, which will suppress this warning,
+process	UNKNOWN STEP	2026-03-26T09:00:14.9543858Z hint: call:
+process	UNKNOWN STEP	2026-03-26T09:00:14.9544529Z hint:
+process	UNKNOWN STEP	2026-03-26T09:00:14.9546177Z hint: 	git config --global init.defaultBranch <name>
+process	UNKNOWN STEP	2026-03-26T09:00:14.9547294Z hint:
+process	UNKNOWN STEP	2026-03-26T09:00:14.9548442Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+process	UNKNOWN STEP	2026-03-26T09:00:14.9551047Z hint: 'development'. The just-created branch can be renamed via this command:
+process	UNKNOWN STEP	2026-03-26T09:00:14.9552430Z hint:
+process	UNKNOWN STEP	2026-03-26T09:00:14.9553133Z hint: 	git branch -m <name>
+process	UNKNOWN STEP	2026-03-26T09:00:14.9553947Z hint:
+process	UNKNOWN STEP	2026-03-26T09:00:14.9555349Z hint: Disable this message with "git config set advice.defaultBranchName false"
+process	UNKNOWN STEP	2026-03-26T09:00:14.9557877Z Initialized empty Git repository in /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/.git/
+process	UNKNOWN STEP	2026-03-26T09:00:14.9561430Z [command]/usr/bin/git remote add origin https://github.com/LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:14.9582612Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:14.9583917Z ##[group]Disabling automatic garbage collection
+process	UNKNOWN STEP	2026-03-26T09:00:14.9585617Z [command]/usr/bin/git config --local gc.auto 0
+process	UNKNOWN STEP	2026-03-26T09:00:14.9616002Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:14.9621623Z ##[group]Setting up auth
+process	UNKNOWN STEP	2026-03-26T09:00:14.9622948Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+process	UNKNOWN STEP	2026-03-26T09:00:14.9651623Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+process	UNKNOWN STEP	2026-03-26T09:00:14.9920627Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+process	UNKNOWN STEP	2026-03-26T09:00:14.9950766Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+process	UNKNOWN STEP	2026-03-26T09:00:15.0166637Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+process	UNKNOWN STEP	2026-03-26T09:00:15.0195886Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+process	UNKNOWN STEP	2026-03-26T09:00:15.0409377Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+process	UNKNOWN STEP	2026-03-26T09:00:15.0442724Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:15.0444036Z ##[group]Fetching the repository
+process	UNKNOWN STEP	2026-03-26T09:00:15.0454067Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=2 origin +965616d0f687d1e344f2ffc1db021fab3a29bda1:refs/remotes/origin/main
+process	UNKNOWN STEP	2026-03-26T09:00:15.9997140Z From https://github.com/LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:15.9998941Z  * [new ref]         965616d0f687d1e344f2ffc1db021fab3a29bda1 -> origin/main
+process	UNKNOWN STEP	2026-03-26T09:00:16.0026092Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:16.0027708Z ##[group]Determining the checkout info
+process	UNKNOWN STEP	2026-03-26T09:00:16.0029547Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:16.0033521Z [command]/usr/bin/git sparse-checkout disable
+process	UNKNOWN STEP	2026-03-26T09:00:16.0075961Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+process	UNKNOWN STEP	2026-03-26T09:00:16.0103067Z ##[group]Checking out the ref
+process	UNKNOWN STEP	2026-03-26T09:00:16.0106715Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+process	UNKNOWN STEP	2026-03-26T09:00:16.1301927Z Switched to a new branch 'main'
+process	UNKNOWN STEP	2026-03-26T09:00:16.1306491Z branch 'main' set up to track 'origin/main'.
+process	UNKNOWN STEP	2026-03-26T09:00:16.1315230Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:16.1361309Z [command]/usr/bin/git log -1 --format=%H
+process	UNKNOWN STEP	2026-03-26T09:00:16.1384160Z 965616d0f687d1e344f2ffc1db021fab3a29bda1
+process	UNKNOWN STEP	2026-03-26T09:00:16.1688356Z ##[group]Run actions/setup-python@v6
+process	UNKNOWN STEP	2026-03-26T09:00:16.1689322Z with:
+process	UNKNOWN STEP	2026-03-26T09:00:16.1689975Z   python-version: 3.12
+process	UNKNOWN STEP	2026-03-26T09:00:16.1690721Z   cache: pip
+process	UNKNOWN STEP	2026-03-26T09:00:16.1691395Z   check-latest: false
+process	UNKNOWN STEP	2026-03-26T09:00:16.1692384Z   token: ***
+process	UNKNOWN STEP	2026-03-26T09:00:16.1693100Z   update-environment: true
+process	UNKNOWN STEP	2026-03-26T09:00:16.1693947Z   allow-prereleases: false
+process	UNKNOWN STEP	2026-03-26T09:00:16.1694758Z   freethreaded: false
+process	UNKNOWN STEP	2026-03-26T09:00:16.1695774Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:16.1696470Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:16.1697888Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:16.1699833Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:16.1701349Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:16.1702547Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:16.1703782Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:16.1704806Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:16.1705928Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:16.1706835Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:16.2946238Z ##[group]Installed versions
+process	UNKNOWN STEP	2026-03-26T09:00:16.3624648Z Successfully set up CPython (3.12.13)
+process	UNKNOWN STEP	2026-03-26T09:00:16.3626654Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:16.5614336Z [command]/opt/hostedtoolcache/Python/3.12.13/x64/bin/pip cache dir
+process	UNKNOWN STEP	2026-03-26T09:00:18.3931491Z /home/runner/.cache/pip
+process	UNKNOWN STEP	2026-03-26T09:00:18.6759375Z Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.12.13-pip-7060f98b6c66acf8aa13d023dce1cc089b487da60b4f39646bd9f089e7acbe2e
+process	UNKNOWN STEP	2026-03-26T09:00:19.9678037Z Received 2278725 of 10667333 (21.4%), 2.2 MBs/sec
+process	UNKNOWN STEP	2026-03-26T09:00:20.2848599Z Received 10667333 of 10667333 (100.0%), 7.7 MBs/sec
+process	UNKNOWN STEP	2026-03-26T09:00:20.2849300Z Cache Size: ~10 MB (10667333 B)
+process	UNKNOWN STEP	2026-03-26T09:00:20.2880598Z [command]/usr/bin/tar -xf /home/runner/work/_temp/7ca745e3-cba6-4bce-ae5c-8407ac9a848a/cache.tzst -P -C /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline --use-compress-program unzstd
+process	UNKNOWN STEP	2026-03-26T09:00:20.3178826Z Cache restored successfully
+process	UNKNOWN STEP	2026-03-26T09:00:20.3190612Z Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.12.13-pip-7060f98b6c66acf8aa13d023dce1cc089b487da60b4f39646bd9f089e7acbe2e
+process	UNKNOWN STEP	2026-03-26T09:00:20.3328036Z ##[group]Run pip install -r .github/scripts/requirements.txt
+process	UNKNOWN STEP	2026-03-26T09:00:20.3328558Z [36;1mpip install -r .github/scripts/requirements.txt[0m
+process	UNKNOWN STEP	2026-03-26T09:00:20.3328892Z [36;1msudo apt-get update -qq[0m
+process	UNKNOWN STEP	2026-03-26T09:00:20.3329305Z [36;1msudo apt-get install -y -qq build-essential cmake libjson-c-dev pkg-config[0m
+process	UNKNOWN STEP	2026-03-26T09:00:20.3363832Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:00:20.3364086Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:20.3364299Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:20.3364760Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:20.3365642Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:20.3366078Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:20.3366422Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:20.3366765Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:20.3367068Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:20.3367527Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:20.3367859Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:20.3368281Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:20.3368689Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:20.3369055Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:20.3369425Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:20.3369791Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:20.3370087Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:21.8259756Z Collecting requests (from -r .github/scripts/requirements.txt (line 1))
+process	UNKNOWN STEP	2026-03-26T09:00:21.8791337Z   Downloading requests-2.33.0-py3-none-any.whl.metadata (5.1 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:21.9157531Z Collecting tiktoken (from -r .github/scripts/requirements.txt (line 2))
+process	UNKNOWN STEP	2026-03-26T09:00:21.9170894Z   Using cached tiktoken-0.12.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (6.7 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:21.9484709Z Collecting pyyaml (from -r .github/scripts/requirements.txt (line 3))
+process	UNKNOWN STEP	2026-03-26T09:00:21.9498827Z   Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.1271277Z Collecting lxml (from -r .github/scripts/requirements.txt (line 4))
+process	UNKNOWN STEP	2026-03-26T09:00:22.1290268Z   Using cached lxml-6.0.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.6 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.1463477Z Collecting beautifulsoup4 (from -r .github/scripts/requirements.txt (line 5))
+process	UNKNOWN STEP	2026-03-26T09:00:22.1475944Z   Using cached beautifulsoup4-4.14.3-py3-none-any.whl.metadata (3.8 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.1555915Z Collecting html5lib (from -r .github/scripts/requirements.txt (line 6))
+process	UNKNOWN STEP	2026-03-26T09:00:22.1568319Z   Using cached html5lib-1.1-py2.py3-none-any.whl.metadata (16 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.1713533Z Collecting markdownify (from -r .github/scripts/requirements.txt (line 7))
+process	UNKNOWN STEP	2026-03-26T09:00:22.1725535Z   Using cached markdownify-1.2.2-py3-none-any.whl.metadata (9.9 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.2652731Z Collecting charset_normalizer<4,>=2 (from requests->-r .github/scripts/requirements.txt (line 1))
+process	UNKNOWN STEP	2026-03-26T09:00:22.2680286Z   Downloading charset_normalizer-3.4.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.2889260Z Collecting idna<4,>=2.5 (from requests->-r .github/scripts/requirements.txt (line 1))
+process	UNKNOWN STEP	2026-03-26T09:00:22.2901077Z   Using cached idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.3088427Z Collecting urllib3<3,>=1.26 (from requests->-r .github/scripts/requirements.txt (line 1))
+process	UNKNOWN STEP	2026-03-26T09:00:22.3100039Z   Using cached urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.3238055Z Collecting certifi>=2023.5.7 (from requests->-r .github/scripts/requirements.txt (line 1))
+process	UNKNOWN STEP	2026-03-26T09:00:22.3249841Z   Using cached certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.6438363Z Collecting regex>=2022.1.18 (from tiktoken->-r .github/scripts/requirements.txt (line 2))
+process	UNKNOWN STEP	2026-03-26T09:00:22.6452368Z   Using cached regex-2026.2.28-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.6629715Z Collecting soupsieve>=1.6.1 (from beautifulsoup4->-r .github/scripts/requirements.txt (line 5))
+process	UNKNOWN STEP	2026-03-26T09:00:22.6641917Z   Using cached soupsieve-2.8.3-py3-none-any.whl.metadata (4.6 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.6982491Z Collecting typing-extensions>=4.0.0 (from beautifulsoup4->-r .github/scripts/requirements.txt (line 5))
+process	UNKNOWN STEP	2026-03-26T09:00:22.6995313Z   Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7095843Z Collecting six>=1.9 (from html5lib->-r .github/scripts/requirements.txt (line 6))
+process	UNKNOWN STEP	2026-03-26T09:00:22.7108067Z   Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7167697Z Collecting webencodings (from html5lib->-r .github/scripts/requirements.txt (line 6))
+process	UNKNOWN STEP	2026-03-26T09:00:22.7179681Z   Using cached webencodings-0.5.1-py2.py3-none-any.whl.metadata (2.1 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7275076Z Downloading requests-2.33.0-py3-none-any.whl (65 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7385697Z Downloading charset_normalizer-3.4.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (207 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7489765Z Using cached idna-3.11-py3-none-any.whl (71 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7500958Z Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7512522Z Using cached tiktoken-0.12.0-cp312-cp312-manylinux_2_28_x86_64.whl (1.2 MB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7528610Z Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7543226Z Using cached lxml-6.0.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.3 MB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7572837Z Using cached beautifulsoup4-4.14.3-py3-none-any.whl (107 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7584350Z Using cached html5lib-1.1-py2.py3-none-any.whl (112 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7595733Z Using cached markdownify-1.2.2-py3-none-any.whl (15 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7607068Z Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7618342Z Using cached certifi-2026.2.25-py3-none-any.whl (153 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7630417Z Using cached regex-2026.2.28-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (802 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7644014Z Using cached soupsieve-2.8.3-py3-none-any.whl (37 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7655584Z Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.7667022Z Using cached webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+process	UNKNOWN STEP	2026-03-26T09:00:22.8361843Z Installing collected packages: webencodings, urllib3, typing-extensions, soupsieve, six, regex, pyyaml, lxml, idna, charset_normalizer, certifi, requests, html5lib, beautifulsoup4, tiktoken, markdownify
+process	UNKNOWN STEP	2026-03-26T09:00:23.6621781Z 
+process	UNKNOWN STEP	2026-03-26T09:00:23.6644055Z Successfully installed beautifulsoup4-4.14.3 certifi-2026.2.25 charset_normalizer-3.4.6 html5lib-1.1 idna-3.11 lxml-6.0.2 markdownify-1.2.2 pyyaml-6.0.3 regex-2026.2.28 requests-2.33.0 six-1.17.0 soupsieve-2.8.3 tiktoken-0.12.0 typing-extensions-4.15.0 urllib3-2.6.3 webencodings-0.5.1
+process	UNKNOWN STEP	2026-03-26T09:00:36.9148837Z Selecting previously unselected package build-essential.
+process	UNKNOWN STEP	2026-03-26T09:00:37.0376222Z (Reading database ... 
+process	UNKNOWN STEP	2026-03-26T09:00:37.0376704Z (Reading database ... 5%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0377050Z (Reading database ... 10%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0377270Z (Reading database ... 15%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0377479Z (Reading database ... 20%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0377689Z (Reading database ... 25%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0377885Z (Reading database ... 30%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0378088Z (Reading database ... 35%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0378284Z (Reading database ... 40%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0378482Z (Reading database ... 45%
+process	UNKNOWN STEP	2026-03-26T09:00:37.0378673Z (Reading database ... 50%
+process	UNKNOWN STEP	2026-03-26T09:00:37.2056972Z (Reading database ... 55%
+process	UNKNOWN STEP	2026-03-26T09:00:37.5445900Z (Reading database ... 60%
+process	UNKNOWN STEP	2026-03-26T09:00:37.8726136Z (Reading database ... 65%
+process	UNKNOWN STEP	2026-03-26T09:00:38.1931757Z (Reading database ... 70%
+process	UNKNOWN STEP	2026-03-26T09:00:38.5687991Z (Reading database ... 75%
+process	UNKNOWN STEP	2026-03-26T09:00:39.1256054Z (Reading database ... 80%
+process	UNKNOWN STEP	2026-03-26T09:00:39.9474223Z (Reading database ... 85%
+process	UNKNOWN STEP	2026-03-26T09:00:40.6908019Z (Reading database ... 90%
+process	UNKNOWN STEP	2026-03-26T09:00:41.4451216Z (Reading database ... 95%
+process	UNKNOWN STEP	2026-03-26T09:00:41.4451783Z (Reading database ... 100%
+process	UNKNOWN STEP	2026-03-26T09:00:41.4452488Z (Reading database ... 220111 files and directories currently installed.)
+process	UNKNOWN STEP	2026-03-26T09:00:41.4498748Z Preparing to unpack .../0-build-essential_12.10ubuntu1_amd64.deb ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.4526882Z Unpacking build-essential (12.10ubuntu1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.4802163Z Selecting previously unselected package libjsoncpp25:amd64.
+process	UNKNOWN STEP	2026-03-26T09:00:41.4938180Z Preparing to unpack .../1-libjsoncpp25_1.9.5-6build1_amd64.deb ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.4960303Z Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.5259567Z Selecting previously unselected package librhash0:amd64.
+process	UNKNOWN STEP	2026-03-26T09:00:41.5393716Z Preparing to unpack .../2-librhash0_1.4.3-3build1_amd64.deb ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.5403864Z Unpacking librhash0:amd64 (1.4.3-3build1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.5640514Z Selecting previously unselected package cmake-data.
+process	UNKNOWN STEP	2026-03-26T09:00:41.5774776Z Preparing to unpack .../3-cmake-data_3.28.3-1build7_all.deb ...
+process	UNKNOWN STEP	2026-03-26T09:00:41.5894831Z Unpacking cmake-data (3.28.3-1build7) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.1326005Z Selecting previously unselected package cmake.
+process	UNKNOWN STEP	2026-03-26T09:00:42.1474717Z Preparing to unpack .../4-cmake_3.28.3-1build7_amd64.deb ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.1484098Z Unpacking cmake (3.28.3-1build7) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3078446Z Selecting previously unselected package libjson-c-dev:amd64.
+process	UNKNOWN STEP	2026-03-26T09:00:42.3215227Z Preparing to unpack .../5-libjson-c-dev_0.17-1build1_amd64.deb ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3226399Z Unpacking libjson-c-dev:amd64 (0.17-1build1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3793900Z Setting up libjson-c-dev:amd64 (0.17-1build1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3822558Z Setting up libjsoncpp25:amd64 (1.9.5-6build1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3848339Z Setting up librhash0:amd64 (1.4.3-3build1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3877052Z Setting up build-essential (12.10ubuntu1) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3907150Z Setting up cmake-data (3.28.3-1build7) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.3977195Z Setting up cmake (3.28.3-1build7) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.4010442Z Processing triggers for man-db (2.12.0-4build2) ...
+process	UNKNOWN STEP	2026-03-26T09:00:42.4106915Z Not building database; man-db/auto-update is not 'true'.
+process	UNKNOWN STEP	2026-03-26T09:00:42.4122768Z Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+process	UNKNOWN STEP	2026-03-26T09:00:43.8104846Z 
+process	UNKNOWN STEP	2026-03-26T09:00:43.8105546Z Running kernel seems to be up-to-date.
+process	UNKNOWN STEP	2026-03-26T09:00:43.8106102Z 
+process	UNKNOWN STEP	2026-03-26T09:00:43.8106268Z No services need to be restarted.
+process	UNKNOWN STEP	2026-03-26T09:00:43.8106556Z 
+process	UNKNOWN STEP	2026-03-26T09:00:43.8106669Z No containers need to be restarted.
+process	UNKNOWN STEP	2026-03-26T09:00:43.8106872Z 
+process	UNKNOWN STEP	2026-03-26T09:00:43.8107034Z No user sessions are running outdated binaries.
+process	UNKNOWN STEP	2026-03-26T09:00:43.8107304Z 
+process	UNKNOWN STEP	2026-03-26T09:00:43.8107528Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+process	UNKNOWN STEP	2026-03-26T09:00:44.6722424Z ##[group]Run actions/download-artifact@v7
+process	UNKNOWN STEP	2026-03-26T09:00:44.6722723Z with:
+process	UNKNOWN STEP	2026-03-26T09:00:44.6722894Z   name: L0-repos
+process	UNKNOWN STEP	2026-03-26T09:00:44.6723241Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:44.6723643Z   merge-multiple: false
+process	UNKNOWN STEP	2026-03-26T09:00:44.6723911Z   repository: LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:44.6724202Z   run-id: 23585774677
+process	UNKNOWN STEP	2026-03-26T09:00:44.6724385Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:44.6724566Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:44.6725316Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:44.6726100Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:44.6726544Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:44.6726894Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:44.6727221Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:44.6727502Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:44.6727720Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:44.6728025Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:44.6728423Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:44.6728818Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:44.6729168Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:44.6729526Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:44.6729889Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:44.6730185Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:44.8135724Z Downloading single artifact
+process	UNKNOWN STEP	2026-03-26T09:00:45.0935009Z Preparing to download the following artifacts:
+process	UNKNOWN STEP	2026-03-26T09:00:45.0936436Z - L0-repos (ID: 6119310338, Size: 25059614, Expected Digest: sha256:7244ce1b342a3523062c9634bcb19873e0313b2e32190426554929f9711b42ae)
+process	UNKNOWN STEP	2026-03-26T09:00:45.6050876Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-e3abbb3b-86bf-5c65-82b5-4b3c027b5734/artifacts/5b6d41fa93fde89deeff19130e61e561fc771d0cf2ab843e5a4ba8bae978eedb.zip
+process	UNKNOWN STEP	2026-03-26T09:00:45.6052719Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:45.9400429Z (node:2918) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+process	UNKNOWN STEP	2026-03-26T09:00:45.9401458Z (Use `node --trace-deprecation ...` to show where the warning was created)
+process	UNKNOWN STEP	2026-03-26T09:00:49.2838369Z SHA256 digest of downloaded artifact is 7244ce1b342a3523062c9634bcb19873e0313b2e32190426554929f9711b42ae
+process	UNKNOWN STEP	2026-03-26T09:00:49.2839363Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:49.2839937Z Total of 1 artifact(s) downloaded
+process	UNKNOWN STEP	2026-03-26T09:00:49.2867160Z Download artifact has finished successfully
+process	UNKNOWN STEP	2026-03-26T09:00:49.3270231Z ##[group]Run actions/download-artifact@v7
+process	UNKNOWN STEP	2026-03-26T09:00:49.3270551Z with:
+process	UNKNOWN STEP	2026-03-26T09:00:49.3270756Z   pattern: L1-*
+process	UNKNOWN STEP	2026-03-26T09:00:49.3271148Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw/
+process	UNKNOWN STEP	2026-03-26T09:00:49.3271591Z   merge-multiple: true
+process	UNKNOWN STEP	2026-03-26T09:00:49.3271885Z   repository: LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:49.3272195Z   run-id: 23585774677
+process	UNKNOWN STEP	2026-03-26T09:00:49.3272402Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:49.3272610Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:49.3273030Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:49.3273600Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:49.3274042Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:49.3274408Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:49.3274758Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:49.3275387Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:49.3275637Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:49.3275980Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:49.3276407Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:49.3276833Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:49.3277221Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:49.3277601Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:49.3277981Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:49.3278302Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:49.7471049Z Found 20 artifact(s)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7472052Z Filtering artifacts by pattern 'L1-*'
+process	UNKNOWN STEP	2026-03-26T09:00:49.7492929Z Preparing to download the following artifacts:
+process	UNKNOWN STEP	2026-03-26T09:00:49.7494158Z - L1-02a-scrape-wiki.py (ID: 6119351056, Size: 346581, Expected Digest: sha256:ab6785a9b11ccf106223fcd3e9aa3a404f5d6132cb8db3632da576b4c76f7064)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7496096Z - L1-02b-scrape-ucode.py (ID: 6119321809, Size: 81454, Expected Digest: sha256:d780017eeb351c39a954308e78e952451f543b038f332cf4cb4c3eab5fe5ff15)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7497809Z - L1-02c-scrape-jsdoc.py (ID: 6119319967, Size: 23419, Expected Digest: sha256:384c4a82b203a55f3b564ea850f4e786c949addd431f1745c28f73003dbab36e)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7499529Z - L1-02f-scrape-procd-api.py (ID: 6119315569, Size: 1320, Expected Digest: sha256:99934ab5343dd8dcc06777b36fe4253572f15e6883e7c288399a92aaa76a27aa)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7501425Z - L1-02e-scrape-example-packages.py (ID: 6119314960, Size: 126092, Expected Digest: sha256:71bd8e1af834a5f314a7fcfabc1891bbaf4d3336a9450110e2f228ae442b83f7)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7503333Z - L1-02g-scrape-uci-schemas.py (ID: 6119314940, Size: 1197, Expected Digest: sha256:5a0f620330e5469f3553b65c45a329f98ea929c4cbddebd3d5ce52c5cb627034)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7505956Z - L1-02d-scrape-core-packages.py (ID: 6119313895, Size: 23017, Expected Digest: sha256:6215ffdc792ab5a4a518f61aac545496e2f54a6470a714e4ccd2cf2d6460eb90)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7507713Z - L1-02h-scrape-hotplug-events.py (ID: 6119313871, Size: 2352, Expected Digest: sha256:dc957dea3b08f2c643e76fddf1df49720db86205d75ffd45993bcae76db0f9a7)
+process	UNKNOWN STEP	2026-03-26T09:00:49.7509518Z - L1-02i-ingest-cookbook.py (ID: 6119306638, Size: 34829, Expected Digest: sha256:c2274f34a6352e0e2c99302df01091d8c67dc7f8d8a57855ebcec7ea05d4f008)
+process	UNKNOWN STEP	2026-03-26T09:00:50.2422714Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-0defc608-94f5-59b2-b2f9-dfe5031c1020/artifacts/916362f46f5f56d633008f1b0310a7b2acd36aec2dacaab70f53ab94dda00bd6.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2425691Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2444490Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-14a98cc4-cddd-52c2-87ac-0286c802f0bb/artifacts/a619e3aab6b13595120b7bd10a5ce915bb04d169d59d664d2768bdc826198ceb.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2446498Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2574074Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-0325bf63-d3f5-5ff3-b744-3d331464d634/artifacts/bc2d865e1f2465a68fa53b075c5b82c4a23b4583bbdf0b708fdcf3425299be25.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2576946Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2625888Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-30ae24c4-0261-52ef-8540-b8f4a20f77bf/artifacts/56d3a8e67c53b7408badfd7ffc20f1b8d241d5ab05d576df6dba07bba26e8319.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2628768Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2705232Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-ce1516ec-f5c0-520e-b924-19f1f9103ab9/artifacts/2e809440c2d85e1d1c37b6e8077c0dadb02f12778c88e32700b516aabf2107f7.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2707920Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2719013Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-bbdd8c05-f3f5-5a58-b65f-5bc7ed4fc0c5/artifacts/6249d8cd9ea6fab6487ddcc485a35530b393e9adfffb66922fae2b3148195a7d.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2721697Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2845120Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-c8520a17-0645-51aa-b2a3-660ebbd6955d/artifacts/97bf61b49d848b6a510f3159e1b0de6688f3a445d7c1989723b1095743a65eb9.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2848139Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.2945444Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-99abcd02-6e45-5872-950a-06711e56cf4c/artifacts/59f56d055c9b0ce52316fb48932775d5b96f2838be81666b43947e87a4fcb137.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.2947531Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.3010531Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-08e92856-f507-567f-b69d-7849d70d5451/artifacts/12ef3377532729b9cbcc2b342b057214f8f045b69ed83d3ef214cd22b0a967c8.zip
+process	UNKNOWN STEP	2026-03-26T09:00:50.3013283Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw
+process	UNKNOWN STEP	2026-03-26T09:00:50.5141403Z (node:2930) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+process	UNKNOWN STEP	2026-03-26T09:00:50.5142657Z (Use `node --trace-deprecation ...` to show where the warning was created)
+process	UNKNOWN STEP	2026-03-26T09:00:50.5184661Z SHA256 digest of downloaded artifact is dc957dea3b08f2c643e76fddf1df49720db86205d75ffd45993bcae76db0f9a7
+process	UNKNOWN STEP	2026-03-26T09:00:50.5185779Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.5765442Z SHA256 digest of downloaded artifact is 5a0f620330e5469f3553b65c45a329f98ea929c4cbddebd3d5ce52c5cb627034
+process	UNKNOWN STEP	2026-03-26T09:00:50.5766364Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.5903546Z SHA256 digest of downloaded artifact is 99934ab5343dd8dcc06777b36fe4253572f15e6883e7c288399a92aaa76a27aa
+process	UNKNOWN STEP	2026-03-26T09:00:50.5904645Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.6139917Z SHA256 digest of downloaded artifact is 6215ffdc792ab5a4a518f61aac545496e2f54a6470a714e4ccd2cf2d6460eb90
+process	UNKNOWN STEP	2026-03-26T09:00:50.6142335Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.6149385Z SHA256 digest of downloaded artifact is 384c4a82b203a55f3b564ea850f4e786c949addd431f1745c28f73003dbab36e
+process	UNKNOWN STEP	2026-03-26T09:00:50.6150117Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.6313574Z SHA256 digest of downloaded artifact is c2274f34a6352e0e2c99302df01091d8c67dc7f8d8a57855ebcec7ea05d4f008
+process	UNKNOWN STEP	2026-03-26T09:00:50.6314502Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.6650323Z SHA256 digest of downloaded artifact is d780017eeb351c39a954308e78e952451f543b038f332cf4cb4c3eab5fe5ff15
+process	UNKNOWN STEP	2026-03-26T09:00:50.6650994Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.7465575Z SHA256 digest of downloaded artifact is 71bd8e1af834a5f314a7fcfabc1891bbaf4d3336a9450110e2f228ae442b83f7
+process	UNKNOWN STEP	2026-03-26T09:00:50.7466293Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.9119399Z SHA256 digest of downloaded artifact is ab6785a9b11ccf106223fcd3e9aa3a404f5d6132cb8db3632da576b4c76f7064
+process	UNKNOWN STEP	2026-03-26T09:00:50.9120665Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:50.9121439Z Total of 9 artifact(s) downloaded
+process	UNKNOWN STEP	2026-03-26T09:00:50.9126103Z Download artifact has finished successfully
+process	UNKNOWN STEP	2026-03-26T09:00:50.9274792Z ##[group]Run actions/download-artifact@v7
+process	UNKNOWN STEP	2026-03-26T09:00:50.9275591Z with:
+process	UNKNOWN STEP	2026-03-26T09:00:50.9275946Z   name: extract-summary
+process	UNKNOWN STEP	2026-03-26T09:00:50.9276684Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/extract-summary/
+process	UNKNOWN STEP	2026-03-26T09:00:50.9277577Z   merge-multiple: false
+process	UNKNOWN STEP	2026-03-26T09:00:50.9278129Z   repository: LuminairPrime/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:00:50.9278734Z   run-id: 23585774677
+process	UNKNOWN STEP	2026-03-26T09:00:50.9279039Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:50.9279285Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:50.9279757Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:50.9280369Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:50.9280900Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:50.9281307Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:50.9281765Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:50.9282103Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:50.9282394Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:50.9282777Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:50.9283468Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:50.9283942Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:50.9284367Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:50.9284786Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:50.9285608Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:50.9285990Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:51.0741512Z Downloading single artifact
+process	UNKNOWN STEP	2026-03-26T09:00:51.3796656Z Preparing to download the following artifacts:
+process	UNKNOWN STEP	2026-03-26T09:00:51.3797803Z - extract-summary (ID: 6119354343, Size: 1135, Expected Digest: sha256:88bde4e9a9fef81aa979a3363c278ffc67be5820fd44468fee9011b5492794c1)
+process	UNKNOWN STEP	2026-03-26T09:00:51.8479735Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/2d7e31fb-6509-4d24-868f-a070fd5dd898/workflow-job-run-25ad9e38-6e31-5f55-8aaf-3db54109323d/artifacts/bf8b7e33375849bdbf976646ddc244bd667272c6c4694de857e28bdbedaee3a6.zip
+process	UNKNOWN STEP	2026-03-26T09:00:51.8481492Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/extract-summary
+process	UNKNOWN STEP	2026-03-26T09:00:52.1300061Z (node:2942) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+process	UNKNOWN STEP	2026-03-26T09:00:52.1301876Z (Use `node --trace-deprecation ...` to show where the warning was created)
+process	UNKNOWN STEP	2026-03-26T09:00:52.1346471Z SHA256 digest of downloaded artifact is 88bde4e9a9fef81aa979a3363c278ffc67be5820fd44468fee9011b5492794c1
+process	UNKNOWN STEP	2026-03-26T09:00:52.1347563Z Artifact download completed successfully.
+process	UNKNOWN STEP	2026-03-26T09:00:52.1348239Z Total of 1 artifact(s) downloaded
+process	UNKNOWN STEP	2026-03-26T09:00:52.1352517Z Download artifact has finished successfully
+process	UNKNOWN STEP	2026-03-26T09:00:52.1515636Z ##[group]Run actions/cache@v5
+process	UNKNOWN STEP	2026-03-26T09:00:52.1516221Z with:
+process	UNKNOWN STEP	2026-03-26T09:00:52.1516680Z   path: ai-summaries-cache.json
+process	UNKNOWN STEP	2026-03-26T09:00:52.1517245Z   key: ai-cache-Linux-23585774677
+process	UNKNOWN STEP	2026-03-26T09:00:52.1517823Z   restore-keys: ai-cache-Linux-
+process	UNKNOWN STEP	
+process	UNKNOWN STEP	2026-03-26T09:00:52.1518393Z   enableCrossOsArchive: false
+process	UNKNOWN STEP	2026-03-26T09:00:52.1518937Z   fail-on-cache-miss: false
+process	UNKNOWN STEP	2026-03-26T09:00:52.1519448Z   lookup-only: false
+process	UNKNOWN STEP	2026-03-26T09:00:52.1519914Z   save-always: false
+process	UNKNOWN STEP	2026-03-26T09:00:52.1520362Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:52.1520815Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:52.1521696Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:52.1522865Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:52.1523766Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:52.1524492Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:52.1525573Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:52.1526175Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:52.1526688Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:52.1527377Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:52.1528259Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:52.1529126Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:52.1529927Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:52.1530735Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:52.1531552Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:52.1532229Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:52.5687506Z Cache hit for restore-key: ai-cache-Linux-23462646258
+process	UNKNOWN STEP	2026-03-26T09:00:53.1868631Z Received 1459 of 1459 (100.0%), 0.0 MBs/sec
+process	UNKNOWN STEP	2026-03-26T09:00:53.1869325Z Cache Size: ~0 MB (1459 B)
+process	UNKNOWN STEP	2026-03-26T09:00:53.1899005Z [command]/usr/bin/tar -xf /home/runner/work/_temp/651d8dc1-3c7b-4c9f-b618-45ab2f2ba047/cache.tzst -P -C /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline --use-compress-program unzstd
+process	UNKNOWN STEP	2026-03-26T09:00:53.1948576Z Cache restored successfully
+process	UNKNOWN STEP	2026-03-26T09:00:53.2025389Z Cache restored from key: ai-cache-Linux-23462646258
+process	UNKNOWN STEP	2026-03-26T09:00:53.2118245Z ##[group]Run mkdir -p baseline
+process	UNKNOWN STEP	2026-03-26T09:00:53.2118665Z [36;1mmkdir -p baseline[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2119097Z [36;1mif [ -f "$PUBLISH_DIR/signature-inventory.json" ]; then[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2119615Z [36;1m  cp "$PUBLISH_DIR/signature-inventory.json" baseline/[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2120083Z [36;1m  echo "Baseline inventory found and staged."[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2120468Z [36;1melse[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2120826Z [36;1m  echo "No baseline inventory found in $PUBLISH_DIR."[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2121241Z [36;1mfi[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2149745Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:00:53.2150082Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:53.2150369Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:53.2150915Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:53.2151600Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:53.2152144Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:53.2152602Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:53.2153050Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:53.2153431Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:53.2153756Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:53.2154205Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2154739Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:53.2155607Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2156098Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2156564Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2157041Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:53.2157460Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:53.2232511Z Baseline inventory found and staged.
+process	UNKNOWN STEP	2026-03-26T09:00:53.2262207Z ##[group]Run cmake -S "$WORKDIR/repo-ucode" -B "$WORKDIR/repo-ucode/build-host" \
+process	UNKNOWN STEP	2026-03-26T09:00:53.2262851Z [36;1mcmake -S "$WORKDIR/repo-ucode" -B "$WORKDIR/repo-ucode/build-host" \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2263333Z [36;1m  -DCMAKE_BUILD_TYPE=Release \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2263769Z [36;1m  -DCMAKE_INSTALL_PREFIX="$WORKDIR/repo-ucode/build-install" \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2264211Z [36;1m  -DDEBUG_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2264527Z [36;1m  -DFS_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2264823Z [36;1m  -DIO_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2265478Z [36;1m  -DMATH_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2265794Z [36;1m  -DUBUS_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2266107Z [36;1m  -DUCI_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2266409Z [36;1m  -DRTNL_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2266708Z [36;1m  -DNL80211_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2267038Z [36;1m  -DRESOLV_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2267419Z [36;1m  -DSTRUCT_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2267751Z [36;1m  -DULOOP_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2268070Z [36;1m  -DLOG_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2268377Z [36;1m  -DSOCKET_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2268684Z [36;1m  -DZLIB_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2268993Z [36;1m  -DDIGEST_SUPPORT=OFF \[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2269307Z [36;1m  -DDIGEST_SUPPORT_EXTENDED=OFF[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2269739Z [36;1mcmake --build "$WORKDIR/repo-ucode/build-host" --parallel[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2270224Z [36;1mcmake --install "$WORKDIR/repo-ucode/build-host"[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2270704Z [36;1mecho "$WORKDIR/repo-ucode/build-install/bin" >> "$GITHUB_PATH"[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2271354Z [36;1mecho "LD_LIBRARY_PATH=$WORKDIR/repo-ucode/build-install/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:00:53.2295790Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:00:53.2296099Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:53.2296516Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:53.2297032Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:53.2297659Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:53.2298151Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:53.2298575Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:53.2298996Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:53.2299330Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:53.2299621Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:53.2300135Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2300637Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:53.2301128Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2301564Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2301994Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:53.2302434Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:53.2302800Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:00:55.4023475Z -- The C compiler identification is GNU 13.3.0
+process	UNKNOWN STEP	2026-03-26T09:00:55.7873525Z -- Detecting C compiler ABI info
+process	UNKNOWN STEP	2026-03-26T09:00:56.0453065Z -- Detecting C compiler ABI info - done
+process	UNKNOWN STEP	2026-03-26T09:00:56.0627844Z -- Check for working C compiler: /usr/bin/cc - skipped
+process	UNKNOWN STEP	2026-03-26T09:00:56.0830734Z -- Detecting C compile features
+process	UNKNOWN STEP	2026-03-26T09:00:56.1019333Z -- Detecting C compile features - done
+process	UNKNOWN STEP	2026-03-26T09:00:56.2453513Z -- Performing Test DEFAULT_FORTIFY_SOURCE
+process	UNKNOWN STEP	2026-03-26T09:00:56.2713546Z -- Performing Test DEFAULT_FORTIFY_SOURCE - Failed
+process	UNKNOWN STEP	2026-03-26T09:00:56.3993768Z -- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.3")
+process	UNKNOWN STEP	2026-03-26T09:00:56.5048005Z -- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
+process	UNKNOWN STEP	2026-03-26T09:00:56.5054620Z -- Checking for module 'json-c'
+process	UNKNOWN STEP	2026-03-26T09:00:56.5198426Z --   Found json-c, version 0.17
+process	UNKNOWN STEP	2026-03-26T09:00:56.5400004Z -- Looking for dlopen
+process	UNKNOWN STEP	2026-03-26T09:00:56.5927893Z -- Looking for dlopen - found
+process	UNKNOWN STEP	2026-03-26T09:00:56.5928497Z -- Looking for fmod
+process	UNKNOWN STEP	2026-03-26T09:00:56.6443615Z -- Looking for fmod - not found
+process	UNKNOWN STEP	2026-03-26T09:00:56.6446867Z -- Looking for json_tokener_get_parse_end
+process	UNKNOWN STEP	2026-03-26T09:00:57.3879137Z -- Looking for json_tokener_get_parse_end - found
+process	UNKNOWN STEP	2026-03-26T09:00:57.3881443Z -- Looking for json_object_new_array_ext
+process	UNKNOWN STEP	2026-03-26T09:00:57.4469007Z -- Looking for json_object_new_array_ext - found
+process	UNKNOWN STEP	2026-03-26T09:00:57.4470972Z -- Looking for json_object_new_uint64
+process	UNKNOWN STEP	2026-03-26T09:00:57.5056713Z -- Looking for json_object_new_uint64 - found
+process	UNKNOWN STEP	2026-03-26T09:00:57.5073838Z -- Configuring done (3.5s)
+process	UNKNOWN STEP	2026-03-26T09:00:57.5252644Z -- Generating done (0.0s)
+process	UNKNOWN STEP	2026-03-26T09:00:57.5257125Z -- Build files have been written to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-host
+process	UNKNOWN STEP	2026-03-26T09:00:57.5473269Z [  4%] Building C object CMakeFiles/libucode.dir/lexer.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5474433Z [  8%] Building C object CMakeFiles/libucode.dir/lib.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5476661Z [ 12%] Building C object CMakeFiles/libucode.dir/vm.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5507922Z [ 12%] Built target utpl
+process	UNKNOWN STEP	2026-03-26T09:00:57.5509925Z [ 12%] Built target ucc
+process	UNKNOWN STEP	2026-03-26T09:00:57.5513272Z [ 16%] Building C object CMakeFiles/libucode.dir/vallist.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5525221Z [ 20%] Building C object CMakeFiles/libucode.dir/chunk.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5577620Z [ 24%] Building C object CMakeFiles/libucode.dir/compiler.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5579984Z [ 28%] Building C object CMakeFiles/libucode.dir/types.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5630674Z [ 32%] Building C object CMakeFiles/libucode.dir/source.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5631518Z [ 40%] Building C object CMakeFiles/libucode.dir/platform.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:57.5646249Z [ 36%] Building C object CMakeFiles/libucode.dir/program.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1172380Z [ 44%] Linking C shared library libucode.so
+process	UNKNOWN STEP	2026-03-26T09:00:59.1532539Z [ 44%] Built target libucode
+process	UNKNOWN STEP	2026-03-26T09:00:59.1643862Z [ 48%] Building C object CMakeFiles/ucode.dir/main.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1657737Z [ 52%] Building C object examples/CMakeFiles/exception-handler.dir/exception-handler.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1704133Z [ 56%] Building C object examples/CMakeFiles/execute-string.dir/execute-string.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1747520Z [ 64%] Building C object examples/CMakeFiles/execute-file.dir/execute-file.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1750319Z [ 60%] Building C object examples/CMakeFiles/native-function.dir/native-function.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1760705Z [ 68%] Building C object examples/CMakeFiles/state-reuse.dir/state-reuse.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.1761704Z [ 72%] Building C object examples/CMakeFiles/state-reset.dir/state-reset.c.o
+process	UNKNOWN STEP	2026-03-26T09:00:59.2491740Z [ 76%] Linking C executable exception-handler
+process	UNKNOWN STEP	2026-03-26T09:00:59.2633434Z [ 80%] Linking C executable execute-file
+process	UNKNOWN STEP	2026-03-26T09:00:59.3068269Z [ 80%] Built target exception-handler
+process	UNKNOWN STEP	2026-03-26T09:00:59.3152310Z [ 84%] Linking C executable state-reset
+process	UNKNOWN STEP	2026-03-26T09:00:59.3288154Z [ 88%] Linking C executable state-reuse
+process	UNKNOWN STEP	2026-03-26T09:00:59.3358863Z [ 88%] Built target execute-file
+process	UNKNOWN STEP	2026-03-26T09:00:59.3383696Z [ 92%] Linking C executable execute-string
+process	UNKNOWN STEP	2026-03-26T09:00:59.3401734Z [ 96%] Linking C executable native-function
+process	UNKNOWN STEP	2026-03-26T09:00:59.3651927Z [ 96%] Built target state-reset
+process	UNKNOWN STEP	2026-03-26T09:00:59.3792150Z [ 96%] Built target state-reuse
+process	UNKNOWN STEP	2026-03-26T09:00:59.3796451Z [ 96%] Built target execute-string
+process	UNKNOWN STEP	2026-03-26T09:00:59.3880087Z [ 96%] Built target native-function
+process	UNKNOWN STEP	2026-03-26T09:00:59.4352555Z [100%] Linking C executable ucode
+process	UNKNOWN STEP	2026-03-26T09:00:59.4611477Z [100%] Built target ucode
+process	UNKNOWN STEP	2026-03-26T09:00:59.4665711Z -- Install configuration: "Release"
+process	UNKNOWN STEP	2026-03-26T09:00:59.4668879Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/bin/ucode
+process	UNKNOWN STEP	2026-03-26T09:00:59.4675643Z -- Set non-toolchain portion of runtime path of "/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/bin/ucode" to ""
+process	UNKNOWN STEP	2026-03-26T09:00:59.4677725Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib/libucode.so.0
+process	UNKNOWN STEP	2026-03-26T09:00:59.4681288Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib/libucode.so
+process	UNKNOWN STEP	2026-03-26T09:00:59.4683054Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/bin/utpl
+process	UNKNOWN STEP	2026-03-26T09:00:59.4684760Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/bin/ucc
+process	UNKNOWN STEP	2026-03-26T09:00:59.4686791Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/chunk.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4688649Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/compiler.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4690536Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/lexer.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4692362Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/lib.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4694188Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/module.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4696272Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/platform.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4698140Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/program.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4699986Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/source.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4702417Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/types.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4704266Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/util.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4706351Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/vallist.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4708196Z -- Installing: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/include/ucode/vm.h
+process	UNKNOWN STEP	2026-03-26T09:00:59.4742519Z ##[group]Run _T=$(date +%s)
+process	UNKNOWN STEP	2026-03-26T09:00:59.4742870Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:00:59.4743299Z [36;1mpython .github/scripts/openwrt-docs4ai-03-normalize-semantic.py[0m
+process	UNKNOWN STEP	2026-03-26T09:00:59.4743840Z [36;1mecho "PROC_TIMER_03=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:00:59.4771014Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:00:59.4771316Z env:
+process	UNKNOWN STEP	2026-03-26T09:00:59.4771574Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:00:59.4772074Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:00:59.4772713Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:00:59.4773204Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:00:59.4773608Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:00:59.4774016Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:00:59.4774344Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:00:59.4774667Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:00:59.4775281Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:59.4775766Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:00:59.4776243Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:59.4776694Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:59.4777136Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:00:59.4777954Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:00:59.4778705Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:01.6290763Z [03] Pass 1: YAML Schema Injection & Link Registry Build
+process	UNKNOWN STEP	2026-03-26T09:01:01.6292137Z [03] INFO: Loaded missing commit versions from /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-manifest.json
+process	UNKNOWN STEP	2026-03-26T09:01:02.5236042Z [03] Pass 2: Injecting Cross-Links
+process	UNKNOWN STEP	2026-03-26T09:01:17.1406294Z [03] Pass 3: Injecting Deprecation Warnings
+process	UNKNOWN STEP	2026-03-26T09:01:17.1406906Z [03] Promoting to staging OUTDIR
+process	UNKNOWN STEP	2026-03-26T09:01:17.1904682Z [03] Complete.
+process	UNKNOWN STEP	2026-03-26T09:01:17.2529342Z ##[group]Run set -o pipefail
+process	UNKNOWN STEP	2026-03-26T09:01:17.2529701Z [36;1mset -o pipefail[0m
+process	UNKNOWN STEP	2026-03-26T09:01:17.2530009Z [36;1mmkdir -p "$WORKDIR/run-summary"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:17.2530353Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:17.2530925Z [36;1mpython .github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py | tee "$WORKDIR/run-summary/ai-stage.log"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:17.2531619Z [36;1mecho "PROC_TIMER_04=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:17.2558809Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:17.2559133Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:17.2559393Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:17.2559888Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:17.2560534Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:17.2561027Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:17.2561460Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:17.2561873Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:17.2562229Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:17.2562520Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:17.2563077Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:17.2563550Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:17.2564034Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:17.2564476Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:17.2565161Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:17.2566080Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:17.2566985Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:17.2581337Z   SKIP_AI: false
+process	UNKNOWN STEP	2026-03-26T09:01:17.2581783Z   MAX_AI_FILES: 40
+process	UNKNOWN STEP	2026-03-26T09:01:17.2582879Z   GITHUB_TOKEN: ***
+process	UNKNOWN STEP	2026-03-26T09:01:17.2583358Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:17.3264894Z [04] AI summary enrichment starting
+process	UNKNOWN STEP	2026-03-26T09:01:17.4460871Z [04] WARN: base openwrt-core/makefile_meta-category-firmware: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4462350Z [04] WARN: base openwrt-core/makefile_meta-category-libs: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4463611Z [04] WARN: base ucode/c_source-api-module-fs: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4466070Z [04] WARN: base wiki/wiki_page-guide-developer-20-xx-major-changes: no matching L2 document found for /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/data/base/wiki/wiki_page-guide-developer-20-xx-major-changes.json
+process	UNKNOWN STEP	2026-03-26T09:01:17.4469112Z [04] WARN: base wiki/wiki_page-guide-developer-luci: no matching L2 document found for /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/data/base/wiki/wiki_page-guide-developer-luci.json
+process	UNKNOWN STEP	2026-03-26T09:01:17.4471148Z [04] WARN: base wiki/wiki_page-guide-developer-mdns: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4472524Z [04] WARN: base wiki/wiki_page-guide-developer-package-policies: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4474088Z [04] WARN: base wiki/wiki_page-guide-developer-procd-init-script-example: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4475745Z [04] WARN: base wiki/wiki_page-guide-developer-security: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4476983Z [04] WARN: base wiki/wiki_page-techref-dfs: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4478963Z [04] WARN: base wiki/wiki_page-techref-hotplug-legacy: no matching L2 document found for /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/data/base/wiki/wiki_page-techref-hotplug-legacy.json
+process	UNKNOWN STEP	2026-03-26T09:01:17.4480930Z [04] WARN: base wiki/wiki_page-techref-lldpd: content_hash does not match current L2 body
+process	UNKNOWN STEP	2026-03-26T09:01:17.4482173Z [04] Checked 153 records: OK
+process	UNKNOWN STEP	2026-03-26T09:01:17.4482788Z [04] L2 documents available for cross-check: 157
+process	UNKNOWN STEP	2026-03-26T09:01:17.5822752Z [04] L2 documents: 157
+process	UNKNOWN STEP	2026-03-26T09:01:17.5823735Z [04] Active coverage: current=129, pinned=12, stale=9, missing=7
+process	UNKNOWN STEP	2026-03-26T09:01:17.5825352Z [04] Active sources: base_current=129, base_pinned=12, base_stale=9, override_current=0, override_pinned=0, override_stale=0
+process	UNKNOWN STEP	2026-03-26T09:01:17.5826697Z [04] Store hygiene: orphan_base=3, orphan_override=0, invalid_base=0, invalid_override=0
+process	UNKNOWN STEP	2026-03-26T09:01:17.5827557Z [04] missing detail (7):
+process	UNKNOWN STEP	2026-03-26T09:01:17.5828578Z   - cookbook/architecture-overview — OpenWrt Architecture Overview
+process	UNKNOWN STEP	2026-03-26T09:01:17.5829752Z   - cookbook/common-ai-mistakes — Common AI Mistakes in OpenWrt Development
+process	UNKNOWN STEP	2026-03-26T09:01:17.5830741Z   - cookbook/luci-form-with-uci — LuCI Form with UCI
+process	UNKNOWN STEP	2026-03-26T09:01:17.5831805Z   - cookbook/minimal-openwrt-package-makefile — Minimal OpenWrt Package Makefile
+process	UNKNOWN STEP	2026-03-26T09:01:17.5832848Z   - cookbook/openwrt-era-guide — OpenWrt Era Guide
+process	UNKNOWN STEP	2026-03-26T09:01:17.5833815Z   - cookbook/procd-service-lifecycle — procd Service Lifecycle
+process	UNKNOWN STEP	2026-03-26T09:01:17.5834829Z   - cookbook/uci-read-write-from-ucode — UCI Read/Write from ucode
+process	UNKNOWN STEP	2026-03-26T09:01:17.5836192Z [04] stale detail (9):
+process	UNKNOWN STEP	2026-03-26T09:01:17.5837195Z   - base openwrt-core/makefile_meta-category-firmware — OpenWrt Buildroot: firmware packages
+process	UNKNOWN STEP	2026-03-26T09:01:17.5838585Z   - base openwrt-core/makefile_meta-category-libs — OpenWrt Buildroot: libs packages
+process	UNKNOWN STEP	2026-03-26T09:01:17.5839735Z   - base ucode/c_source-api-module-fs — ucode module: fs
+process	UNKNOWN STEP	2026-03-26T09:01:17.5840918Z   - base wiki/wiki_page-guide-developer-mdns — umdns for Local Device Discovery
+process	UNKNOWN STEP	2026-03-26T09:01:17.5842165Z   - base wiki/wiki_page-guide-developer-package-policies — OpenWrt packages
+process	UNKNOWN STEP	2026-03-26T09:01:17.5843744Z   - base wiki/wiki_page-guide-developer-procd-init-script-example — Create a sample procd init script
+process	UNKNOWN STEP	2026-03-26T09:01:17.5845369Z   - base wiki/wiki_page-guide-developer-security — Security
+process	UNKNOWN STEP	2026-03-26T09:01:17.5846226Z   - base wiki/wiki_page-techref-dfs — DFS
+process	UNKNOWN STEP	2026-03-26T09:01:17.5847076Z   - base wiki/wiki_page-techref-lldpd — lldpd
+process	UNKNOWN STEP	2026-03-26T09:01:17.5847740Z [04] orphan detail (3):
+process	UNKNOWN STEP	2026-03-26T09:01:17.5849360Z   - base wiki/wiki_page-guide-developer-20-xx-major-changes (/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/data/base/wiki/wiki_page-guide-developer-20-xx-major-changes.json)
+process	UNKNOWN STEP	2026-03-26T09:01:17.5851968Z   - base wiki/wiki_page-guide-developer-luci (/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/data/base/wiki/wiki_page-guide-developer-luci.json)
+process	UNKNOWN STEP	2026-03-26T09:01:17.5854379Z   - base wiki/wiki_page-techref-hotplug-legacy (/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/data/base/wiki/wiki_page-techref-hotplug-legacy.json)
+process	UNKNOWN STEP	2026-03-26T09:01:17.5856363Z [04] Legacy cache loaded: 6 hash-keyed entries available for migration
+process	UNKNOWN STEP	2026-03-26T09:01:17.5857128Z [04] Found 157 L2 documents
+process	UNKNOWN STEP	2026-03-26T09:01:17.5857741Z [04] TIMER: phase=discover_targets seconds=0.001
+process	UNKNOWN STEP	2026-03-26T09:01:17.9118412Z [04] API quota/auth failure (HTTP 401); halting API calls for this run.
+process	UNKNOWN STEP	2026-03-26T09:01:18.0130670Z [04] STALE: openwrt-core/makefile_meta-category-firmware (stored=ccae574586bf current=4c869050f322)
+process	UNKNOWN STEP	2026-03-26T09:01:18.0164048Z [04] STALE: openwrt-core/makefile_meta-category-libs (stored=efe86f6047d0 current=34846126e5c5)
+process	UNKNOWN STEP	2026-03-26T09:01:18.0352017Z [04] STALE: ucode/c_source-api-module-fs (stored=d1bc1a2b8b83 current=b4ae01da871a)
+process	UNKNOWN STEP	2026-03-26T09:01:18.1254077Z [04] STALE: wiki/wiki_page-guide-developer-mdns (stored=664ca9bdebc2 current=5a0cb6529c38)
+process	UNKNOWN STEP	2026-03-26T09:01:18.1325290Z [04] STALE: wiki/wiki_page-guide-developer-package-policies (stored=704ede38cf98 current=d1f366ccdf0b)
+process	UNKNOWN STEP	2026-03-26T09:01:18.1378034Z [04] STALE: wiki/wiki_page-guide-developer-procd-init-script-example (stored=fa8c8c7d4239 current=32bd8e47f80b)
+process	UNKNOWN STEP	2026-03-26T09:01:18.1446580Z [04] STALE: wiki/wiki_page-guide-developer-security (stored=891237757c7b current=fe1af83d63c9)
+process	UNKNOWN STEP	2026-03-26T09:01:18.1718817Z [04] STALE: wiki/wiki_page-techref-dfs (stored=4bf61fde7750 current=2cc936a779d8)
+process	UNKNOWN STEP	2026-03-26T09:01:18.2013093Z [04] STALE: wiki/wiki_page-techref-lldpd (stored=459cf168808c current=1a687c394100)
+process	UNKNOWN STEP	2026-03-26T09:01:18.2476859Z [04] Complete: 141 enriched (0 API-generated, 0 migrated from legacy cache, 0 applied stale), 0 already had summaries, 0 too short.
+process	UNKNOWN STEP	2026-03-26T09:01:18.2478014Z [04] Data store: 153 base records, 0 override records.
+process	UNKNOWN STEP	2026-03-26T09:01:18.2479869Z [04] TIMER: stage_start_epoch=1774515677 stage_end_epoch=1774515678 total_seconds=0.921 discover_targets_seconds=0.001 store_lookup_seconds=0.009 legacy_migration_seconds=0.000 api_generation_seconds=0.327 injection_seconds=0.177 targets=157 api_calls=0
+process	UNKNOWN STEP	2026-03-26T09:01:18.2481197Z [04] INFO: API calls were halted (quota/auth/cap); remaining files left unenriched.
+process	UNKNOWN STEP	2026-03-26T09:01:18.2734624Z ##[group]Run _T=$(date +%s)
+process	UNKNOWN STEP	2026-03-26T09:01:18.2735319Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.2735760Z [36;1mpython .github/scripts/openwrt-docs4ai-05a-assemble-references.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.2736319Z [36;1mecho "PROC_TIMER_05A=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.2763196Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:18.2763494Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:18.2763750Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:18.2764248Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:18.2765163Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:18.2765705Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:18.2766117Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:18.2766524Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:18.2766856Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:18.2767195Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:18.2767584Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.2768063Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:18.2768557Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.2768997Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.2769426Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.2770241Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:18.2770996Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:18.2771248Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:18.2771497Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:18.3250496Z [05a] Assemble L4 monolithic files and L3 skeletons
+process	UNKNOWN STEP	2026-03-26T09:01:18.3252010Z [05a] Processing module: cookbook (7 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.3518681Z [05a] OK: cookbook L4 (18852 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.3519476Z [05a] Processing module: luci (10 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.3892452Z [05a] OK: luci L4 (19723 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.3893890Z [05a] Processing module: luci-examples (27 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.4981483Z [05a] OK: luci-examples L4 index + 2 parts (100272 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.4982411Z [05a] Processing module: openwrt-core (7 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.5231344Z [05a] OK: openwrt-core L4 (23147 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.5232122Z [05a] Processing module: openwrt-hotplug (1 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.5277110Z [05a] OK: openwrt-hotplug L4 (1412 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.5277850Z [05a] Processing module: procd (1 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.5319897Z [05a] OK: procd L4 (352 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.5320573Z [05a] Processing module: uci (1 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.5360481Z [05a] OK: uci L4 (420 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.5361202Z [05a] Processing module: ucode (14 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.5898802Z [05a] OK: ucode L4 (80860 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.5901938Z [05a] Processing module: wiki (89 files)
+process	UNKNOWN STEP	2026-03-26T09:01:18.8848757Z [05a] OK: wiki L4 index + 2 parts (194622 tokens) and L3 skeleton
+process	UNKNOWN STEP	2026-03-26T09:01:18.8849586Z [05a] Complete: 22 artifacts generated.
+process	UNKNOWN STEP	2026-03-26T09:01:18.8968234Z ##[group]Run _T=$(date +%s)
+process	UNKNOWN STEP	2026-03-26T09:01:18.8968587Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.8969060Z [36;1mpython .github/scripts/openwrt-docs4ai-05b-generate-agents-and-readme.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.8969705Z [36;1mpython .github/scripts/openwrt-docs4ai-05c-generate-ucode-ide-schemas.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.8970342Z [36;1mpython .github/scripts/openwrt-docs4ai-05d-generate-api-drift-changelog.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.8970933Z [36;1mecho "PROC_TIMER_05BCD=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:18.8997740Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:18.8998034Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:18.8998286Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:18.8998788Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:18.8999415Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:18.8999910Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:18.9000513Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:18.9000920Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:18.9001256Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:18.9001545Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:18.9001927Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.9002413Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:18.9002893Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.9003331Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.9003761Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:18.9004575Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:18.9005721Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:18.9005981Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:18.9006245Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:18.9006698Z   BASELINE_DIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/baseline
+process	UNKNOWN STEP	2026-03-26T09:01:18.9007203Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:18.9259561Z [05b] Generating AGENTS.md and README.md
+process	UNKNOWN STEP	2026-03-26T09:01:19.1688736Z [05b] Complete.
+process	UNKNOWN STEP	2026-03-26T09:01:19.1938269Z [05c] Generating ucode.d.ts IDE schemas
+process	UNKNOWN STEP	2026-03-26T09:01:19.1966533Z [05c] OK: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging/ucode/ucode.d.ts, /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging/release-tree/ucode/types/ucode.d.ts (249 symbols)
+process	UNKNOWN STEP	2026-03-26T09:01:19.2194116Z [05d] Generating L5 Changelog and Telemetry
+process	UNKNOWN STEP	2026-03-26T09:01:19.2207999Z [05d] Loaded baseline with 401 signatures from /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/baseline/signature-inventory.json.
+process	UNKNOWN STEP	2026-03-26T09:01:19.2209593Z [05d] INFO: Baseline lacks module metadata; suppressing module drift sections.
+process	UNKNOWN STEP	2026-03-26T09:01:19.2215917Z [05d] OK: changelog.json, CHANGES.md, signature-inventory.json
+process	UNKNOWN STEP	2026-03-26T09:01:19.2289262Z ##[group]Run _T=$(date +%s)
+process	UNKNOWN STEP	2026-03-26T09:01:19.2289630Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:19.2290115Z [36;1mpython .github/scripts/openwrt-docs4ai-06-generate-llm-routing-indexes.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:19.2290735Z [36;1mecho "PROC_TIMER_06=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:19.2317288Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:19.2317614Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:19.2317893Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:19.2318433Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:19.2319090Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:19.2319613Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:19.2320055Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:19.2320501Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:19.2320875Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:19.2321219Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:19.2321636Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.2322151Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:19.2322663Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.2323124Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.2323591Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.2324439Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:19.2325409Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:19.2325688Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:19.2325968Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:19.2326249Z   PROC_TIMER_05BCD: 1
+process	UNKNOWN STEP	2026-03-26T09:01:19.2326529Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:19.4382029Z [06] INFO: Loaded missing commit versions from /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-manifest.json
+process	UNKNOWN STEP	2026-03-26T09:01:19.4383371Z [06] Generating L3 Navigational Maps (llms.txt)
+process	UNKNOWN STEP	2026-03-26T09:01:19.9137520Z [06] Indexed 191 catalog entries across 9 modules totaling ~439660 underlying L2 tokens.
+process	UNKNOWN STEP	2026-03-26T09:01:19.9168992Z [06] Complete: Generated llms.txt, llms-full.txt, and module-level indexes.
+process	UNKNOWN STEP	2026-03-26T09:01:19.9580717Z ##[group]Run _T=$(date +%s)
+process	UNKNOWN STEP	2026-03-26T09:01:19.9581267Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:19.9581978Z [36;1mpython .github/scripts/openwrt-docs4ai-07-generate-web-index.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:19.9582910Z [36;1mecho "PROC_TIMER_07=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:19.9622148Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:19.9622680Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:19.9623119Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:19.9623947Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:19.9625405Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:19.9626329Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:19.9627064Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:19.9627808Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:19.9628411Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:19.9628968Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:19.9629669Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.9630567Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:19.9631441Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.9632333Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.9633146Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:19.9634650Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:19.9636333Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:19.9636817Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:19.9637269Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:19.9637714Z   PROC_TIMER_05BCD: 1
+process	UNKNOWN STEP	2026-03-26T09:01:19.9638155Z   PROC_TIMER_06: 0
+process	UNKNOWN STEP	2026-03-26T09:01:19.9638577Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:20.0083855Z [07] Generating filesystem-derived index.html web landing page
+process	UNKNOWN STEP	2026-03-26T09:01:20.1293055Z [07] OK: applied release-include overlay: README.md, cookbook/AGENTS.md, luci/AGENTS.md, ucode/AGENTS.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.1293838Z [07] OK: generated index.html and finalized release/support trees.
+process	UNKNOWN STEP	2026-03-26T09:01:20.1397801Z ##[group]Run _T=$(date +%s)
+process	UNKNOWN STEP	2026-03-26T09:01:20.1398170Z [36;1m_T=$(date +%s)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:20.1398609Z [36;1mpython .github/scripts/openwrt-docs4ai-08-validate-output.py[0m
+process	UNKNOWN STEP	2026-03-26T09:01:20.1399181Z [36;1mecho "PROC_TIMER_08=$(($(date +%s) - _T))" >> "$GITHUB_ENV"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:20.1428811Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:20.1429150Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:20.1429437Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:20.1429986Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:20.1430638Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:20.1431168Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:20.1431611Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:20.1432047Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:20.1432413Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:20.1432769Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:20.1433203Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:20.1433735Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:20.1434254Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:20.1435167Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:20.1435690Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:20.1436551Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:20.1437332Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:20.1437613Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:20.1437889Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:20.1438165Z   PROC_TIMER_05BCD: 1
+process	UNKNOWN STEP	2026-03-26T09:01:20.1438448Z   PROC_TIMER_06: 0
+process	UNKNOWN STEP	2026-03-26T09:01:20.1438720Z   PROC_TIMER_07: 1
+process	UNKNOWN STEP	2026-03-26T09:01:20.1438992Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:20.2063717Z [08] Security & Quality Validation (/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging) [Mode: hard]
+process	UNKNOWN STEP	2026-03-26T09:01:20.5658191Z [08] FAIL: Broken relative link in release-tree/cookbook/bundled-reference.md: ../../luci-examples/example_app-luci-app-example-htdocs-luci-static-resources-view-example-form-js.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5660246Z [08] FAIL: Broken relative link in release-tree/cookbook/bundled-reference.md: ../../wiki/wiki_page-guide-developer-packages.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5662064Z [08] FAIL: Broken relative link in release-tree/cookbook/bundled-reference.md: ../../procd/header_api-procd-api.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5663398Z [08] FAIL: Broken relative link in release-tree/cookbook/bundled-reference.md: ../../ucode/c_source-api-module-uci.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5665872Z [08] FAIL: Broken relative link in release-tree/cookbook/chunked-reference/luci-form-with-uci.md: ../../luci-examples/example_app-luci-app-example-htdocs-luci-static-resources-view-example-form-js.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5667760Z [08] FAIL: Broken relative link in release-tree/cookbook/chunked-reference/minimal-openwrt-package-makefile.md: ../../wiki/wiki_page-guide-developer-packages.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5669154Z [08] FAIL: Broken relative link in release-tree/cookbook/chunked-reference/uci-read-write-from-ucode.md: ../../ucode/c_source-api-module-uci.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5670454Z [08] FAIL: Broken relative link in release-tree/cookbook/chunked-reference/procd-service-lifecycle.md: ../../procd/header_api-procd-api.md
+process	UNKNOWN STEP	2026-03-26T09:01:20.5851390Z [08] Source exclusion policy: 3 entries active
+process	UNKNOWN STEP	2026-03-26T09:01:20.5852719Z [08]   wiki/guide-developer-luci: not present in L1
+process	UNKNOWN STEP	2026-03-26T09:01:20.5853928Z [08]     reason: Deprecated Lua/CBI LuCI tutorial that misroutes modern AI generation toward obsolete APIs
+process	UNKNOWN STEP	2026-03-26T09:01:20.5855332Z [08]   wiki/techref-hotplug-legacy: not present in L1
+process	UNKNOWN STEP	2026-03-26T09:01:20.5856455Z [08]     reason: Historical Hotplug2 page superseded by procd; low-value for current routing corpus
+process	UNKNOWN STEP	2026-03-26T09:01:20.5857494Z [08]   wiki/guide-developer-20-xx-major-changes: not present in L1
+process	UNKNOWN STEP	2026-03-26T09:01:20.5858238Z [08]     reason: Release-transition page that disproportionately distorts wiki routing summaries
+process	UNKNOWN STEP	2026-03-26T09:01:22.4313019Z 
+process	UNKNOWN STEP	2026-03-26T09:01:22.4313652Z [08] ----------------------------------------------
+process	UNKNOWN STEP	2026-03-26T09:01:22.4314319Z [08] Validation Results
+process	UNKNOWN STEP	2026-03-26T09:01:22.4314796Z [08]   Files Checked: 838
+process	UNKNOWN STEP	2026-03-26T09:01:22.4315617Z [08]   Hard Failures: 8
+process	UNKNOWN STEP	2026-03-26T09:01:22.4316052Z [08]   Soft Warnings: 0
+process	UNKNOWN STEP	2026-03-26T09:01:22.4316503Z [08] ----------------------------------------------
+process	UNKNOWN STEP	2026-03-26T09:01:22.4316862Z 
+process	UNKNOWN STEP	2026-03-26T09:01:22.4317034Z [08] BLOCKING FAILURES:
+process	UNKNOWN STEP	2026-03-26T09:01:22.4318276Z   X Broken relative link in release-tree/cookbook/bundled-reference.md: ../../luci-examples/example_app-luci-app-example-htdocs-luci-static-resources-view-example-form-js.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4320053Z   X Broken relative link in release-tree/cookbook/bundled-reference.md: ../../wiki/wiki_page-guide-developer-packages.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4321355Z   X Broken relative link in release-tree/cookbook/bundled-reference.md: ../../procd/header_api-procd-api.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4322562Z   X Broken relative link in release-tree/cookbook/bundled-reference.md: ../../ucode/c_source-api-module-uci.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4324592Z   X Broken relative link in release-tree/cookbook/chunked-reference/luci-form-with-uci.md: ../../luci-examples/example_app-luci-app-example-htdocs-luci-static-resources-view-example-form-js.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4326802Z   X Broken relative link in release-tree/cookbook/chunked-reference/minimal-openwrt-package-makefile.md: ../../wiki/wiki_page-guide-developer-packages.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4328446Z   X Broken relative link in release-tree/cookbook/chunked-reference/uci-read-write-from-ucode.md: ../../ucode/c_source-api-module-uci.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4330136Z   X Broken relative link in release-tree/cookbook/chunked-reference/procd-service-lifecycle.md: ../../procd/header_api-procd-api.md
+process	UNKNOWN STEP	2026-03-26T09:01:22.4415280Z ##[error]Process completed with exit code 1.
+process	UNKNOWN STEP	2026-03-26T09:01:22.4463223Z ##[group]Run python - <<'PY'
+process	UNKNOWN STEP	2026-03-26T09:01:22.4463848Z [36;1mpython - <<'PY'[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4464144Z [36;1mimport json[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4464423Z [36;1mimport os[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4464673Z [36;1mimport re[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4465256Z [36;1mimport sys[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4465551Z [36;1mfrom pathlib import Path[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4465854Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4466120Z [36;1moutdir = Path(os.environ["OUTDIR"])[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4466502Z [36;1mworkdir = Path(os.environ["WORKDIR"])[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4466919Z [36;1mvalidate_output_outcome = "failure" or "unknown"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4467330Z [36;1msummary_dir = workdir / "run-summary"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4467720Z [36;1msummary_dir.mkdir(parents=True, exist_ok=True)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4468076Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4468313Z [36;1mrequired_paths = [[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4468610Z [36;1m    Path("AGENTS.md"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4468943Z [36;1m    Path("README.md"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4469236Z [36;1m    Path("llms.txt"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4469540Z [36;1m    Path("llms-full.txt"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4469868Z [36;1m    Path("index.html"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4470183Z [36;1m    Path("repo-manifest.json"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4470537Z [36;1m    Path("cross-link-registry.json"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4470920Z [36;1m    Path("signature-inventory.json"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4471258Z [36;1m    Path("CHANGES.md"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4471567Z [36;1m    Path("changelog.json"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4471912Z [36;1m    Path("release-tree") / "AGENTS.md",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4472270Z [36;1m    Path("release-tree") / "README.md",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4472630Z [36;1m    Path("release-tree") / "llms.txt",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4473001Z [36;1m    Path("release-tree") / "llms-full.txt",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4473381Z [36;1m    Path("release-tree") / "index.html",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4473814Z [36;1m    Path("support-tree") / "manifests" / "repo-manifest.json",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4474332Z [36;1m    Path("support-tree") / "manifests" / "cross-link-registry.json",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4474835Z [36;1m    Path("support-tree") / "telemetry" / "CHANGES.md",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4475520Z [36;1m    Path("support-tree") / "telemetry" / "changelog.json",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4476014Z [36;1m    Path("support-tree") / "telemetry" / "signature-inventory.json",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4476420Z [36;1m][0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4476642Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4477046Z [36;1mmissing = [path.as_posix() for path in required_paths if not (outdir / path).is_file()][0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4477512Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4477908Z [36;1ml1_md = len(list((outdir / "L1-raw").glob("**/*.md"))) if (outdir / "L1-raw").exists() else 0[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4478555Z [36;1ml1_meta = len(list((outdir / "L1-raw").glob("**/*.meta.json"))) if (outdir / "L1-raw").exists() else 0[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4479246Z [36;1ml2_md = len(list((outdir / "L2-semantic").glob("**/*.md"))) if (outdir / "L2-semantic").exists() else 0[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4479778Z [36;1mrelease_tree = outdir / "release-tree"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4480339Z [36;1msupport_tree = outdir / "support-tree"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4480913Z [36;1mmodule_refs = len(list(release_tree.glob("*/bundled-reference.md"))) if release_tree.exists() else 0[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4481658Z [36;1msupport_raw_md = len(list((support_tree / "raw").glob("**/*.md"))) if (support_tree / "raw").exists() else 0[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4482488Z [36;1msupport_semantic_md = len(list((support_tree / "semantic-pages").glob("**/*.md"))) if (support_tree / "semantic-pages").exists() else 0[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4483092Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4483367Z [36;1mai_log_path = summary_dir / "ai-stage.log"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4483718Z [36;1mai: dict[str, object] = {[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4484035Z [36;1m    "status": "not-available",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4484547Z [36;1m    "log_present": ai_log_path.is_file(),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4485153Z [36;1m    "timers": {},[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4485461Z [36;1m    "counters": {},[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4485744Z [36;1m}[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4485967Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4486203Z [36;1mif ai_log_path.is_file():[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4486516Z [36;1m    ai["status"] = "logged"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4486934Z [36;1m    ai_text = ai_log_path.read_text(encoding="utf-8", errors="replace")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4487490Z [36;1m    ai_lines = [line.strip() for line in ai_text.splitlines() if line.strip()][0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4487917Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4488236Z [36;1m    if any(line.startswith("[04] SKIP:") for line in ai_lines):[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4488637Z [36;1m        ai["status"] = "skipped"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4488941Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4489168Z [36;1m    timer_line = next([0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4489454Z [36;1m        ([0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4489740Z [36;1m            line for line in ai_lines[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4490167Z [36;1m            if line.startswith("[04] TIMER:") and "total_seconds=" in line[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4490571Z [36;1m        ),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4490820Z [36;1m        None,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4491073Z [36;1m    )[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4491311Z [36;1m    if timer_line:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4491622Z [36;1m        timers: dict[str, object] = {}[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4492073Z [36;1m        for key, raw in re.findall(r"([a-z_]+)=([0-9]+(?:\.[0-9]+)?)", timer_line):[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4492510Z [36;1m            if "." in raw:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4492840Z [36;1m                timers[key] = float(raw)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4493161Z [36;1m            else:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4493458Z [36;1m                timers[key] = int(raw)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4493780Z [36;1m        ai["timers"] = timers[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4494114Z [36;1m        if ai["status"] == "logged":[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4494447Z [36;1m            ai["status"] = "timed"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4494744Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4495379Z [36;1m    complete_line = next((line for line in ai_lines if line.startswith("[04] Complete:")), None)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4495890Z [36;1m    if complete_line:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4496190Z [36;1m        match = re.search([0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4496901Z [36;1m            r"Complete:\s+(\d+) enriched \((\d+) API-generated, (\d+) migrated from legacy cache, (\d+) applied stale\), (\d+) already had summaries, (\d+) too short\.",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4497589Z [36;1m            complete_line,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4497885Z [36;1m        )[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4498139Z [36;1m        if match:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4498432Z [36;1m            ai["counters"] = {[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4498782Z [36;1m                "applied": int(match.group(1)),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4499192Z [36;1m                "generated_via_api": int(match.group(2)),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4499629Z [36;1m                "migrated_from_legacy": int(match.group(3)),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4500047Z [36;1m                "stale_applied": int(match.group(4)),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4500606Z [36;1m                "skipped_already": int(match.group(5)),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4501010Z [36;1m                "skipped_short": int(match.group(6)),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4501362Z [36;1m            }[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4501618Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4501841Z [36;1mpayload = {[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4502233Z [36;1m    "contract_ok": (not missing) and validate_output_outcome == "success",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4502694Z [36;1m    "missing_required_files": missing,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4503104Z [36;1m    "validate_output_outcome": validate_output_outcome,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4503482Z [36;1m    "counts": {[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4503757Z [36;1m        "l1_markdown": l1_md,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4504076Z [36;1m        "l1_metadata": l1_meta,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4504549Z [36;1m        "l2_markdown": l2_md,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4505180Z [36;1m        "module_bundled_references": module_refs,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4505628Z [36;1m        "support_raw_markdown": support_raw_md,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4506063Z [36;1m        "support_semantic_markdown": support_semantic_md,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4506432Z [36;1m    },[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4506683Z [36;1m    "ai": ai,[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4506946Z [36;1m}[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4507183Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4507559Z [36;1mai_timers = ai["timers"] if isinstance(ai.get("timers"), dict) else {}[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4508130Z [36;1mai_counters = ai["counters"] if isinstance(ai.get("counters"), dict) else {}[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4508562Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4508796Z [36;1mstage_timer_keys = [[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4509132Z [36;1m    ("PROC_TIMER_03",    "03-normalize"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4509516Z [36;1m    ("PROC_TIMER_04",    "04-ai-summaries"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4509882Z [36;1m    ("PROC_TIMER_05A",   "05a-assemble"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4510272Z [36;1m    ("PROC_TIMER_05BCD", "05bcd-companions"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4510664Z [36;1m    ("PROC_TIMER_06",    "06-llm-indexes"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4511020Z [36;1m    ("PROC_TIMER_07",    "07-web-index"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4511375Z [36;1m    ("PROC_TIMER_08",    "08-validate"),[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4511689Z [36;1m][0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4511942Z [36;1mstage_timings: dict[str, int] = {}[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4512308Z [36;1mfor env_key, label in stage_timer_keys:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4512692Z [36;1m    raw = os.environ.get(env_key, "").strip()[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4513045Z [36;1m    if raw.isdigit():[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4513363Z [36;1m        stage_timings[label] = int(raw)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4513674Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4513941Z [36;1mpayload["stage_timings"] = stage_timings[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4514263Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4514726Z [36;1m(summary_dir / "process-summary.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4515477Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4515704Z [36;1mlines = [[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4515971Z [36;1m    "# Process Summary",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4516260Z [36;1m    "",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4516586Z [36;1m    f"- contract_ok: {str(payload['contract_ok']).lower()}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4517061Z [36;1m    f"- validate_output_outcome: {validate_output_outcome}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4517448Z [36;1m    f"- l1_markdown: {l1_md}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4517772Z [36;1m    f"- l1_metadata: {l1_meta}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4518089Z [36;1m    f"- l2_markdown: {l2_md}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4518452Z [36;1m    f"- module_bundled_references: {module_refs}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4518867Z [36;1m    f"- support_raw_markdown: {support_raw_md}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4519297Z [36;1m    f"- support_semantic_markdown: {support_semantic_md}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4519770Z [36;1m    f"- ai_status: {ai.get('status', 'not-available')}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4520260Z [36;1m    f"- ai_total_seconds: {ai_timers.get('total_seconds', 'n/a')}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4520904Z [36;1m    f"- ai_api_calls: {ai_timers.get('api_calls', 'n/a')}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4521345Z [36;1m    f"- ai_enriched: {ai_counters.get('applied', 'n/a')}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4521835Z [36;1m    f"- ai_generated_via_api: {ai_counters.get('generated_via_api', 'n/a')}",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4522263Z [36;1m][0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4522493Z [36;1mif missing:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4522865Z [36;1m    lines.append(f"- missing_required_files: {', '.join(missing)}")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4523269Z [36;1melse:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4523578Z [36;1m    lines.append("- missing_required_files: none")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4523933Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4524158Z [36;1mif stage_timings:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4524595Z [36;1m    total_secs = sum(stage_timings.values())[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4525237Z [36;1m    lines += [[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4525520Z [36;1m        "",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4525813Z [36;1m        "## Process Stage Timings",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4526138Z [36;1m        "",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4526400Z [36;1m        "| Stage | Seconds |",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4526720Z [36;1m        "|-------|---------|",[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4527013Z [36;1m    ][0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4527316Z [36;1m    for label, secs in stage_timings.items():[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4527704Z [36;1m        lines.append(f"| {label} | {secs} |")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4528109Z [36;1m    lines.append(f"| **total** | **{total_secs}** |")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4528470Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4528895Z [36;1m(summary_dir / "process-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4529387Z [36;1m[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4529605Z [36;1mif missing:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4529914Z [36;1m    print("Missing required staging files:")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4530267Z [36;1m    for item in missing:[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4530573Z [36;1m        print(f"- {item}")[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4530884Z [36;1m    sys.exit(1)[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4531152Z [36;1mPY[0m
+process	UNKNOWN STEP	2026-03-26T09:01:22.4557495Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:22.4557794Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:22.4558047Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:22.4558556Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:22.4559194Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:22.4559687Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:22.4560096Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:22.4560496Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:22.4560829Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:22.4561120Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:22.4561517Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.4561999Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:22.4562496Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.4562939Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.4563369Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.4564185Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:22.4565095Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:22.4565351Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:22.4565601Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:22.4565841Z   PROC_TIMER_05BCD: 1
+process	UNKNOWN STEP	2026-03-26T09:01:22.4566102Z   PROC_TIMER_06: 0
+process	UNKNOWN STEP	2026-03-26T09:01:22.4566344Z   PROC_TIMER_07: 1
+process	UNKNOWN STEP	2026-03-26T09:01:22.4566583Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:22.5031053Z ##[group]Run actions/upload-artifact@v6
+process	UNKNOWN STEP	2026-03-26T09:01:22.5031404Z with:
+process	UNKNOWN STEP	2026-03-26T09:01:22.5031646Z   name: process-summary
+process	UNKNOWN STEP	2026-03-26T09:01:22.5032128Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/run-summary/
+process	UNKNOWN STEP	2026-03-26T09:01:22.5032826Z   retention-days: 7
+process	UNKNOWN STEP	2026-03-26T09:01:22.5033093Z   if-no-files-found: ignore
+process	UNKNOWN STEP	2026-03-26T09:01:22.5033377Z   compression-level: 6
+process	UNKNOWN STEP	2026-03-26T09:01:22.5033642Z   overwrite: false
+process	UNKNOWN STEP	2026-03-26T09:01:22.5033899Z   include-hidden-files: false
+process	UNKNOWN STEP	2026-03-26T09:01:22.5034180Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:22.5034430Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:22.5035219Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:22.5035891Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:22.5036395Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:22.5036838Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:22.5037241Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:22.5037572Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:22.5037869Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:22.5038259Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.5038747Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:22.5039230Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.5039668Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.5040097Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:22.5040907Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:22.5041667Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:22.5041922Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:22.5042181Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:22.5042428Z   PROC_TIMER_05BCD: 1
+process	UNKNOWN STEP	2026-03-26T09:01:22.5042687Z   PROC_TIMER_06: 0
+process	UNKNOWN STEP	2026-03-26T09:01:22.5042932Z   PROC_TIMER_07: 1
+process	UNKNOWN STEP	2026-03-26T09:01:22.5043168Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:22.6614290Z With the provided path, there will be 3 files uploaded
+process	UNKNOWN STEP	2026-03-26T09:01:22.6620306Z Artifact name is valid!
+process	UNKNOWN STEP	2026-03-26T09:01:22.6621150Z Root directory input is valid!
+process	UNKNOWN STEP	2026-03-26T09:01:22.9277512Z Beginning upload of artifact content to blob storage
+process	UNKNOWN STEP	2026-03-26T09:01:23.2468043Z Uploaded bytes 2688
+process	UNKNOWN STEP	2026-03-26T09:01:23.3249200Z Finished uploading artifact content to blob storage!
+process	UNKNOWN STEP	2026-03-26T09:01:23.3250344Z SHA256 digest of uploaded artifact zip is abfc465936921d9ef2ef33715c56bd849e87698ef2da09bb6321b91bda7ab981
+process	UNKNOWN STEP	2026-03-26T09:01:23.3251935Z Finalizing artifact upload
+process	UNKNOWN STEP	2026-03-26T09:01:23.6283907Z Artifact process-summary.zip successfully finalized. Artifact ID 6119370645
+process	UNKNOWN STEP	2026-03-26T09:01:23.6285397Z Artifact process-summary has been successfully uploaded! Final size is 2688 bytes. Artifact ID is 6119370645
+process	UNKNOWN STEP	2026-03-26T09:01:23.6289387Z Artifact download URL: https://github.com/LuminairPrime/openwrt-docs4ai-pipeline/actions/runs/23585774677/artifacts/6119370645
+process	UNKNOWN STEP	2026-03-26T09:01:23.6400965Z ##[group]Run if [ -f "$WORKDIR/run-summary/process-summary.md" ]; then
+process	UNKNOWN STEP	2026-03-26T09:01:23.6401956Z [36;1mif [ -f "$WORKDIR/run-summary/process-summary.md" ]; then[0m
+process	UNKNOWN STEP	2026-03-26T09:01:23.6402924Z [36;1m  cat "$WORKDIR/run-summary/process-summary.md" >> "$GITHUB_STEP_SUMMARY"[0m
+process	UNKNOWN STEP	2026-03-26T09:01:23.6403745Z [36;1mfi[0m
+process	UNKNOWN STEP	2026-03-26T09:01:23.6442101Z shell: /usr/bin/bash -e {0}
+process	UNKNOWN STEP	2026-03-26T09:01:23.6442604Z env:
+process	UNKNOWN STEP	2026-03-26T09:01:23.6443039Z   PUBLISH_DIR: openwrt-condensed-docs
+process	UNKNOWN STEP	2026-03-26T09:01:23.6443928Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+process	UNKNOWN STEP	2026-03-26T09:01:23.6445357Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+process	UNKNOWN STEP	2026-03-26T09:01:23.6446235Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+process	UNKNOWN STEP	2026-03-26T09:01:23.6446979Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+process	UNKNOWN STEP	2026-03-26T09:01:23.6447696Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+process	UNKNOWN STEP	2026-03-26T09:01:23.6448333Z   DIST_TARGET_BRANCH: main
+process	UNKNOWN STEP	2026-03-26T09:01:23.6448848Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+process	UNKNOWN STEP	2026-03-26T09:01:23.6449766Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:23.6450637Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+process	UNKNOWN STEP	2026-03-26T09:01:23.6451523Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:23.6452305Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:23.6453075Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+process	UNKNOWN STEP	2026-03-26T09:01:23.6454585Z   LD_LIBRARY_PATH: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/repo-ucode/build-install/lib:/opt/hostedtoolcache/Python/3.12.13/x64/lib
+process	UNKNOWN STEP	2026-03-26T09:01:23.6456378Z   PROC_TIMER_03: 18
+process	UNKNOWN STEP	2026-03-26T09:01:23.6456832Z   PROC_TIMER_04: 1
+process	UNKNOWN STEP	2026-03-26T09:01:23.6457273Z   PROC_TIMER_05A: 0
+process	UNKNOWN STEP	2026-03-26T09:01:23.6457720Z   PROC_TIMER_05BCD: 1
+process	UNKNOWN STEP	2026-03-26T09:01:23.6458172Z   PROC_TIMER_06: 0
+process	UNKNOWN STEP	2026-03-26T09:01:23.6458611Z   PROC_TIMER_07: 1
+process	UNKNOWN STEP	2026-03-26T09:01:23.6459046Z ##[endgroup]
+process	UNKNOWN STEP	2026-03-26T09:01:23.6617793Z Post job cleanup.
+process	UNKNOWN STEP	2026-03-26T09:01:23.7408837Z [command]/usr/bin/git version
+process	UNKNOWN STEP	2026-03-26T09:01:23.7477726Z git version 2.53.0
+process	UNKNOWN STEP	2026-03-26T09:01:23.7514353Z Temporarily overriding HOME='/home/runner/work/_temp/ff1c90ca-c819-4220-95be-c675442b40e8' before making global git config changes
+process	UNKNOWN STEP	2026-03-26T09:01:23.7515642Z Adding repository directory to the temporary git global config as a safe directory
+process	UNKNOWN STEP	2026-03-26T09:01:23.7520663Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline
+process	UNKNOWN STEP	2026-03-26T09:01:23.7556094Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+process	UNKNOWN STEP	2026-03-26T09:01:23.7589943Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+process	UNKNOWN STEP	2026-03-26T09:01:23.7816483Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+process	UNKNOWN STEP	2026-03-26T09:01:23.7837973Z http.https://github.com/.extraheader
+process	UNKNOWN STEP	2026-03-26T09:01:23.7850005Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+process	UNKNOWN STEP	2026-03-26T09:01:23.7883023Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+process	UNKNOWN STEP	2026-03-26T09:01:23.8106602Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+process	UNKNOWN STEP	2026-03-26T09:01:23.8136644Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+process	UNKNOWN STEP	2026-03-26T09:01:23.8487386Z Cleaning up orphan processes

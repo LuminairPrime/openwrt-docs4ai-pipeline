@@ -1,0 +1,77 @@
+
+X main openwrt-docs4ai-pipeline · 23585774677
+Triggered via push about 19 hours ago
+
+JOBS
+✓ extract_cookbook in 16s (ID 68678417038)
+✓ extract_wiki in 3m10s (ID 68678417071)
+✓ initialize in 27s (ID 68678417099)
+✓ extract (02g-scrape-uci-schemas.py, uci, true) in 17s (ID 68678482820)
+✓ extract (02d-scrape-core-packages.py, openwrt-core, true) in 12s (ID 68678482830)
+✓ extract (02h-scrape-hotplug-events.py, openwrt-hotplug, true) in 12s (ID 68678482833)
+✓ extract (02c-scrape-jsdoc.py, luci, false) in 37s (ID 68678482834)
+✓ extract (02f-scrape-procd-api.py, procd, true) in 20s (ID 68678482836)
+✓ extract (02b-scrape-ucode.py, ucode, false) in 42s (ID 68678482838)
+✓ extract (02e-scrape-example-packages.py, luci-examples, false) in 18s (ID 68678482867)
+✓ extract_summary in 8s (ID 68678816973)
+X process in 1m15s (ID 68678816990)
+  ✓ Set up job
+  ✓ Run actions/checkout@v5
+  ✓ Run actions/setup-python@v6
+  ✓ Install dependencies
+  ✓ Download L0 (for manifest/registry)
+  ✓ Download all L1 results
+  ✓ Download extract summary
+  ✓ Cache AI Summaries
+  ✓ Prepare Baseline
+  ✓ Build ucode validation binary
+  ✓ Normalize L2
+  ✓ AI summaries (Optional)
+  ✓ Assemble publishable references (05a)
+  ✓ Generate publication companion outputs (05b-05d)
+  ✓ Generate LLM routing indexes (06)
+  ✓ Generate web landing page (07)
+  X Validate published output (08)
+  ✓ Validate staging contract and build process summary
+  ✓ Upload process summary
+  ✓ Append process summary to step summary
+  - Enforce staging contract
+  - Upload Final Staging
+  - Post Cache AI Summaries
+  - Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v5
+  ✓ Complete job
+✓ pipeline_summary in 6s (ID 68678991854)
+- deploy in 0s (ID 68678991969)
+
+ANNOTATIONS
+X Process completed with exit code 1.
+process: .github#61
+
+
+ARTIFACTS
+pipeline-summary
+process-summary
+extract-summary
+extract-status-02a-scrape-wiki.py
+L1-02a-scrape-wiki.py
+extract-status-02b-scrape-ucode.py
+L1-02b-scrape-ucode.py
+extract-status-02c-scrape-jsdoc.py
+L1-02c-scrape-jsdoc.py
+extract-status-02f-scrape-procd-api.py
+L1-02f-scrape-procd-api.py
+extract-status-02e-scrape-example-packages.py
+extract-status-02g-scrape-uci-schemas.py
+L1-02e-scrape-example-packages.py
+L1-02g-scrape-uci-schemas.py
+extract-status-02d-scrape-core-packages.py
+extract-status-02h-scrape-hotplug-events.py
+L1-02d-scrape-core-packages.py
+L1-02h-scrape-hotplug-events.py
+L0-repos
+extract-status-02i-ingest-cookbook.py
+L1-02i-ingest-cookbook.py
+
+To see what failed, try: gh run view 23585774677 --log-failed
+View this run on GitHub: https://github.com/LuminairPrime/openwrt-docs4ai-pipeline/actions/runs/23585774677

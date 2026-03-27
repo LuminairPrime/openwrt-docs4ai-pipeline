@@ -1,0 +1,492 @@
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	﻿2026-03-26T08:51:15.6535627Z Current runner version: '2.332.0'
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6560882Z ##[group]Runner Image Provisioner
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6561836Z Hosted Compute Agent
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6562619Z Version: 20260213.493
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6563242Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6564055Z Build Date: 2026-02-13T00:28:41Z
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6564753Z Worker ID: {d00fa988-b1b9-43e5-a665-36cb292406a4}
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6565481Z Azure Region: centralus
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6566080Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6567546Z ##[group]Operating System
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6568163Z Ubuntu
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6568661Z 24.04.3
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6569180Z LTS
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6569612Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6570523Z ##[group]Runner Image
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6571099Z Image: ubuntu-24.04
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6571616Z Version: 20260309.50.1
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6572804Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260309.50/images/ubuntu/Ubuntu2404-Readme.md
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6574603Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260309.50
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6575522Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6576501Z ##[group]GITHUB_TOKEN Permissions
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6578500Z Contents: read
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6579168Z Metadata: read
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6579683Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6581785Z Secret source: Actions
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.6583018Z Prepare workflow directory
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.7272732Z Prepare all required actions
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:15.7328945Z Getting action download info
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:16.1269989Z Download action repository 'actions/checkout@v5' (SHA:93cb6efe18208431cddfb8368fd83d5badbf9bfd)
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:16.2927814Z Download action repository 'actions/setup-python@v6' (SHA:a309ff8b426b58ec0e2a45f0f869d46889d02405)
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:16.3942336Z Download action repository 'actions/download-artifact@v7' (SHA:37930b1c2abaa49bbe596cd826c3c89aef350131)
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:16.9572443Z Download action repository 'actions/upload-artifact@v6' (SHA:b7c566a772e6b6bfb58ed0dc250532a479d7789f)
+extract (02b-scrape-ucode.py, ucode, false)	Set up job	2026-03-26T08:51:17.2296158Z Complete job name: extract (02b-scrape-ucode.py, ucode, false)
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	﻿2026-03-26T08:51:17.3116881Z ##[group]Run actions/checkout@v5
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3118245Z with:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3119198Z   repository: LuminairPrime/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3120722Z   token: ***
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3121499Z   ssh-strict: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3122534Z   ssh-user: git
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3123360Z   persist-credentials: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3124283Z   clean: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3125105Z   sparse-checkout-cone-mode: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3126097Z   fetch-depth: 1
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3126902Z   fetch-tags: false
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3127720Z   show-progress: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3128565Z   lfs: false
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3129316Z   submodules: false
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3130179Z   set-safe-directory: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3131317Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3132245Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3133883Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3136038Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3137758Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3139656Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3141726Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3143129Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3144165Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.3145241Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4136171Z Syncing repository: LuminairPrime/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4139164Z ##[group]Getting Git version info
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4140988Z Working directory is '/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline'
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4143510Z [command]/usr/bin/git version
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4187656Z git version 2.53.0
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4210035Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4226019Z Temporarily overriding HOME='/home/runner/work/_temp/318a76ae-289a-47b6-b971-ae515e34f3aa' before making global git config changes
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4229104Z Adding repository directory to the temporary git global config as a safe directory
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4232889Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4273748Z Deleting the contents of '/home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline'
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4277722Z ##[group]Initializing the repository
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4281893Z [command]/usr/bin/git init /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4370487Z hint: Using 'master' as the name for the initial branch. This default branch name
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4373300Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4376101Z hint: to use in all of your new repositories, which will suppress this warning,
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4378599Z hint: call:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4379770Z hint:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4381264Z hint: 	git config --global init.defaultBranch <name>
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4383389Z hint:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4385115Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4388258Z hint: 'development'. The just-created branch can be renamed via this command:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4390587Z hint:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4391657Z hint: 	git branch -m <name>
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4393164Z hint:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4395169Z hint: Disable this message with "git config set advice.defaultBranchName false"
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4397556Z Initialized empty Git repository in /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/.git/
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4401861Z [command]/usr/bin/git remote add origin https://github.com/LuminairPrime/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4427366Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4429697Z ##[group]Disabling automatic garbage collection
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4431870Z [command]/usr/bin/git config --local gc.auto 0
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4463914Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4466422Z ##[group]Setting up auth
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4472257Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4508506Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4838776Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.4872809Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.5106154Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.5139482Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.5375739Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.5411792Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.5413547Z ##[group]Fetching the repository
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:17.5422226Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +10ed74d83fcacd375f2e048d5f999d8b3812f528:refs/remotes/origin/main
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1571376Z From https://github.com/LuminairPrime/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1575214Z  * [new ref]         10ed74d83fcacd375f2e048d5f999d8b3812f528 -> origin/main
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1610251Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1612502Z ##[group]Determining the checkout info
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1614931Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1616761Z [command]/usr/bin/git sparse-checkout disable
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1663841Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1696169Z ##[group]Checking out the ref
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.1698586Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.2920508Z Switched to a new branch 'main'
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.2921575Z branch 'main' set up to track 'origin/main'.
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.2933514Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.2985576Z [command]/usr/bin/git log -1 --format=%H
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/checkout@v5	2026-03-26T08:51:18.3011422Z 10ed74d83fcacd375f2e048d5f999d8b3812f528
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	﻿2026-03-26T08:51:18.3328966Z ##[group]Run actions/setup-python@v6
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3329416Z with:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3329740Z   python-version: 3.12
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3330071Z   cache: pip
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3330392Z   check-latest: false
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3330891Z   token: ***
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3331231Z   update-environment: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3331634Z   allow-prereleases: false
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3332005Z   freethreaded: false
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3332604Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3332939Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3333510Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3334221Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3334800Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3335296Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3335790Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3336196Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3336599Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.3336978Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.4655774Z ##[group]Installed versions
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.4751181Z Successfully set up CPython (3.12.13)
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.4752673Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:18.6637585Z [command]/opt/hostedtoolcache/Python/3.12.13/x64/bin/pip cache dir
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:20.0596551Z /home/runner/.cache/pip
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:20.2069630Z Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.12.13-pip-7060f98b6c66acf8aa13d023dce1cc089b487da60b4f39646bd9f089e7acbe2e
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:20.9636241Z Received 10667333 of 10667333 (100.0%), 17.2 MBs/sec
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:20.9640141Z Cache Size: ~10 MB (10667333 B)
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:20.9670060Z [command]/usr/bin/tar -xf /home/runner/work/_temp/915f2f66-4a18-462d-9cdd-4cd2a6bd0125/cache.tzst -P -C /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline --use-compress-program unzstd
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:20.9980781Z Cache restored successfully
+extract (02b-scrape-ucode.py, ucode, false)	Run actions/setup-python@v6	2026-03-26T08:51:21.0010237Z Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.12.13-pip-7060f98b6c66acf8aa13d023dce1cc089b487da60b4f39646bd9f089e7acbe2e
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	﻿2026-03-26T08:51:21.0150694Z ##[group]Run pip install -r .github/scripts/requirements.txt
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0151209Z [36;1mpip install -r .github/scripts/requirements.txt[0m
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0210643Z shell: /usr/bin/bash -e {0}
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0210929Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0211144Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0211567Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0212419Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0212872Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0213251Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0213588Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0213853Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0214081Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0214386Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0214810Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0215247Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0215853Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0216231Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0216596Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:21.0216906Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.3397728Z Collecting requests (from -r .github/scripts/requirements.txt (line 1))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.4263627Z   Downloading requests-2.33.0-py3-none-any.whl.metadata (5.1 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.4714992Z Collecting tiktoken (from -r .github/scripts/requirements.txt (line 2))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.4729986Z   Using cached tiktoken-0.12.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (6.7 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.5134659Z Collecting pyyaml (from -r .github/scripts/requirements.txt (line 3))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.5150006Z   Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7050171Z Collecting lxml (from -r .github/scripts/requirements.txt (line 4))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7065305Z   Using cached lxml-6.0.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.6 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7313422Z Collecting beautifulsoup4 (from -r .github/scripts/requirements.txt (line 5))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7332017Z   Using cached beautifulsoup4-4.14.3-py3-none-any.whl.metadata (3.8 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7509433Z Collecting html5lib (from -r .github/scripts/requirements.txt (line 6))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7521711Z   Using cached html5lib-1.1-py2.py3-none-any.whl.metadata (16 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7736044Z Collecting markdownify (from -r .github/scripts/requirements.txt (line 7))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.7748757Z   Using cached markdownify-1.2.2-py3-none-any.whl.metadata (9.9 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.8995681Z Collecting charset_normalizer<4,>=2 (from requests->-r .github/scripts/requirements.txt (line 1))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.9134238Z   Downloading charset_normalizer-3.4.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.9534736Z Collecting idna<4,>=2.5 (from requests->-r .github/scripts/requirements.txt (line 1))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.9547602Z   Using cached idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.9813780Z Collecting urllib3<3,>=1.26 (from requests->-r .github/scripts/requirements.txt (line 1))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:22.9827140Z   Using cached urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.0051335Z Collecting certifi>=2023.5.7 (from requests->-r .github/scripts/requirements.txt (line 1))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.0064374Z   Using cached certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.3385623Z Collecting regex>=2022.1.18 (from tiktoken->-r .github/scripts/requirements.txt (line 2))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.3400015Z   Using cached regex-2026.2.28-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.3663976Z Collecting soupsieve>=1.6.1 (from beautifulsoup4->-r .github/scripts/requirements.txt (line 5))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.3675694Z   Using cached soupsieve-2.8.3-py3-none-any.whl.metadata (4.6 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4201828Z Collecting typing-extensions>=4.0.0 (from beautifulsoup4->-r .github/scripts/requirements.txt (line 5))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4215050Z   Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4403934Z Collecting six>=1.9 (from html5lib->-r .github/scripts/requirements.txt (line 6))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4416817Z   Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4568367Z Collecting webencodings (from html5lib->-r .github/scripts/requirements.txt (line 6))
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4581291Z   Using cached webencodings-0.5.1-py2.py3-none-any.whl.metadata (2.1 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.4781153Z Downloading requests-2.33.0-py3-none-any.whl (65 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5075822Z Downloading charset_normalizer-3.4.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (207 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5410880Z Using cached idna-3.11-py3-none-any.whl (71 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5424232Z Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5437518Z Using cached tiktoken-0.12.0-cp312-cp312-manylinux_2_28_x86_64.whl (1.2 MB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5458692Z Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5477062Z Using cached lxml-6.0.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.3 MB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5526804Z Using cached beautifulsoup4-4.14.3-py3-none-any.whl (107 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5539020Z Using cached html5lib-1.1-py2.py3-none-any.whl (112 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5551452Z Using cached markdownify-1.2.2-py3-none-any.whl (15 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5563318Z Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5575426Z Using cached certifi-2026.2.25-py3-none-any.whl (153 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5588504Z Using cached regex-2026.2.28-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (802 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5606693Z Using cached soupsieve-2.8.3-py3-none-any.whl (37 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5619165Z Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.5631146Z Using cached webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:23.6177408Z Installing collected packages: webencodings, urllib3, typing-extensions, soupsieve, six, regex, pyyaml, lxml, idna, charset_normalizer, certifi, requests, html5lib, beautifulsoup4, tiktoken, markdownify
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:24.5822967Z 
+extract (02b-scrape-ucode.py, ucode, false)	Install dependencies	2026-03-26T08:51:24.5850827Z Successfully installed beautifulsoup4-4.14.3 certifi-2026.2.25 charset_normalizer-3.4.6 html5lib-1.1 idna-3.11 lxml-6.0.2 markdownify-1.2.2 pyyaml-6.0.3 regex-2026.2.28 requests-2.33.0 six-1.17.0 soupsieve-2.8.3 tiktoken-0.12.0 typing-extensions-4.15.0 urllib3-2.6.3 webencodings-0.5.1
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	﻿2026-03-26T08:51:24.9336559Z ##[group]Run echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9337068Z [36;1mecho "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9387982Z shell: /usr/bin/bash -e {0}
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9388245Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9388440Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9388871Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9389440Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9389870Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9390213Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9390570Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9390845Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9391073Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9391398Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9391844Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9392636Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9393016Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9393391Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9393764Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Mark extractor start	2026-03-26T08:51:24.9394067Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	﻿2026-03-26T08:51:24.9551600Z ##[group]Run actions/download-artifact@v7
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9551892Z with:
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9552319Z   name: L0-repos
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9552674Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9553067Z   merge-multiple: false
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9553334Z   repository: LuminairPrime/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9553625Z   run-id: 23585535060
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9553804Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9553990Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9554386Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9555101Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9555520Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9555844Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9556170Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9556419Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9556668Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9556974Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9557693Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9558367Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9558996Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9559649Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9560309Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9560782Z   EXTRACT_STARTED_EPOCH: 1774515084
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:24.9561155Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.1107756Z Downloading single artifact
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.2797380Z Preparing to download the following artifacts:
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.2799061Z - L0-repos (ID: 6119216105, Size: 25059614, Expected Digest: sha256:a35fb9cf119ce69a05d077e7e28888618ccb7f5f8d5b6a9d990b6fbad758d0aa)
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.5196190Z Redirecting to blob download url: https://productionresultssa19.blob.core.windows.net/actions-results/2c020c31-1fb6-4130-87a5-72eb1a7439ba/workflow-job-run-fcb3ab32-cbfa-5a19-90a7-f83351d1a868/artifacts/5b6d41fa93fde89deeff19130e61e561fc771d0cf2ab843e5a4ba8bae978eedb.zip
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.5198908Z Starting download of artifact to: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.7226026Z (node:2368) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:25.7227815Z (Use `node --trace-deprecation ...` to show where the warning was created)
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:28.2548191Z SHA256 digest of downloaded artifact is a35fb9cf119ce69a05d077e7e28888618ccb7f5f8d5b6a9d990b6fbad758d0aa
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:28.2549196Z Artifact download completed successfully.
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:28.2549680Z Total of 1 artifact(s) downloaded
+extract (02b-scrape-ucode.py, ucode, false)	Download L0	2026-03-26T08:51:28.2556556Z Download artifact has finished successfully
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	﻿2026-03-26T08:51:28.2975696Z ##[group]Run python .github/scripts/openwrt-docs4ai-02b-scrape-ucode.py
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.2976264Z [36;1mpython .github/scripts/openwrt-docs4ai-02b-scrape-ucode.py[0m
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3025034Z shell: /usr/bin/bash -e {0}
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3025284Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3025488Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3025931Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3026529Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3026963Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3027295Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3027630Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3027895Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3028117Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3028430Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3028878Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3029299Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3029667Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3030036Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3030408Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3030921Z   EXTRACT_STARTED_EPOCH: 1774515084
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3031164Z   SKIP_WIKI: false
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3031357Z   SKIP_BUILDROOT: false
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3031550Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3516869Z [02b] Generate ucode documentation (JSDoc)
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3518114Z [02b] FAIL: jsdoc2md not found in PATH — skipping ucode JSDoc steps
+extract (02b-scrape-ucode.py, ucode, false)	Extract 02b-scrape-ucode.py	2026-03-26T08:51:28.3589249Z ##[error]Process completed with exit code 1.
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	﻿2026-03-26T08:51:28.3638583Z ##[group]Run set -euo pipefail
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3638941Z [36;1mset -euo pipefail[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3639248Z [36;1mstarted_epoch="${EXTRACT_STARTED_EPOCH:-$(date +%s)}"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3639580Z [36;1mended_epoch="$(date +%s)"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3639894Z [36;1mduration_seconds=$(( ended_epoch - started_epoch ))[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3640202Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3640409Z [36;1mmodule_dir="$WORKDIR/L1-raw/$MODULE_NAME"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3640689Z [36;1mmd_count=0[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3640884Z [36;1mmeta_count=0[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3641111Z [36;1mif [ -d "$module_dir" ]; then[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3641503Z [36;1m  md_count=$(find "$module_dir" -type f -name '*.md' | wc -l | awk '{print $1}')[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3642284Z [36;1m  meta_count=$(find "$module_dir" -type f -name '*.meta.json' | wc -l | awk '{print $1}')[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3642692Z [36;1mfi[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3642854Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3643031Z [36;1mexpected_skip="false"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3643297Z [36;1mskip_reason=""[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3643617Z [36;1mif [ "$SKIP_BUILDROOT" = "true" ] && [ "$SKIP_ON_BUILDROOT" = "true" ]; then[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3643984Z [36;1m  expected_skip="true"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3644241Z [36;1m  skip_reason="SKIP_BUILDROOT=true"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3644492Z [36;1mfi[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3644656Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3644829Z [36;1mcontract_status="ok"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3645052Z [36;1mcontract_fail="false"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3645317Z [36;1mif [ "$EXTRACT_OUTCOME" != "success" ]; then[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3645626Z [36;1m  contract_status="extractor_failed"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3645892Z [36;1m  contract_fail="true"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3646131Z [36;1melif [ "$md_count" -gt 0 ]; then[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3646392Z [36;1m  contract_status="ok"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3646647Z [36;1melif [ "$expected_skip" = "true" ]; then[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3646954Z [36;1m  contract_status="skipped_expected"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3647224Z [36;1melse[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3647426Z [36;1m  contract_status="unexpected_empty"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3647691Z [36;1m  contract_fail="true"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3647912Z [36;1mfi[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3648078Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3648333Z [36;1mstatus_path="$WORKDIR/extract-status/${SCRIPT_NAME}.json"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3648766Z [36;1mmkdir -p "$WORKDIR/extract-status"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3649051Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3649263Z [36;1mexport CONTRACT_STATUS="$contract_status"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3649582Z [36;1mexport CONTRACT_FAIL="$contract_fail"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3649878Z [36;1mexport EXPECTED_SKIP="$expected_skip"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3650164Z [36;1mexport SKIP_REASON="$skip_reason"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3650433Z [36;1mexport MD_COUNT="$md_count"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3650692Z [36;1mexport META_COUNT="$meta_count"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3650967Z [36;1mexport STARTED_EPOCH="$started_epoch"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3651256Z [36;1mexport ENDED_EPOCH="$ended_epoch"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3651550Z [36;1mexport DURATION_SECONDS="$duration_seconds"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3651850Z [36;1mexport STATUS_PATH="$status_path"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3652276Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3652450Z [36;1mpython - <<'PY'[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3652663Z [36;1mimport json[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3652876Z [36;1mimport os[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3653057Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3653217Z [36;1mpayload = {[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3653638Z [36;1m    "script": os.environ["SCRIPT_NAME"],[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3653928Z [36;1m    "module": os.environ["MODULE_NAME"],[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3654238Z [36;1m    "outcome": os.environ["EXTRACT_OUTCOME"],[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3654579Z [36;1m    "contract_status": os.environ["CONTRACT_STATUS"],[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3654960Z [36;1m    "contract_fail": os.environ["CONTRACT_FAIL"] == "true",[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3655347Z [36;1m    "expected_skip": os.environ["EXPECTED_SKIP"] == "true",[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3655873Z [36;1m    "skip_reason": os.environ["SKIP_REASON"] or None,[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3656206Z [36;1m    "md_count": int(os.environ["MD_COUNT"]),[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3656520Z [36;1m    "meta_count": int(os.environ["META_COUNT"]),[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3656867Z [36;1m    "started_epoch": int(os.environ["STARTED_EPOCH"]),[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3657221Z [36;1m    "ended_epoch": int(os.environ["ENDED_EPOCH"]),[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3657590Z [36;1m    "duration_seconds": int(os.environ["DURATION_SECONDS"]),[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3657909Z [36;1m}[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3658076Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3658358Z [36;1mwith open(os.environ["STATUS_PATH"], "w", encoding="utf-8") as handle:[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3658747Z [36;1m    json.dump(payload, handle, indent=2)[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3659012Z [36;1mPY[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3659176Z [36;1m[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3659432Z [36;1mecho "contract_status=$contract_status" >> "$GITHUB_OUTPUT"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3659840Z [36;1mecho "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3708579Z shell: /usr/bin/bash -e {0}
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3708831Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3709039Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3709469Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3710034Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3710493Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3710848Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3711184Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3711454Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3711685Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3712002Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3712635Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3732668Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3733156Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3733548Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3733936Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3734285Z   EXTRACT_STARTED_EPOCH: 1774515084
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3734561Z   SCRIPT_NAME: 02b-scrape-ucode.py
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3734826Z   MODULE_NAME: ucode
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3735035Z   SKIP_ON_BUILDROOT: false
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3735248Z   SKIP_BUILDROOT: false
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3735457Z   EXTRACT_OUTCOME: failure
+extract (02b-scrape-ucode.py, ucode, false)	Evaluate extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:28.3735667Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	﻿2026-03-26T08:51:28.4118314Z ##[group]Run actions/upload-artifact@v6
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4118619Z with:
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4118819Z   name: L1-02b-scrape-ucode.py
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4119237Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw/
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4119663Z   retention-days: 1
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4119874Z   if-no-files-found: ignore
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4120094Z   compression-level: 6
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4120299Z   overwrite: false
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4120505Z   include-hidden-files: false
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4120731Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4120921Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4121325Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4121868Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4122634Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4122974Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4123340Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4123601Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4123833Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4124144Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4124554Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4124958Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4125323Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4125690Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4126058Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4126381Z   EXTRACT_STARTED_EPOCH: 1774515084
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.4126628Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Upload L1 Artifacts	2026-03-26T08:51:28.5736597Z No files were found with the provided path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/L1-raw/. No artifacts will be uploaded.
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	﻿2026-03-26T08:51:28.5873990Z ##[group]Run actions/upload-artifact@v6
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5874295Z with:
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5874505Z   name: extract-status-02b-scrape-ucode.py
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5875077Z   path: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp/extract-status/02b-scrape-ucode.py.json
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5875613Z   retention-days: 7
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5875814Z   if-no-files-found: warn
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5876024Z   compression-level: 6
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5876226Z   overwrite: false
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5876425Z   include-hidden-files: false
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5876645Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5876832Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5877228Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5877785Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5878201Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5878529Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5878895Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5879154Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5879380Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5879687Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5880087Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5880484Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5880849Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5881212Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5881571Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5881901Z   EXTRACT_STARTED_EPOCH: 1774515084
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.5882298Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.7539792Z With the provided path, there will be 1 file uploaded
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.7545904Z Artifact name is valid!
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.7547168Z Root directory input is valid!
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:28.8763568Z Beginning upload of artifact content to blob storage
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.0515865Z Uploaded bytes 343
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.0968392Z Finished uploading artifact content to blob storage!
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.0969901Z SHA256 digest of uploaded artifact zip is 7055013b1018cc22a444c659ac08209d6149ea0353c7be4c5b604d20c2af3713
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.0971096Z Finalizing artifact upload
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.2881731Z Artifact extract-status-02b-scrape-ucode.py.zip successfully finalized. Artifact ID 6119221961
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.2883125Z Artifact extract-status-02b-scrape-ucode.py has been successfully uploaded! Final size is 343 bytes. Artifact ID is 6119221961
+extract (02b-scrape-ucode.py, ucode, false)	Upload extractor status (02b-scrape-ucode.py)	2026-03-26T08:51:29.2887075Z Artifact download URL: https://github.com/LuminairPrime/openwrt-docs4ai-pipeline/actions/runs/23585535060/artifacts/6119221961
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	﻿2026-03-26T08:51:29.3012279Z ##[group]Run echo "Extractor contract failed for 02b-scrape-ucode.py with status=extractor_failed"
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3013521Z [36;1mecho "Extractor contract failed for 02b-scrape-ucode.py with status=extractor_failed"[0m
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3014322Z [36;1mexit 1[0m
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3085160Z shell: /usr/bin/bash -e {0}
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3085588Z env:
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3085931Z   PUBLISH_DIR: openwrt-condensed-docs
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3086692Z   WORKDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/tmp
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3087718Z   OUTDIR: /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline/staging
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3088497Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3089124Z   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3089777Z   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3090303Z   DIST_TARGET_BRANCH: main
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3090737Z   DIST_ZIP_ROOT_DIR: openwrt-docs4ai
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3091369Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3092342Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3093141Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3093846Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3094541Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3095232Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3095823Z   EXTRACT_STARTED_EPOCH: 1774515084
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3096258Z ##[endgroup]
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3170516Z Extractor contract failed for 02b-scrape-ucode.py with status=extractor_failed
+extract (02b-scrape-ucode.py, ucode, false)	Enforce extractor output contract (02b-scrape-ucode.py)	2026-03-26T08:51:29.3174988Z ##[error]Process completed with exit code 1.
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	﻿2026-03-26T08:51:29.3237486Z Post job cleanup.
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4062499Z [command]/usr/bin/git version
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4102881Z git version 2.53.0
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4143146Z Temporarily overriding HOME='/home/runner/work/_temp/9f697a2f-732f-4b6b-afcd-8c8eb1d80da1' before making global git config changes
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4144512Z Adding repository directory to the temporary git global config as a safe directory
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4149925Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/openwrt-docs4ai-pipeline/openwrt-docs4ai-pipeline
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4191244Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4229743Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4547394Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4575335Z http.https://github.com/.extraheader
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4587032Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4621299Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4867356Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+extract (02b-scrape-ucode.py, ucode, false)	Post Run actions/checkout@v5	2026-03-26T08:51:29.4900521Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+extract (02b-scrape-ucode.py, ucode, false)	Complete job	﻿2026-03-26T08:51:29.5285924Z Cleaning up orphan processes

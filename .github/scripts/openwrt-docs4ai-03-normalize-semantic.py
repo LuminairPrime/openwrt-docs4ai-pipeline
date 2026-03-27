@@ -18,12 +18,14 @@ import sys
 import shutil
 from collections import Counter
 from html import unescape
+from typing import Any, Callable, cast
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from lib import config, repo_manifest
 
 try:
-    from bs4 import BeautifulSoup, Comment, NavigableString, Tag
+    from bs4 import BeautifulSoup, Comment, Tag
+    from bs4.element import NavigableString
     from markdownify import markdownify as markdownify_html
 except ImportError:
     BeautifulSoup = None
@@ -32,7 +34,7 @@ except ImportError:
     Tag = None
     markdownify_html = None
 
-sys.stdout.reconfigure(line_buffering=True)
+sys.stdout.reconfigure(line_buffering=True)  # type: ignore[attr-defined]
 
 WORKDIR = config.WORKDIR
 L1_DIR = config.L1_RAW_WORKDIR
@@ -41,11 +43,11 @@ L2_DIR = config.L2_SEMANTIC_WORKDIR
 try:
     import tiktoken
     encoder = tiktoken.get_encoding("cl100k_base")
-    def count_tokens(text):
+    def count_tokens(text: str) -> int:
         return len(encoder.encode(text))
 except ImportError:
     print("[03] WARN: tiktoken missing, falling back to word count * 1.35")
-    def count_tokens(text):
+    def count_tokens(text: str) -> int:
         return int(len(text.split()) * 1.35)
 
 # --- Heuristics & Config ---
@@ -86,24 +88,25 @@ INLINE_HTML_FRAGMENT_RE = re.compile(
 )
 CODE_FENCE_BLOCK_RE = re.compile(r'(```.*?```|~~~.*?~~~)', re.DOTALL)
 
-_HTML_NORMALIZER_WARNING_EMITTED = False
+_html_normalizer_warning_emitted: bool = False
 
 
-def html_normalizer_available():
-    global _HTML_NORMALIZER_WARNING_EMITTED
+def html_normalizer_available() -> bool:
+    global _html_normalizer_warning_emitted
     if BeautifulSoup is not None and markdownify_html is not None:
         return True
 
-    if not _HTML_NORMALIZER_WARNING_EMITTED:
+    if not _html_normalizer_warning_emitted:
         print("[03] WARN: beautifulsoup4/html5lib/markdownify missing, falling back to legacy wiki cleanup")
-        _HTML_NORMALIZER_WARNING_EMITTED = True
+        _html_normalizer_warning_emitted = True
     return False
 
 
-def parse_html_fragment(fragment):
+def parse_html_fragment(fragment: str) -> Any:
     if not html_normalizer_available():
         return None
 
+    assert BeautifulSoup is not None
     for parser in ("html5lib", "html.parser"):
         try:
             return BeautifulSoup(fragment, parser)
@@ -112,7 +115,7 @@ def parse_html_fragment(fragment):
     return None
 
 
-def is_code_symbol(name):
+def is_code_symbol(name: str) -> bool:
     if name.lower() in COMMON_WORDS:
         return False
     if len(name) < 4:
@@ -126,11 +129,11 @@ def is_code_symbol(name):
     return False
 
 
-def normalize_heading_text(text):
+def normalize_heading_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text.strip()).casefold()
 
 
-def strip_duplicate_lead_heading(title, content):
+def strip_duplicate_lead_heading(title: str, content: str) -> str:
     lines = content.splitlines()
     if not lines:
         return content
@@ -167,10 +170,10 @@ def strip_duplicate_lead_heading(title, content):
     return "\n".join(lines)
 
 
-def collapse_duplicate_html_table_rows(content):
-    output = []
-    current_row = []
-    previous_row = None
+def collapse_duplicate_html_table_rows(content: str) -> str:
+    output: list[str] = []
+    current_row: list[str] = []
+    previous_row: str | None = None
 
     def flush_current_row():
         nonlocal current_row, previous_row
@@ -205,7 +208,7 @@ def collapse_duplicate_html_table_rows(content):
     return "\n".join(output)
 
 
-def legacy_clean_wiki_semantic_content(title, content):
+def legacy_clean_wiki_semantic_content(title: str, content: str) -> str:
     cleaned = WIKI_WRAP_TAG_RE.sub('', content)
     cleaned = WIKI_COLOR_TAG_RE.sub('', cleaned)
     cleaned = strip_duplicate_lead_heading(title, cleaned)
@@ -215,8 +218,8 @@ def legacy_clean_wiki_semantic_content(title, content):
     return cleaned.strip() + "\n"
 
 
-def transform_outside_code_fences(content, transformer):
-    pieces = []
+def transform_outside_code_fences(content: str, transformer: Callable[[str], str]) -> str:
+    pieces: list[str] = []
     last_index = 0
     for match in CODE_FENCE_BLOCK_RE.finditer(content):
         pieces.append(transformer(content[last_index:match.start()]))
@@ -226,11 +229,11 @@ def transform_outside_code_fences(content, transformer):
     return "".join(pieces)
 
 
-def collapse_inline_whitespace(text):
+def collapse_inline_whitespace(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
-def normalize_markdown_text(text, multiline=True):
+def normalize_markdown_text(text: str, multiline: bool = True) -> str:
     normalized = text.replace("\r\n", "\n").replace("\r", "\n").replace("\xa0", " ")
     normalized = re.sub(r'(?m)[ \t]+$', '', normalized)
     normalized = re.sub(r'\n{3,}', '\n\n', normalized)
@@ -241,17 +244,25 @@ def normalize_markdown_text(text, multiline=True):
     return normalized.strip(' ;')
 
 
-def normalize_footnote_label(raw_label):
+def normalize_footnote_label(raw_label: str | None) -> str:
     label = re.sub(r'[^A-Za-z0-9_-]+', '', (raw_label or '').strip())
     return label or "note"
 
 
-def is_decorative_icon_image(tag):
-    signature = " ".join(filter(None, [tag.get("src", ""), tag.get("alt", "")])).lower()
+def _tag_str_attr(tag: Any, attr: str, default: str = "") -> str:
+    """Extract an HTML tag attribute as a plain string."""
+    val = tag.get(attr, default)
+    if isinstance(val, list):
+        return " ".join(str(v) for v in cast(list[Any], val))
+    return str(val) if val is not None else default
+
+
+def is_decorative_icon_image(tag: Any) -> bool:
+    signature = " ".join(filter(None, [_tag_str_attr(tag, "src"), _tag_str_attr(tag, "alt")])).lower()
     return "/meta/icons/" in signature or "dialog-information" in signature or "outdated" in signature
 
 
-def detect_callout_kind(signature):
+def detect_callout_kind(signature: str) -> str:
     signature = signature.lower()
     if any(token in signature for token in ["outdated", "historic", "deprecated", "warning", "caution"]):
         return "WARNING"
@@ -260,27 +271,27 @@ def detect_callout_kind(signature):
     return "NOTE"
 
 
-def render_image_markdown(tag, strip_icon_images=False):
+def render_image_markdown(tag: Any, strip_icon_images: bool = False) -> str:
     if is_decorative_icon_image(tag):
         return "" if strip_icon_images or is_decorative_icon_image(tag) else ""
 
-    alt = collapse_inline_whitespace(unescape(tag.get("alt", "")))
-    src = tag.get("src", "").strip()
+    alt = collapse_inline_whitespace(unescape(_tag_str_attr(tag, "alt")))
+    src = _tag_str_attr(tag, "src").strip()
     if not src:
         return alt
     return f"![{alt or os.path.basename(src)}]({src})"
 
 
-def render_unknown_html_node(node, preserve_linebreaks=True):
+def render_unknown_html_node(node: Any, preserve_linebreaks: bool = True) -> str:
     if markdownify_html is None:
         return normalize_markdown_text(node.get_text("\n" if preserve_linebreaks else " ", strip=False), multiline=preserve_linebreaks)
     rendered = markdownify_html(str(node), heading_style="ATX", bullets="-")
     return normalize_markdown_text(rendered, multiline=preserve_linebreaks)
 
 
-def render_list(tag, strip_icon_images=False):
+def render_list(tag: Any, strip_icon_images: bool = False) -> str:
     ordered = tag.name.lower() == "ol"
-    lines = []
+    lines: list[str] = []
     for index, item in enumerate(tag.find_all("li", recursive=False), start=1):
         prefix = f"{index}. " if ordered else "- "
         body = normalize_markdown_text(render_html_nodes(item.contents, preserve_linebreaks=True, strip_icon_images=strip_icon_images), multiline=True)
@@ -295,8 +306,8 @@ def render_list(tag, strip_icon_images=False):
     return "\n".join(lines) + "\n\n"
 
 
-def render_html_nodes(nodes, preserve_linebreaks=True, strip_icon_images=False):
-    parts = []
+def render_html_nodes(nodes: Any, preserve_linebreaks: bool = True, strip_icon_images: bool = False) -> str:
+    parts: list[str] = []
     for node in nodes:
         if Comment is not None and isinstance(node, Comment):
             continue
@@ -314,8 +325,8 @@ def render_html_nodes(nodes, preserve_linebreaks=True, strip_icon_images=False):
             label = normalize_markdown_text(
                 render_html_nodes(node.contents, preserve_linebreaks=False, strip_icon_images=strip_icon_images),
                 multiline=False,
-            ) or node.get("href", "").strip()
-            href = node.get("href", "").strip()
+            ) or _tag_str_attr(node, "href").strip()
+            href = _tag_str_attr(node, "href").strip()
             parts.append(f"[{label}]({href})" if href else label)
             continue
         if name == "code":
@@ -385,7 +396,7 @@ def render_html_nodes(nodes, preserve_linebreaks=True, strip_icon_images=False):
             else:
                 parts.append(table_markdown)
             continue
-        if name == "aside" and "footnotes" in " ".join(node.get("class", [])):
+        if name == "aside" and "footnotes" in _tag_str_attr(node, "class"):
             continue
 
         parts.append(render_unknown_html_node(node, preserve_linebreaks=preserve_linebreaks))
@@ -393,7 +404,7 @@ def render_html_nodes(nodes, preserve_linebreaks=True, strip_icon_images=False):
     return "".join(parts)
 
 
-def render_html_fragment(fragment_html, preserve_linebreaks=True, strip_icon_images=False):
+def render_html_fragment(fragment_html: str, preserve_linebreaks: bool = True, strip_icon_images: bool = False) -> str:
     soup = parse_html_fragment(fragment_html)
     if soup is None:
         return normalize_markdown_text(unescape(fragment_html), multiline=preserve_linebreaks)
@@ -402,12 +413,12 @@ def render_html_fragment(fragment_html, preserve_linebreaks=True, strip_icon_ima
     return normalize_markdown_text(rendered, multiline=preserve_linebreaks)
 
 
-def flatten_table_cell_text(text):
+def flatten_table_cell_text(text: str) -> str:
     flattened = normalize_markdown_text(text, multiline=False)
     return flattened.replace("|", r"\|") or " "
 
 
-def blank_table_cell():
+def blank_table_cell() -> dict[str, Any]:
     return {
         "markdown": "",
         "flat_text": " ",
@@ -416,7 +427,7 @@ def blank_table_cell():
     }
 
 
-def parse_html_table(table_html):
+def parse_html_table(table_html: str) -> dict[str, Any] | None:
     soup = parse_html_fragment(table_html)
     if soup is None:
         return None
@@ -425,7 +436,7 @@ def parse_html_table(table_html):
     if table is None:
         return None
 
-    rows = []
+    rows: list[list[dict[str, Any]]] = []
     has_header = False
     has_rowspan = False
 
@@ -436,30 +447,30 @@ def parse_html_table(table_html):
         if not cells:
             continue
 
-        row = []
+        row: list[dict[str, Any]] = []
         for cell in cells:
             try:
-                colspan = max(int(cell.get("colspan", 1)), 1)
+                colspan = max(int(_tag_str_attr(cell, "colspan", "1")), 1)
             except ValueError:
                 colspan = 1
             try:
-                rowspan = max(int(cell.get("rowspan", 1)), 1)
+                rowspan = max(int(_tag_str_attr(cell, "rowspan", "1")), 1)
             except ValueError:
                 rowspan = 1
 
             has_header = has_header or cell.name == "th"
             has_rowspan = has_rowspan or rowspan > 1
 
-            icon_signature = []
+            icon_signature: list[str] = []
             for image in cell.find_all("img"):
-                icon_signature.extend([image.get("alt", ""), image.get("src", "")])
+                icon_signature.extend([_tag_str_attr(image, "alt"), _tag_str_attr(image, "src")])
 
             markdown = render_html_fragment(
                 "".join(str(part) for part in cell.contents),
                 preserve_linebreaks=True,
                 strip_icon_images=False,
             )
-            cell_info = {
+            cell_info: dict[str, Any] = {
                 "markdown": markdown,
                 "flat_text": flatten_table_cell_text(markdown),
                 "has_icon": bool(cell.find("img")),
@@ -479,14 +490,14 @@ def parse_html_table(table_html):
     }
 
 
-def pad_table_rows(rows, column_count):
-    padded_rows = []
+def pad_table_rows(rows: list[Any], column_count: int) -> list[Any]:
+    padded_rows: list[Any] = []
     for row in rows:
         padded_rows.append(row + [blank_table_cell() for _ in range(column_count - len(row))])
     return padded_rows
 
 
-def is_callout_table(table_data):
+def is_callout_table(table_data: dict[str, Any]) -> bool:
     rows = table_data["rows"]
     column_count = table_data["column_count"]
     if not rows or table_data["has_header"] or len(rows) > 3:
@@ -499,7 +510,7 @@ def is_callout_table(table_data):
     return any(cell["has_icon"] or cell["icon_hint"] for cell in first_column)
 
 
-def classify_html_table(table_data):
+def classify_html_table(table_data: dict[str, Any]) -> str:
     rows = table_data["rows"]
     if not rows or table_data["has_rowspan"]:
         return "preserve"
@@ -510,11 +521,11 @@ def classify_html_table(table_data):
     return "tsv"
 
 
-def render_callout_table(table_data):
+def render_callout_table(table_data: dict[str, Any]) -> str:
     rows = table_data["rows"]
     kinds = [row[0]["icon_hint"] for row in rows if row and row[0].get("icon_hint")]
     callout_kind = Counter(kinds).most_common(1)[0][0] if kinds else "NOTE"
-    body_blocks = []
+    body_blocks: list[str] = []
     for row in rows:
         if not row:
             continue
@@ -525,7 +536,7 @@ def render_callout_table(table_data):
     if not body_blocks:
         return ""
 
-    lines = [f"> [!{callout_kind}]"]
+    lines: list[str] = [f"> [!{callout_kind}]"]
     for block_index, block in enumerate(body_blocks):
         if block_index:
             lines.append(">")
@@ -534,7 +545,7 @@ def render_callout_table(table_data):
     return "\n".join(lines)
 
 
-def render_markdown_table(table_data):
+def render_markdown_table(table_data: dict[str, Any]) -> str:
     padded_rows = pad_table_rows(table_data["rows"], table_data["column_count"])
     if not padded_rows:
         return ""
@@ -549,7 +560,7 @@ def render_markdown_table(table_data):
     if not data_rows:
         return ""
 
-    lines = [
+    lines: list[str] = [
         "| " + " | ".join(header_cells) + " |",
         "| " + " | ".join(["---"] * len(header_cells)) + " |",
     ]
@@ -558,19 +569,19 @@ def render_markdown_table(table_data):
     return "\n".join(lines)
 
 
-def render_tsv_table(table_data):
+def render_tsv_table(table_data: dict[str, Any]) -> str:
     padded_rows = pad_table_rows(table_data["rows"], table_data["column_count"])
     if not padded_rows:
         return ""
 
-    lines = []
+    lines: list[str] = []
     for row in padded_rows:
         line = "\t".join(cell["flat_text"].replace("\t", "    ") for cell in row)
         lines.append(line.rstrip())
     return "```tsv\n" + "\n".join(lines).rstrip() + "\n```"
 
 
-def render_html_table(table_html):
+def render_html_table(table_html: str) -> str:
     table_data = parse_html_table(table_html)
     if table_data is None:
         return table_html
@@ -588,13 +599,13 @@ def render_html_table(table_html):
     return rendered.strip() if rendered else table_html
 
 
-def convert_footnotes_to_markdown(content):
+def convert_footnotes_to_markdown(content: str) -> str:
     converted = FOOTNOTE_REF_RE.sub(
         lambda match: f"[^{normalize_footnote_label(match.group('label') or match.group('id'))}]",
         content,
     )
 
-    def replace_aside(match):
+    def replace_aside(match: re.Match[str]) -> str:
         soup = parse_html_fragment(match.group(0))
         if soup is None:
             return match.group(0)
@@ -602,11 +613,11 @@ def convert_footnotes_to_markdown(content):
         if aside is None:
             return match.group(0)
 
-        definitions = []
+        definitions: list[str] = []
         for item in aside.find_all("li"):
-            note_id = normalize_footnote_label(item.get("id", "").replace("fn", "", 1))
+            note_id = normalize_footnote_label(_tag_str_attr(item, "id").replace("fn", "", 1))
             for backlink in item.find_all("a"):
-                href = backlink.get("href", "")
+                href = _tag_str_attr(backlink, "href")
                 if href.startswith("#fnref"):
                     backlink.decompose()
             body = render_html_nodes(item.contents, preserve_linebreaks=True, strip_icon_images=True)
@@ -626,9 +637,9 @@ def convert_footnotes_to_markdown(content):
     return FOOTNOTE_ASIDE_RE.sub(replace_aside, converted)
 
 
-def normalize_html_tables(content):
-    def replace_tables(segment):
-        output = []
+def normalize_html_tables(content: str) -> str:
+    def replace_tables(segment: str) -> str:
+        output: list[str] = []
         last_index = 0
         for match in TABLE_BLOCK_RE.finditer(segment):
             output.append(segment[last_index:match.start()])
@@ -641,9 +652,9 @@ def normalize_html_tables(content):
     return transform_outside_code_fences(content, replace_tables)
 
 
-def normalize_inline_html_residue(content):
-    def replace_inline(segment):
-        previous = None
+def normalize_inline_html_residue(content: str) -> str:
+    def replace_inline(segment: str) -> str:
+        previous: str | None = None
         current = segment
         for _ in range(3):
             if current == previous:
@@ -661,7 +672,7 @@ def normalize_inline_html_residue(content):
     return transform_outside_code_fences(content, replace_inline)
 
 
-def normalize_wiki_semantic_content_v2(title, content):
+def normalize_wiki_semantic_content_v2(title: str, content: str) -> str:
     normalized = WIKI_SORTABLE_TAG_RE.sub('', content)
     normalized = HTML_COMMENT_RE.sub('', normalized)
     normalized = convert_footnotes_to_markdown(normalized)
@@ -673,14 +684,14 @@ def normalize_wiki_semantic_content_v2(title, content):
     return normalized.strip() + "\n"
 
 
-def clean_wiki_semantic_content(title, content):
+def clean_wiki_semantic_content(title: str, content: str) -> str:
     cleaned = legacy_clean_wiki_semantic_content(title, content)
     if not html_normalizer_available():
         return cleaned
     return normalize_wiki_semantic_content_v2(title, cleaned)
 
 
-def resolve_pipeline_commits():
+def resolve_pipeline_commits() -> dict[str, str]:
     env_snapshot = {key: os.environ.get(key) for key in repo_manifest.COMMIT_ENV_TO_MANIFEST_KEY}
     missing = [key for key, value in env_snapshot.items() if not value]
     commits, manifest_path = repo_manifest.resolve_commit_environment(
@@ -702,10 +713,10 @@ def resolve_pipeline_commits():
         "ucode": commits["UCODE_COMMIT"],
     }
 
-def pass_1_normalize_all(ts_now):
+def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, Any], str]:
     print("[03] Pass 1: YAML Schema Injection & Link Registry Build")
-    cross_link_registry = {"pipeline_date": ts_now, "symbols": {}}
-    l2_files = []
+    cross_link_registry: dict[str, Any] = {"pipeline_date": ts_now, "symbols": {}}
+    l2_files: list[dict[str, Any]] = []
 
     for root, _, files in os.walk(L1_DIR):
         for f in files:
@@ -740,7 +751,7 @@ def pass_1_normalize_all(ts_now):
                         content = content.replace("---\n\n", "---\n\n" + tmpl_f.read().strip() + "\n\n", 1)
 
             l1_rel = os.path.relpath(md_path, WORKDIR).replace("\\", "/")
-            y_meta = {
+            y_meta: dict[str, Any] = {
                 "title": title, "module": module, "origin_type": o_type,
                 "token_count": count_tokens(content),
                 "source_file": l1_rel, "last_pipeline_run": ts_now
@@ -781,7 +792,7 @@ def pass_1_normalize_all(ts_now):
                     is_dep = True
 
                 sig = raw_node if "(" in raw_node else f"{symbol}()"
-                payload = {
+                payload: dict[str, Any] = {
                     "signature": sig, "file": l1_rel,
                     "module": module,
                     "relative_target": f"../{module}/{f}", 
@@ -799,7 +810,7 @@ def pass_1_normalize_all(ts_now):
         json.dump(cross_link_registry, rf, indent=2)
     return l2_files, cross_link_registry, reg_path
 
-def pass_2_link_all(l2_files, registry):
+def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) -> None:
     print("[03] Pass 2: Injecting Cross-Links")
     sorted_syms = sorted(registry["symbols"].items(), key=lambda x: -len(x[0]))
     patterns = [(s, m["relative_target"], re.compile(rf'\b{re.escape(s)}\b(?:\(\))?')) for s, m in sorted_syms]
@@ -809,7 +820,7 @@ def pass_2_link_all(l2_files, registry):
             content = f.read()
         
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
-        prot = set()
+        prot: set[int] = set()
         fm_match = re.match(r'^---\r?\n.*?\r?\n---\r?\n?', content, re.DOTALL)
         if fm_match:
             prot.update(range(fm_match.start(), fm_match.end()))
@@ -824,8 +835,8 @@ def pass_2_link_all(l2_files, registry):
         for m in re.finditer(r'`[^`\n]+`|\[[^\]]+\]\([^)]+\)', content):
             prot.update(range(m.start(), m.end()))
             
-        spans = []
-        for sym, target, pat in patterns:
+        spans: list[tuple[int, int, str]] = []
+        for _, target, pat in patterns:
             if target.endswith(info["root_rel"]):
                 continue
             for m in pat.finditer(content):
@@ -835,7 +846,8 @@ def pass_2_link_all(l2_files, registry):
         
         if spans:
             spans.sort(key=lambda x: x[0])
-            new_c, last = [], 0
+            new_c: list[str] = []
+            last = 0
             for s, e, rep in spans:
                 new_c.append(content[last:s])
                 new_c.append(rep)
@@ -844,9 +856,9 @@ def pass_2_link_all(l2_files, registry):
             with open(info["path"], "w", encoding="utf-8", newline="\n") as f:
                 f.write("".join(new_c))
 
-def pass_3_deprecation_warnings(l2_files, registry):
+def pass_3_deprecation_warnings(l2_files: list[dict[str, Any]], registry: dict[str, Any]) -> None:
     print("[03] Pass 3: Injecting Deprecation Warnings")
-    deprecated_symbols = {s: m for s, m in registry["symbols"].items() if m.get("deprecated")}
+    deprecated_symbols: dict[str, Any] = {s: m for s, m in registry["symbols"].items() if m.get("deprecated")}
     if not deprecated_symbols:
         return
 
@@ -857,7 +869,7 @@ def pass_3_deprecation_warnings(l2_files, registry):
         with open(info["path"], "r", encoding="utf-8") as f:
             content = f.read()
         
-        warnings = []
+        warnings: list[str] = []
         for sym, meta in deprecated_symbols.items():
             # If the file contains a link to this deprecated symbol
             link_pat = rf'\[.*?\]\(\.\.\/{re.escape(meta["relative_target"].lstrip("./"))}\)'
@@ -882,7 +894,7 @@ def pass_3_deprecation_warnings(l2_files, registry):
             with open(info["path"], "w", encoding="utf-8", newline="\n") as f:
                 f.write(content)
 
-def promote_to_staging(registry_path):
+def promote_to_staging(registry_path: str) -> None:
     print("[03] Promoting to staging OUTDIR")
     dst_root = config.OUTDIR
     os.makedirs(dst_root, exist_ok=True)
