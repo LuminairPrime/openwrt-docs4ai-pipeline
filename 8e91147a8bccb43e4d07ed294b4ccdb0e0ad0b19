@@ -1,0 +1,67 @@
+docs/specs/script-dependency-map.md
+  9a36336657a50cc5 34
+content/cookbook-source/minimal-openwrt-package-makefile.md
+  9a36336657a50cc5 252
+tests/pytest/pytest_01_workflow_contract_test.py
+  9a36336657a50cc5 197-201,204-220
+tests/pytest/pytest_00_pipeline_units_test.py
+  9a36336657a50cc5 435-437,456-458,477-501
+content/cookbook-source/luci-form-with-uci.md
+  9a36336657a50cc5 313
+content/cookbook-source/procd-service-lifecycle.md
+  9a36336657a50cc5 200
+docs/plans/v13/code-review-improvements-c.md
+  e0ce393f8546f193 1-114
+docs/plans/v13/code-review-improvements-e.md
+  563723f3691d589f 1-14,16,18-32,34-44,46-62,64-66,68-71,73-153,155-175,177-199,201,203,205-206,208-213,215-216,218-223,225-226,228-258,260-262,264-274,276-277,279,282-285,287-307,309-331,333-341,343-361
+.github/workflows/openwrt-docs4ai-00-pipeline.yml
+  9a36336657a50cc5 351-353
+content/cookbook-source/uci-read-write-from-ucode.md
+  9a36336657a50cc5 243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "8e91147a8bccb43e4d07ed294b4ccdb0e0ad0b19",
+  "prompts": {
+    "563723f3691d589f": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "4ee77756-1016-4d32-8b53-d74991f541b8",
+        "model": "copilot/claude-opus-4.6"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 358,
+      "total_deletions": 0,
+      "accepted_lines": 334,
+      "overriden_lines": 23
+    },
+    "9a36336657a50cc5": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "02f9df05-9cb1-491d-913c-412b65e281be",
+        "model": "copilot/gpt-5.4"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 61,
+      "total_deletions": 30,
+      "accepted_lines": 61,
+      "overriden_lines": 0
+    },
+    "e0ce393f8546f193": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "4dbdbbab-304e-493f-baa0-092c7b52ddd4",
+        "model": "copilot/claude-sonnet-4.5"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 114,
+      "total_deletions": 0,
+      "accepted_lines": 114,
+      "overriden_lines": 0
+    }
+  }
+}
