@@ -68,12 +68,12 @@ def rewrite_relative_links(module: str, body_text: str) -> str:
 def rewrite_release_relative_links(body_text: str) -> str:
     """Rewrite L2-relative markdown links for release-tree bundled outputs."""
     body_with_fixed_links = re.sub(
-        r'\[(.*?)\]\(\.\./((?!L2-semantic)[a-zA-Z0-9-]+)/([^)]*?\.md)\)',
+        r'\[(.*?)\]\(\.\./(?!L2-semantic)([a-zA-Z0-9-]+)\/([^)]*?\.md)\)',
         rf'[\1](../\2/{config.MODULE_CHUNKED_REF_DIRNAME}/\3)',
         body_text,
     )
     body_with_fixed_links = re.sub(
-        r'\[(.*?)\]\(\./(.*?\.md)\)',
+        r'\[(.*?)\]\(\./([^)]*?\.md)\)',
         rf'[\1](./{config.MODULE_CHUNKED_REF_DIRNAME}/\2)',
         body_with_fixed_links,
     )

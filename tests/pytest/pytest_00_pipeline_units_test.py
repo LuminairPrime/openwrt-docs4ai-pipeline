@@ -482,20 +482,20 @@ class TestRewriteReleaseChunkedLinks:
 class TestCookbookCrossModuleLinkContract:
     """The exact link shapes used in cookbook source files must be handled correctly."""
 
-    def test_authored_chunked_reference_link_passes_through_rewrite_relative(self):
+    def test_authored_cross_module_link_rewritten_in_stable_tree(self):
         assemble = load_script_module("assemble_05a_cb1", "openwrt-docs4ai-05a-assemble-references.py")
-        link = "[ucode UCI](../../ucode/chunked-reference/c_source-api-module-uci.md)"
+        link = "[ucode UCI](../ucode/c_source-api-module-uci.md)"
         result = assemble.rewrite_relative_links("cookbook", link)
-        assert result == link
+        assert result == "[ucode UCI](../L2-semantic/ucode/c_source-api-module-uci.md)"
 
-    def test_authored_chunked_reference_link_passes_through_release_relative(self):
+    def test_authored_cross_module_link_gets_chunked_in_release_relative(self):
         assemble = load_script_module("assemble_05a_cb2", "openwrt-docs4ai-05a-assemble-references.py")
-        link = "[ucode UCI](../../ucode/chunked-reference/c_source-api-module-uci.md)"
+        link = "[ucode UCI](../ucode/c_source-api-module-uci.md)"
         result = assemble.rewrite_release_relative_links(link)
-        assert result == link
+        assert result == "[ucode UCI](../ucode/chunked-reference/c_source-api-module-uci.md)"
 
-    def test_authored_chunked_reference_link_passes_through_release_chunked(self):
+    def test_authored_cross_module_link_gets_extra_depth_in_release_chunked(self):
         assemble = load_script_module("assemble_05a_cb3", "openwrt-docs4ai-05a-assemble-references.py")
-        link = "[ucode UCI](../../ucode/chunked-reference/c_source-api-module-uci.md)"
+        link = "[ucode UCI](../ucode/c_source-api-module-uci.md)"
         result = assemble.rewrite_release_chunked_links(link)
-        assert result == link
+        assert result == "[ucode UCI](../../ucode/chunked-reference/c_source-api-module-uci.md)"
