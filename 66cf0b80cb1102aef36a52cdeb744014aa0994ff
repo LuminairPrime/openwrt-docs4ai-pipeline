@@ -1,0 +1,27 @@
+tests/pytest/pytest_01_workflow_contract_test.py
+  9a36336657a50cc5 197,207-208
+.github/workflows/openwrt-docs4ai-00-pipeline.yml
+  9a36336657a50cc5 351-352
+docs/specs/script-dependency-map.md
+  9a36336657a50cc5 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "66cf0b80cb1102aef36a52cdeb744014aa0994ff",
+  "prompts": {
+    "9a36336657a50cc5": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "02f9df05-9cb1-491d-913c-412b65e281be",
+        "model": "copilot/gpt-5.4"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 6,
+      "total_deletions": 6,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    }
+  }
+}
