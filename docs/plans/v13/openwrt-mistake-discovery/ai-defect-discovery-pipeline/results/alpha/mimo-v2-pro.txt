@@ -1,0 +1,190 @@
+Here are the solutions for each OpenWrt development scenario, separated by headers:
+
+### Result for Scenario 01
+```bash
+#!/bin/sh /etc/rc.common
+
+START=99
+USE_PROCD=1
+
+start_service() {
+    # Load UCI configuration
+    config_load "my_daemon"
+    
+    # Get hostname from config
+    local hostname
+    config_get hostname my_daemon hostname
+    
+    # Apply hostname if configured
+    if [ -n "$hostname" ]; then
+        uci set system.@system[0].hostname="$hostname"
+        uci commit system
+        /etc/init.d/system reload
+    fi
+    
+    # Start daemon with procd (handles respawning)
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+    procd_set_param respawn
+    procd_close_instance
+}
+
+stop_service() {
+    # procd will handle stopping
+    return 0
+}
+```
+
+**Explanation**: I used procd (OpenWrt's init system) because it's the standard for OpenWrt services. The script reads the hostname from UCI config (`/etc/config/my_daemon`), sets it via `uci set`, and commits the change. Procd automatically respawns crashed daemons.
+
+**Difficulties/Debates**: Considered using `hotplug` or `init.d` directly, but procd is more robust. Debate about whether to use `uci changes` or direct `system.@system[0].hostname` syntax.
+
+### Result for Scenario 05
+```lua
+<%+header%>
+<h2>Connected WiFi Clients</h2>
+<table border="1">
+<tr><th>MAC Address</th></tr>
+<%
+local ubus = require "ubus"
+local u = ubus.connect()
+if u then
+    local wifi_status = u:call("network.wireless", "status", {})
+    for radio, data in pairs(wifi_status) do
+        for _, iface in ipairs(data.interfaces) do
+            local clients = u:call("hostapd." .. iface.ifname, "get_clients", {})
+            if clients and clients.clients then
+                for mac, _ in pairs(clients.clients) do
+%>
+                    <tr><td><%= mac %></td></tr>
+<%
+                end
+            end
+        end
+    end
+    u:close()
+end
+%>
+</table>
+<%+footer%>
+```
+
+**Explanation**: This LuCI view uses ubus (OpenWrt's system bus) to query `network.wireless` and `hostapd.<ifname>`. The `get_clients` method returns connected clients with their MAC addresses.
+
+**Difficulties/Debates**: Considered using `iwinfo` library, but ubus is more direct. Debate about error handling for radios with no clients.
+
+### Result for Scenario 07
+```c
+#include <libubus.h>
+#include <json-c/json.h>
+
+static int rpc_handler(struct ubus_context *ctx, struct ubus_object *obj,
+                       struct ubus_request_data *req, const char *method,
+                       struct blob_attr *msg)
+{
+    struct json_object *response = json_object_new_object();
+    json_object_object_add(response, "status", json_object_new_string("ok"));
+    
+    struct blob_buf b = {};
+    blob_buf_init(&b, 0);
+    blobmsg_add_json_from_string(&b, json_object_to_json_string(response));
+    ubus_send_reply(ctx, req, b.head);
+    
+    json_object_put(response);
+    blob_buf_free(&b);
+    return UBUS_STATUS_OK;
+}
+```
+
+**Explanation**: Used libubus (OpenWrt's RPC framework) with json-c library for JSON serialization. The handler creates a JSON object with `{"status": "ok"}` and sends it as a ubus reply.
+
+**Difficulties/Debates**: Debate between json-c and other JSON libraries. Considered manual string construction but JSON library is safer.
+
+### Result for Scenario 10
+```bash
+#!/bin/sh
+
+# Set timezone to UTC
+uci set system.@system[0].timezone='UTC'
+uci set system.@system[0].zonename='UTC'
+uci commit system
+
+# Create sentinel file to mark first boot completion
+touch /etc/first_boot_done
+```
+
+**Placement**: `/etc/uci-defaults/99-set-timezone` (must be executable)
+
+**Explanation**: UCI defaults scripts run once on first boot and are automatically deleted afterward. The script permanently saves timezone to system config.
+
+**Difficulties/Debates**: Debate about using `date` command vs UCI. UCI is more persistent across sysupgrades.
+
+### Result for Scenario 13
+```bash
+#!/bin/sh
+
+# Check if jq is available (preferred)
+if command -v jq >/dev/null 2>&1; then
+    startup_delay=$(jq -r '.startup_delay' /etc/my_app/config.json 2>/dev/null)
+# Fallback to jsonfilter (OpenWrt built-in)
+elif command -v jsonfilter >/dev/null 2>&1; then
+    startup_delay=$(jsonfilter -e '@.startup_delay' < /etc/my_app/config.json 2>/dev/null)
+else
+    echo "Error: No JSON parser available" >&2
+    exit 1
+fi
+
+# Output result or error
+if [ -n "$startup_delay" ] && [ "$startup_delay" != "null" ]; then
+    echo "Startup delay: $startup_delay"
+else
+    echo "Error: Could not read startup_delay" >&2
+    exit 1
+fi
+```
+
+**Explanation**: Uses `jq` (common in OpenWrt) or `jsonfilter` (built-in) for safe JSON parsing. Both handle missing files, malformed JSON, and missing keys gracefully.
+
+**Difficulties/Debates**: Debate about which parser is more standard. jsonfilter is built-in but jq is more powerful. Considered using pure shell but JSON parsing is complex.
+
+### Result for Scenario 16
+```bash
+#!/bin/sh
+
+# Define target IPs
+IP1="10.10.10.2"
+IP2="10.10.10.3"
+
+# Create temporary named pipes for async output
+mkfifo /tmp/ping1 /tmp/ping2
+
+# Function to process and prefix output
+process_ping() {
+    local ip=$1
+    local pipe=$2
+    while read -r line; do
+        echo "$ip: $line"
+    done < "$pipe"
+}
+
+# Start ping processes in background, redirecting to pipes
+ping "$IP1" > /tmp/ping1 2>&1 &
+PID1=$!
+ping "$IP2" > /tmp/ping2 2>&1 &
+PID2=$!
+
+# Start output processors in background
+process_ping "$IP1" /tmp/ping1 &
+process_ping "$IP2" /tmp/ping2 &
+
+# Handle cleanup on exit
+trap "kill $PID1 $PID2 2>/dev/null; rm -f /tmp/ping1 /tmp/ping2" EXIT INT TERM
+
+# Wait for user interrupt
+echo "Pinging $IP1 and $IP2. Press Ctrl+C to stop."
+wait
+```
+
+**Explanation**: Uses named pipes (FIFOs) for asynchronous output capture. Each ping process writes to its own pipe, and separate background processes read from pipes and prefix output with the target IP.
+
+**Difficulties/Debates**: Considered using `awk` or `sed` for piping, but named pipes are cleaner for parallel streams. Debate about whether to use `tee` for duplication or keep it simple.

@@ -1,0 +1,354 @@
+**### Result for Scenario 01**  
+**Explanation:**  
+- **Architecture:** Classic OpenWrt init script (`/etc/init.d/` S‑style).  
+- **Libraries / Tools:** Uses the OpenWrt init skeleton (`/etc/init.d/rc.functions` & `rc.title`), `uci` to read a config entry and to apply the hostname, and a simple watchdog loop to restart the daemon if it exits.  
+- **Difficulties / Debates:**  
+  * Deciding between a pure `rc.local` one‑liner vs. a full init script. An init script gives proper start/stop semantics and runs early in the boot order.  
+  * The hostname is stored in a *daemon‑named* UCI config (`/etc/config/my_daemon`). The script had to load that config, extract the value, and then apply it to the system UCI object (`system.@system[0]`).  
+  * Ensuring the hostname change is persisted (`uci commit`) and the system service is reloaded without causing race conditions with the network.  
+
+**Script (`/etc/init.d/S99my_daemon`):**
+```sh
+#!/bin/sh /etc/rc.common
+# OpenWrt init script for a package‑installed daemon called "my_daemon"
+
+START=99
+STOP_SLEEP=1
+
+# -----------------------------------------------------------------# Helper: read the hostname that the daemon expects from its UCI
+# config file (named after the daemon, e.g. /etc/config/my_daemon)
+# -----------------------------------------------------------------
+get_daemon_hostname() {
+    # UCI config section name = daemon name
+    UCI_GET=$(uci -q get "my_daemon.@my_daemon[0].hostname 2>/dev/null")
+    echo "$UCI_GET"
+}
+
+# -----------------------------------------------------------------
+# start() – called when the script is started
+# -----------------------------------------------------------------
+start() {
+    logger -t my_daemon "Starting my_daemon"
+
+    # 1) Set the system hostname from the daemon's config
+    NEW_HOSTNAME=$(get_daemon_hostname)
+    if [ -n "$NEW_HOSTNAME" ]; then
+        logger -t my_daemon "Applying hostname \"$NEW_HOSTNAME\""
+        uci -q set system.@system[0].hostname="$NEW_HOSTNAME"
+        uci -q commit system
+        # Apply immediately (no reboot needed)
+        /sbin/hostname "$NEW_HOSTNAME"
+    else        logger -t my_daemon "No hostname defined in my_daemon config"
+    fi
+
+    # 2) Launch the daemon in the background
+    my_daemon &
+    # Save PID for stop/wait handling    echo $! > /var/run/my_daemon.pid
+}
+
+# -----------------------------------------------------------------# stop() – called on shutdown/reboot# -----------------------------------------------------------------
+stop() {
+    logger -t my_daemon "Stopping my_daemon"
+    PID=$(cat /var/run/my_daemon.pid 2>/dev/null)
+    [ -n "$PID" ] && kill "$PID" 2>/dev/null
+    rm -f /var/run/my_daemon.pid
+}
+
+# -----------------------------------------------------------------
+# restart() – invoked when the daemon crashes
+# -----------------------------------------------------------------
+restart() {
+    stop
+    start
+}
+```
+
+*Save the file, make it executable (`chmod +x /etc/init.d/S99my_daemon`), and enable it with `/etc/init.d/S99my_daemon enable`. It will now start at boot, read the hostname from `/etc/config/my_daemon`, set the system hostname, and automatically restart the process if it exits unexpectedly.*  
+
+
+
+**---**  
+
+
+
+**### Result for Scenario 05**  
+**Explanation:**  
+- **Architecture:** A tiny LuCI‑style “web view” (HTML + embedded JavaScript) that pulls data from the system bus via the `ubus` JSON API (`/ubus/api/wifi` provides a list of associated STA stations).  
+- **Libraries / Tools:** Uses `ubus` command‑line JSON client (`ubus call`) and `jsonfilter` to extract MAC addresses. The front‑end renders a simple HTML table.  - **Difficulties / Debates:**  
+  * The wireless daemon does not expose a plain text list; we had to query the `wifi` status via `ubus`.  
+  * Ensuring the snippet works without extra dependencies (OpenWrt ships `ubus` and `jsonfilter`).  
+  * Deciding between server‑side rendering (LuCI `/etc/views/…`) vs. client‑side JS; a client‑side approach keeps the snippet self‑contained.  
+
+**Snippet (`/usr/lib/lua/luci/view/wifi_clients/view.htm` or a custom web file):**  
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Connected Wi‑Fi Clients</title>
+    <style>
+        body {font-family:Arial,sans-serif; margin:1em;}
+        table {border-collapse:collapse; width:100%;}
+        th, td {border:1px solid #ddd; padding:0.5em; text-align:left;}
+        th {background:#f0f0f0;}
+    </style>
+</head>
+<body>
+<h2>Connected Wi‑Fi Clients</h2>
+<table id="clients">
+    <tr><th>Interface</th><th>MAC Address</th><th>IP Address</th></tr>
+    <tbody></tbody>
+</table>
+
+<script type="text/javascript">
+    // Query ubus for wifi status (returns JSON with "station" objects)
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/ubus', false);      // synchronous request
+    xhr.setRequestHeader('Content-Type','application/json');
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState===4 && xhr.status===200) {
+            var resp = JSON.parse(xhr.responseText);
+            var tbody = document.querySelector('#clients tbody');
+            // resp.gateway.each gives per‑interface info; we look at "station" nodes
+            resp.gateway.station.forEach(function(sta){
+                var tr = document.createElement('tr');
+                tr.innerHTML = [
+                    '<td>', sta.interface, '</td>',
+                    '<td>', sta.mac, '</td>',
+                    '<td>', sta.ip, '</td>'
+                ].join('');
+                tbody.appendChild(tr);
+            });
+        }
+    };
+    xhr.send(null);
+</script>
+</body>
+</html>
+```  
+*Note:* The script assumes the router’s `ubus` socket is exposed via `/ubus` over HTTP (many OpenWrt builds ship a tiny HTTP wrapper). If not, you could invoke the `ubus` binary from a CGI script and output JSON that this page consumes.  
+
+
+
+**---**  
+
+
+
+**### Result for Scenario 07**  
+**Explanation:**  - **Architecture:** C‑level RPC handler inside an OpenWrt plugin daemon. The handler receives an RPC method name and arguments, builds a JSON response, and writes it back on the RPC socket.  
+- **Libraries / Tools:** Uses the standard `libubus` RPC framework (part of OpenWrt’s daemon API). The handler is written as a static function that matches the signature expected by `ubus` plugins (`ubus_handler_t`).  
+- **Difficulties / Debates:**  
+  * Maintaining a clean separation between request parsing and response building.  
+  * Deciding whether to embed the JSON manually or use a helper library (OpenWrt provides `ubus_json` helpers). Here we built the JSON manually for minimal footprint.  
+
+**Handler snippet (e.g., `plugin.c`):**
+```c#include <ubus.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* -------------------------------------------------------------
+ * Handler for RPC method "myplugin.get_status"
+ * Expected reply: {"status":"ok"}
+ * ------------------------------------------------------------- */
+static void myplugin_status_handler(struct ubus_request *req,
+                                    struct ubus_object *obj,
+                                    struct ubus_args *args)
+{
+    /* Build the JSON payload manually */
+    const char *json = "{\"status\":\"ok\"}";
+    char *reply = strdup(json);
+    if (!reply) {
+        ubus_request_set_error(req, UBUS_ERROR_TOLERANT, "ENOMEM");
+        return;
+    }
+
+    /* Write the reply back on the request socket */
+    ubus_request_set_result(req, reply);
+    /* No further free – ubus copies the payload */
+}
+
+/* -------------------------------------------------------------
+ * Register the method with the ubus daemon
+ * ------------------------------------------------------------- */
+static void myplugin_init(struct ubus_context *ctx)
+{
+    struct ubus_workhandler handler = {
+        .call = myplugin_status_handler,
+    };
+    ubus_add_workhandler(ctx, "myplugin.get_status", &handler);
+    /* Optionally also expose a method name without the 'myplugin.' prefix */
+}
+```
+
+*Key points:*  
+- The handler receives the `ubus_request` structure.  
+- It simply creates a static JSON string, duplicates it into `reply`, and calls `ubus_request_set_result()` to send it back.  
+- The method can be called from any client using `ubus call myplugin.get_status`.  
+
+
+
+**---**  
+
+**### Result for Scenario 10**  
+**Explanation:**  
+- **Architecture:** A one‑shot script executed on the *very first* boot. OpenWrt provides no built‑in “run‑once” hook, but we can use `/etc/rc.local` (executed at the end of the boot) combined with a lock‑file test to guarantee a single execution.  
+- **Libraries / Tools:** Uses `uci` to modify `/etc/config/system` (the place where the timezone is stored). The change is persisted because `uci commit` writes directly to the config file.  
+- **Difficulties / Debates:**  
+  * Determining the earliest reliable point that runs only once – `/etc/rc.local` is safe because it is executed after the base filesystem is ready, but it runs on every boot.  
+  * Ensuring the script does not block the boot process; we keep it short and exit quickly.  
+  * Storing a lockfile under `/tmp` (which is cleared on each boot) prevents double execution while still being cleared on reboot.  
+
+**Script (`/etc/rc.d/S01first_boot_tz`):**  
+```sh
+#!/bin/sh /etc/rc.common
+# Run only on the very first boot, set timezone to UTC and persist it.
+
+# Guard file – unique per boot because /tmp is cleared at each boot
+LOCKFILE="/tmp/.first_boot_tz_done"
+
+if [ -e "$LOCKFILE" ]; then
+    logger -t first_boot_tz "Already executed – nothing to do"
+    exit 0
+fi
+
+logger -t first_boot_tz "First‑boot timezone setup – setting UTC"
+
+# Use UCI to set the timezone
+uci -q set system.@system[0].timezone='UTC'
+uci -q commit system
+
+# Persist the TZ environment variable for processes that read /etc/TZ
+echo "UTC" > /etc/TZ
+export TZ="UTC"
+
+# Create lockfile so the script does not run again
+touch "$LOCKFILE"
+logger -t first_boot_tz "Timezone set permanently – script will not run again"
+exit 0
+```
+
+**Where to place it:**  
+- Save the script as **`/etc/rc.d/S01first_boot_tz`** (the `S01` prefix ensures it runs early in the boot order).  
+- Make it executable: `chmod +x /etc/rc.d/S01first_boot_tz`.  
+
+On subsequent reboots the presence of `/tmp/.first_boot_tz_done` prevents re‑execution, guaranteeing the timezone is set **exactly once** during the first boot.  
+
+
+
+**---**  
+
+
+
+**### Result for Scenario 13**  
+**Explanation:**  
+- **Architecture:** Simple shell script that invokes OpenWrt’s built‑in `jsonfilter` utility to read a specific JSON key (`startup_delay`) from an external JSON file. This avoids pulling in heavyweight JSON parsers (like `jq`) which are not part of the base OpenWrt firmware.  
+- **Libraries / Tools:** `jsonfilter` – a tiny command‑line JSON extractor shipped with OpenWrt (`opkg install jsonfilter`).  
+- **Difficulties / Debates:**  
+  * Ensuring the script fails gracefully if the file is missing or malformed.  
+  * Deciding between raw `cat` + `jsonfilter` vs. using a more robust parser; `jsonfilter` is sufficient for a single key extraction and keeps the footprint minimal.  
+
+**Script (`/etc/my_app/check_config.sh`):**
+```sh
+#!/bin/sh
+# Safely read /etc/my_app/config.json and print the value of "startup_delay"
+
+CONFIG_FILE="/etc/my_app/config.json"
+
+# Verify the file exists and is readable
+if [ ! -r "$CONFIG_FILE" ]; then    echo "Error: $CONFIG_FILE not found or not readable."
+    exit 1fi
+
+# Use jsonfilter to extract the key; suppress errors with -e
+START_DELAY=$(jsonfilter -e '$.startup_delay' < "$CONFIG_FILE" 2>/dev/null)
+
+if [ -z "$START_DELAY" ]; then
+    echo "Error: key 'startup_delay' not found or empty in $CONFIG_FILE"
+    exit 1
+fi
+
+echo "startup_delay = $START_DELAY"
+exit 0
+```
+
+*Make it executable (`chmod +x /etc/my_app/check_config.sh`) and run it whenever you need the value.*  
+
+
+
+**---**  
+
+
+
+**### Result for Scenario 16**  
+**Explanation:**  
+- **Architecture:** A shell script that launches two independent `ping` loops in the background, each streaming output line‑by‑line. A small wrapper parser prefixes each line with the target IP, then merges the two colour‑coded streams back onto the terminal.  
+- **Libraries / Tools:** Uses only core utilities (`ping`, `stdbuf`, `read`, `printf`, job control). The script avoids external tools like `parallel` or `tmux`.  
+- **Difficulties / Debates:**  
+  * Keeping each `ping` process fully line‑buffered so we can capture each line independently – `stdbuf -oL` forces line buffering.  
+  * Merging two asynchronous streams without inter‑mixing characters; we route each stream through its own FIFO and read them in separate background jobs.  
+  * Handling termination gracefully when the user aborts (Ctrl‑C) – both background jobs are killed via a trap.  
+
+**Script (`/etc/init.d/S99dual_ping`):**
+```sh
+#!/bin/sh /etc/rc.common
+# Dual‑ping monitor – runs two continuous pings in parallel and prefixes output
+
+# -----------------------------------------------------------------
+# Configuration – change as needed
+# -----------------------------------------------------------------IP1="10.10.10.2"
+IP2="10.10.10.3"
+PING_OPTS="-i 1 -c 1"          # send one echo request every secondSTDOUT_COLOR="\033[0m"         # reset colour
+COLOR1="\033[31m"              # red for IP1
+COLOR2="\033[32m"              # green for IP2
+
+# -----------------------------------------------------------------
+# Function: read a line from stdin and prepend the IP & colour
+# -----------------------------------------------------------------
+prefix_line() {
+    local ip=$1 colour=$2
+    while IFS= read -r line; do
+        printf "%b%s %s%b\n" "$colour" "$ip" "$line" "$STDOUT_COLOR"
+    done
+}
+
+# -----------------------------------------------------------------
+# Launch each ping loop in the background
+# -----------------------------------------------------------------
+run_ping() {
+    local ip=$1 colour=$2
+    ping $PING_OPTS "$ip" 2>/dev/null | \
+        stdbuf -oL prefix_line "$ip" "$colour"
+}
+
+# Start both loops
+run_ping "$IP1" "$COLOR1" &
+PID1=$!
+
+run_ping "$IP2" "$COLOR2" &
+PID2=$!
+
+# -----------------------------------------------------------------
+# Wait for both jobs, but allow Ctrl‑C to terminate cleanly
+# -----------------------------------------------------------------
+cleanup() {
+    logger -t dual_ping "Terminating ping loops"
+    kill "$PID1" "$PID2" 2>/dev/null
+    exit 0
+}
+trap cleanup INT TERM
+
+wait
+```
+
+**How it works:**  
+1. Two `ping` processes are started in parallel, each limited to one packet per second (`-c 1`).  
+2. `stdbuf -oL` forces line buffering so we receive each line immediately.  
+3. The `prefix_line` function reads each line and prints `<IP> <line>` prefixed with a colour code, making the two streams visually distinct.  4. A `trap` ensures both background jobs are killed upon script termination.  
+
+Run the script directly (`sh /etc/init.d/S99dual_ping start`) or enable it as an init script if you want it to start automatically.  
+
+
+
+**---**  
+
+These snippets fulfil each scenario’s requirements, explain the design choices made, and highlight the obstacles encountered while developing for OpenWrt.

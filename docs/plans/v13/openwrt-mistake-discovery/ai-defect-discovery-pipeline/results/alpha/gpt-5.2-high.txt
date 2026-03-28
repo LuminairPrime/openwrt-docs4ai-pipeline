@@ -1,0 +1,189 @@
+### Result for Scenario 01 — procd init script (boot start, respawn, apply hostname from `/etc/config/my_daemon`)
+```sh
+#!/bin/sh /etc/rc.common
+# /etc/init.d/my_daemon
+
+START=90
+STOP=10
+USE_PROCD=1
+
+CFG="my_daemon"
+
+apply_hostname() {
+	. /lib/functions.sh
+
+	local hostname
+	config_load "$CFG"
+	# expects: config my_daemon 'main' ; option hostname 'myrouter'
+	config_get hostname main hostname
+
+	[ -n "$hostname" ] && hostname "$hostname"
+}
+
+start_service() {
+	apply_hostname
+
+	procd_open_instance
+	# typical package daemon location on OpenWrt
+	procd_set_param command /usr/sbin/my_daemon
+	# restart if it crashes: respawn <threshold> <timeout> <retry>
+	procd_set_param respawn 3600 5 5
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+	procd_close_instance
+}
+
+reload_service() {
+	apply_hostname
+	# if your daemon supports SIGHUP for reload, procd will pass it along
+	procd_send_signal my_daemon
+}
+```
+
+**Architecture/libraries chosen:** OpenWrt’s `procd` supervision via `/etc/rc.common` + `USE_PROCD=1`, and UCI access via `/lib/functions.sh` (`config_load`, `config_get`).  
+**Difficulties/debates:** “Apply hostname” could mean runtime-only (`hostname ...`) vs. persisting into `/etc/config/system` (UCI commit). I kept it runtime-only because the requirement explicitly sources it from the daemon’s own config file.
+
+---
+
+### Result for Scenario 05 — LuCI view snippet (ubus fetch of WiFi clients, MAC table)
+```javascript
+'use strict';
+'require view';
+'require rpc';
+
+var callGetClients = rpc.declare({
+	// adjust wlan0 -> your AP interface; ubus object name matches hostapd instance
+	object: 'hostapd.wlan0',
+	method: 'get_clients',
+	expect: { clients: {} }
+});
+
+return view.extend({
+	load: function() {
+		return callGetClients();
+	},
+
+	render: function(data) {
+		var clients = (data && data.clients) ? Object.keys(data.clients) : [];
+
+		var rows = clients.length ? clients.map(function(mac) {
+			return E('tr', {}, [ E('td', {}, mac) ]);
+		}) : [
+			E('tr', {}, [ E('td', { 'colspan': 1 }, _('No clients') ) ])
+		];
+
+		return E('div', { 'class': 'cbi-section' }, [
+			E('h3', {}, _('Connected WiFi Clients')),
+			E('table', { 'class': 'table' }, [
+				E('tr', { 'class': 'tr table-titles' }, [
+					E('th', {}, _('MAC address'))
+				]),
+				rows
+			])
+		]);
+	}
+});
+```
+
+**Architecture/libraries chosen:** LuCI’s JS view layer with `rpc.declare()` calling `ubus` behind the scenes; `hostapd.<ifname>` provides `get_clients` (MACs appear as keys in the `clients` object).  
+**Difficulties/debates:** The exact ubus object name depends on the real AP interface (e.g., `wlan0`, `phy0-ap0`) and only exists when hostapd is managing that interface; for multi-SSID/multi-radio setups you may need to iterate multiple `hostapd.*` objects.
+
+---
+
+### Result for Scenario 07 — C ubus RPC handler replying `{"status":"ok"}`
+```c
+#include <libubus.h>
+#include <libubox/blobmsg.h>
+
+static struct blob_buf b;
+
+static int
+rpc_status_handler(struct ubus_context *ctx,
+                   struct ubus_object *obj,
+                   struct ubus_request_data *req,
+                   const char *method,
+                   struct blob_attr *msg)
+{
+	blob_buf_init(&b, 0);
+	blobmsg_add_string(&b, "status", "ok");
+	ubus_send_reply(ctx, req, b.head);
+	return 0;
+}
+```
+
+**Architecture/libraries chosen:** Native OpenWrt IPC stack: `libubus` for RPC transport and `libubox/blobmsg` to build a JSON-like reply object.  
+**Difficulties/debates:** The main “gotcha” is not actually emitting JSON text—ubus replies are `blobmsg` structures (which can be rendered as JSON by clients). Also, many daemons keep `struct blob_buf` global/static to avoid reallocations, but then you must be mindful of concurrency/threading.
+
+---
+
+### Result for Scenario 10 — run-once first-boot script setting timezone to UTC (persisted)
+```sh
+#!/bin/sh
+# /etc/uci-defaults/99-timezone-utc
+
+uci -q batch <<'EOF'
+set system.@system[0].zonename='UTC'
+set system.@system[0].timezone='UTC'
+EOF
+
+uci commit system
+/etc/init.d/system reload
+
+exit 0
+```
+
+**Where to place it:** `/etc/uci-defaults/99-timezone-utc` (make it executable: `chmod +x /etc/uci-defaults/99-timezone-utc`). OpenWrt runs `/etc/uci-defaults/*` **only on first boot** and then removes/marks them done.  
+**Difficulties/debates:** Timezone strings can be either POSIX-style offsets (e.g., `UTC0`) or named zones; on modern OpenWrt, setting both `zonename` and `timezone` to `UTC` is typically sufficient and persists via UCI commit.
+
+---
+
+### Result for Scenario 13 — safely read `/etc/my_app/config.json`, parse natively, print `startup_delay`
+```sh
+#!/bin/sh
+set -eu
+
+FILE='/etc/my_app/config.json'
+
+[ -r "$FILE" ] || { echo "Error: cannot read $FILE" >&2; exit 1; }
+[ -s "$FILE" ] || { echo "Error: empty $FILE" >&2; exit 1; }
+# simple safety limit (64 KiB)
+[ "$(wc -c < "$FILE")" -le 65536 ] || { echo "Error: $FILE too large" >&2; exit 1; }
+
+. /usr/share/libubox/jshn.sh
+
+json_init
+json_load "$(cat "$FILE")" || { echo "Error: invalid JSON in $FILE" >&2; exit 1; }
+
+json_get_var startup_delay startup_delay
+printf '%s\n' "${startup_delay:-}"
+```
+
+**Architecture/libraries chosen:** OpenWrt’s built-in shell JSON helper `jshn.sh` (from `libubox`) to parse JSON “natively” without pulling in Python/jq.  
+**Difficulties/debates:** Shell parsing is sensitive to size/robustness; I added basic existence/size checks. For complex JSON (arrays/nested objects), `json_get_var` vs. `json_select`/`json_get_values` becomes a design choice.
+
+---
+
+### Result for Scenario 16 — parallel pings, asynchronous live output with per-target prefix
+```sh
+#!/bin/sh
+set -eu
+
+ping_prefixed() {
+	local ip="$1"
+	# -n numeric output; -O report "no answer yet" on Linux/busybox variants that support it
+	ping -n "$ip" 2>&1 | while IFS= read -r line; do
+		printf '[%s] %s\n' "$ip" "$line"
+	done
+}
+
+# Ensure both background pipelines are terminated on exit/CTRL-C
+trap 'kill $(jobs -p) 2>/dev/null || true' INT TERM EXIT
+
+ping_prefixed 10.10.10.2 &
+ping_prefixed 10.10.10.3 &
+
+wait
+```
+
+**Architecture/libraries chosen:** Plain BusyBox `ash` with background jobs and per-pipeline `while read` loops to keep output line-buffered and prefixed.  
+**Difficulties/debates:** Getting truly “live” output can be affected by buffering if you introduce tools like `sed`/`awk`; the `while read` approach usually preserves immediate line output. Killing pipelines cleanly is also subtle—`trap` + `jobs -p` is the simplest portable pattern on OpenWrt.

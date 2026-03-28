@@ -1,0 +1,639 @@
+# OpenWrt Development Slices — Alpha Batch
+
+---
+
+### Result for Scenario 01
+
+```sh
+#!/bin/sh /etc/rc.common
+# /etc/init.d/my_daemon
+# Standard OpenWrt SysV-style init script using the procd init system.
+
+USE_PROCD=1
+START=95
+STOP=05
+
+# The canonical name of the UCI config file (stored in /etc/config/)
+CONFIG="my_daemon"
+
+# Called by procd when starting the service
+start_service() {
+    local hostname
+
+    # --- Read configuration from /etc/config/my_daemon via UCI ---
+    # uci_load sources the config file and makes options available
+    # via callback functions (config_get, etc.)
+    config_load "$CONFIG"
+
+    # Read the 'hostname' option from the 'main' section.
+    # Adjust 'main' to match the actual section name in your config file.
+    config_get hostname "main" "hostname" "OpenWrt"  # third arg is the default
+
+    # --- Apply the hostname to the running system ---
+    if [ -n "$hostname" ]; then
+        uci set system.@system[0].hostname="$hostname"
+        uci commit system
+        # Apply immediately to the running kernel
+        echo "$hostname" > /proc/sys/kernel/hostname
+    fi
+
+    # --- Register the daemon with procd ---
+    # procd is OpenWrt's process supervisor. Registering here means
+    # procd will automatically restart my_daemon if it crashes.
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon   # standard install path for packaged daemons
+    procd_set_param respawn                        # restart on crash (uses default thresholds)
+    # respawn threshold: if the process dies within 3600s more than 5 times
+    # procd considers it broken and stops trying. Tune if needed:
+    # procd_set_param respawn 3600 5 0
+    procd_set_param stdout 1   # forward stdout to logd
+    procd_set_param stderr 1   # forward stderr to logd
+    procd_close_instance
+}
+
+# Reload: re-read config and restart cleanly (called by `service my_daemon reload`)
+reload_service() {
+    stop
+    start
+}
+
+# Required stubs for rc.common compatibility
+service_triggers() {
+    # Re-run start_service automatically if the UCI config changes
+    procd_add_reload_trigger "$CONFIG"
+}
+```
+
+**Corresponding `/etc/config/my_daemon` example:**
+```uci
+config my_daemon 'main'
+    option hostname 'my-router'
+```
+
+**Explanation & Decisions:**
+
+| Choice | Rationale |
+|---|---|
+| `USE_PROCD=1` + `procd_set_param respawn` | This is the *only* correct way to get automatic crash-restart on modern OpenWrt (Chaos Calmer+). The older `rc.common` loop approach is deprecated. procd is the init/supervisor daemon. |
+| `/usr/sbin/my_daemon` | The OpenWrt packaging guidelines place daemon binaries in `/usr/sbin`. `/usr/bin` is for user tools. |
+| `uci` / `config_load` | UCI (Unified Configuration Interface) is the canonical configuration system. Reading raw files with `grep`/`awk` would bypass the abstraction layer and break `reload` triggers. |
+| `procd_add_reload_trigger` | Hooks the service reload into UCI's commit pipeline — changing the config via `uci commit` automatically reloads the service. |
+| `echo > /proc/sys/kernel/hostname` | `uci commit system` + `reload_config` would work too, but writing `/proc` applies the change instantly without waiting for `system` service reload, which is more robust at boot time. |
+
+**Difficulty/Debate:** The main debate is whether to use `procd_set_param respawn` with default parameters or explicit ones. The defaults (`3600 5 0`) are generally fine, but a daemon that legitimately exits quickly (e.g., exits with code 0 on clean shutdown) needs `respawn_threshold` tuning or a wrapper to avoid procd blacklisting it as broken.
+
+---
+
+### Result for Scenario 05
+
+```lua
+-- /usr/lib/lua/luci/view/my_app/wifi_clients.htm
+-- LuCI view: fetches connected Wi-Fi clients via ubus and renders a table.
+-- This is a LuCI template file (MVC View layer), processed by the
+-- LuCI template engine (which extends standard Lua with <%...%> tags).
+
+<%
+-- Import the ubus library. In LuCI, 'luci.sys' or direct ubus calls are
+-- the standard way to query the system bus.
+local ubus  = require "ubus"
+local json  = require "luci.jsonc"   -- LuCI's built-in JSON parser
+
+-- Establish a ubus connection
+local conn  = ubus.connect()
+if not conn then
+    error("Failed to connect to ubus")
+end
+
+-- Query the wireless subsystem.
+-- 'network.wireless' status returns per-radio data including associated clients.
+-- This is equivalent to: ubus call network.wireless status '{}'
+local status = conn:call("network.wireless", "status", {})
+conn:close()
+
+-- Flatten all clients from all radios/interfaces into one list
+local clients = {}
+if status then
+    for radio_name, radio_data in pairs(status) do
+        if type(radio_data) == "table" and radio_data.interfaces then
+            for _, iface in ipairs(radio_data.interfaces) do
+                if iface.assoclist then
+                    for mac, info in pairs(iface.assoclist) do
+                        clients[#clients + 1] = {
+                            mac      = mac,
+                            radio    = radio_name,
+                            signal   = info.signal or "N/A",
+                            rx_rate  = info.rx and info.rx.rate or "N/A",
+                            tx_rate  = info.tx and info.tx.rate or "N/A",
+                        }
+                    end
+                end
+            end
+        end
+    end
+end
+%>
+
+<%+header%>  <!-- LuCI standard page header include -->
+
+<h2><%:Connected Wi-Fi Clients%></h2>
+
+<% if #clients == 0 then %>
+    <p class="alert alert-info"><%:No clients currently associated.%></p>
+<% else %>
+<table class="table table-bordered table-condensed" id="wifi-clients-table">
+    <thead>
+        <tr>
+            <th><%:MAC Address%></th>
+            <th><%:Radio%></th>
+            <th><%:Signal (dBm)%></th>
+            <th><%:RX Rate (Kbps)%></th>
+            <th><%:TX Rate (Kbps)%></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for _, client in ipairs(clients) do %>
+        <tr>
+            <!-- luci.util.pchtml() escapes output — critical for MAC strings
+                 from external sources to prevent XSS, even if unlikely here. -->
+            <td><code><%=luci.util.pchtml(client.mac)%></code></td>
+            <td><%=luci.util.pchtml(client.radio)%></td>
+            <td><%=luci.util.pchtml(tostring(client.signal))%></td>
+            <td><%=luci.util.pchtml(tostring(client.rx_rate))%></td>
+            <td><%=luci.util.pchtml(tostring(client.tx_rate))%></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+<% end %>
+
+<%+footer%>  <!-- LuCI standard page footer include -->
+```
+
+**Corresponding controller registration snippet (`/usr/lib/lua/luci/controller/my_app.lua`):**
+```lua
+module("luci.controller.my_app", package.seeall)
+
+function index()
+    entry({"admin", "status", "wifi_clients"},
+          template("my_app/wifi_clients"),  -- points to our view file
+          _("Wi-Fi Clients"), 90)
+end
+```
+
+**Explanation & Decisions:**
+
+| Choice | Rationale |
+|---|---|
+| `ubus` Lua library | The authoritative way to query OpenWrt subsystems at runtime. Alternatives like parsing `iwinfo` CLI output are fragile and slower. |
+| `network.wireless` → `status` | This ubus method is the standard interface exposed by `netifd`/`hostapd` and returns structured assoclist data including signal, rates, etc. |
+| LuCI template (`.htm`) not a standalone page | This is a *View* in LuCI's MVC pattern — logic stays minimal, the controller/model do heavy lifting. |
+| `luci.util.pchtml()` | Escapes HTML entities in output. Even MAC addresses should be escaped — defense in depth. |
+| `<%:...%>` i18n tags | LuCI convention for translatable strings. Skipping these makes the page non-translatable and inconsistent with LuCI UX standards. |
+
+**Difficulty/Debate:** The `ubus` object structure from `network.wireless` varies slightly between OpenWrt versions and drivers (`mac80211` vs `ath9k` etc.). The nested `interfaces[].assoclist` path is the most common, but some older builds expose it differently. A production implementation should add nil-checks at every level (shown above) and potentially fall back to parsing `iw dev wlan0 station dump`.
+
+---
+
+### Result for Scenario 07
+
+```c
+/*
+ * OpenWrt ubus RPC handler — C plugin (shared library loaded by rpcd or ubusd)
+ *
+ * Build context:
+ *   - Links against libubus, libblobmsg_json, libjson-c (via OpenWrt SDK)
+ *   - Compiled as a shared library: libmy_plugin.so
+ *   - Loaded by rpcd via /usr/lib/rpcd/my_plugin.so
+ */
+
+#include <libubus.h>       /* ubus_context, ubus_request_data, ubus_method */
+#include <libblobmsg_json.h>
+#include <blobmsg_json.h>
+
+/*
+ * The blob buffer used to build the reply.
+ * Declared static so it persists across the handler call — blobmsg
+ * operates on a growable memory buffer, not stack-allocated data.
+ */
+static struct blob_buf reply_buf;
+
+/*
+ * my_handler_get_status()
+ *
+ * This is the ubus method handler. Its signature is mandated by the
+ * ubus API:
+ *
+ *   int handler(struct ubus_context    *ctx,
+ *               struct ubus_object     *obj,
+ *               struct ubus_request_data *req,
+ *               const char             *method,
+ *               struct blob_attr       *msg)
+ *
+ *  ctx    — the ubus context (connection to ubusd)
+ *  obj    — the ubus object this method belongs to
+ *  req    — the incoming request; must be passed back to ubus_send_reply()
+ *  method — the method name string (useful if one handler serves multiple methods)
+ *  msg    — the incoming parameters as a blobmsg attribute (may be NULL/empty)
+ *
+ * Returns: UBUS_STATUS_OK (0) on success, or a UBUS_STATUS_* error code.
+ */
+int my_handler_get_status(struct ubus_context      *ctx,
+                           struct ubus_object       *obj,
+                           struct ubus_request_data *req,
+                           const char               *method,
+                           struct blob_attr         *msg)
+{
+    /*
+     * Step 1: Initialise (or re-initialise) the blob buffer.
+     * blob_buf_init() zeroes and prepares 'reply_buf' for a fresh message.
+     * The second argument is flags (0 = defaults).
+     * Using a static buf avoids malloc/free on every call; blob_buf_init
+     * handles the internal reallocation safely.
+     */
+    blob_buf_init(&reply_buf, 0);
+
+    /*
+     * Step 2: Build the JSON object {"status": "ok"} using blobmsg helpers.
+     *
+     * blobmsg_add_string() appends a key-value string pair to the buffer.
+     * The buffer internally encodes this as a type-length-value (TLV)
+     * blob, which ubus will serialise to JSON when delivering to the caller.
+     *
+     * We do NOT build a raw JSON string — blobmsg is the correct, safe,
+     * binary-clean abstraction for ubus messages.
+     */
+    blobmsg_add_string(&reply_buf, "status", "ok");
+
+    /*
+     * Step 3: Send the reply back to the requester.
+     *
+     * ubus_send_reply() takes:
+     *   - ctx          : the active ubus connection
+     *   - req          : the request we are responding to (provides routing)
+     *   - reply_buf.head: pointer to the head of our blob message
+     *
+     * After this call, ubusd will route the reply blob to the caller,
+     * who receives it as {"status": "ok"}.
+     *
+     * Return value: UBUS_STATUS_OK on success.
+     */
+    return ubus_send_reply(ctx, req, reply_buf.head);
+}
+
+/* ------------------------------------------------------------------ *
+ *  Method table & object registration (shown for completeness)
+ * ------------------------------------------------------------------ */
+
+/*
+ * Declare the set of methods this object exposes.
+ * UBUS_METHOD_NOARG means this method accepts no input parameters.
+ * Use UBUS_METHOD() with a blobmsg_policy table if you need typed input.
+ */
+static const struct ubus_method my_plugin_methods[] = {
+    UBUS_METHOD_NOARG("get_status", my_handler_get_status),
+};
+
+static struct ubus_object_type my_plugin_obj_type =
+    UBUS_OBJECT_TYPE("my_plugin", my_plugin_methods);
+
+static struct ubus_object my_plugin_object = {
+    .name      = "my_plugin",          /* ubus object name: `ubus call my_plugin get_status` */
+    .type      = &my_plugin_obj_type,
+    .methods   = my_plugin_methods,
+    .n_methods = ARRAY_SIZE(my_plugin_methods),
+};
+
+/*
+ * init() — called by rpcd when the plugin .so is loaded.
+ * Registers the object on the ubus.
+ */
+int my_plugin_init(struct ubus_context *ctx)
+{
+    return ubus_add_object(ctx, &my_plugin_object);
+}
+```
+
+**Explanation & Decisions:**
+
+| Choice | Rationale |
+|---|---|
+| `blobmsg` / `blob_buf` instead of raw JSON strings | ubus does **not** transport JSON strings natively — it transports binary TLV blobs. `blobmsg_json` converts between the two transparently. Building a `char *json_str` and trying to send it directly is a common mistake that corrupts messages. |
+| `static struct blob_buf reply_buf` | Reusing a static buffer avoids heap fragmentation on embedded targets. `blob_buf_init()` safely resets it. The caveat is this is **not** thread-safe — if rpcd uses threads, a per-thread or mutex-guarded buffer is needed. |
+| `UBUS_METHOD_NOARG` | Since `get_status` takes no parameters, this is cleaner and avoids allocating a `blobmsg_policy` table. |
+| Return `ubus_send_reply(...)` directly | The return value of `ubus_send_reply` is already a `UBUS_STATUS_*` code, so returning it directly is idiomatic and correct. |
+
+**Difficulty/Debate:** The most common confusion here is the `blob_buf` vs JSON string duality. New developers often try `blobmsg_add_json_from_string()` to add a pre-built JSON object — this *works* but double-wraps the data. The correct pattern for a flat `{"key": "value"}` reply is always individual `blobmsg_add_*` calls. Also debated: whether to use `rpcd` (high-level plugin system with ACL) vs a raw `ubusd` daemon — `rpcd` is strongly preferred for security since it enforces `/usr/share/rpcd/acl.d/` JSON ACL files.
+
+---
+
+### Result for Scenario 10
+
+```sh
+#!/bin/sh
+# /etc/uci-defaults/99_set_default_timezone
+#
+# ============================================================
+# PLACEMENT: /etc/uci-defaults/
+#
+# Files in /etc/uci-defaults/ are executed ONCE by the preinit/
+# init system on first boot (by /etc/init.d/boot via
+# /lib/functions/preinit.sh). After successful execution (exit 0),
+# the file is AUTOMATICALLY DELETED by the framework.
+# If the script exits non-zero, it is retried on the next boot.
+#
+# Naming convention: numeric prefix controls execution order.
+# '99_' runs late, after core system defaults are applied.
+# ============================================================
+
+# --- Set timezone to UTC ---
+# OpenWrt stores timezone data in two UCI options under system.@system[0]:
+#
+#   timezone  : the POSIX TZ string (e.g. "UTC0") — used by the C library
+#   zonename  : the human-readable zone name (e.g. "UTC") — used by LuCI/UI
+#
+# Both must be set for full consistency (LuCI reads 'zonename';
+# the kernel/libc reads 'timezone').
+
+uci set system.@system[0].timezone='UTC0'
+uci set system.@system[0].zonename='UTC'
+
+# Persist the change to /etc/config/system
+uci commit system
+
+# Apply the timezone to the running system immediately.
+# /etc/TZ is read by uClibc/musl at runtime for the TZ environment variable.
+echo 'UTC0' > /etc/TZ
+
+# Signal the system service to reload (updates /tmp/TZ symlink etc.)
+# This is a best-effort call; if 'system' service isn't up yet at this
+# point in boot, the uci commit above ensures correctness on next read.
+/etc/init.d/system reload 2>/dev/null || true
+
+# Exit 0 is MANDATORY — it tells the uci-defaults framework that this
+# script succeeded and should be deleted (preventing re-execution).
+exit 0
+```
+
+**Where to place it:**
+
+```
+/etc/uci-defaults/99_set_default_timezone
+```
+
+Make it executable:
+```sh
+chmod +x /etc/uci-defaults/99_set_default_timezone
+```
+
+**The execution lifecycle:**
+
+```
+First Boot
+    └─ /etc/init.d/boot runs
+        └─ Iterates over /etc/uci-defaults/*  (alphabetical order)
+            └─ Executes 99_set_default_timezone
+                ├─ Script exits 0
+                └─ Framework deletes the file ✓
+
+Second Boot
+    └─ /etc/uci-defaults/ is empty (or file is gone)
+        └─ Script never runs again ✓
+```
+
+**Explanation & Decisions:**
+
+| Choice | Rationale |
+|---|---|
+| `/etc/uci-defaults/` | This is the *only* OpenWrt-idiomatic mechanism for "run once on first boot." Do **not** use `cron @reboot`, a custom flag file in `/tmp`, or a custom init script with a sentinel file — these are fragile reimplementations of existing infrastructure. |
+| Both `timezone` and `zonename` | Setting only `timezone` breaks the LuCI UI (shows wrong zone). Setting only `zonename` breaks the C runtime. Both are required. |
+| `UTC0` as the POSIX TZ string | `UTC` alone is technically valid but `UTC0` is the explicit POSIX form meaning "UTC with 0 offset, no DST." More portable across uClibc/musl. |
+| `exit 0` | **Critical.** If you omit this and the last command exits non-zero, the framework won't delete the script and it runs again on every boot — defeating the entire purpose. |
+| `uci commit system` | Without commit, the change lives only in UCI's staging area (`/tmp/.uci/`) and is lost on reboot. |
+
+**Difficulty/Debate:** The main trap is forgetting `exit 0`. Another debate is whether to use the `system` init script reload vs writing `/etc/TZ` directly — on some builds the init reload happens asynchronously and may lose the race. Writing `/etc/TZ` directly is defensive and immediate. Purists argue only UCI should be used; pragmatists write both.
+
+---
+
+### Result for Scenario 13
+
+```sh
+#!/bin/sh
+# /usr/bin/read_config.sh
+#
+# Safely reads /etc/my_app/config.json and prints the 'startup_delay' value.
+#
+# Tool choice: jsonfilter
+# ─────────────────────────────────────────────────────────────────
+# OpenWrt does NOT ship Python, Ruby, or Node.js by default.
+# 'jq' is available but is a larger dependency (not in base).
+# 'jsonfilter' (package: jsonfilter) IS part of the OpenWrt base
+# system — it is installed by default and purpose-built for
+# lightweight JSON parsing in shell scripts on embedded targets.
+# It uses a JSONPath-like query syntax and handles type coercion.
+# ─────────────────────────────────────────────────────────────────
+
+CONFIG_FILE="/etc/my_app/config.json"
+
+# ── Step 1: Verify the file exists and is readable ───────────────
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "ERROR: Config file not found: $CONFIG_FILE" >&2
+    exit 1
+fi
+
+if [ ! -r "$CONFIG_FILE" ]; then
+    echo "ERROR: Config file is not readable: $CONFIG_FILE" >&2
+    exit 1
+fi
+
+# ── Step 2: Validate that the file is non-empty ──────────────────
+if [ ! -s "$CONFIG_FILE" ]; then
+    echo "ERROR: Config file is empty: $CONFIG_FILE" >&2
+    exit 1
+fi
+
+# ── Step 3: Parse 'startup_delay' using jsonfilter ───────────────
+#
+# jsonfilter syntax:
+#   -i <file>        : input file (instead of stdin)
+#   -e '@.key'       : JSONPath expression; '@' is the root object
+#
+# The result is printed to stdout as a raw value (no quotes for
+# numbers/booleans; quoted for strings unless -r/--raw is used).
+#
+# We capture the output and check for parse errors separately.
+
+startup_delay=$(jsonfilter -i "$CONFIG_FILE" -e '@.startup_delay' 2>/dev/null)
+
+# ── Step 4: Check if jsonfilter returned anything ─────────────────
+# jsonfilter exits 0 even if the key is absent but returns empty output.
+# We must distinguish "key missing" from "key present with value 0".
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to parse JSON file: $CONFIG_FILE" >&2
+    exit 2
+fi
+
+if [ -z "$startup_delay" ]; then
+    echo "ERROR: Key 'startup_delay' not found in $CONFIG_FILE" >&2
+    exit 3
+fi
+
+# ── Step 5: (Optional but recommended) validate the value is numeric ──
+case "$startup_delay" in
+    ''|*[!0-9]*)
+        # Value contains non-digit characters — reject it.
+        # This guards against JSON injection if the file is externally written.
+        echo "ERROR: 'startup_delay' is not a valid integer: '$startup_delay'" >&2
+        exit 4
+        ;;
+esac
+
+# ── Step 6: Print the result ──────────────────────────────────────
+echo "startup_delay = ${startup_delay}"
+
+# Example output:
+#   startup_delay = 30
+```
+
+**Example `/etc/my_app/config.json`:**
+```json
+{
+    "startup_delay": 30,
+    "log_level": "info",
+    "server": "192.168.1.1"
+}
+```
+
+**Run it:**
+```sh
+chmod +x /usr/bin/read_config.sh
+/usr/bin/read_config.sh
+# startup_delay = 30
+```
+
+**Explanation & Decisions:**
+
+| Choice | Rationale |
+|---|---|
+| `jsonfilter` | Ships in OpenWrt base — zero additional dependencies. `jq` requires explicit install and is ~400KB (significant on 4MB flash routers). Python/Perl don't exist by default. `jsonfilter` is the purpose-built answer. |
+| `jsonfilter -i file` vs stdin pipe | Using `-i` avoids a subshell and is slightly more efficient; also cleaner error attribution. |
+| Explicit empty-string check after parse | `jsonfilter` returns exit code 0 for missing keys (returning empty string). Relying only on exit code gives false positives. Both checks together are required for correctness. |
+| Numeric validation with `case` | On an embedded router, config files may be written by external scripts or synced from remote. Validating the type before use prevents downstream misuse of the variable. |
+| No `eval` or `source` of the JSON | **Never** source or eval JSON as shell code — a malicious `config.json` with `$(reboot)` as a value would execute it. `jsonfilter` parses it as data, not code. |
+
+**Difficulty/Debate:** The biggest debate is `jsonfilter` vs `jq`. `jq` has superior expressiveness (complex queries, transformations) but is a heavier dependency. For simple key reads on OpenWrt, `jsonfilter` wins. A secondary debate: some developers use `grep`+`sed`/`awk` to parse JSON — this is unreliable for any non-trivial JSON (multiline values, escaped characters, nested objects) and should be rejected.
+
+---
+
+### Result for Scenario 16
+
+```sh
+#!/bin/sh
+# /usr/bin/parallel_ping.sh
+#
+# Runs two ping commands simultaneously, prefixing each output line
+# with the target IP address. Works within OpenWrt's busybox/ash
+# environment — no bash, no GNU coreutils required.
+#
+# Architecture:
+#   - Two named pipes (FIFOs) act as inter-process channels.
+#   - Two ping processes write to their respective FIFOs.
+#   - Two 'prefix' reader processes read from each FIFO and add
+#     the IP label, writing to a single shared stdout.
+#   - A cleanup trap ensures FIFOs and child PIDs are removed on exit.
+#
+# Why FIFOs instead of process substitution (<())?
+#   Process substitution is a BASH feature. OpenWrt's default shell
+#   is ASH (busybox), which does NOT support <(). FIFOs are POSIX.
+
+TARGET_A="10.10.10.2"
+TARGET_B="10.10.10.3"
+
+FIFO_A="/tmp/ping_fifo_${TARGET_A}_$$"   # $$ = current PID, ensures uniqueness
+FIFO_B="/tmp/ping_fifo_${TARGET_B}_$$"
+
+# ── Cleanup: remove FIFOs and kill child processes on exit/interrupt ──
+cleanup() {
+    # Kill all tracked child PIDs gracefully
+    for pid in $PING_PID_A $PING_PID_B $READ_PID_A $READ_PID_B; do
+        kill "$pid" 2>/dev/null
+    done
+    # Remove the FIFOs
+    rm -f "$FIFO_A" "$FIFO_B"
+    exit 0
+}
+
+trap cleanup INT TERM EXIT
+
+# ── Create named pipes ────────────────────────────────────────────
+mkfifo "$FIFO_A" || { echo "ERROR: Cannot create FIFO $FIFO_A" >&2; exit 1; }
+mkfifo "$FIFO_B" || { echo "ERROR: Cannot create FIFO $FIFO_B" >&2; exit 1; }
+
+# ── Start ping processes, directing output to their FIFOs ─────────
+#
+# OpenWrt's busybox ping flags:
+#   (no -c flag = runs continuously until killed)
+#   -W 2 : wait 2 seconds for each reply (reduces hang time on dead hosts)
+#
+# Redirect stderr to stdout so ICMP errors are also captured and prefixed.
+
+ping -W 2 "$TARGET_A" > "$FIFO_A" 2>&1 &
+PING_PID_A=$!
+
+ping -W 2 "$TARGET_B" > "$FIFO_B" 2>&1 &
+PING_PID_B=$!
+
+# ── Start reader/prefixer processes ───────────────────────────────
+#
+# Each reader:
+#   1. Opens the FIFO for reading (blocks until ping opens write end)
+#   2. Reads line by line with 'while read'
+#   3. Prepends "[IP] " to every line
+#   4. Writes to shared stdout (which is the terminal)
+#
+# Both readers run in the background simultaneously.
+# Writing to stdout from two subshells is safe here because each
+# write() call for a single line is atomic for lines < PIPE_BUF
+# (4096 bytes on Linux) — individual lines won't interleave mid-line.
+
+while IFS= read -r line; do
+    printf '[%s] %s\n' "$TARGET_A" "$line"
+done < "$FIFO_A" &
+READ_PID_A=$!
+
+while IFS= read -r line; do
+    printf '[%s] %s\n' "$TARGET_B" "$line"
+done < "$FIFO_B" &
+READ_PID_B=$!
+
+# ── Wait for all background jobs ──────────────────────────────────
+#
+# 'wait' with no arguments waits for ALL background children.
+# The trap on EXIT will fire when this script is interrupted (Ctrl+C),
+# killing the child processes and removing FIFOs before exit.
+
+wait
+```
+
+**Example output:**
+```
+[10.10.10.2] PING 10.10.10.2 (10.10.10.2): 56 data bytes
+[10.10.10.3] PING 10.10.10.3 (10.10.10.3): 56 data bytes
+[10.10.10.2] 64 bytes from 10.10.10.2: seq=0 ttl=64 time=1.243 ms
+[10.10.10.3] 64 bytes from 10.10.10.3: seq=0 ttl=64 time=2.871 ms
+[10.10.10.2] 64 bytes from 10.10.10.2: seq=1 ttl=64 time=1.101 ms
+[10.10.10.3] Request timeout for icmp_seq 1
+```
+
+**Explanation & Decisions:**
+
+| Choice | Rationale |
+|---|---|
+| Named FIFOs (mkfifo) | The POSIX-correct IPC mechanism in `ash`. Bash's `<()` process substitution doesn't exist in busybox ash. FIFOs are universally available. |
+| `printf '[%s] %s\n'` | More portable than `echo` with escape sequences. Works identically across busybox's `echo` (which doesn't support `-e` by default) and standard `printf`. |
+| `IFS= read -r line` | `IFS=` prevents stripping leading/trailing whitespace. `-r` prevents backslash interpretation. Both are essential for lossless line capture. |
+| `$$` in FIFO paths | Using the script's PID in FIFO names prevents collisions if the script runs multiple times concurrently. |
+| `trap cleanup INT TERM EXIT` | Without this, killing the script leaves orphaned `ping` processes running and FIFOs on disk. The `EXIT` trap covers normal termination; `INT`/`TERM` cover signals. |
+| `ping 2>&1` → FIFO | ICMP errors like "Request timeout" go to stderr in some busybox builds. Merging stderr ensures they are captured and prefixed rather than bypassing to the terminal unlabeled. |
+
+**Difficulty/Debate:** The primary difficulty is the **bash vs ash** gap. Many "parallel shell" recipes use `<()`, `coproc`, or `tee` with process substitution — none of which work in busybox ash. The FIFO approach is more verbose but 100% portable to the constrained OpenWrt environment. A secondary debate: using `wait $PING_PID_A $PING_PID_B` (wait for pings only) vs `wait` (all children). Using bare `wait` is safer here because if a reader dies before its ping, `wait` would still catch the cleanup, whereas selective wait might hang. The stdout atomicity guarantee (lines < PIPE_BUF won't interleave) is real but should be noted as a soft guarantee — extremely long ping output lines could theoretically split, though in practice ping lines are always short.

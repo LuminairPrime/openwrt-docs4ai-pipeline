@@ -1,0 +1,148 @@
+### Result for Scenario 01
+
+```sh
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=99
+
+start_service() {
+    local hostname
+    
+    # Load config from /etc/config/my_daemon
+    config_load my_daemon
+    config_get hostname "main" "hostname" "OpenWrt"
+
+    # Apply hostname to system (Trade-off: causes flash wear if committed every boot)
+    uci_set system @system[0] hostname "$hostname"
+    uci commit system
+    reload_config
+
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+    procd_set_param respawn "${respawn_threshold:-3600}" "${respawn_timeout:-5}" "${respawn_retry:-5}"
+    procd_close_instance
+}
+```
+
+**Architecture & Debate:** Built using OpenWrt's `procd` init system and `uci` configuration tool. 
+*Debate:* The primary difficulty here is modifying the global system configuration (`system.@system[0].hostname`) from a discrete daemon's init script. While technically feasible via `uci set`, calling `uci commit` on every boot initiates unnecessary writes to the NOR/NAND flash, contributing to wear. A safer, albeit less persistent, alternative in a production environment is applying the hostname dynamically via the `hostname $hostname` command in RAM, bypassing the flash write entirely if persistent storage isn't strictly required.
+
+### Result for Scenario 05
+
+```html
+<%
+    local ubus = require "ubus"
+    local conn = ubus.connect()
+    local clients = {}
+
+    -- Fetch wireless status from ubus (assuming default radio/interface setup)
+    local wlan_status = conn:call("network.wireless", "status", {})
+    if wlan_status and wlan_status.radio0 and wlan_status.radio0.interfaces then
+        for _, iface in ipairs(wlan_status.radio0.interfaces) do
+            local iface_clients = conn:call("hostapd." .. iface.ifname, "get_clients", {})
+            if iface_clients and iface_clients.clients then
+                for mac, _ in pairs(iface_clients.clients) do
+                    table.insert(clients, mac)
+                end
+            end
+        end
+    end
+%>
+
+<table>
+    <tr><th>Connected MAC Addresses</th></tr>
+    <% for _, mac in ipairs(clients) do %>
+    <tr><td><%=pcdata(mac)%></td></tr>
+    <% end %>
+</table>
+```
+
+**Architecture & Debate:** Uses standard LuCI (Lua Configuration Interface) `.htm` view templates combined with the Lua `ubus` binding.
+*Debate:* The challenge is locating the connected clients reliably, as `ubus` namespaces change depending on the wireless driver (e.g., `hostapd.wlan0` vs `iwinfo`). I opted for iterating through `network.wireless` to dynamically find the `ifname` and querying `hostapd.<ifname>`, which is the standard mechanism in modern OpenWrt builds (using `mac80211` / `hostapd`), avoiding hardcoded interface names which often break across different hardware platforms.
+
+### Result for Scenario 07
+
+```c
+#include <libubus.h>
+#include <libubox/blobmsg_json.h>
+
+// Static buffer to avoid heap fragmentation on repeated RPC calls
+static struct blob_buf b;
+
+static int my_daemon_rpc_handler(struct ubus_context *ctx, struct ubus_object *obj,
+                                 struct ubus_request_data *req, const char *method,
+                                 struct blob_attr *msg)
+{
+    // Re-initialize buffer, reserving space for standard replies
+    blob_buf_init(&b, 0);
+
+    // Append JSON payload {"status": "ok"}
+    blobmsg_add_string(&b, "status", "ok");
+
+    // Send the reply back over the bus
+    ubus_send_reply(ctx, req, b.head);
+
+    return UBUS_STATUS_OK;
+}
+```
+
+**Architecture & Debate:** Utilizes `libubus` for IPC routing and `libblobmsg_json` for OpenWrt's native binary-JSON serialization format.
+*Debate:* Standard C development often leans toward dynamic memory allocation (`malloc`/`free`) per request. In embedded OpenWrt development, heap fragmentation on low-RAM devices (e.g., 32MB/64MB routers) is a critical failure point. I explicitly used a global static `struct blob_buf b` that is reset via `blob_buf_init()` on each call to ensure deterministic memory usage and prevent memory leaks in the daemon during high RPC throughput.
+
+### Result for Scenario 10
+
+```sh
+#!/bin/sh
+
+# Set the timezone strictly to UTC
+uci set system.@system[0].zonename='UTC'
+uci set system.@system[0].timezone='UTC'
+uci commit system
+
+# Exit 0 is critical: it tells the system to delete this script after running
+exit 0
+```
+**File Location:** Place this file inside `/etc/uci-defaults/` (e.g., `/etc/uci-defaults/99-set-utc`).
+
+**Architecture & Debate:** Uses the `uci-defaults` subsystem. OpenWrt executes all scripts in `/etc/uci-defaults/` during the boot process.
+*Debate:* I avoided writing a custom `init.d` script with state-tracking flags to ensure a "once-only" execution. Relying on OpenWrt's native `uci-defaults` is the cleanest approach. The most frequent failure point here is developers forgetting `exit 0`. If a command within the script fails and the script exits with a non-zero code, OpenWrt will refuse to delete it, causing it to run repeatedly on every subsequent boot. 
+
+### Result for Scenario 13
+
+```sh
+#!/bin/sh
+
+delay=$(jsonfilter -i /etc/my_app/config.json -e '@.startup_delay')
+echo "Startup Delay: $delay"
+```
+
+**Architecture & Debate:** Uses `jsonfilter`, an OpenWrt-specific, lightweight C utility designed for querying JSON structures via JSONPath syntax without pulling in heavyweight interpreters like Python or Node.
+*Debate:* The classic OpenWrt approach is using `jshn` (JSON shell helper). However, `jshn` requires sourcing shell libraries, loading JSON into memory namespaces, extracting the variable, and explicitly clearing the namespace—a multi-line, verbose process. `jsonfilter` is vastly superior for this scenario: it executes in a single shot, handles nested keys natively, and eliminates the risk of shell variable pollution.
+
+### Result for Scenario 16
+
+```sh
+#!/bin/sh
+
+# Use standard Busybox ash 'while read' loops to bypass output buffering 
+# that tools like 'awk' or 'sed' introduce in embedded environments.
+
+ping 10.10.10.2 2>&1 | while read -r line; do
+    echo "10.10.10.2: $line"
+done &
+PID1=$!
+
+ping 10.10.10.3 2>&1 | while read -r line; do
+    echo "10.10.10.3: $line"
+done &
+PID2=$!
+
+# Wait for background jobs (blocks until interrupted)
+wait $PID1 $PID2
+```
+
+**Architecture & Debate:** Standard Busybox `ash` shell features: background process management (`&`) and pipe-to-while loops.
+*Debate:* The immediate instinct is to use `ping IP | awk '{print "IP: " $0}' &`. However, in Busybox, `awk` and `sed` are heavily buffered when outputting to a non-tty (like a pipe or background process). This causes the "live" output to chunk, defeating the purpose of a real-time stream. Using the shell's native `while read -r` loop avoids this buffer bloat completely, providing immediate, line-by-line STDOUT flushing without relying on external packages like `stdbuf` or `expect`, which are rarely installed on base OpenWrt firmware.
+
+http://googleusercontent.com/interactive_content_block/0

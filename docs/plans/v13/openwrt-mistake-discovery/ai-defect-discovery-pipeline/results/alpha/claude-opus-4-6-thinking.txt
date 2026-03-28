@@ -1,0 +1,337 @@
+
+
+### Result for Scenario 01
+
+```sh
+#!/bin/sh /etc/rc.common
+# /etc/init.d/my_daemon
+
+START=95
+STOP=10
+USE_PROCD=1
+
+start_service() {
+    # ---- read hostname from /etc/config/my_daemon ----
+    local hostname
+    config_load my_daemon
+    config_get hostname main hostname          # section 'main', option 'hostname'
+
+    if [ -n "$hostname" ]; then
+        uci set system.@system[0].hostname="$hostname"
+        uci commit system
+        echo "$hostname" > /proc/sys/kernel/hostname
+        logger -t my_daemon "Hostname set to $hostname"
+    fi
+
+    # ---- launch daemon under procd with auto-respawn ----
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+    #                       threshold(s) timeout(s) retries
+    procd_set_param respawn 3600         5          5
+    procd_set_param file    /etc/config/my_daemon   # restart on config change
+    procd_set_param stdout  1
+    procd_set_param stderr  1
+    procd_close_instance
+}
+```
+
+Matching UCI configuration file – `/etc/config/my_daemon`:
+
+```
+config settings 'main'
+    option hostname 'my-router'
+```
+
+**Explanation & discussion**
+
+| Decision | Rationale |
+|---|---|
+| **procd** init style (`USE_PROCD=1`) | OpenWrt replaced SysV-style `start()/stop()` with procd service management. `procd_set_param respawn` is the canonical way to auto-restart a crashed daemon. |
+| **`/usr/sbin/my_daemon`** | Packages from the official feed install system daemons into `/usr/sbin/`. |
+| **`/etc/config/my_daemon`** – UCI format | OpenWrt's standard configuration directory is `/etc/config/`, one file per subsystem, parsed by the UCI library (`config_load` / `config_get`). |
+| **`procd_set_param file`** | Tells procd to watch the config file and trigger a service restart when it changes — a nice bonus. |
+| Hostname applied with both `uci commit` and a direct `/proc` write | `uci commit system` persists across reboots; the `/proc` write applies immediately without needing a full `/etc/init.d/system reload`. |
+
+The main debate was whether to apply the hostname inside `start_service()` or in a separate `service_triggers` / `reload_service` block. Keeping it in `start_service()` is simpler and guarantees it runs before the daemon, which may itself depend on the hostname.
+
+---
+
+### Result for Scenario 05
+
+```javascript
+// /www/luci-static/resources/view/wifi-clients.js
+'use strict';
+'require view';
+'require dom';
+'require ubus';
+
+return view.extend({
+    load: function () {
+        /* Step 1 – ask ubus for every radio's interface list */
+        return ubus.call('network.wireless', 'status').then(function (status) {
+            var tasks = [];
+
+            for (var radio in status) {
+                var ifaces = status[radio].interfaces || [];
+                ifaces.forEach(function (iface) {
+                    var ifname = iface.ifname;
+                    if (ifname) {
+                        /* Step 2 – fetch the association list for each ifname */
+                        tasks.push(
+                            ubus.call('iwinfo', 'assoclist', { device: ifname })
+                                .then(function (reply) {
+                                    return (reply && reply.results) ? reply.results : [];
+                                })
+                                .catch(function () { return []; })
+                        );
+                    }
+                });
+            }
+
+            return Promise.all(tasks);
+        });
+    },
+
+    render: function (assocLists) {
+        var clients = [].concat.apply([], assocLists);   // flatten
+
+        var tableEl = E('table', { 'class': 'table' }, [
+            E('tr', { 'class': 'tr table-titles' }, [
+                E('th', { 'class': 'th' }, '#'),
+                E('th', { 'class': 'th' }, 'MAC Address')
+            ])
+        ]);
+
+        if (clients.length === 0) {
+            tableEl.appendChild(
+                E('tr', { 'class': 'tr placeholder' }, [
+                    E('td', { 'class': 'td', 'colspan': '2' },
+                        'No wireless clients connected.')
+                ])
+            );
+        } else {
+            clients.forEach(function (c, idx) {
+                tableEl.appendChild(
+                    E('tr', { 'class': 'tr' }, [
+                        E('td', { 'class': 'td' }, String(idx + 1)),
+                        E('td', { 'class': 'td' }, c.mac)
+                    ])
+                );
+            });
+        }
+
+        return E('div', { 'class': 'cbi-map' }, [
+            E('h2', {}, 'Connected Wi-Fi Clients'),
+            tableEl
+        ]);
+    }
+});
+```
+
+**Explanation & discussion**
+
+| Decision | Rationale |
+|---|---|
+| **`ubus.call()`** directly | The scenario explicitly asks for "system bus" data. In OpenWrt the system bus is **ubus**; LuCI's JS `ubus` module wraps the same RPC channel that `ubus call` uses on the CLI. |
+| **Two-phase load** – `network.wireless status` → `iwinfo assoclist` | There is no single ubus call that returns *all* clients across *all* radios. `network.wireless status` discovers every radio/interface dynamically, then `iwinfo assoclist` fetches the association list per interface. An alternative was `hostapd.<ifname> get_clients`, but `iwinfo` is more universally available (works for both AP and mesh modes). |
+| **Modern client-side LuCI JS view** | Post-LuCI2, views are plain ES5 modules under `/www/luci-static/resources/view/`. The older Lua-template approach is being phased out. |
+| **`E()` DOM helper** | Standard LuCI JS helper (`dom.js`) — preferred over raw `document.createElement` chains. |
+
+The hardest part was deciding *which* ubus namespace to query. `hostapd.<ifname>` only works in AP mode, while `iwinfo` is more generic. Using `network.wireless status` to discover interfaces dynamically avoids hard-coding `wlan0`.
+
+---
+
+### Result for Scenario 07
+
+```c
+#include <libubus.h>
+#include <libubox/blobmsg_json.h>
+
+/*
+ * Method handler for the "status" RPC call.
+ * Replies: {"status": "ok"}
+ */
+static int
+handle_status(struct ubus_context *ctx,
+              struct ubus_object *obj,
+              struct ubus_request_data *req,
+              const char *method,
+              struct blob_attr *msg)
+{
+    static struct blob_buf b;
+
+    blob_buf_init(&b, 0);
+    blobmsg_add_string(&b, "status", "ok");
+    ubus_send_reply(ctx, req, b.head);
+    blob_buf_free(&b);
+
+    return UBUS_STATUS_OK;          /* == 0 */
+}
+
+/* ---- wiring (for context) ---- */
+
+/* No input arguments expected */
+static const struct blobmsg_policy status_policy[] = { };
+
+static const struct ubus_method my_methods[] = {
+    UBUS_METHOD_NOARG("status", handle_status),
+};
+
+static struct ubus_object_type my_obj_type =
+    UBUS_OBJECT_TYPE("my_daemon", my_methods);
+
+static struct ubus_object my_obj = {
+    .name    = "my_daemon",
+    .type    = &my_obj_type,
+    .methods = my_methods,
+    .n_methods = ARRAY_SIZE(my_methods),
+};
+```
+
+**Explanation & discussion**
+
+| Decision | Rationale |
+|---|---|
+| **libubus + libubox/blobmsg** | These are the canonical C libraries for writing ubus services on OpenWrt. Every ubus method handler has the same five-parameter signature dictated by `struct ubus_method`. |
+| **`static struct blob_buf`** | A common OpenWrt idiom — the blob buffer is reused across calls. `blob_buf_init` resets it each time. |
+| **`UBUS_METHOD_NOARG`** | Since the RPC takes no input, `UBUS_METHOD_NOARG` is cleaner than declaring an empty policy array with `UBUS_METHOD`. |
+| **`blob_buf_free` after reply** | Frees the internal allocation. Some upstream examples skip this for static buffers, but it is good hygiene and prevents leaks if the buffer grows over time. |
+
+The main debate was whether to use a `static` blob buffer (fast, not thread-safe) vs. a stack-local one (thread-safe but slightly more allocation overhead). Since ubus dispatches on a single-threaded event loop, the `static` approach is standard practice.
+
+---
+
+### Result for Scenario 10
+
+```sh
+#!/bin/sh
+# /etc/uci-defaults/99-set-default-timezone
+
+uci set system.@system[0].timezone='UTC0'
+uci set system.@system[0].zonename='UTC'
+uci commit system
+/etc/init.d/system reload
+
+exit 0
+```
+
+**Placement:** `/etc/uci-defaults/99-set-default-timezone`
+
+**How it works:**
+
+OpenWrt's boot sequence (`/etc/init.d/boot`) iterates over every executable file in `/etc/uci-defaults/`. Each script that **exits 0** is automatically deleted after execution, guaranteeing it runs **exactly once** — on the very first boot (or after a factory reset, since `uci-defaults/` is restored from ROM).
+
+| Decision | Rationale |
+|---|---|
+| **`/etc/uci-defaults/`** | The official, documented OpenWrt mechanism for one-shot first-boot provisioning. No cron, no flag-files needed. |
+| **`exit 0`** | Critical — if the script exits non-zero, OpenWrt keeps it and retries on the next boot. |
+| **Setting both `timezone` and `zonename`** | `timezone` holds the POSIX TZ string (`UTC0`); `zonename` holds the human-readable Olson name used by LuCI's dropdown. Both are needed for full consistency. |
+| **`uci commit system`** | Writes to `/etc/config/system`, which lives on the writable overlay — so the setting survives reboots. |
+| **`/etc/init.d/system reload`** | Applies the timezone immediately during the current boot; without it the change would only take effect on the *next* reboot. |
+| **Prefix `99-`** | Scripts run in lexicographic order. `99-` ensures this runs late, after any earlier defaults that might touch the system config. |
+
+No real difficulty here — the pattern is well-established. The only thing worth remembering is that `uci-defaults` scripts must be **included in the firmware image** (or placed on the overlay before first boot) to truly run on "first boot."
+
+---
+
+### Result for Scenario 13
+
+```sh
+#!/bin/sh
+# Safely read and parse /etc/my_app/config.json using OpenWrt's native jsonfilter
+
+JSON_FILE="/etc/my_app/config.json"
+
+# --- safety checks ---
+if [ ! -f "$JSON_FILE" ]; then
+    echo "Error: ${JSON_FILE} not found." >&2
+    exit 1
+fi
+
+if [ ! -r "$JSON_FILE" ]; then
+    echo "Error: ${JSON_FILE} is not readable." >&2
+    exit 1
+fi
+
+# --- parse natively with jsonfilter ---
+startup_delay="$(jsonfilter -i "$JSON_FILE" -e '@.startup_delay' 2>/dev/null)"
+
+if [ -z "$startup_delay" ]; then
+    echo "Error: 'startup_delay' key not found or empty." >&2
+    exit 1
+fi
+
+echo "$startup_delay"
+```
+
+**Alternative using the `jshn` shell library (equally native):**
+
+```sh
+#!/bin/sh
+. /usr/share/libubox/jshn.sh
+
+JSON_FILE="/etc/my_app/config.json"
+[ -f "$JSON_FILE" ] && [ -r "$JSON_FILE" ] || { echo "Cannot read $JSON_FILE" >&2; exit 1; }
+
+json_init
+json_load "$(cat "$JSON_FILE")"
+json_get_var startup_delay startup_delay
+
+echo "$startup_delay"
+```
+
+**Explanation & discussion**
+
+| Decision | Rationale |
+|---|---|
+| **`jsonfilter`** (primary) | Ships as part of the OpenWrt base system (from `libubox`). It is a purpose-built, lightweight JSON query tool — the closest thing OpenWrt has to `jq`. The `-i` flag reads directly from a file; `-e '@.key'` uses JSONPath syntax. |
+| **`jshn`** (alternative) | The shell library (`/usr/share/libubox/jshn.sh`) provides `json_load`, `json_get_var`, etc. Also part of the base system. Slightly more verbose but useful when you need to extract many keys in one pass. |
+| **Safety checks before parsing** | An external file might be missing, corrupted, or permission-locked. Checking existence and readability before invoking the parser avoids cryptic errors. |
+| **`2>/dev/null` on jsonfilter** | Suppresses jsonfilter's own error messages so the script can provide a friendlier one. |
+
+The debate was `jsonfilter` vs. `jshn`. For a single key, `jsonfilter` is a one-liner. For complex, multi-key extraction, `jshn` is better because it parses the file once and lets you query repeatedly. Neither requires installing any extra packages — both are native to every OpenWrt image.
+
+---
+
+### Result for Scenario 16
+
+```sh
+#!/bin/sh
+# Parallel pings with per-line IP prefix — works with BusyBox (OpenWrt)
+
+IP1="10.10.10.2"
+IP2="10.10.10.3"
+
+# Clean up background jobs on exit / Ctrl-C
+trap 'kill 0; exit' INT TERM EXIT
+
+# Launch both pings in parallel; awk prefixes every line and flushes immediately
+ping "$IP1" 2>&1 | awk -v ip="$IP1" '{printf "[%s] %s\n", ip, $0; fflush()}' &
+ping "$IP2" 2>&1 | awk -v ip="$IP2" '{printf "[%s] %s\n", ip, $0; fflush()}' &
+
+# Wait for both background pipelines
+wait
+```
+
+**Sample output (interleaved live):**
+
+```
+[10.10.10.2] PING 10.10.10.2 (10.10.10.2): 56 data bytes
+[10.10.10.3] PING 10.10.10.3 (10.10.10.3): 56 data bytes
+[10.10.10.2] 64 bytes from 10.10.10.2: seq=0 ttl=64 time=1.234 ms
+[10.10.10.3] 64 bytes from 10.10.10.3: seq=0 ttl=64 time=2.567 ms
+[10.10.10.2] 64 bytes from 10.10.10.2: seq=1 ttl=64 time=1.112 ms
+...
+```
+
+**Explanation & discussion**
+
+| Decision | Rationale |
+|---|---|
+| **Background `&` operators** | Each `ping | awk` pipeline runs as an independent background job, achieving true parallelism. |
+| **`awk` with `fflush()`** | Guarantees each prefixed line is written to stdout immediately, preventing block-buffering from hiding output. BusyBox `awk` supports `fflush()`. `sed` was considered but does not offer an explicit flush — in a pipe it can silently buffer several KB before flushing. |
+| **`2>&1`** | Captures stderr (e.g. "Network unreachable") into the same prefixed stream so errors are also labelled. |
+| **`trap 'kill 0; exit'`** | `kill 0` sends SIGTERM to the entire process group (both pipelines). Without this, pressing Ctrl-C would leave orphaned `ping` processes running. |
+| **`wait`** | Keeps the parent script alive. Without it the script would exit immediately and — depending on the shell — might tear down the background jobs. |
+
+The main difficulty was **output buffering**. When `ping` writes to a pipe (not a terminal), some implementations switch to block-buffered output. BusyBox `ping` is typically line-buffered regardless, but the downstream filter (`sed` vs `awk`) is the real concern. `awk` with `fflush()` is the most portable way to guarantee line-at-a-time flushing on BusyBox, so it was chosen over `sed`. On a full GNU/Linux system you could use `stdbuf -oL sed …`, but `stdbuf` is not available on stock OpenWrt.

@@ -1,0 +1,220 @@
+### Result for Scenario 01
+
+```bash
+#!/bin/sh /etc/rc.common
+
+START=99
+USE_PROCD=1
+
+start_service() {
+    local hostname
+
+    # Load the configuration file /etc/config/my_daemon
+    config_load my_daemon
+
+    # Read the 'hostname' option from the 'system' section (or whatever section it resides in)
+    # We assume a generic 'system' section for this example
+    config_get hostname system hostname
+
+    # Apply the hostname if it is not empty
+    if [ -n "$hostname" ]; then
+        uci set system.@system[0].hostname="$hostname"
+        uci commit system
+        # Apply immediately to the running system
+        echo "$hostname" > /proc/sys/kernel/hostname
+    fi
+
+    # Start the daemon with Procd supervision
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+    # Respawn the daemon if it crashes (default thresholds usually fine)
+    procd_set_param respawn
+    procd_close_instance
+}
+```
+
+**Architecture & Difficulties:**
+This script relies on **Procd**, the OpenWrt process management daemon. I chose the `USE_PROCD=1` method as it is the modern standard for init scripts, handling supervision (restart on crash) natively.
+*   **Difficulty:** The main difficulty was determining exactly *how* the hostname should be applied. OpenWrt separates the running system state from the UCI configuration database. The script performs both a `uci commit` (to make it permanent across reboots) and writes to `/proc/sys/kernel/hostname` (to apply it immediately).
+*   **Debate:** There is a slight debate on whether an application daemon should modify system-wide settings like hostname. Usually, a dedicated system script handles this, but since the prompt explicitly asked the daemon's script to do it, I included the logic.
+
+---
+
+### Result for Scenario 05
+
+```lua
+<%#
+    LuCI View Template: /usr/lib/lua/luci/view/admin_status/clients.htm
+-%>
+
+<%+header%>
+
+<h2>Connected WiFi Clients</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>MAC Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            local ubus = require "ubus"
+            local conn = ubus.connect()
+            
+            if not conn then
+                write("<tr><td>Error connecting to UBUs</td></tr>")
+            else
+                -- Fetch wireless status (contains interface names)
+                local status = conn:call("network.wireless", "status", {})
+                
+                -- Iterate over all radios
+                for radio, info in pairs(status) do
+                    if info.interfaces then
+                        for _, iface in ipairs(info.interfaces) do
+                            local ifname = iface.ifname
+                            if ifname then
+                                -- Query hostapd for clients on this interface
+                                local clients = conn:call("hostapd." .. ifname, "get_clients", {})
+                                if clients and clients.clients then
+                                    for mac, data in pairs(clients.clients) do
+                                        write('<tr><td>' .. mac .. '</td></tr>')
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                conn:close()
+            end
+        %>
+    </tbody>
+</table>
+
+<%+footer%>
+```
+
+**Architecture & Difficulties:**
+I chose the **LuCI (Lua)** frontend architecture as it is the standard OpenWrt web interface. It connects directly to **UBus** (the system bus) via the `lua-ubus` library.
+*   **Difficulty:** The `hostapd` RPC namespace is dynamic (e.g., `hostapd.wlan0`, `hostapd.wlan1`). You cannot simply call `hostapd.get_clients`. You must first query `network.wireless.status` to discover the actual interface names, construct the specific hostapd path string, and then query it.
+*   **Debate:** One could argue for using a client-side JavaScript approach (LuCI2) to offload the rendering, but the server-side Lua template is still the most compatible method for the vast majority of existing OpenWrt deployments.
+
+---
+
+### Result for Scenario 07
+
+```c
+#include <libubus.h>
+#include <libblobmsg_json.h>
+
+/* Handler function signature matches ubus method requirements */
+static int my_rpc_method(struct ubus_context *ctx, struct ubus_object *obj,
+                         struct ubus_request_data *req, const char *method,
+                         struct blob_attr *msg)
+{
+    struct blob_buf b = {0};
+
+    /* Initialize the buffer for the JSON response */
+    blob_buf_init(&b, 0);
+
+    /* Add the JSON key-value pair: {"status": "ok"} */
+    blobmsg_add_string(&b, "status", "ok");
+
+    /* Send the reply to the caller */
+    ubus_send_reply(ctx, req, b.head);
+
+    /* Cleanup */
+    blob_buf_free(&b);
+
+    return 0;
+}
+```
+
+**Architecture & Difficulties:**
+This uses **libubus** and **libblobmsg_json**, the foundational C libraries for OpenWrt RPC.
+*   **Difficulty:** The blobmsg library is not standard JSON; it uses a binary attribute format behind the scenes to build the tree, which is then serialized to JSON. You must strictly use `blob_buf_init` and `blobmsg_add_*` functions.
+*   **Debate:** A common mistake is trying to construct a raw JSON string manually. Using `blobmsg` ensures memory safety and proper wire formatting for the ubus protocol.
+
+---
+
+### Result for Scenario 10
+
+**Script Location:** `/etc/uci-defaults/99-set-timezone`
+
+```bash
+#!/bin/sh
+
+# Set the timezone to UTC
+uci set system.@system[0].timezone='UTC'
+uci set system.@system[0].zonename='UTC'
+
+# Commit the changes to make them permanent
+uci commit system
+
+# Remove this script to ensure it runs exactly once
+rm -f /etc/uci-defaults/99-set-timezone
+
+exit 0
+```
+
+**Architecture & Difficulties:**
+This uses the **`uci-defaults`** mechanism. Scripts in `/etc/uci-defaults/` are automatically executed by the boot process immediately after the root filesystem is mounted (and before the network starts).
+*   **Logic:** If the script exits with code 0, it is expected to delete itself (or the system deletes it depending on the specific implementation phase, but `rm -f` is best practice).
+*   **Placement:** The file must be placed at `/etc/uci-defaults/99-set-timezone`. Note that if you are building a custom firmware image, you place this file in your build tree at `files/etc/uci-defaults/...` so it ends up in the ROM, runs once on first boot, and vanishes.
+
+---
+
+### Result for Scenario 13
+
+```bash
+#!/bin/sh
+
+# Define the file path
+JSON_FILE="/etc/my_app/config.json"
+
+# Use jsonfilter (native to OpenWrt) to parse the value
+# The '@' represents the root of the JSON object
+DELAY=$(jsonfilter -i "$JSON_FILE" -e "@.startup_delay")
+
+if [ -n "$DELAY" ]; then
+    echo "Startup delay is: $DELAY"
+else
+    echo "Key 'startup_delay' not found or file missing."
+fi
+```
+
+**Architecture & Difficulties:**
+I used **`jsonfilter`**, a lightweight binary utility included in the base OpenWrt system (provided by `libjson-c`). It is the "native" way to parse JSON in shell scripts without installing heavyweight dependencies like `jq` (which might not fit on 4MB flash routers).
+*   **Difficulty:** `jsonfilter` syntax is slightly different from `jq`. It uses `-e` for expressions and requires `@` for the root node. It is less feature-rich than `jq` but sufficient for reading values.
+
+---
+
+### Result for Scenario 16
+
+```bash
+#!/bin/sh
+
+# Helper function to prefix lines
+prefix_stream() {
+    local prefix="$1"
+    sed -u "s/^/[${prefix}] /"
+}
+
+# Launch ping 1 in background, pipe through prefix, redirect to stdout
+ping 10.10.10.2 | prefix_stream "10.10.10.2" &
+PID1=$!
+
+# Launch ping 2 in background, pipe through prefix, redirect to stdout
+ping 10.10.10.3 | prefix_stream "10.10.10.3" &
+PID2=$!
+
+# Trap signals to ensure both pings die if script is killed
+trap "kill $PID1 $PID2 2>/dev/null" EXIT
+
+# Wait for both processes
+wait
+```
+
+**Architecture & Difficulties:**
+This uses standard **BusyBox Ash** shell job control.
+*   **Architecture:** We background the `ping` processes (`&`) and pipe their output to `sed` running in the background as well. `sed -u` (unbuffered) is critical here; without it, output would be buffered by the pipe, causing lines to appear in chunks rather than "live".
+*   **Debate:** Standard shell redirection cannot easily merge two streams into one prefix-tagged stream line-by-line without using named pipes (FIFOs) or temporary files. However, since both background jobs inherit `stdout` from the main script, they naturally write to the screen. The `sed` filter prefixes them *before* they hit the shared stdout. This is the cleanest solution without resorting to named pipes which can get messy if the script crashes.

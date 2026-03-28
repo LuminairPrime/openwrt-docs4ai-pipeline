@@ -31,4 +31,4 @@ Write an OpenWrt script snippet that safely reads an external JSON file from '/e
 ---
 
 ## Scenario 16
-Write an OpenWrt script that runs two continuous `ping` commands to two different IP addresses like 10.10.10.2 and 10.10.10.3simultaneously (in parallel, not sequentially). It must capture their output asynchronously and print both ping results live to the screen, prefixing each output line with the target IP address so the two distinct streams are easily identifiable.
+Write an OpenWrt script that runs two continuous `ping` commands to two different IP addresses like 10.10.10.2 and 10.10.10.3 simultaneously (in parallel, not sequentially). It must capture their output asynchronously and print both ping results live to the screen, prefixing each output line with the target IP address so the two distinct streams are easily identifiable.

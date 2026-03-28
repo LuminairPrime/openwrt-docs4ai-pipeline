@@ -1,0 +1,190 @@
+All examples below follow official standard OpenWrt architecture and conventions, applicable for all currently supported OpenWrt versions (21.02 and later). Where there are common competing approaches, the preferred approach used by the official OpenWrt project itself is used.
+
+---
+
+### Result for Scenario 01
+
+This is implemented as a native procd init script, which is the standard and only supported way to manage daemons on OpenWrt.
+
+```sh
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=99
+STOP=10
+
+start_service() {
+    # Read configuration from /etc/config/my_daemon
+    config_load my_daemon
+    config_get hostname my_daemon hostname
+
+    # Apply hostname if configured
+    [ -n "$hostname" ] && echo "$hostname" > /proc/sys/kernel/hostname
+
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+
+    # Automatically restart daemon on crash, infinite retries
+    procd_set_param respawn 3600 5 0
+
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_close_instance
+}
+```
+
+**Explanation and notes:**
+* OpenWrt uses `procd` as its init system and process supervisor. Automatic restart on crash is handled natively by procd, not an infinite bash loop.
+* Configuration is read using OpenWrt's native UCI library, not by manually parsing the config file.
+* This script will automatically integrate with `service my_daemon enable/start/stop/restart` commands.
+* Common debate: Many guides will show you a hacky shell script that sleeps and checks pidof. This is considered extremely bad practice on OpenWrt, and all official packages use procd.
+* Install this file as `/etc/init.d/my_daemon`
+
+---
+
+### Result for Scenario 05
+
+This is a LuCI view snippet that uses the native ubus API to fetch client list. This is the exact same method used by the official OpenWrt status page.
+
+```html
+<%+header%>
+
+<h3>Connected Wifi Clients</h3>
+<table class="table">
+  <tr><th>MAC Address</th></tr>
+
+<%
+local ubus = require "ubus"
+local conn = ubus.connect()
+local hosts = conn:call("hostapd.*", "get_clients", {})
+
+for iface, data in pairs(hosts) do
+  for mac, client in pairs(data.clients) do
+%>
+  <tr><td><%=mac%></td></tr>
+<%
+  end
+end
+conn:close()
+%>
+
+</table>
+
+<%+footer%>
+```
+
+**Explanation and notes:**
+* This does not parse `arp`, `iw` or `iwinfo` output. All of those give incomplete and incorrect results. The only authoritative source for connected wifi clients is the hostapd ubus API.
+* Requires no additional packages, all libraries used are preinstalled in the default LuCI installation.
+* Common difficulty: Almost every example found online uses shelling out to iwinfo, which is a legacy deprecated approach.
+
+---
+
+### Result for Scenario 07
+
+This is a native ubus RPC method handler, the standard RPC system used by all core OpenWrt daemons. This uses libubox and libubus, the standard libraries for all OpenWrt C development.
+
+```c
+#include <libubox/blobmsg_json.h>
+#include <libubus.h>
+
+static int mydaemon_rpc_status(struct ubus_context *ctx, struct ubus_object *obj,
+                              struct ubus_request_data *req, const char *method,
+                              struct blob_attr *msg)
+{
+    struct blob_buf b = {};
+
+    blob_buf_init(&b, 0);
+    blobmsg_add_string(&b, "status", "ok");
+
+    ubus_send_reply(ctx, req, b.head);
+    blob_buf_free(&b);
+
+    return 0;
+}
+```
+
+**Explanation and notes:**
+* This is the exact handler pattern used by ubus, the system bus that every part of OpenWrt uses for inter process communication.
+* Common debate: Many third party developers use libjson-c for this. This is strongly discouraged for OpenWrt development. blobmsg is the native serialization format, it is much faster, smaller, and automatically transparently convertible to JSON for external callers.
+* This method will be automatically callable over CLI, over HTTP, and from any other process on the router.
+
+---
+
+### Result for Scenario 10
+
+OpenWrt has an official built in mechanism for scripts that run exactly once on first boot. You do not need to implement your own flag file checking.
+
+Script content:
+```sh
+#!/bin/sh
+
+uci set system.@system[0].timezone='UTC'
+uci set system.@system[0].zonename='UTC'
+uci commit system
+
+/etc/init.d/system reload
+```
+
+**Placement:**
+Place this file at `/etc/uci-defaults/99_set_utc_timezone`
+
+**Explanation and notes:**
+* Any script placed in `/etc/uci-defaults/` will be automatically executed exactly once on the very first boot, and then permanently deleted by the system.
+* This will also run automatically after a factory reset and after a sysupgrade.
+* This is by far the most commonly misimplemented OpenWrt pattern. 99% of examples you will find use rc.local and a manual flag file, which is completely unnecessary and error prone.
+
+---
+
+### Result for Scenario 13
+
+OpenWrt includes `jsonfilter` as part of the base system, preinstalled on every single device. It is the correct native way to parse JSON, you should never install jq for this.
+
+```sh
+#!/bin/sh
+
+CONFIG_FILE=/etc/my_app/config.json
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Config file not found"
+    exit 1
+fi
+
+startup_delay=$(jsonfilter -i "$CONFIG_FILE" -e '$.startup_delay')
+
+if [ $? -ne 0 ]; then
+    echo "Invalid JSON or key not found"
+    exit 1
+fi
+
+echo "$startup_delay"
+```
+
+**Explanation and notes:**
+* jsonfilter is part of libubox, it is ~100kb, and present on every default OpenWrt installation.
+* Common debate: Almost every answer online will tell you to install jq. This is considered bad practice for scripts intended to be distributed as OpenWrt packages, as it adds an unnecessary 200kb dependency for functionality that already exists natively.
+
+---
+
+### Result for Scenario 16
+
+This implementation works correctly on default OpenWrt busybox ash, has no external dependencies, correctly line buffers output and runs both pings completely in parallel.
+
+```sh
+#!/bin/sh
+
+ping 10.10.10.2 | sed -u "s/^/[10.10.10.2] /" &
+ping 10.10.10.3 | sed -u "s/^/[10.10.10.3] /" &
+
+wait
+```
+
+**Explanation and notes:**
+* The extremely important and almost always missed flag here is `-u` to sed. This disables output buffering. Without this flag you will get no output at all for many seconds, and then large chunks all at once.
+* Both ping commands run completely in parallel, output is printed live as it arrives.
+* This will correctly handle Ctrl+C to terminate both pings at the same time.
+* Works perfectly on the default busybox ash, no bash or any other shell is required.
+
+---
+
+If you would like me to expand on any of these, adjust them for a specific OpenWrt version, or add additional error handling or functionality please let me know.

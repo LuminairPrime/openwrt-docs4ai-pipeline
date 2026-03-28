@@ -1,0 +1,188 @@
+### Result for Scenario 01
+
+```sh
+#!/bin/sh /etc/rc.common
+# /etc/init.d/my_daemon
+
+START=99
+USE_PROCD=1
+PROG=/usr/sbin/my_daemon
+
+start_service() {
+    # Load configuration from /etc/config/my_daemon
+    config_load my_daemon
+
+    # Fetch 'hostname' option from the first section of type 'my_daemon'
+    # Assumes a section exists; robust against section name variations
+    local hostname
+    config_get hostname '@my_daemon[0]' hostname
+
+    # Apply hostname to system if defined
+    if [ -n "$hostname" ]; then
+        uci set system.@system[0].hostname="$hostname"
+        uci commit system
+        # Reload system service to apply hostname immediately
+        /etc/init.d/system reload
+    fi
+
+    procd_open_instance
+    procd_set_param command "$PROG"
+    # Enable automatic restart on crash
+    procd_set_param respawn
+    procd_close_instance
+}
+```
+
+**Explanation & Architecture:**
+*   **Libraries:** Uses OpenWrt's `procd` init system (`USE_PROCD=1`) for process supervision and `uci` (Unified Configuration Interface) for configuration management.
+*   **Architecture:** Standard OpenWrt init script located in `/etc/init.d/`. `procd` handles the daemon lifecycle, including respawning on crash via `respawn`. The script reads UCI config, updates the system hostname via UCI, and reloads the system service to apply changes before starting the daemon.
+*   **Difficulties/Debates:**
+    *   *Section Naming:* UCI config files can have named or anonymous sections. Using `@my_daemon[0]` is a safe pattern to grab the first section regardless of its name, avoiding assumptions like `config_get hostname config hostname`.
+    *   *Hostname Application:* Debate exists between writing directly to `/proc/sys/kernel/hostname` vs. using `uci` + `reload`. Using `uci` ensures persistence across reboots and integrates with OpenWrt's system management, which is the preferred "OpenWrt way."
+
+---
+
+### Result for Scenario 05
+
+```lua
+<%+header%>
+<h3>Connected WiFi Clients</h3>
+<table class="table">
+    <tr class="tr table-titles">
+        <th class="th">MAC Address</th>
+    </tr>
+    <%
+    local util = require "luci.util"
+    -- Fetch wireless status via ubus
+    local wifi_status = util.ubus("network.wireless", "status", {})
+
+    if wifi_status then
+        for radio, rdata in pairs(wifi_status) do
+            for _, iface in ipairs(rdata.interfaces or {}) do
+                for mac, station in pairs(iface.stations or {}) do
+    %>
+    <tr class="tr">
+        <td class="td"><%=mac%></td>
+    </tr>
+    <%
+                end
+            end
+        end
+    end
+    %>
+</table>
+<%+footer%>
+```
+
+**Explanation & Architecture:**
+*   **Libraries:** LuCI (Lua Configuration Interface) view snippet using `luci.util` for ubus communication.
+*   **Architecture:** This is a server-side Lua view file (typically placed in `/usr/lib/lua/luci/view/`). It calls the `network.wireless` ubus object's `status` method to retrieve real-time station data, iterates through the nested structure (Radio → Interface → Stations), and renders an HTML table.
+*   **Difficulties/Debates:**
+    *   *Ubus Structure Complexity:* The `network.wireless.status` response is deeply nested. A common pitfall is assuming a flat list; the code must handle radios, multiple interfaces per radio, and the stations map.
+    *   *Lua vs. JavaScript:* Modern LuCI supports client-side JavaScript views. However, "web view file snippet" often implies the traditional Lua template. Lua is chosen here for broad compatibility with standard LuCI installations without requiring client-side build tooling.
+
+---
+
+### Result for Scenario 07
+
+```c
+#include <libubus.h>
+#include <blobmsg_json.h>
+
+static int handle_status(struct ubus_context *ctx, struct ubus_object *obj,
+                         struct ubus_request_data *req, const char *method,
+                         struct blob_attr *msg)
+{
+    static struct blob_buf b;
+
+    blob_buf_init(&b, 0);
+    blobmsg_add_string(&b, "status", "ok");
+    ubus_send_reply(ctx, req, b.head);
+
+    return 0;
+}
+```
+
+**Explanation & Architecture:**
+*   **Libraries:** `libubus` for the RPC bus communication and `blobmsg_json` for constructing JSON-compatible binary blobs.
+*   **Architecture:** This is a handler function for a C-based ubus daemon. The function initializes a `blob_buf`, adds the key-value pair, sends the reply via `ubus_send_reply`, and returns success. The `static` blob buffer is a common pattern in ubus handlers to avoid allocation overhead per call, as ubus serializes requests per context.
+*   **Difficulties/Debates:**
+    *   *Blob Buffer Management:* Debate exists between using a `static` buffer vs. stack-allocated buffer. `static` is efficient but requires care in multi-threaded contexts (though ubus is typically single-threaded per context). Stack allocation is safer for reentrancy but slightly more overhead.
+    *   *Error Handling:* Production code should check return values of `blobmsg_add_string` and `ubus_send_reply`, but the snippet focuses on the core reply logic.
+
+---
+
+### Result for Scenario 10
+
+**Script Snippet:**
+```sh
+#!/bin/sh
+# Set timezone to UTC and commit to persist
+uci set system.@system[0].timezone='UTC'
+uci commit system
+```
+
+**File System Location:**
+Place the script in:
+```
+/etc/uci-defaults/99-set-timezone
+```
+
+**Explanation & Architecture:**
+*   **Libraries:** `uci` for configuration management.
+*   **Architecture:** OpenWrt executes all executable scripts in `/etc/uci-defaults/` exactly once after the first boot. Upon successful execution, the system automatically deletes the script, ensuring it never runs again. `uci commit` writes the change to the persistent configuration storage.
+*   **Difficulties/Debates:**
+    *   *First-Boot Detection:* Alternatives like checking `/etc/.firstboot` or using `rc.local` with flags exist, but `/etc/uci-defaults/` is the canonical, race-free mechanism provided by the base system for one-time initialization.
+    *   *Naming Convention:* Scripts are executed in lexical order. Prefixing with `99-` ensures this runs late in the defaults sequence, though for timezone setting, order is rarely critical.
+
+---
+
+### Result for Scenario 13
+
+```sh
+#!/bin/sh
+# Read and parse JSON natively using jsonfilter
+startup_delay=$(jsonfilter -i /etc/my_app/config.json -e '@.startup_delay')
+
+if [ -n "$startup_delay" ]; then
+    echo "Startup delay: $startup_delay"
+else
+    echo "Error: 'startup_delay' not found or file missing" >&2
+fi
+```
+
+**Explanation & Architecture:**
+*   **Libraries:** `jsonfilter`, a lightweight JSON parser included in the OpenWrt base system (part of `libjson-script`/`procd` ecosystem).
+*   **Architecture:** Shell script snippet using `jsonfilter` to query JSON data without external dependencies like `jq`. The `-e` flag evaluates a JSONPath-like expression to extract the value.
+*   **Difficulties/Debates:**
+    *   *Parser Choice:* `jq` is powerful but not installed by default on OpenWrt due to size. `jsonfilter` is the "native" tool available on almost all builds.
+    *   *Syntax:* `jsonfilter` uses a specific expression syntax (`@.key`) which differs from `jq`. Developers familiar with `jq` may find this a point of friction.
+    *   *Error Handling:* `jsonfilter` returns empty output if the key is missing; the snippet adds a check to distinguish between missing keys and empty values.
+
+---
+
+### Result for Scenario 16
+
+```sh
+#!/bin/sh
+# Run two pings in parallel, prefixing output lines with target IP
+
+ping 10.10.10.2 | while IFS= read -r line; do
+    echo "[10.10.10.2] $line"
+done &
+
+ping 10.10.10.3 | while IFS= read -r line; do
+    echo "[10.10.10.3] $line"
+done &
+
+# Keep script alive and wait for background jobs
+wait
+```
+
+**Explanation & Architecture:**
+*   **Libraries:** BusyBox `sh`, `ping`, and standard shell job control.
+*   **Architecture:** The script launches two pipelines in the background (`&`). Each pipeline pipes `ping` output to a `while read` loop that prefixes each line. `wait` ensures the script remains active until the pings are terminated.
+*   **Difficulties/Debates:**
+    *   *Output Buffering:* A major issue with piping `ping` is that stdout may become block-buffered instead of line-buffered, causing delayed output. On full Linux systems, `stdbuf -oL` solves this. However, `stdbuf` is often missing in minimal OpenWrt BusyBox builds. If output lag is observed, the user may need to install `coreutils-stdbuf` or rely on BusyBox `ping`'s behavior, which often flushes per line even when piped.
+    *   *Interleaving:* While prefixes identify streams, lines from both pings may still interleave on the terminal. This is inherent to concurrent writes to stdout; true separation would require logging to separate files or a more complex multiplexer.
+    *   *Signal Handling:* The script relies on `wait`. If interrupted (Ctrl+C), background pings may orphan. Production scripts should trap signals to kill child processes cleanly.

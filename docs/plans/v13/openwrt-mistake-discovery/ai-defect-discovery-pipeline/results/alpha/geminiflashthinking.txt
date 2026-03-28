@@ -1,0 +1,153 @@
+### Result for Scenario 01
+**Service Init Script (`/etc/init.d/my_daemon`)**
+
+```bash
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=95
+STOP=10
+
+start_service() {
+    config_load 'my_daemon'
+    local hostname
+    config_get hostname 'general' 'hostname' 'OpenWrt'
+
+    # Apply hostname to system persistently via UCI
+    uci set system.@system[0].hostname="$hostname"
+    uci commit system
+    /etc/init.d/system reload
+
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+    procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-5}
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_close_instance
+}
+```
+
+**Architecture & Decisions:**
+* **Choice:** Utilized `procd`, the OpenWrt process management daemon.
+* **Logic:** `config_load` and `config_get` leverage the **UCI (Unified Configuration Interface)** system. Using `procd_set_param respawn` provides the crash recovery requirement without manual watchdog loops.
+* **Debate:** One could apply the hostname directly via `echo > /proc/sys/kernel/hostname`, but in OpenWrt, modifying the system UCI and reloading the `system` service is the "correct" way to ensure the change survives reboots and is reflected in the LuCI web interface.
+
+---
+
+### Result for Scenario 05
+**LuCI View Snippet (`/usr/lib/lua/luci/view/wifi_clients.htm`)**
+
+```html
+<%
+    local ubus = require "luci.model.ubus"
+    local status = ubus.call("hostapd.wlan0", "get_clients", {}) or {}
+%>
+
+<table>
+    <tr><th>Associated MAC Addresses</th></tr>
+    <% for mac, _ in pairs(status.clients or {}) do %>
+    <tr><td><%=mac%></td></tr>
+    <% end %>
+</table>
+```
+
+**Architecture & Decisions:**
+* **Choice:** Lua-based LuCI template using the `ubus` library.
+* **Logic:** Modern OpenWrt builds interact with the wireless driver via `ubus` (the OpenWrt micro bus). 
+* **Debate:** While modern LuCI (client-side JS) is preferred for performance, a server-side `.htm` snippet remains the fastest "one-shot" way to inject logic into existing LuCI menus. The difficulty is identifying the correct ubus object (e.g., `hostapd.wlan0` vs `hostapd.wlan1`), which varies by hardware.
+
+---
+
+### Result for Scenario 07
+**C Ubus Handler Function**
+
+```c
+#include <libubox/blobmsg_json.h>
+#include <libubus.h>
+
+static int my_daemon_status_handler(struct ubus_context *ctx, struct ubus_object *obj,
+              struct ubus_request_data *req, const char *method,
+              struct blob_attr *msg)
+{
+    static struct blob_buf b;
+
+    blob_buf_init(&b, 0);
+    blobmsg_add_string(&b, "status", "ok");
+    ubus_send_reply(ctx, req, b.head);
+
+    return 0;
+}
+```
+
+**Architecture & Decisions:**
+* **Choice:** `libubus` for the bus binding and `libblobmsg` for JSON serialization.
+* **Logic:** Use a static `blob_buf` to minimize allocation overhead. The `blobmsg_add_string` function handles the key-value pairing required for the final JSON structure.
+* **Difficulty:** Memory management in `libubus` requires care; you must initialize the buffer (`blob_buf_init`) before every reply to clear stale data from the previous call.
+
+---
+
+### Result for Scenario 10
+**First-Boot uci-defaults Script**
+
+```bash
+#!/bin/sh
+uci set system.@system[0].timezone='UTC'
+uci set system.@system[0].zonename='UTC'
+uci commit system
+exit 0
+```
+**Placement:** `/etc/uci-defaults/99-set-utc-timezone`
+
+**Architecture & Decisions:**
+* **Choice:** `uci-defaults` execution framework.
+* **Logic:** Scripts in `/etc/uci-defaults/` are executed alphabetically at the end of the first boot sequence. If they exit with code `0`, they are deleted.
+* **Note:** I added `zonename` alongside `timezone` to ensure full compliance with LuCI and system logging expectations.
+
+---
+
+### Result for Scenario 13
+**Native JSON Parsing Snippet (Shell)**
+
+```bash
+#!/bin/sh
+CONFIG_FILE="/etc/my_app/config.json"
+
+if [ -f "$CONFIG_FILE" ]; then
+    startup_delay=$(jsonfilter -i "$CONFIG_FILE" -e "@.startup_delay")
+    echo "Startup Delay: ${startup_delay:-0}"
+fi
+```
+
+**Architecture & Decisions:**
+* **Choice:** `jsonfilter`.
+* **Logic:** `jsonfilter` is the native OpenWrt C utility designed to replace heavy tools like `jq`. It is standard on almost all OpenWrt images. 
+* **Debate:** While one could use `sed` or `awk`, they are brittle against JSON formatting changes (whitespace/newlines). `jsonfilter` provides robust path-based querying (`@.key`).
+
+---
+
+### Result for Scenario 16
+**Parallel Asynchronous Ping Script**
+
+```bash
+#!/bin/sh
+
+trap 'kill $(jobs -p)' EXIT
+
+ping_prefix() {
+    local target="$1"
+    ping "$target" | sed -u "s/^/[$target] /"
+}
+
+ping_prefix "10.10.10.2" &
+ping_prefix "10.10.10.3" &
+
+wait
+```
+
+**Architecture & Decisions:**
+* **Choice:** Shell backgrounding (`&`) combined with `sed` line-prefixing.
+* **Logic:** The `-u` flag in `sed` is critical for **unbuffered** output; without it, lines would hang in the buffer and wouldn't appear "live."
+* **Difficulty:** Standard `ash` (BusyBox) doesn't have advanced process grouping. The `trap` ensures that if you `Ctrl+C` the main script, the background ping processes are also reaped.
+
+---
+http://googleusercontent.com/interactive_content_block/0

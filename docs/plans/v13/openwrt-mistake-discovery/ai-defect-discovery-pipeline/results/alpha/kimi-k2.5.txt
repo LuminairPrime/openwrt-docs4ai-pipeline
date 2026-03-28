@@ -1,0 +1,276 @@
+### Result for Scenario 01
+
+```sh
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=95
+STOP=01
+
+CONFIG_NAME="my_daemon"
+
+start_service() {
+    local hostname_val
+    
+    # Load UCI configuration from /etc/config/my_daemon
+    config_load "$CONFIG_NAME"
+    config_get hostname_val "daemon" "hostname" "OpenWrt"
+    
+    # Apply hostname persistently (UCI) and immediately (kernel)
+    uci set system.@system[0].hostname="$hostname_val"
+    uci commit system
+    hostname "$hostname_val"
+    
+    # Start the daemon using procd
+    procd_open_instance
+    procd_set_param command /usr/sbin/my_daemon
+    procd_set_param respawn 3600 5 5  # Respawn: timeout=1h, fail_threshold=5s, max_fail=5
+    procd_set_param file /etc/config/$CONFIG_NAME
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_close_instance
+}
+
+service_triggers() {
+    procd_add_reload_trigger "$CONFIG_NAME"
+}
+```
+
+**Libraries & Architecture:**
+*   **procd (Process Management):** Used instead of legacy SysVinit scripts. Procd is OpenWrt's modern init system that handles process supervision, crash recovery (respawn), and configuration triggers natively.
+*   **UCI (Unified Configuration Interface):** Used to read `/etc/config/my_daemon` and write to `/etc/config/system`. This is the standard declarative configuration layer in OpenWrt, abstracting file parsing.
+*   **Ash/BusyBox:** The script targets the default OpenWrt shell (`/bin/sh` linked to BusyBox ash).
+
+**Difficulties & Debates:**
+*   **Procd vs. Legacy:** I chose procd despite the user not explicitly requesting it, because modern OpenWrt (18.06+) deprecates manual `start()`, `stop()`, and `pidof` respawn logic. Procd's `respawn` parameter handles crashes reliably with backoff.
+*   **Config Schema:** I assumed a UCI section named `daemon` within the config file. OpenWrt's "standard config file folder" is `/etc/config/`, but the internal schema (section names) is package-defined. I debated using `config_get` vs. direct file parsing; UCI is safer and handles defaults.
+*   **Hostname Persistence:** There's a debate between using the `hostname` command (temporary) vs. UCI (persistent). The script does both: UCI ensures the change survives reboot, while `hostname` applies it immediately without waiting for the next `/etc/init.d/system` restart.
+
+---
+
+### Result for Scenario 05
+
+```sh
+#!/bin/sh
+# Place at: /www/cgi-bin/wifi_clients
+# chmod +x /www/cgi-bin/wifi_clients
+
+echo "Content-type: text/html"
+echo ""
+
+cat << 'EOF'
+<!DOCTYPE html>
+<html>
+<head><title>Connected WiFi Clients</title></head>
+<body>
+<h1>Connected WiFi Clients</h1>
+<table border="1" cellpadding="5">
+<tr><th>Interface</th><th>MAC Address</th><th>Connected Time (sec)</th></tr>
+EOF
+
+# Discover all hostapd interfaces from ubus and iterate
+ubus list | grep -E '^hostapd\.' | while read -r iface; do
+    # Get clients for this interface
+    ubus call "$iface" get_clients 2>/dev/null | \
+    jsonfilter -e '$.clients[@].mac' -e '$.clients[@].connected_time' 2>/dev/null | \
+    awk 'NR%2{mac=$0; next} {printf "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n", "'"$iface"'", mac, $0}'
+done
+
+echo "</table></body></html>"
+```
+
+**Libraries & Architecture:**
+*   **uhttpd + CGI:** OpenWrt's default web server (`uhttpd`) executes scripts from `/www/cgi-bin/`. This provides a lightweight, dependency-free web view without requiring the full LuCI framework.
+*   **ubus (System Bus):** The `ubus` CLI tool queries the hostapd objects exposed by `netifd`/`hostapd` on the system bus. This is the canonical method for retrieving runtime wireless state.
+*   **jsonfilter:** A specialized OpenWrt utility (written in C) for extracting values from JSON using path expressions. It is preferred over `jq` in base systems due to its smaller size and inclusion in default images.
+
+**Difficulties & Debates:**
+*   **LuCI vs. CGI:** I debated providing a Lua-based LuCI view (which is more "integrated"), but that requires the `luci-base` package and complex dispatcher syntax. A CGI script is self-contained, works on any OpenWrt installation with `uhttpd`, and directly demonstrates the ubus interaction requested.
+*   **HTML Generation Safety:** Concatenating shell variables into HTML risks XSS if MAC addresses were malformed (though unlikely from hostapd). I used `jsonfilter` piped to `awk` to ensure proper line buffering, but noted that for production, one should HTML-encode special characters (`<`, `>`, `&`).
+*   **Interface Discovery:** WiFi interfaces can be named `wlan0`, `phy0-ap0`, etc. Hardcoding is fragile. Using `ubus list` to discover all `hostapd.*` objects dynamically handles multi-radio and multi-SSID configurations correctly.
+
+---
+
+### Result for Scenario 07
+
+```c
+#include <libubox/blobmsg.h>
+#include <libubox/blobmsg_json.h>
+#include <libubus.h>
+
+static struct blob_buf b;
+
+/* 
+ * RPC Handler for an incoming ubus call
+ * Expected to reply with {"status": "ok"}
+ */
+static int rpc_reply_status(struct ubus_context *ctx, struct ubus_object *obj,
+                            struct ubus_request_data *req, const char *method,
+                            struct blob_attr *msg)
+{
+    /* Initialize the blob buffer for constructing the reply */
+    blob_buf_init(&b, 0);
+    
+    /* Add the string "ok" to the key "status" 
+     * This builds a binary blob that ubus serializes to JSON for transport */
+    blobmsg_add_string(&b, "status", "ok");
+    
+    /* Send the constructed reply back to the caller */
+    if (ubus_send_reply(ctx, req, b.head) != 0) {
+        return UBUS_STATUS_UNKNOWN_ERROR;
+    }
+    
+    return UBUS_STATUS_OK;
+}
+
+/* Example registration (for context):
+static const struct ubus_method my_methods[] = {
+    UBUS_METHOD_NOARG("get_status", rpc_reply_status),
+};
+
+static struct ubus_object_type my_object_type = 
+    UBUS_OBJECT_TYPE("my_daemon", my_methods);
+
+static struct ubus_object my_object = {
+    .name = "my.daemon",
+    .type = &my_object_type,
+    .methods = my_methods,
+    .n_methods = ARRAY_SIZE(my_methods),
+};
+*/
+```
+
+**Libraries & Architecture:**
+*   **libubus:** The C library for the OpenWrt micro bus system. It handles the RPC transport, object registration, and method dispatching.
+*   **libblobmsg:** A binary message serialization library used by ubus. Instead of manually constructing JSON strings (error-prone), you build a typed binary tree (`blob_buf`) which `libubus` automatically serializes to JSON when replying over the socket.
+*   **Zero-Copy Architecture:** `blob_buf` uses a memory pool approach, making it efficient for embedded devices with limited RAM.
+
+**Difficulties & Debates:**
+*   **Manual JSON vs. blobmsg:** I strongly debated whether to show `sprintf(json, "{\"status\":\"ok\"}")` followed by `blobmsg_add_json_from_string()`. While that works, it defeats the purpose of ubus's type-safe binary protocol. Using `blobmsg_add_string` is the idiomatic way—it prevents injection issues and handles memory management automatically.
+*   **Error Handling:** The handler receives `struct blob_attr *msg` (input arguments). For this snippet, I assumed no input parameters were required. In a production daemon, one would use `blobmsg_parse()` to validate input attributes against a policy array before processing.
+*   **Global Buffer:** The `static struct blob_buf b` is declared globally (or static within the file) because `blob_buf_init` resets it for reuse. There is a debate about thread-safety here; OpenWrt's ubus is single-threaded event-loop based (`uloop`), so static allocation is safe and avoids stack overhead.
+
+---
+
+### Result for Scenario 10
+
+```sh
+#!/bin/sh
+# File location: /etc/uci-defaults/99-set-utc-timezone
+
+# Set timezone to UTC using UCI
+uci set system.@system[0].timezone='UTC'
+uci set system.@system[0].zonename='UTC'
+
+# Commit changes to persistent storage (/etc/config/system)
+uci commit system
+
+# Exit successfully
+exit 0
+```
+
+**Placement:** Place the file at **`/etc/uci-defaults/99-set-utc-timezone`** (or any filename in that directory). The system executes all scripts in this directory exactly once during the first boot (specifically, when `/etc/init.d/boot` runs and `/lib/functions.sh` processes `uci_defaults`), then automatically deletes the file upon successful completion (exit 0).
+
+**Libraries & Architecture:**
+*   **uci-defaults Mechanism:** This is OpenWrt's standard "first boot" hook system. Scripts here are executed by `/etc/rc.d/S10boot` before most other services start.
+*   **UCI:** Used to modify the system configuration database atomically.
+
+**Difficulties & Debates:**
+*   **uci-defaults vs. /etc/rc.local:** The user requested "exactly once." `/etc/rc.local` runs on every boot, requiring manual flag files (`[ -f /etc/.timezone_set ] && exit` ... `touch /etc/.timezone_set`). This is fragile and can leave orphan flag files. `uci-defaults` is the architecturally correct solution because the framework itself handles the atomic "run-and-delete" semantics.
+*   **Timezone String Format:** I debated between `'UTC'`, `'GMT0'`, and `'Etc/UTC'`. OpenWrt stores the POSIX TZ string (e.g., `CET-1CEST,M3.5.0,M10.5.0/3`). For UTC, the string `UTC` is accepted by `busybox date` and most libc implementations, but technically the POSIX string for UTC is `UTC0` or simply an empty string with `zonename` set. Using `UTC` is the most readable and works with the default `zoneinfo` packages.
+*   **Timing:** The script runs early in boot. If the daemon requiring this timezone starts before `S10boot` (unlikely, as boot is sequence 10), there could be a race, but standard services start after 10.
+
+---
+
+### Result for Scenario 13
+
+```sh
+#!/bin/sh
+
+CONFIG_FILE="/etc/my_app/config.json"
+
+# Safety check: ensure file exists and is readable
+if [ ! -r "$CONFIG_FILE" ]; then
+    echo "Error: Cannot read $CONFIG_FILE" >&2
+    exit 1
+fi
+
+# Parse JSON using jsonfilter (native OpenWrt tool)
+# -i specifies input file, -e is the expression
+STARTUP_DELAY=$(jsonfilter -i "$CONFIG_FILE" -e "@['startup_delay']" 2>/dev/null)
+
+# Validate extraction
+if [ -z "$STARTUP_DELAY" ]; then
+    echo "Error: Key 'startup_delay' not found or null" >&2
+    exit 1
+fi
+
+printf '%s\n' "$STARTUP_DELAY"
+```
+
+**Alternative (using `jshn` shell library):**
+```sh
+. /usr/share/libubox/jshn.sh
+
+json_load_file "$CONFIG_FILE" 2>/dev/null || { echo "Invalid JSON"; exit 1; }
+json_get_var STARTUP_DELAY "startup_delay"
+echo "$STARTUP_DELAY"
+```
+
+**Libraries & Architecture:**
+*   **jsonfilter:** A lightweight C utility specifically designed for extracting data from JSON streams using path syntax (similar to JSONPath). It is part of the base OpenWrt installation (`jsonfilter` package).
+*   **Alternative: jshn:** A shell script library (`/usr/share/libubox/jshn.sh`) that loads JSON into shell variables using `eval`. It is "more native" in the sense that it operates within the shell environment without spawning external binaries, but has higher memory overhead for large files.
+
+**Difficulties & Debates:**
+*   **jsonfilter vs. jshn vs. jq:** I debated which tool represents "natively" best.
+    *   `jq` is powerful but not included in default images (too large).
+    *   `jshn` is a shell library and technically "native" to the shell environment, but it uses `eval` internally which can be risky with untrusted input.
+    *   `jsonfilter` is a compiled binary, extremely fast, and memory-safe, but spawns a process. I chose `jsonfilter` as the primary solution because it is the standard for OpenWrt shell scripts needing JSON extraction, while providing `jshn` as the alternative for complex object traversal.
+*   **Error Handling:** JSON parsing in shell is inherently brittle. I included explicit error handling for file existence and key presence, which is often omitted in quick snippets but essential for production routers where config files might be corrupted on flash storage.
+
+---
+
+### Result for Scenario 16
+
+```sh
+#!/bin/sh
+
+TARGET1="10.10.10.2"
+TARGET2="10.10.10.3"
+
+# Cleanup function to kill all background jobs on exit/interrupt
+cleanup() {
+    kill 0 2>/dev/null  # Kill all processes in current process group
+    wait 2>/dev/null
+    exit
+}
+trap cleanup INT TERM EXIT
+
+# Function to ping and prefix output
+ping_with_prefix() {
+    local target="$1"
+    # Use while read to ensure line-by-line processing (unbuffered feel)
+    # stdbuf is not available on OpenWrt by default, so we rely on ping's line buffering
+    ping -c 0 -W 1 "$target" 2>/dev/null | while IFS= read -r line; do
+        printf '[%s] %s\n' "$target" "$line"
+    done
+}
+
+# Launch both pings in background subshells
+ping_with_prefix "$TARGET1" &
+ping_with_prefix "$TARGET2" &
+
+# Wait for all background jobs (runs indefinitely until Ctrl+C)
+wait
+```
+
+**Libraries & Architecture:**
+*   **POSIX sh (BusyBox ash):** Uses background processes (`&`) and job control (`wait`, `kill 0`).
+*   **Named Pipes (implied):** The pipe `|` creates anonymous pipes between `ping` and the `while read` loop.
+*   **Signal Handling:** Uses `trap` to ensure background `ping` processes are terminated when the script exits, preventing orphan processes on the router.
+
+**Difficulties & Debates:**
+*   **Buffering Issues:** The biggest difficulty in "live" async output is line buffering. Standard C library `stdio` buffers output when not connected to a TTY. `ping` usually runs in line-buffered mode, but if it weren't, we would need `stdbuf` (GNU coreutils, not in OpenWrt) or `unbuffer` (expect, too large). The `while IFS= read -r` loop forces the read to happen line-by-line as soon as the newline arrives, which works well with BusyBox `ping`.
+*   **Output Interleaving:** Since two processes write to stdout simultaneously, lines could theoretically interleave (e.g., `[10.10.10.2] 64 [10.10.10.3] bytes bytes...`). Using `printf` with a single format string ensures atomicity per line *if* the line is short (under PIPE_BUF, usually 4KB). For ping output, this is safe.
+*   **Process Group Kill:** I debated using `pkill -P $$` vs `kill 0`. `kill 0` sends SIGTERM to all processes in the current process group (the script and its children), which is cleaner and avoids parsing `ps` output.
+*   **Ping Implementation:** OpenWrt defaults to BusyBox `ping` (supports `-c 0` for infinite). If the user had `iputils-ping` installed, `-c 0` is invalid (means zero packets). I assumed BusyBox, as it is the default.

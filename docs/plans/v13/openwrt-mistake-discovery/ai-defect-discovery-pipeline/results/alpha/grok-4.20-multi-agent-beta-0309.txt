@@ -1,0 +1,119 @@
+### Result for Scenario 01
+```sh
+#!/bin/sh /etc/rc.common
+
+START=99
+USE_PROCD=1
+NAME=my_daemon
+PROG=/usr/sbin/$NAME
+
+start_service() {
+    local hostname
+    hostname=$(uci -q get ${NAME}.@${NAME}[0].hostname) || hostname="OpenWrt"
+    echo "$hostname" > /proc/sys/kernel/hostname
+    uci -q set system.@system[0].hostname="$hostname"
+    uci commit system
+
+    procd_open_instance
+    procd_set_param command "$PROG"
+    procd_set_param respawn
+    procd_close_instance
+}
+
+service_triggers() {
+    procd_add_reload_trigger "${NAME}"
+}
+```
+
+**Explanation and choices:** Used the standard OpenWrt init script architecture (`/etc/rc.common` + procd). Procd is the official process supervisor (replacing older start-stop-daemon); it provides built-in respawn on crash. UCI is used for both reading the daemon-specific config (`/etc/config/my_daemon`) and updating system hostname. Binary path `/usr/sbin/` follows the convention for most official repository daemons.  
+**Difficulties/debates:** Debated binary location (`/usr/bin` vs `/usr/sbin`), exact config section syntax (`@${NAME}[0]` vs `config_load` + `config_get`), and whether to persist hostname via UCI (decided yes for permanence). Team consensus settled on procd as non-negotiable for modern OpenWrt.
+
+### Result for Scenario 05
+```html
+<%+header%>
+<h2>Connected WiFi Clients</h2>
+<table class="cbi-table">
+    <tr><th>MAC Address</th></tr>
+<% 
+local ubus = require "ubus"
+local conn = ubus.connect()
+local devices = {"radio0", "radio1"}  -- adjust for target hardware
+for _, dev in ipairs(devices) do
+    local res = conn:call("iwinfo", "assoclist", {device = dev}) or {}
+    for mac in pairs(res) do
+%>
+    <tr><td><%= pcdata(mac) %></td></tr>
+<% 
+    end
+end
+%>
+</table>
+```
+
+**Explanation and choices:** This is a LuCI web view file snippet (`.htm` template using embedded Lua). Fetches data from the system bus via `ubus` (OpenWrt's primary IPC bus) calling the `iwinfo` object, which is the standard way to query associated WiFi clients. Architecture follows LuCI's server-side rendering model for simple tables.  
+**Difficulties/debates:** Exact ubus method/device names (`iwinfo` vs `hostapd` get_clients) and whether to use server-side Lua vs client-side JS (`L.ubus`). Chose Lua for a "view file" as it matches traditional LuCI templates; debated error handling for multiple radios.
+
+### Result for Scenario 07
+```c
+static int handle_status(struct ubus_context *ctx, struct ubus_object *obj,
+                         struct ubus_request_data *req, const char *method,
+                         struct blob_attr *msg)
+{
+    struct blob_buf b = { };
+
+    blob_buf_init(&b, 0);
+    blobmsg_add_string(&b, "status", "ok");
+    ubus_send_reply(ctx, req, b.head);
+    blob_buf_free(&b);
+
+    return UBUS_STATUS_OK;
+}
+```
+
+**Explanation and choices:** This is the method handler for a ubus-based C daemon/plugin (registered via `ubus_object` and `ubus_method` arrays). Uses `libubus` + `libblobmsg` (from `libubox`), which is the canonical OpenWrt RPC/JSON architecture for plugins.  
+**Difficulties/debates:** Exact function signature and blob lifecycle (local vs static buffer, when to call `blob_buf_free`). Team discussed full plugin boilerplate vs just the handler (kept to requested snippet); minor debate on return code vs plain `0`.
+
+### Result for Scenario 10
+```sh
+#!/bin/sh
+uci -q set system.@system[0].timezone='UTC'
+uci commit system
+```
+
+Place this script on the filesystem at `/etc/uci-defaults/10-set-timezone` (or any name with a numeric prefix for execution ordering). Files in this directory are executed exactly once on the very first boot (after factory reset or initial flash) and are then automatically cleaned up.
+
+**Explanation and choices:** OpenWrt's `uci-defaults` mechanism is purpose-built for one-time initialization on first boot. Uses UCI for setting and persisting the timezone.  
+**Difficulties/debates:** No major debates; this is the documented standard pattern. Minor discussion on filename prefix convention for ordering relative to other defaults.
+
+### Result for Scenario 13
+```sh
+#!/bin/sh
+CONFIG_FILE='/etc/my_app/config.json'
+if [ -f "$CONFIG_FILE" ]; then
+    STARTUP_DELAY=$(jsonfilter -f "$CONFIG_FILE" -e '$.startup_delay' 2>/dev/null || echo "0")
+    echo "$STARTUP_DELAY"
+else
+    echo "0"
+fi
+```
+
+**Explanation and choices:** Pure POSIX shell script using `jsonfilter` (part of the `libjson-script`/`jsonfilter` package, considered native to OpenWrt images). It safely checks for file existence and parses without external dependencies like `jq`.  
+**Difficulties/debates:** `jsonfilter` vs `jshn.sh` (from libubox). Chose `jsonfilter` for its simple one-liner extraction and lower overhead; team debated error resilience for malformed JSON/missing keys (added fallback).
+
+### Result for Scenario 16
+```sh
+#!/bin/sh
+ping_one() {
+    local ip=$1
+    ping "$ip" 2>&1 | while read -r line; do
+        echo "$ip: $line"
+    done
+}
+
+ping_one 10.10.10.2 &
+ping_one 10.10.10.3 &
+wait
+```
+
+**Explanation and choices:** Pure shell (BusyBox ash) using background jobs (`&`) and a helper function with `while read` for asynchronous output capture and live printing. Prefixes every line with the target IP. No external tools; `wait` keeps the script alive.  
+**Difficulties/debates:** Parallelism in limited ash shell (no `coproc`, no `parallel` command by default). Debated `sed` pipeline in subshell vs `while read` function (chose function for cleaner live/async handling and to avoid output interleaving issues). Continuous ping means no `-c` flag.
