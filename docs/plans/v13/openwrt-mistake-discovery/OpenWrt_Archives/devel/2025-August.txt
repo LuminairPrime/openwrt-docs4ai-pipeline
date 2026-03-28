@@ -1,0 +1,2133 @@
+From giu.lippolis at gmail.com  Sat Aug  2 22:08:12 2025
+From: giu.lippolis at gmail.com (Giuseppe Lippolis)
+Date: Sun, 3 Aug 2025 07:08:12 +0200
+Subject: license about rssileds package
+Message-ID: <aa1ea18d-1414-4d35-8153-4df473ff3dac@gmail.com>
+
+I'm going to extend the feature supported by
+
+package/network/utils/rssileds/files/rssileds.init
+
+But I noticed at line 2:
+
+# (C) 2012 Daniel Golle, Allnet GmbH <dgolle at allnet.de>
+
+
+So my question is: can I modify that file or shall I refrain from doing so?
+
+Regards,
+
+Giuseppe
+
+
+
+From openwrt at froztbyte.net  Sun Aug  3 04:22:38 2025
+From: openwrt at froztbyte.net (JP)
+Date: Sun, 03 Aug 2025 13:22:38 +0200
+Subject: license about rssileds package
+In-Reply-To: <aa1ea18d-1414-4d35-8153-4df473ff3dac@gmail.com>
+References: <aa1ea18d-1414-4d35-8153-4df473ff3dac@gmail.com>
+Message-ID: <BE592969-2718-4A57-BC4F-FD7B5A36A9DA@froztbyte.net>
+
+the makefile (package/network/utils/rssileds/Makefile) indicates GPLv2
+
+-J
+
+On 3 Aug 2025, at 7:08, Giuseppe Lippolis wrote:
+
+> I'm going to extend the feature supported by
+>
+> package/network/utils/rssileds/files/rssileds.init
+>
+> But I noticed at line 2:
+>
+> # (C) 2012 Daniel Golle, Allnet GmbH <dgolle at allnet.de>
+>
+>
+> So my question is: can I modify that file or shall I refrain from doing so?
+>
+> Regards,
+>
+> Giuseppe
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From felix.baumann at freifunk-aachen.de  Sun Aug  3 05:03:44 2025
+From: felix.baumann at freifunk-aachen.de (Felix Baumann)
+Date: Sun, 03 Aug 2025 14:03:44 +0200
+Subject: license about rssileds package
+In-Reply-To: <aa1ea18d-1414-4d35-8153-4df473ff3dac@gmail.com>
+References: <aa1ea18d-1414-4d35-8153-4df473ff3dac@gmail.com>
+Message-ID: <C8415899-C194-4772-9450-ED42517DDD21@freifunk-aachen.de>
+
+Am 3. August 2025 07:08:12 MESZ schrieb Giuseppe Lippolis <giu.lippolis at gmail.com>:
+>I'm going to extend the feature supported by
+>
+>package/network/utils/rssileds/files/rssileds.init
+>
+>But I noticed at line 2:
+>
+># (C) 2012 Daniel Golle, Allnet GmbH <dgolle at allnet.de>
+>
+>
+>So my question is: can I modify that file or shall I refrain from doing so?
+>
+>Regards,
+>
+>Giuseppe
+>
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+I'm certain this is licensed under GPL v2
+It even says here:
+<https://github.com/openwrt/openwrt/blob/main/package/network/utils/rssileds/Makefile>
+
+Copyright is not the same as Licensing.
+I wonder though: does every code file need to have the license referenced, probably not, right?
+I'm not certain how OpenWrt currently handles this.
+Oh, wait there are SPDX headers usually:
+<https://github.com/openwrt/openwrt/blob/main/LICENSES/GPL-2.0>
+
+I guess this is one of the older files that were never updated to a new schema. There's likely many more of them left in the code.
+
+Regards
+Felix Baumann
+
+
+From daniel at makrotopia.org  Sun Aug  3 06:22:27 2025
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Sun, 3 Aug 2025 14:22:27 +0100
+Subject: license about rssileds package
+In-Reply-To: <mailman.110829.1754222634.1866309.openwrt-devel@lists.openwrt.org>
+References: <aa1ea18d-1414-4d35-8153-4df473ff3dac@gmail.com>
+ <mailman.110829.1754222634.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <aI9ik5uitsaijlFA@pidgin.makrotopia.org>
+
+On Sun, Aug 03, 2025 at 02:03:44PM +0200, Felix Baumann via openwrt-devel wrote:
+> Am 3. August 2025 07:08:12 MESZ schrieb Giuseppe Lippolis <giu.lippolis at gmail.com>:
+> >I'm going to extend the feature supported by
+> >
+> >package/network/utils/rssileds/files/rssileds.init
+> >
+> >But I noticed at line 2:
+> >
+> ># (C) 2012 Daniel Golle, Allnet GmbH <dgolle at allnet.de>
+> >
+> >
+> >So my question is: can I modify that file or shall I refrain from doing so?
+
+Go ahead, I wrote that and it was supposed to be under GPL-2.0-or-later just
+like the .c file of the the rssileds service itself.
+
+
+
+From noreply at github.com  Sun Aug  3 10:09:09 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 03 Aug 2025 10:09:09 -0700
+Subject: [sdwalker/sdwalker.github.io] 0a906d: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/b35ba1-0a906d@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 0a906d77364a9886b5b7b7621d54ea35aa02886b
+      https://github.com/sdwalker/sdwalker.github.io/commit/0a906d77364a9886b5b7b7621d54ea35aa02886b
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-08-03 (Sun, 03 Aug 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From philipp_subx at redfish-solutions.com  Sun Aug  3 13:27:04 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 3 Aug 2025 14:27:04 -0600
+Subject: Banana Pi-R4 boards that aren't broken?
+Message-ID: <A44EA5C0-AAC0-405B-A0F8-B9E14798242A@redfish-solutions.com>
+
+Hi,
+
+Does anyone know who is shipping BPi-R4 boards that aren?t the defective v1.1 with the over-voltage to the M.2 slot?
+
+Thanks,
+
+-Philip
+
+
+
+From philipp at redfish-solutions.com  Sun Aug  3 13:31:08 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Sun,  3 Aug 2025 14:31:08 -0600
+Subject: [PATCH 1/3] jshn.sh: Send warnings to stderr
+Message-ID: <20250803203108.4078204-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 1d3055711820e5a21ea59cae49e7bf3f56b626d8..3f2f679187db96d77ccf27b15f5fc47cb8ee9796 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -309,7 +309,7 @@ json_select() {
+ 		;;
+ 		*)
+ 			[ -n "$_json_no_warning" ] || \
+-				echo "WARNING: Variable '$target' does not exist or is not an array/object"
++				echo "WARNING: Variable '$target' does not exist or is not an array/object" >&2
+ 			return 1
+ 		;;
+ 	esac
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Sun Aug  3 13:31:08 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Sun,  3 Aug 2025 14:31:08 -0600
+Subject: [PATCH 2/3] jshn.sh: Minor cleanup
+Message-ID: <20250803203108.4078217-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 3f2f679187db96d77ccf27b15f5fc47cb8ee9796..e9c6a033981a1e877cf8de3a330b640e5094bf99 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -222,6 +222,7 @@ json_dump() {
+ }
+ 
+ json_get_type() {
++	# target=$2
+ 	local __dest="$1"
+ 	local __cur
+ 
+@@ -291,11 +292,11 @@ json_select() {
+ 	local type
+ 	local cur
+ 
+-	[ -z "$1" ] && {
++	[ -z "$target" ] && {
+ 		_json_set_var JSON_CUR "J_V"
+ 		return 0
+ 	}
+-	[[ "$1" == ".." ]] && {
++	[[ "$target" == ".." ]] && {
+ 		_json_get_var cur JSON_CUR
+ 		_json_get_var cur "U_$cur"
+ 		_json_set_var JSON_CUR "$cur"
+@@ -316,6 +317,8 @@ json_select() {
+ }
+ 
+ json_is_a() {
++	# target=$1
++	# type=$2
+ 	local type
+ 
+ 	json_get_type type "$1"
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Sun Aug  3 13:31:09 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Sun,  3 Aug 2025 14:31:09 -0600
+Subject: [PATCH 3/3] jshn.sh: Add anonymous strings in arrays
+Message-ID: <20250803203109.4078230-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+---
+ sh/jshn.sh | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index e9c6a033981a1e877cf8de3a330b640e5094bf99..75faf8245841a0ba766548e79a14c8a24eceed24 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -150,6 +150,17 @@ json_add_string() {
+ 	_json_add_generic string "$1" "$2" "$cur"
+ }
+ 
++json_push_string() {
++	local cur
++	_json_get_var cur JSON_CUR
++	[ "${cur%%[0-9]*}" = "J_A" ] || {
++		[ -n "$_json_no_warning" ] || \
++			echo "WARNING: Not in an array" >&2
++		return 1
++	}
++	_json_add_generic string "" "$2" "$cur"
++}
++
+ json_add_int() {
+ 	local cur
+ 	_json_get_var cur JSON_CUR
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Sun Aug  3 13:33:04 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Sun,  3 Aug 2025 14:33:04 -0600
+Subject: [PATCH 1/1] jshn.sh: Drop extraneous space when appending values to variable
+Message-ID: <20250803203304.4078353-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+From: Felix Fietkau <nbd at nbd.name>
+
+Don't have a leading space when building out a variable via appends.
+
+fixes: issue #15
+
+Signed-off-by: Felix Fietkau <nbd at nbd.name>
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 1d3055711820e5a21ea59cae49e7bf3f56b626d8..66ca9524a041ebd71cbad044d9a9fc595393296b 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -23,7 +23,7 @@ __jshn_raw_append() {
+ _jshn_append() {
+ 	# var=$1
+ 	local _a_value="$2"
+-	eval "${JSON_PREFIX}$1=\"\${${JSON_PREFIX}$1} \$_a_value\""
++	eval "${JSON_PREFIX}$1=\"\${${JSON_PREFIX}$1}\${${JSON_PREFIX}$1:+ }\$_a_value\""
+ }
+ 
+ _get_var() {
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Sun Aug  3 13:33:57 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Sun,  3 Aug 2025 14:33:57 -0600
+Subject: [PATCH 1/1] jshn.sh: Add getters for the cursor and its parent
+Message-ID: <20250803203357.4078408-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 1d3055711820e5a21ea59cae49e7bf3f56b626d8..5599c85835d0c81c8d47a9dfd73f32e4db2a7c9b 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -197,6 +197,42 @@ json_add_fields() {
+ 	done
+ }
+ 
++json_get_position() {
++	local __dest="$1"
++	eval "export -- \"$__dest=\${JSON_CUR}\"; [ -n \"\${JSON_CUR+x}\" ]"
++}
++
++json_move_to() {
++	local cur="$1"
++	_json_set_var JSON_CUR "$cur"
++}
++
++json_get_parent_position() {
++	local __dest="$1" cur parent
++	_json_get_var cur JSON_CUR
++	parent="U_$cur"
++	eval "export -- \"$__dest=\${$parent}\"; [ -n \"\${$parent+x}\" ]"
++}
++
++json_get_root_position() {
++	local __dest="$1" cur="J_V"
++	eval "export -- \"$__dest=\${cur}\"; [ -n \"\${cur+x}\" ]"
++}
++
++json_get_index() {
++	local __dest="$1"
++	local cur parent seq
++	_json_get_var cur JSON_CUR
++	_json_get_var parent "U_$cur"
++	if [ "${parent%%[0-9]*}" != "J_A" ]; then
++		[ -n "$_json_no_warning" ] || \
++			echo "WARNING: Not inside an array" >&2
++		return 1
++	fi
++	seq="S_$parent"
++	eval "export -- \"$__dest=\${$seq}\"; [ -n \"\${$seq+x}\" ]"
++}
++
+ # functions read access to json variables
+ 
+ json_compact() {
+-- 
+2.43.0
+
+
+
+From robert.paczkowski at venturio24.pl  Wed Aug  6 00:40:34 2025
+From: robert.paczkowski at venturio24.pl (Robert Paczkowski)
+Date: Wed,  6 Aug 2025 07:40:34 GMT
+Subject: =?UTF-8?Q?Wsp=C3=B3=C5=82praca?=
+Message-ID: <20250806064500-0.1.82.1dh9m.0.wq1o9t7gl6@venturio24.pl>
+
+Dzie? dobry, 
+
+Czy interesuje Pa?stwa pozyskanie nowych klient?w?
+
+Zajmujemy si? profesjonalnie wsparciem firm w tym zakresie. 
+
+Nasi partnerzy zyskuj? sta?y nap?yw nowych zlece? oraz zam?wie?, a tym samym zwi?kszaj? swoje wyniki sprzeda?y.
+
+Czy mo?emy przedstawi? szczeg??y dotycz?ce zasad i mo?liwo?ci wsp??pracy?
+
+
+Pozdrawiam
+Robert Paczkowski
+
+
+From e9hack at gmail.com  Wed Aug  6 22:30:01 2025
+From: e9hack at gmail.com (e9hack)
+Date: Thu, 7 Aug 2025 07:30:01 +0200
+Subject: netifd introduces restarts of hostapd at reboot
+Message-ID: <CALxbwRpE23ejU=gnnL3z0ckN8CFc+ogZvaR-shu9LXXw+QwHew@mail.gmail.com>
+
+Hi,
+
+after commit 96fa769937cfce5a076f4425c4b6dc1fd12a77a4  (netifd: update
+to Git HEAD (2025-08-02)), netifd introduces one or two restarts of
+hostapd at a reboot or at a sequence 'wifi down; sleep 30; wifi &'.
+This is visible via 'logread -e Tear':
+Wed Aug  6 20:56:05 2025 daemon.notice netifd: radio0 (7054):
+wifi-scripts: Tearing down phy0
+Wed Aug  6 20:56:14 2025 daemon.notice netifd: radio1 (8540):
+wifi-scripts: Tearing down phy1
+
+Any idea why this happens?
+
+Regards,
+Hartmut
+
+
+From macroalpha82 at gmail.com  Thu Aug  7 07:39:11 2025
+From: macroalpha82 at gmail.com (Chris Morgan)
+Date: Thu,  7 Aug 2025 09:39:11 -0500
+Subject: [PATCH V2] mediatek: backport upstream v6.17 Potron SFP+ XGSPON patches
+Message-ID: <20250807143911.1618-1-macroalpha82@gmail.com>
+
+From: Chris Morgan <macromorgan at hotmail.com>
+
+Backport fixes for the Potron SFP+ XGSPON ONU stick. These fixes allow
+the Potron SFP+ XGSPON ONU stick to work without manual workarounds
+to prevent UART activity on pins 2 and 7 to be interpreted as TX_FAULT
+or LOS signals on devices with support for these signals (such as the
+Banana Pi R4).
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=dfec1c14aece
+
+Signed-off-by: Chris Morgan <macroalpha82 at gmail.com>
+---
+Changes since V1:
+ - Moved patch to target/linux/generic/backport-6.12.
+ - Renamed patch to be consistent with naming of other patches.
+---
+ ...phy-sfp-Add-quirk-for-SFP-ONU-XGSPON.patch | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 target/linux/generic/backport-6.12/730-06-v6.17-net-phy-sfp-Add-quirk-for-SFP-ONU-XGSPON.patch
+
+diff --git a/target/linux/generic/backport-6.12/730-06-v6.17-net-phy-sfp-Add-quirk-for-SFP-ONU-XGSPON.patch b/target/linux/generic/backport-6.12/730-06-v6.17-net-phy-sfp-Add-quirk-for-SFP-ONU-XGSPON.patch
+new file mode 100644
+index 0000000000..f65e9da50a
+--- /dev/null
++++ b/target/linux/generic/backport-6.12/730-06-v6.17-net-phy-sfp-Add-quirk-for-SFP-ONU-XGSPON.patch
+@@ -0,0 +1,61 @@
++From d6899e971a19f525a2efe2d301c859e753462607 Mon Sep 17 00:00:00 2001
++From: Chris Morgan <macromorgan at hotmail.com>
++Date: Thu, 5 Jun 2025 14:18:21 -0500
++Subject: [PATCH] net: sfp: add quirk for SFP-ONU-XGSPON module
++
++Add quirk for YV SFP+ONT-XGSPON module.
++
++This device uses pins 2 and 7 for UART communication, so disable
++TX_FAULT and LOS. Additionally as it is an embedded system in an
++SFP+ form factor provide it enough time to fully boot before we
++attempt to use it.
++
++Signed-off-by: Chris Morgan <macromorgan at hotmail.com>
++---
++ drivers/net/phy/sfp.c | 21 ++++++++++++++++++++-
++ 1 file changed, 20 insertions(+), 1 deletion(-)
++
++--- a/drivers/net/phy/sfp.c
+++++ b/drivers/net/phy/sfp.c
++@@ -366,6 +366,11 @@ static void sfp_fixup_nokia(struct sfp *
++ 	sfp_fixup_ignore_los(sfp);
++ }
++ 
+++static void sfp_fixup_ignore_hw(struct sfp *sfp, unsigned int mask)
+++{
+++	sfp->state_hw_mask &= ~mask;
+++}
+++
++ // For 10GBASE-T short-reach modules
++ static void sfp_fixup_10gbaset_30m(struct sfp *sfp)
++ {
++@@ -408,7 +413,19 @@ static void sfp_fixup_halny_gsfp(struct
++ 	 * these are possibly used for other purposes on this
++ 	 * module, e.g. a serial port.
++ 	 */
++-	sfp->state_hw_mask &= ~(SFP_F_TX_FAULT | SFP_F_LOS);
+++	sfp_fixup_ignore_hw(sfp, (SFP_F_TX_FAULT | SFP_F_LOS));
+++}
+++
+++static void sfp_fixup_potron(struct sfp *sfp)
+++{
+++	/*
+++	 * The TX_FAULT and LOS pins on this device are used for serial
+++	 * communication, so ignore them. Additionally, provide extra
+++	 * time for this device to fully start up.
+++	 */
+++
+++	sfp_fixup_long_startup(sfp);
+++	sfp_fixup_ignore_hw(sfp, (SFP_F_TX_FAULT | SFP_F_LOS));
++ }
++ 
++ static void sfp_fixup_rollball_cc(struct sfp *sfp)
++@@ -489,6 +506,8 @@ static const struct sfp_quirk sfp_quirks
++ 	SFP_QUIRK("FS", "GPON-ONU-34-20BI", sfp_quirk_2500basex,
++ 		  sfp_fixup_ignore_tx_fault),
++ 
+++	SFP_QUIRK_F("YV", "SFP+ONU-XGSPON", sfp_fixup_potron),
+++
++ 	SFP_QUIRK_F("HALNy", "HL-GSFP", sfp_fixup_halny_gsfp),
++ 
++ 	// HG MXPD-483II-F 2.5G supports 2500Base-X, but incorrectly reports
+-- 
+2.39.5
+
+
+
+From marcin.wojciechowski at ventrazo.pl  Fri Aug  8 00:50:13 2025
+From: marcin.wojciechowski at ventrazo.pl (Marcin Wojciechowski)
+Date: Fri,  8 Aug 2025 07:50:13 GMT
+Subject: Zapytanie ofertowe 
+Message-ID: <20250808084502-0.1.ka.51zvf.0.umlxp4q3dh@OriginatePro.pl>
+
+Dzie? dobry,
+
+Pozwoli?em sobie na kontakt, poniewa? jestem zainteresowany weryfikacj? mo?liwo?ci nawi?zania wsp??pracy.
+
+Wspieramy firmy w pozyskiwaniu nowych klient?w biznesowych.
+
+Czy mo?emy porozmawia? w celu przedstawienia szczeg??owych informacji? 
+ 
+
+Pozdrawiam serdecznie
+Marcin Wojciechowski
+
+
+From noreply at github.com  Sun Aug 10 10:50:41 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 10 Aug 2025 10:50:41 -0700
+Subject: [sdwalker/sdwalker.github.io] f22b95: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/0a906d-f22b95@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: f22b9515af923afff360eec0d325ecf6ca135a08
+      https://github.com/sdwalker/sdwalker.github.io/commit/f22b9515af923afff360eec0d325ecf6ca135a08
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-08-10 (Sun, 10 Aug 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From 475683702 at qq.com  Sun Aug 10 20:17:13 2025
+From: 475683702 at qq.com (=?gb18030?B?NDc1NjgzNzAy?=)
+Date: Mon, 11 Aug 2025 11:17:13 +0800
+Subject: User-mode Forwarding Plan
+Message-ID: <tencent_C740B34265E7C2563976A8F2FA5D83A66E09@qq.com>
+
+Dear Team,
+
+As far as I know, OpenWrt currently relies primarily on the Kernel's protocol stack for packet processing and forwarding. However, as some scenarios and requirements evolve (such as packet analysis, classification, and shaping), user-space packet processing technologies have become crucial.
+
+I would like to know if the OpenWrt community has any plans to integrate user-space forwarding technology into the system. For example:
+1. Are there plans to support DPDK or other similar user-mode network stacks?
+2. If not at present, what is the community?s perspective on such technologies?
+3. Does the community have any recommended paths or best practices for implementing user-mode forwarding on OpenWrt devices?
+
+Looking forward to your response?this is very important for my project planning.
+
+Thank you!
+
+From noreply at github.com  Sun Aug 17 13:50:26 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 17 Aug 2025 20:50:26 +0000 (UTC)
+Subject: [sdwalker/sdwalker.github.io] d540e0: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/f22b95-d540e0@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: d540e097b096a4ae660eb6e009dc5858740cf7f7
+      https://github.com/sdwalker/sdwalker.github.io/commit/d540e097b096a4ae660eb6e009dc5858740cf7f7
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-08-17 (Sun, 17 Aug 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From computersforpeace at gmail.com  Wed Aug 20 08:46:12 2025
+From: computersforpeace at gmail.com (Brian Norris)
+Date: Wed, 20 Aug 2025 08:46:12 -0700
+Subject: [PATCH fstools RESEND] libfstools: partname: drop parent_dev
+In-Reply-To: <tencent_1BDE4F7AE014AD4D4FA835C5DFEAB35AFB06@qq.com>
+References: <tencent_1BDE4F7AE014AD4D4FA835C5DFEAB35AFB06@qq.com>
+Message-ID: <CAN8TOE-5e8kCXDC-JAV5Mf315nNx466SUP+CDPFCrD_N-SgMug@mail.gmail.com>
+
+On Tue, Aug 19, 2025 at 8:40?PM <Yeking at red54.com> wrote:
+>
+> From: ??? (XIE Zhibang) <Yeking at Red54.com>
+>
+> Using parent_dev will cause use_f2fs() to make wrong detection.
+>
+> Signed-off-by: ??? (XIE Zhibang) <Yeking at Red54.com>
+> ---
+> More than a year has passed, no progress, resend.
+
+I'll reply, since you seem frustrated. And I don't like being ignored either.
+
+But I know nothing about f2fs here, and neither your terse description
+nor the code you're changing make it obvious to me what "wrong
+decision" it was making, or why this change fixes things for you
+without causing problems for someone else. For one, this code seems to
+not be specific to f2fs ... so what about non-f2fs? Are you breaking
+them? Perhaps you could elaborate and provide some explanation in the
+commit message? Show some examples?
+
+That would help both uneducated reviewers (like me), who might then
+better understand why your patch is good, and possibly even provide a
+"Reviewed-by"; but also there might be reviewers who better know
+what's going on, but are busy and don't want to spend time on
+inferring all of this. If such a reviewer doesn't see a good
+explanation, they may well just ignore it.
+
+Brian
+
+
+From hauke at hauke-m.de  Wed Aug 20 12:19:03 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Wed, 20 Aug 2025 21:19:03 +0200
+Subject: OpenWrt 23.05.6 - Service Release
+Message-ID: <4cb2253e-fbc3-41f1-b3a7-191a6f49d4a0@hauke-m.de>
+
+Hi,
+
+The OpenWrt community is proud to announce the newest stable release of 
+the OpenWrt 23.05 stable series. It improves device support and brings a 
+few bug fixes including security fixes.
+
+Download firmware images using the OpenWrt Firmware Selector:
+  * https://firmware-selector.openwrt.org/?version=23.05.6
+
+Download firmware images directly from our download servers:
+  * https://downloads.openwrt.org/releases/23.05.6/targets/
+
+
+OpenWrt 23.05 is EOL
+===================+
+
+The OpenWrt 23.05 series is end of life according to the OpenWrt 
+security policy. The last release from the OpenWrt 23.05 series is 
+23.05.6, after this date we will not provide any updates for OpenWrt 
+23.05, not even for severe security problems. We encourage everyone to 
+upgrade to OpenWrt 24.10 which will be supported till 2026.
+https://openwrt.org/docs/guide-developer/security#support_status
+
+
+Main changes between OpenWrt 23.05.5 and OpenWrt 23.05.6
+========================================================
+
+Device support
+==============
+
+   * Added devices:
+     * ath79: Huawei AP6010DN
+     * ath79: MikroTik RouterBOARD 750 r2 (hEX lite)
+     * ath79: Sophos AP15C
+     * ramips: netis N6
+   * ath79: ZTE MF286: fix 5GHz on QCA9886
+   * ath79: add extended AR9344 reset sequence
+   * ipq40xx: Aruba AP-303H: Fix PSE GPIO pin
+   * ipq40xx: Meraki MR33 and MR74: fix MAC address
+   * mediatek: Xiaomi Router AX3000T: Add support for Winbond
+     W25N01KV flash
+   * ramips: TP-Link RE200 v1 and RE210 v1: Fix booting stuck issue
+   * octeon: ubnt-edgerouter: fix sysupgrade config backup/restore
+
+Various fixes and improvements
+==============================
+
+   * iptables: backport "nft: track each register individually" from 1.9
+   * wifi-scripts: Fix parsing of Capabilities
+
+Core components update
+======================
+
+   * Update Linux from 5.15.167 to 5.15.189
+   * Update mac80211 from 6.1.110-1 to 6.1.145-1
+   * Update wireless-regdb from 2024.07.04 to 2025.07.10
+   * Update openssl from 3.0.15 to 3.0.16
+   * Update mbedtls from 2.28.9 to 2.28.10
+   * Update wolfssl from 5.7.2 to 5.7.6
+   * Update ca-certificates from 20230311 to 20241223
+   * Update jsonfilter from 2024-01-23 to 2025-04-18
+   * Update libxml from 2.12.5 to 2.14.5
+
+
+Upgrading to 23.05.6
+====================
+
+Sysupgrade can be used to upgrade a device from 22.03 to 23.05, and 
+configuration will be preserved in most cases.
+
+* Sysupgrade from 21.02 to 23.05 is not officially supported.
+* ipq40xx EA6350v3, EA8300, MR8300 and WHW01 require tweak to the U-Boot
+   environment on update from 22.03 to 23.05. Refer to the Device wiki or
+   the instruction on sysupgrade on how to do this change. Config needs
+   to be reset on sysupgrade.
+
+Known issues
+============
+
+* lantiq/xrx200 target shows error messages in DSA switch configuration
+   of the integrated GSWIP switch.
+   (see: https://github.com/openwrt/openwrt/pull/13200)
+* OpenWrt 23.05.6 was signed with the wrong signing keys. The keys from
+   OpenWrt snapshot were used for OpenWrt 23.05.6, OpenWrt 23.05.5,
+   OpenWrt 23.05.4, OpenWrt 23.05.3, OpenWrt 23.05.2, OpenWrt 23.05.0 and
+   the release candidates. A later OpenWrt 23.05 service release will use
+   a different key.
+
+See up to date information here:
+https://openwrt.org/releases/23.05/notes-23.05.6#known_issues
+
+
+-----------------
+
+Full release notes and upgrade instructions are available at
+https://openwrt.org/releases/23.05/notes-23.05.6
+
+In particular, make sure to read the regressions and known issues before 
+upgrading:
+https://openwrt.org/releases/23.05/notes-23.05.6#known_issues
+
+For a detailed list of all changes since 23.05.5, refer to
+https://openwrt.org/releases/23.05/changelog-23.05.6
+
+To download the 23.05.6 images, navigate to:
+https://downloads.openwrt.org/releases/23.05.6/targets/
+
+
+Use OpenWrt Firmware Selector to download:
+https://firmware-selector.openwrt.org/?version=23.05.6
+
+As always, a big thank you goes to all our active package maintainers, 
+testers, documenters and supporters.
+
+Have fun!
+
+The OpenWrt Community
+
+---
+
+To stay informed of new OpenWrt releases and security advisories, there 
+are new channels available:
+
+* a low-volume mailing list for important announcements:
+   https://lists.openwrt.org/mailman/listinfo/openwrt-announce
+
+* a dedicated "announcements" section in the forum:
+   https://forum.openwrt.org/c/announcements/14
+
+* other announcement channels (such as RSS feeds) might be added in the 
+future, they will be listed at https://openwrt.org/contact
+
+
+From vidplace7 at gmail.com  Wed Aug 20 15:30:43 2025
+From: vidplace7 at gmail.com (Austin Lane)
+Date: Wed, 20 Aug 2025 18:30:43 -0400
+Subject: dtbocfg: Allow users to load devicetree overlays from userspace
+Message-ID: <CAPx+Qy-zuZBPAEEAbRzLv-ND_L74iDO76Jf+fYnmFyXbd0vhBw@mail.gmail.com>
+
+With the addition of many dev-focused and expandable devices recently
+such as OpenWrt One, the Banana Pi R4 series, etc; it would be
+extremely useful and beneficial to allow users to load device tree
+overlays to enable additional hardware support (E.g. MikroBus cards,
+Hats, etc).
+
+I have submitted a kmod package that addresses this issue in a similar
+manner to the current Raspberry Pi targets, using a configfs mount.
+https://github.com/ikwzm/dtbocfg
+
+PR: https://github.com/openwrt/packages/pull/26832
+
+I have also created a proof-of-concept package showing how `dtbocfg`
+may be consumed by other OpenWrt packages.
+https://github.com/vidplace7/openwrt-dtbo/tree/main/openwrt-one-mikrobus-spidev
+
+I welcome critique on this submission, and look forward to moving this
+issue forward.
+
+-- 
+Austin Lane (vidplace7)
+Packaging @ Meshtastic
+https://github.com/meshtastic/openwrt
+
+
+From jbennett at incomsystems.biz  Wed Aug 20 17:02:14 2025
+From: jbennett at incomsystems.biz (Jonathan Bennett)
+Date: Wed, 20 Aug 2025 19:02:14 -0500
+Subject: dtbocfg: Allow users to load devicetree overlays from userspace
+In-Reply-To: <CAPx+Qy-zuZBPAEEAbRzLv-ND_L74iDO76Jf+fYnmFyXbd0vhBw@mail.gmail.com>
+References: <CAPx+Qy-zuZBPAEEAbRzLv-ND_L74iDO76Jf+fYnmFyXbd0vhBw@mail.gmail.com>
+Message-ID: <e63108bd-1134-43ec-823e-e9b3dccb0c2d@incomsystems.biz>
+
+> With the addition of many dev-focused and expandable devices recently
+> such as OpenWrt One, the Banana Pi R4 series, etc; it would be
+> extremely useful and beneficial to allow users to load device tree
+> overlays to enable additional hardware support (E.g. MikroBus cards,
+> Hats, etc).
+>
+> I have submitted a kmod package that addresses this issue in a similar
+> manner to the current Raspberry Pi targets, using a configfs mount.
+> https://github.com/ikwzm/dtbocfg
+>
+> PR: https://github.com/openwrt/packages/pull/26832
+>
+> I have also created a proof-of-concept package showing how `dtbocfg`
+> may be consumed by other OpenWrt packages.
+> https://github.com/vidplace7/openwrt-dtbo/tree/main/openwrt-one-mikrobus-spidev
+Wanted to add that I've successfully built these packages for my OpenWRT 
+One, giving me access to a LoRa MikroBus card over SPI. Was then able to 
+install and run Meshtasticd to interact with that LoRa radio as a 
+result. It would be outstanding if this could be supported without 
+requiring local OpenWRT compilation for each user.
+>
+> I welcome critique on this submission, and look forward to moving this
+> issue forward.
+>
+For what it's worth,
+
+Acked-by: Jonathan Bennett <jbennett at incomsystems.biz>
+
+
+
+From tomli at tomli.me  Fri Aug 22 08:31:00 2025
+From: tomli at tomli.me (Tom Li)
+Date: Fri, 22 Aug 2025 15:31:00 +0000
+Subject: Clarify Project Policy on Default Writes to NVRAM
+Message-ID: <aKiNNIFgugQiLJRw@work>
+
+Hi all,
+
+For OpenWrt routers, writing to NVRAM by default can serve useful
+purposes in several contexts:
+
+1. Saving a /dev/urandom seed file after boot, to prevent early-
+boot entropy starvation in the next boot. This was first discussed
+in 2016 [0], and raised again in 2022. [1]
+
+2. Saving the last-known system date and time to /etc/dnsmasq.time
+for DNSSEC timestep validation, on every SIGTERM and reboot.
+Discussed in [2].
+
+3. Saving the current IPv6 prefix on the WAN port (obtained from
+the ISP) to a file. If the router reboots due to power loss, and
+the ISP changes the IPv6 prefix in the next boot, the old prefix
+can be invalidated in a Router Advertisements to prevent IPv6
+outages in the LAN due to stale addresses. This is known as "Flash
+Renumbering Workaround Across Reboot", a recommended feature by
+RFC 9096 to work around broken ISPs. This need is raised in a recent
+odhcpd devolopment discussion [3], and is my motivation of sending
+this mail.
+
+An obvious objection to all of these behaviors is that, writing
+to the filesystem by default can cause unwanted NVRAM wears.
+
+As a result, any project discussion that involves writing to the
+filesystem would quickly become an off-topic one about "whether
+one should write to NVRAM by default" rather than its original
+problem. Although the answer seems to be "No, we shouldn't", but
+those discussions had an extremely limited audience - only a
+few developers (perhaps 3) who happened to work on that specific 
+project were involved, their ideas and conclusions are not known
+to others. The next time the same problem is raised in a different
+context, the whole discussion repeats again. For example, in [1],
+Etienne Champetier said that they "would love to have more devs
+comment".
+
+While I was writing this mail, I just found it was also discussed
+on the context of https-dns-proxy [4] in 2024 - dnsmasq config was
+changed on every https-dns-proxy service restart, which was reported
+as a bug.
+
+Therefore, I think it would be a good idea to define a clear OpenWrt
+project policy on default writes to NVRAM in this mailing list, so
+all future developers could refer to the policy.
+
+We need to answer these questions:
+
+1. In the current OpenWrt Stable Release or Development Build,
+do we have anything that writes to the filesystem by default
+(e.g. do we still have /etc/dnsmasq.time)? If yes, do we have
+a full list of them?
+
+2. When is it acceptable to write to NVRAM by default? Always
+banned? Or is it conditionally allowed, with a rate limit (based
+on the file's timestep and NTP time, via NTP hotplug)? My
+impression is that rate-limited writes are allowed by the project,
+but this needs clarification.
+
+3. Should we set a filesystem default-write policy for all OpenWrt
+packages?
+
+4. In a previous discussion, an alternative solution was suggested
+by John Crispin that "let's add a system.system.write_state_to_
+flash_on_boot=0/1 UCI option, and lock this and the DNSSEC time
+stuff with it, and default it to 0". Should we consider this idea?
+
+Thanks,
+Tom Li
+
+[0] https://www.mail-archive.com/lede-dev at lists.infradead.org/msg01225.html
+
+[1] http://lists.openwrt.org/pipermail/openwrt-devel/2022-March/038340.html
+
+[2] https://www.mail-archive.com/lede-dev at lists.infradead.org/msg01265.html
+
+[3] https://github.com/openwrt/odhcpd/issues/244
+
+[4] https://github.com/openwrt/packages/issues/23469
+
+
+From rsalvaterra at gmail.com  Fri Aug 22 09:35:22 2025
+From: rsalvaterra at gmail.com (Rui Salvaterra)
+Date: Fri, 22 Aug 2025 17:35:22 +0100
+Subject: [REGRESSION, BISECTED] IPv6 RA is broken with Linux 6.12.42+
+Message-ID: <CALjTZvZkDr8N18ocZ8jNND_4DwKqr-PV4BBXB60+=WXPF3vn=Q@mail.gmail.com>
+
+Hi, everyone,
+
+
+We noticed a regression in OpenWrt, with IPv6, which causes a router's
+client devices to stop receiving the IPv6 default route. I have
+bisected it down to (rather surprisingly)
+fc1072d934f687e1221d685cf1a49a5068318f34 ("proc: use the same
+treatment to check proc_lseek as ones for proc_read_iter et.al").
+Reverting the aforementioned commit fixes the issue, of course.
+
+Git bisect log follows:
+
+git bisect start
+# status: waiting for both good and bad commits
+# bad: [880e4ff5d6c8dc6b660f163a0e9b68b898cc6310] Linux 6.12.42
+git bisect bad 880e4ff5d6c8dc6b660f163a0e9b68b898cc6310
+# status: waiting for good commit(s), bad commit known
+# good: [8f5ff9784f3262e6e85c68d86f8b7931827f2983] Linux 6.12.41
+git bisect good 8f5ff9784f3262e6e85c68d86f8b7931827f2983
+# good: [dab173bae3303f074f063750a8dead2550d8c782] RDMA/hns: Fix
+double destruction of rsv_qp
+git bisect good dab173bae3303f074f063750a8dead2550d8c782
+# bad: [11fa01706a4f60e759fbee7c53095ff22eaf1595] PCI: pnv_php: Work
+around switches with broken presence detection
+git bisect bad 11fa01706a4f60e759fbee7c53095ff22eaf1595
+# bad: [966460bace9e1dd8609c9d44cf4509844daea8bb] perf record: Cache
+build-ID of hit DSOs only
+git bisect bad 966460bace9e1dd8609c9d44cf4509844daea8bb
+# bad: [f63bd615e58f43dbe4b2e4c3f3ffa0bfb7766007] hwrng: mtk - handle
+devm_pm_runtime_enable errors
+git bisect bad f63bd615e58f43dbe4b2e4c3f3ffa0bfb7766007
+# bad: [9ea3f6b9a67be3476e331ce51cac316c2614a564] pinmux: fix race
+causing mux_owner NULL with active mux_usecount
+git bisect bad 9ea3f6b9a67be3476e331ce51cac316c2614a564
+# good: [1209e33fe3afb6d9e543f963d41b30cfc04538ff] RDMA/hns: Get
+message length of ack_req from FW
+git bisect good 1209e33fe3afb6d9e543f963d41b30cfc04538ff
+# good: [5f3c0301540bc27e74abbfbe31571e017957251b] RDMA/hns: Fix
+-Wframe-larger-than issue
+git bisect good 5f3c0301540bc27e74abbfbe31571e017957251b
+# bad: [fc1072d934f687e1221d685cf1a49a5068318f34] proc: use the same
+treatment to check proc_lseek as ones for proc_read_iter et.al
+git bisect bad fc1072d934f687e1221d685cf1a49a5068318f34
+# good: [ec437d0159681bbdb1cf1f26759d12e9650bffca] kernel: trace:
+preemptirq_delay_test: use offstack cpu mask
+git bisect good ec437d0159681bbdb1cf1f26759d12e9650bffca
+# first bad commit: [fc1072d934f687e1221d685cf1a49a5068318f34] proc:
+use the same treatment to check proc_lseek as ones for proc_read_iter
+et.al
+
+Please let me know if you need any additional information.
+
+
+Kind regards,
+
+Rui Salvaterra
+
+
+From ansuelsmth at gmail.com  Sat Aug 23 00:40:30 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Sat, 23 Aug 2025 09:40:30 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <CA+_ehUxVWV3mUZr59esx7-drTh+ZYJydHJpd=7tHeUcon=BN2g@mail.gmail.com>
+
+Il giorno sab 23 ago 2025 alle ore 08:38 Tom Li via openwrt-devel
+<openwrt-devel at lists.openwrt.org> ha scritto:
+>
+> The sender domain has a DMARC Reject/Quarantine policy which disallows
+> sending mailing list messages using the original "From" header.
+>
+> To mitigate this problem, the original message has been wrapped
+> automatically by the mailing list software.
+>
+>
+> ---------- Forwarded message ----------
+> From: Tom Li <tomli at tomli.me>
+> To: openwrt-devel at lists.openwrt.org
+> Cc:
+> Bcc:
+> Date: Fri, 22 Aug 2025 15:31:00 +0000
+> Subject: Clarify Project Policy on Default Writes to NVRAM
+> Hi all,
+>
+> For OpenWrt routers, writing to NVRAM by default can serve useful
+> purposes in several contexts:
+>
+> 1. Saving a /dev/urandom seed file after boot, to prevent early-
+> boot entropy starvation in the next boot. This was first discussed
+> in 2016 [0], and raised again in 2022. [1]
+>
+> 2. Saving the last-known system date and time to /etc/dnsmasq.time
+> for DNSSEC timestep validation, on every SIGTERM and reboot.
+> Discussed in [2].
+>
+> 3. Saving the current IPv6 prefix on the WAN port (obtained from
+> the ISP) to a file. If the router reboots due to power loss, and
+> the ISP changes the IPv6 prefix in the next boot, the old prefix
+> can be invalidated in a Router Advertisements to prevent IPv6
+> outages in the LAN due to stale addresses. This is known as "Flash
+> Renumbering Workaround Across Reboot", a recommended feature by
+> RFC 9096 to work around broken ISPs. This need is raised in a recent
+> odhcpd devolopment discussion [3], and is my motivation of sending
+> this mail.
+>
+> An obvious objection to all of these behaviors is that, writing
+> to the filesystem by default can cause unwanted NVRAM wears.
+>
+> As a result, any project discussion that involves writing to the
+> filesystem would quickly become an off-topic one about "whether
+> one should write to NVRAM by default" rather than its original
+> problem. Although the answer seems to be "No, we shouldn't", but
+> those discussions had an extremely limited audience - only a
+> few developers (perhaps 3) who happened to work on that specific
+> project were involved, their ideas and conclusions are not known
+> to others. The next time the same problem is raised in a different
+> context, the whole discussion repeats again. For example, in [1],
+> Etienne Champetier said that they "would love to have more devs
+> comment".
+>
+> While I was writing this mail, I just found it was also discussed
+> on the context of https-dns-proxy [4] in 2024 - dnsmasq config was
+> changed on every https-dns-proxy service restart, which was reported
+> as a bug.
+>
+> Therefore, I think it would be a good idea to define a clear OpenWrt
+> project policy on default writes to NVRAM in this mailing list, so
+> all future developers could refer to the policy.
+>
+> We need to answer these questions:
+>
+> 1. In the current OpenWrt Stable Release or Development Build,
+> do we have anything that writes to the filesystem by default
+> (e.g. do we still have /etc/dnsmasq.time)? If yes, do we have
+> a full list of them?
+>
+> 2. When is it acceptable to write to NVRAM by default? Always
+> banned? Or is it conditionally allowed, with a rate limit (based
+> on the file's timestep and NTP time, via NTP hotplug)? My
+> impression is that rate-limited writes are allowed by the project,
+> but this needs clarification.
+>
+> 3. Should we set a filesystem default-write policy for all OpenWrt
+> packages?
+>
+> 4. In a previous discussion, an alternative solution was suggested
+> by John Crispin that "let's add a system.system.write_state_to_
+> flash_on_boot=0/1 UCI option, and lock this and the DNSSEC time
+> stuff with it, and default it to 0". Should we consider this idea?
+>
+
+Some point on this... With NVRAM we intend the flash right? (that is
+eMMC, NAND, NOR...)
+
+Because AFAIK we already save the random seed as it's only created
+on first boot.
+
+Time and day is not saved as it's not valid anyway as it will lose time
+between the reboots.
+
+For IPv6 RFC that is another topic and might be interesting to implement.
+
+Also I think we are pretty liberal on the write as long as we don't apply
+broken logic like writing log to flash or other kind of periodic write.
+
+
+From hacks at slashdirt.org  Sat Aug 23 03:04:51 2025
+From: hacks at slashdirt.org (Thibaut)
+Date: Sat, 23 Aug 2025 12:04:51 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org>
+
+
+> Le 22 ao?t 2025 ? 17:31, Tom Li via openwrt-devel <openwrt-devel at lists.openwrt.org> a ?crit :
+> 
+> For OpenWrt routers, writing to NVRAM by default can serve useful
+> purposes in several contexts:
+> 
+> 1. Saving a /dev/urandom seed file after boot, to prevent early-
+> boot entropy starvation in the next boot. This was first discussed
+> in 2016 [0], and raised again in 2022. [1]
+> 
+> 2. Saving the last-known system date and time to /etc/dnsmasq.time
+> for DNSSEC timestep validation, on every SIGTERM and reboot.
+> Discussed in [2].
+
+On this: ? reboot ? on most of these devices really means ? hard power cycle ?. So this seems pretty useless IMHO, since all devices which do clean reboots (e.g. VMs / PCs etc) will already either have RTC or fully writeable fs.
+
+> 3. Saving the current IPv6 prefix on the WAN port (obtained from
+> the ISP) to a file. If the router reboots due to power loss, and
+> the ISP changes the IPv6 prefix in the next boot, the old prefix
+> can be invalidated in a Router Advertisements to prevent IPv6
+> outages in the LAN due to stale addresses. This is known as "Flash
+> Renumbering Workaround Across Reboot", a recommended feature by
+> RFC 9096 to work around broken ISPs. This need is raised in a recent
+> odhcpd devolopment discussion [3], and is my motivation of sending
+> this mail.
+
+I think this is the most useful feature.
+
+If implemented properly, it should result in a single write (per prefix assignment from the ISP, which, for sane ISPs, means only 1) which is no worse than the writes performed during firstboot: it shouldn?t be very controversial.
+
+My 2c,
+T.
+
+
+
+From rsalvaterra at gmail.com  Sat Aug 23 03:19:12 2025
+From: rsalvaterra at gmail.com (Rui Salvaterra)
+Date: Sat, 23 Aug 2025 11:19:12 +0100
+Subject: [REGRESSION, BISECTED] IPv6 RA is broken with Linux 6.12.42+
+In-Reply-To: <20250823020152.1651585-1-wangzijie1@honor.com>
+References: <CALjTZvZkDr8N18ocZ8jNND_4DwKqr-PV4BBXB60+=WXPF3vn=Q@mail.gmail.com>
+ <20250823020152.1651585-1-wangzijie1@honor.com>
+Message-ID: <CALjTZvYybts62hbLoHQyGm+xhZvT9QfUN39gbDbugF7Tr_++QA@mail.gmail.com>
+
+Hi, Wangzijie,
+
+
+On Sat, 23 Aug 2025 at 03:01, wangzijie <wangzijie1 at honor.com> wrote:
+>
+> Hi Rui,
+> Thanks. I have submitted a patch and I think it can fix this.
+> https://lore.kernel.org/all/20250821105806.1453833-1-wangzijie1 at honor.com
+
+I can confirm your patch fixes the IPv6 RA issue in OpenWrt. It's thus
+
+Tested-by: Rui Salvaterra <rsalvaterra at gmail.com>
+
+
+Kind regards,
+
+Rui Salvaterra
+
+
+From ggoerisch at gmail.com  Sat Aug 23 03:40:33 2025
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Sat, 23 Aug 2025 12:40:33 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org>
+Message-ID: <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+
+Thank you for the feedback.
+
+> > 3. Saving the current IPv6 prefix on the WAN port (obtained from
+> > the ISP) to a file. If the router reboots due to power loss, and
+> > the ISP changes the IPv6 prefix in the next boot, the old prefix
+> > can be invalidated in a Router Advertisements to prevent IPv6
+> > outages in the LAN due to stale addresses. This is known as "Flash
+> > Renumbering Workaround Across Reboot", a recommended feature by
+> > RFC 9096 to work around broken ISPs. This need is raised in a recent
+> > odhcpd development discussion [3], and is my motivation of sending
+> > this mail.
+>
+> I think this is the most useful feature.
+>
+> If implemented properly, it should result in a single write (per prefix assignment from the ISP, which, for sane ISPs, means only 1) which is no worse than the writes performed during firstboot: it shouldn?t be very controversial.
+
+Unfortunately at least for residential users in Germany this means
+typically one write per 24h. As the prefix assignments are dynamic and
+ISPs even today still do force reconnects every 24h. Although
+recommendations on best current operational practice e.g., RIPE 690
+[1] exist.
+
+[1] https://www.ripe.net/publications/docs/ripe-690/
+
+I would fully support that RFC9069 should be implemented for OpenWrt.
+
+Goetz
+
+
+From ansuelsmth at gmail.com  Sat Aug 23 03:55:08 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Sat, 23 Aug 2025 12:55:08 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org> <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+Message-ID: <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+
+Il giorno sab 23 ago 2025 alle ore 12:42 Goetz Goerisch
+<ggoerisch at gmail.com> ha scritto:
+>
+> Thank you for the feedback.
+>
+> > > 3. Saving the current IPv6 prefix on the WAN port (obtained from
+> > > the ISP) to a file. If the router reboots due to power loss, and
+> > > the ISP changes the IPv6 prefix in the next boot, the old prefix
+> > > can be invalidated in a Router Advertisements to prevent IPv6
+> > > outages in the LAN due to stale addresses. This is known as "Flash
+> > > Renumbering Workaround Across Reboot", a recommended feature by
+> > > RFC 9096 to work around broken ISPs. This need is raised in a recent
+> > > odhcpd development discussion [3], and is my motivation of sending
+> > > this mail.
+> >
+> > I think this is the most useful feature.
+> >
+> > If implemented properly, it should result in a single write (per prefix assignment from the ISP, which, for sane ISPs, means only 1) which is no worse than the writes performed during firstboot: it shouldn?t be very controversial.
+>
+> Unfortunately at least for residential users in Germany this means
+> typically one write per 24h. As the prefix assignments are dynamic and
+> ISPs even today still do force reconnects every 24h. Although
+> recommendations on best current operational practice e.g., RIPE 690
+> [1] exist.
+>
+> [1] https://www.ripe.net/publications/docs/ripe-690/
+>
+> I would fully support that RFC9069 should be implemented for OpenWrt.
+>
+
+We need to save it only on reboot so we don't need to write stuff
+periodically every day.
+Aside from panic conditions that we can't handle, we can attach any
+kind of logic to be
+done when reboot is called.
+
+
+From ggoerisch at gmail.com  Sat Aug 23 04:09:07 2025
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Sat, 23 Aug 2025 13:09:07 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org> <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+ <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+Message-ID: <CAP52KpOLkx10xk2ycdgM0twsEjtVHXJKotETt1nG-1HXFGrCKA@mail.gmail.com>
+
+Thank you Ansuel,
+
+> We need to save it only on reboot so we don't need to write stuff
+> periodically every day.
+
+For clean reboots, fully agree.
+
+> Aside from panic conditions that we can't handle, we can attach any
+> kind of logic to be
+> done when reboot is called.
+
+RFC9096 especially addresses the crash-and-reboot case:
+...
+> 1 Introduction
+> In scenarios where network configuration information becomes invalid
+> without any explicit signaling of that condition (such as when a
+> Customer Edge (CE) router crashes and reboots without knowledge of
+> the previously employed configuration information), hosts on the
+> local network will continue using stale information for an
+> unacceptably long period of time, thus resulting in connectivity
+> problems.
+...
+
+Therefore in current state this would mean one write / 24h if RFC9096
+should be fully supported.
+
+
+From hacks at slashdirt.org  Sat Aug 23 04:27:26 2025
+From: hacks at slashdirt.org (Thibaut)
+Date: Sat, 23 Aug 2025 13:27:26 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org>
+ <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+ <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+Message-ID: <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+
+
+
+> Le 23 ao?t 2025 ? 12:55, Christian Marangi (Ansuel) <ansuelsmth at gmail.com> a ?crit :
+> 
+> Il giorno sab 23 ago 2025 alle ore 12:42 Goetz Goerisch
+> <ggoerisch at gmail.com> ha scritto:
+>> 
+>> Thank you for the feedback.
+>> 
+>>>> 3. Saving the current IPv6 prefix on the WAN port (obtained from
+>>>> the ISP) to a file. If the router reboots due to power loss, and
+>>>> the ISP changes the IPv6 prefix in the next boot, the old prefix
+>>>> can be invalidated in a Router Advertisements to prevent IPv6
+>>>> outages in the LAN due to stale addresses. This is known as "Flash
+>>>> Renumbering Workaround Across Reboot", a recommended feature by
+>>>> RFC 9096 to work around broken ISPs. This need is raised in a recent
+>>>> odhcpd development discussion [3], and is my motivation of sending
+>>>> this mail.
+>>> 
+>>> I think this is the most useful feature.
+>>> 
+>>> If implemented properly, it should result in a single write (per prefix assignment from the ISP, which, for sane ISPs, means only 1) which is no worse than the writes performed during firstboot: it shouldn?t be very controversial.
+>> 
+>> Unfortunately at least for residential users in Germany this means
+>> typically one write per 24h. As the prefix assignments are dynamic and
+>> ISPs even today still do force reconnects every 24h.
+
+*ugh* that?s brain damaged.
+
+>> Although
+>> recommendations on best current operational practice e.g., RIPE 690
+>> [1] exist.
+>> 
+>> [1] https://www.ripe.net/publications/docs/ripe-690/
+>> 
+>> I would fully support that RFC9069 should be implemented for OpenWrt.
+>> 
+> 
+> We need to save it only on reboot so we don't need to write stuff
+> periodically every day.
+> Aside from panic conditions that we can't handle, we can attach any
+> kind of logic to be
+> done when reboot is called.
+
+As I was pointing out earlier, how many users do you think actually ? reboot ? their devices? (outside of OpenWrt devs, that is ;P)
+
+Panics are pretty irrelevant because the elephant in the room is it?s either going to be power loss, i.e. ? let?s unplug it ? (or actual power loss, even) or ? it doesn?t work, let?s turn it off and on again ?, at which point a reboot (or more precisely a *shutdown*) handler will be totally useless.
+
+Cheers,
+T.
+
+From ansuelsmth at gmail.com  Sat Aug 23 04:42:17 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Sat, 23 Aug 2025 13:42:17 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org> <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+ <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com> <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+Message-ID: <CA+_ehUwT_cme66CkOjfLnuvVHi7DV-rhToZxfMnbhUEOK3aFHw@mail.gmail.com>
+
+Il giorno sab 23 ago 2025 alle ore 13:27 Thibaut <hacks at slashdirt.org>
+ha scritto:
+>
+>
+>
+> > Le 23 ao?t 2025 ? 12:55, Christian Marangi (Ansuel) <ansuelsmth at gmail.com> a ?crit :
+> >
+> > Il giorno sab 23 ago 2025 alle ore 12:42 Goetz Goerisch
+> > <ggoerisch at gmail.com> ha scritto:
+> >>
+> >> Thank you for the feedback.
+> >>
+> >>>> 3. Saving the current IPv6 prefix on the WAN port (obtained from
+> >>>> the ISP) to a file. If the router reboots due to power loss, and
+> >>>> the ISP changes the IPv6 prefix in the next boot, the old prefix
+> >>>> can be invalidated in a Router Advertisements to prevent IPv6
+> >>>> outages in the LAN due to stale addresses. This is known as "Flash
+> >>>> Renumbering Workaround Across Reboot", a recommended feature by
+> >>>> RFC 9096 to work around broken ISPs. This need is raised in a recent
+> >>>> odhcpd development discussion [3], and is my motivation of sending
+> >>>> this mail.
+> >>>
+> >>> I think this is the most useful feature.
+> >>>
+> >>> If implemented properly, it should result in a single write (per prefix assignment from the ISP, which, for sane ISPs, means only 1) which is no worse than the writes performed during firstboot: it shouldn?t be very controversial.
+> >>
+> >> Unfortunately at least for residential users in Germany this means
+> >> typically one write per 24h. As the prefix assignments are dynamic and
+> >> ISPs even today still do force reconnects every 24h.
+>
+> *ugh* that?s brain damaged.
+>
+> >> Although
+> >> recommendations on best current operational practice e.g., RIPE 690
+> >> [1] exist.
+> >>
+> >> [1] https://www.ripe.net/publications/docs/ripe-690/
+> >>
+> >> I would fully support that RFC9069 should be implemented for OpenWrt.
+> >>
+> >
+> > We need to save it only on reboot so we don't need to write stuff
+> > periodically every day.
+> > Aside from panic conditions that we can't handle, we can attach any
+> > kind of logic to be
+> > done when reboot is called.
+>
+> As I was pointing out earlier, how many users do you think actually ? reboot ? their devices? (outside of OpenWrt devs, that is ;P)
+>
+> Panics are pretty irrelevant because the elephant in the room is it?s either going to be power loss, i.e. ? let?s unplug it ? (or actual power loss, even) or ? it doesn?t work, let?s turn it off and on again ?, at which point a reboot (or more precisely a *shutdown*) handler will be totally useless.
+>
+
+Well then we should follow John idea and make it configurable. Maybe
+we can enable it for eMMC by default?
+
+
+From hacks at slashdirt.org  Sat Aug 23 05:04:40 2025
+From: hacks at slashdirt.org (Thibaut)
+Date: Sat, 23 Aug 2025 14:04:40 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <CA+_ehUwT_cme66CkOjfLnuvVHi7DV-rhToZxfMnbhUEOK3aFHw@mail.gmail.com>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org>
+ <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+ <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+ <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+ <CA+_ehUwT_cme66CkOjfLnuvVHi7DV-rhToZxfMnbhUEOK3aFHw@mail.gmail.com>
+Message-ID: <3ABA5427-DAF4-4BD8-94E1-2909E9DA28E6@slashdirt.org>
+
+
+
+> Le 23 ao?t 2025 ? 13:42, Christian Marangi (Ansuel) <ansuelsmth at gmail.com> a ?crit :
+> 
+> Il giorno sab 23 ago 2025 alle ore 13:27 Thibaut <hacks at slashdirt.org>
+> ha scritto:
+>> 
+>> As I was pointing out earlier, how many users do you think actually ? reboot ? their devices? (outside of OpenWrt devs, that is ;P)
+>> 
+>> Panics are pretty irrelevant because the elephant in the room is it?s either going to be power loss, i.e. ? let?s unplug it ? (or actual power loss, even) or ? it doesn?t work, let?s turn it off and on again ?, at which point a reboot (or more precisely a *shutdown*) handler will be totally useless.
+>> 
+> 
+> Well then we should follow John idea and make it configurable. Maybe
+> we can enable it for eMMC by default?
+
+Sounds good to me :)
+T.
+
+From wangzijie1 at honor.com  Fri Aug 22 19:01:52 2025
+From: wangzijie1 at honor.com (wangzijie)
+Date: Sat, 23 Aug 2025 10:01:52 +0800
+Subject: [REGRESSION, BISECTED] IPv6 RA is broken with Linux 6.12.42+
+In-Reply-To: <CALjTZvZkDr8N18ocZ8jNND_4DwKqr-PV4BBXB60+=WXPF3vn=Q@mail.gmail.com>
+References: <CALjTZvZkDr8N18ocZ8jNND_4DwKqr-PV4BBXB60+=WXPF3vn=Q@mail.gmail.com>
+Message-ID: <20250823020152.1651585-1-wangzijie1@honor.com>
+
+> Hi, everyone,
+> 
+> 
+> We noticed a regression in OpenWrt, with IPv6, which causes a router's
+> client devices to stop receiving the IPv6 default route. I have
+> bisected it down to (rather surprisingly)
+> fc1072d934f687e1221d685cf1a49a5068318f34 ("proc: use the same
+> treatment to check proc_lseek as ones for proc_read_iter et.al").
+> Reverting the aforementioned commit fixes the issue, of course.
+> 
+> Git bisect log follows:
+> 
+> git bisect start
+> # status: waiting for both good and bad commits
+> # bad: [880e4ff5d6c8dc6b660f163a0e9b68b898cc6310] Linux 6.12.42
+> git bisect bad 880e4ff5d6c8dc6b660f163a0e9b68b898cc6310
+> # status: waiting for good commit(s), bad commit known
+> # good: [8f5ff9784f3262e6e85c68d86f8b7931827f2983] Linux 6.12.41
+> git bisect good 8f5ff9784f3262e6e85c68d86f8b7931827f2983
+> # good: [dab173bae3303f074f063750a8dead2550d8c782] RDMA/hns: Fix
+> double destruction of rsv_qp
+> git bisect good dab173bae3303f074f063750a8dead2550d8c782
+> # bad: [11fa01706a4f60e759fbee7c53095ff22eaf1595] PCI: pnv_php: Work
+> around switches with broken presence detection
+> git bisect bad 11fa01706a4f60e759fbee7c53095ff22eaf1595
+> # bad: [966460bace9e1dd8609c9d44cf4509844daea8bb] perf record: Cache
+> build-ID of hit DSOs only
+> git bisect bad 966460bace9e1dd8609c9d44cf4509844daea8bb
+> # bad: [f63bd615e58f43dbe4b2e4c3f3ffa0bfb7766007] hwrng: mtk - handle
+> devm_pm_runtime_enable errors
+> git bisect bad f63bd615e58f43dbe4b2e4c3f3ffa0bfb7766007
+> # bad: [9ea3f6b9a67be3476e331ce51cac316c2614a564] pinmux: fix race
+> causing mux_owner NULL with active mux_usecount
+> git bisect bad 9ea3f6b9a67be3476e331ce51cac316c2614a564
+> # good: [1209e33fe3afb6d9e543f963d41b30cfc04538ff] RDMA/hns: Get
+> message length of ack_req from FW
+> git bisect good 1209e33fe3afb6d9e543f963d41b30cfc04538ff
+> # good: [5f3c0301540bc27e74abbfbe31571e017957251b] RDMA/hns: Fix
+> -Wframe-larger-than issue
+> git bisect good 5f3c0301540bc27e74abbfbe31571e017957251b
+> # bad: [fc1072d934f687e1221d685cf1a49a5068318f34] proc: use the same
+> treatment to check proc_lseek as ones for proc_read_iter et.al
+> git bisect bad fc1072d934f687e1221d685cf1a49a5068318f34
+> # good: [ec437d0159681bbdb1cf1f26759d12e9650bffca] kernel: trace:
+> preemptirq_delay_test: use offstack cpu mask
+> git bisect good ec437d0159681bbdb1cf1f26759d12e9650bffca
+> # first bad commit: [fc1072d934f687e1221d685cf1a49a5068318f34] proc:
+> use the same treatment to check proc_lseek as ones for proc_read_iter
+> et.al
+> 
+> Please let me know if you need any additional information.
+> 
+> 
+> Kind regards,
+> 
+> Rui Salvaterra
+
+Hi Rui,
+Thanks. I have submitted a patch and I think it can fix this.
+https://lore.kernel.org/all/20250821105806.1453833-1-wangzijie1 at honor.com
+
+
+From Yeking at Red54.com  Tue Aug 19 20:39:19 2025
+From: Yeking at Red54.com (Yeking at Red54.com)
+Date: Wed, 20 Aug 2025 03:39:19 +0000
+Subject: [PATCH fstools RESEND] libfstools: partname: drop parent_dev
+Message-ID: <tencent_1BDE4F7AE014AD4D4FA835C5DFEAB35AFB06@qq.com>
+
+From: ??? (XIE Zhibang) <Yeking at Red54.com>
+
+Using parent_dev will cause use_f2fs() to make wrong detection.
+
+Signed-off-by: ??? (XIE Zhibang) <Yeking at Red54.com>
+---
+More than a year has passed, no progress, resend.
+
+ libfstools/partname.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/libfstools/partname.c b/libfstools/partname.c
+index 9f2347a..a950efe 100644
+--- a/libfstools/partname.c
++++ b/libfstools/partname.c
+@@ -15,11 +15,6 @@ struct partname_volume {
+ 		char devpathstr[16];
+ 		struct devpath devpath;
+ 	} dev;
+-
+-	union {
+-		char devpathstr[16];
+-		struct devpath devpath;
+-	} parent_dev;
+ };
+ 
+ static struct driver partname_driver;
+@@ -56,7 +51,7 @@ static int partname_volume_init(struct volume *v)
+ 	v->size = volsize << 9; /* size is returned in sectors of 512 bytes */
+ 	v->blk = p->dev.devpathstr;
+ 
+-	return block_volume_format(v, 0, p->parent_dev.devpathstr);
++	return block_volume_format(v, 0, p->dev.devpathstr);
+ }
+ 
+ /* adapted from procd/utils.c -> should go to libubox */
+@@ -182,14 +177,6 @@ static struct volume *partname_volume_find(char *name)
+ 	strncpy(p->dev.devpath.device, devname, sizeof(p->dev.devpath.device) - 1);
+ 	p->dev.devpath.device[sizeof(p->dev.devpath.device)-1] = '\0';
+ 
+-	memcpy(p->parent_dev.devpath.prefix, "/dev/", sizeof(p->parent_dev.devpath.prefix));
+-	if (rootdev)
+-		strncpy(p->parent_dev.devpath.device, rootdev, sizeof(p->parent_dev.devpath.device) - 1);
+-	else
+-		strncpy(p->parent_dev.devpath.device, rootdevname(devname), sizeof(p->parent_dev.devpath.device) - 1);
+-
+-	p->parent_dev.devpath.device[sizeof(p->parent_dev.devpath.device)-1] = '\0';
+-
+ 	p->v.drv = &partname_driver;
+ 	p->v.blk = p->dev.devpathstr;
+ 	p->v.name = name;
+-- 
+2.43.0
+
+
+
+
+From mrkiko.rs at gmail.com  Sat Aug 23 08:19:45 2025
+From: mrkiko.rs at gmail.com (Enrico Mioso)
+Date: Sat, 23 Aug 2025 17:19:45 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <3ABA5427-DAF4-4BD8-94E1-2909E9DA28E6@slashdirt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+ <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org>
+ <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com>
+ <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com>
+ <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+ <CA+_ehUwT_cme66CkOjfLnuvVHi7DV-rhToZxfMnbhUEOK3aFHw@mail.gmail.com>
+ <3ABA5427-DAF4-4BD8-94E1-2909E9DA28E6@slashdirt.org>
+Message-ID: <aKncEdXXxhDMHWnw@rivendell>
+
+On Sat, Aug 23, 2025 at 02:04:40PM +0200, Thibaut wrote:
+> 
+> 
+> > Le 23 ao?t 2025 ? 13:42, Christian Marangi (Ansuel) <ansuelsmth at gmail.com> a ?crit :
+> > 
+> > Il giorno sab 23 ago 2025 alle ore 13:27 Thibaut <hacks at slashdirt.org>
+> > ha scritto:
+> >> 
+> >> As I was pointing out earlier, how many users do you think actually ? reboot ? their devices? (outside of OpenWrt devs, that is ;P)
+> >> 
+> >> Panics are pretty irrelevant because the elephant in the room is it?s either going to be power loss, i.e. ? let?s unplug it ? (or actual power loss, even) or ? it doesn?t work, let?s turn it off and on again ?, at which point a reboot (or more precisely a *shutdown*) handler will be totally useless.
+> >> 
+> > 
+> > Well then we should follow John idea and make it configurable. Maybe
+> > we can enable it for eMMC by default?
+> 
+> Sounds good to me :)
+
+I totally agree.
+I think this is the sanest thing to do, because - in my view - the system should try to be resilient to what happens, not self-destruct slowly over time.
+No, I don't think I am exhagerating here - for most devices, any write is just a step toward becoming ewaste, and in my opinion the user is the most entitled to decide on this matter, enabling/disabling this configuration as they see fit, depending on their tradeofs.
+Having different defaults per technology is also sensible, being NOR so different from eMMC and so on...
+
+> T.
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From hannu.nyman at iki.fi  Sat Aug 23 08:24:16 2025
+From: hannu.nyman at iki.fi (Hannu Nyman)
+Date: Sat, 23 Aug 2025 18:24:16 +0300
+Subject: Buildbot: mips_4kec packages architecture has failed since 23 days
+Message-ID: <cf87267a-ff8b-4ff4-acc7-5fd6e1155e54@iki.fi>
+
+mips_4kec packages architecture has consecutively failed at the packages 
+builtbot since 23 days. (Last ok build on 30 July)
+
+The failure looks strange, almost like the architecture dir would have been 
+deleted from the buildbot farm.
+Failure happens after the actual packages build, in the feeds.conf generation 
+step:
+
+https://buildbot.openwrt.org/main/packages/#/builders/38/builds/293/steps/25/logs/stdio
+
+./scripts/feeds list -s -f > bin/packages/mips_4kec/feeds.conf
+ ?in dir /builder/mips_4kec/build/sdk (timeout 1200 secs)
+ ?watching logfiles {}
+ ?argv: b'./scripts/feeds list -s -f > bin/packages/mips_4kec/feeds.conf'
+ ?environment:
+ ? HOME=/builder
+ ? HOSTNAME=009499ad9abd
+ ? LANG=en_US.utf8
+PATH=/opt/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ ? PWD=/builder/mips_4kec/build/sdk
+ ? SHLVL=1
+ ?using PTY: False
+/bin/sh: 1: cannot create bin/packages/mips_4kec/feeds.conf: Directory 
+nonexistent
+program finished with exit code 2
+elapsedTime=0.011390
+
+
+similar error at the signpack step:
+
+find bin/packages/mips_4kec/ -mindepth 1 -maxdepth 2 -type f -name sha256sums 
+-print0 -or -name Packages -print0 -or -name packages.adb -print0 | xargs -0 
+tar -czf sign.tar.gz
+...
+find: ?bin/packages/mips_4kec/?: No such file or directory
+tar: Cowardly refusing to create an empty archive
+
+
+
+
+From felix.baumann at freifunk-aachen.de  Sat Aug 23 11:24:56 2025
+From: felix.baumann at freifunk-aachen.de (Felix Baumann)
+Date: Sat, 23 Aug 2025 20:24:56 +0200
+Subject: =?US-ASCII?Q?Re=3A_Buildbot=3A_mips=5F4kec_packages_ar?=
+ =?US-ASCII?Q?chitecture_has_failed_since_23_days?=
+In-Reply-To: <cf87267a-ff8b-4ff4-acc7-5fd6e1155e54@iki.fi>
+References: <cf87267a-ff8b-4ff4-acc7-5fd6e1155e54@iki.fi>
+Message-ID: <332D9607-C1D5-40FF-92E7-0682B2E490B3@freifunk-aachen.de>
+
+Am 23. August 2025 17:24:16 MESZ schrieb Hannu Nyman <hannu.nyman at iki.fi>:
+>mips_4kec packages architecture has consecutively failed at the packages builtbot since 23 days. (Last ok build on 30 July)
+>
+>The failure looks strange, almost like the architecture dir would have been deleted from the buildbot farm.
+>Failure happens after the actual packages build, in the feeds.conf generation step:
+>
+>https://buildbot.openwrt.org/main/packages/#/builders/38/builds/293/steps/25/logs/stdio
+>
+>./scripts/feeds list -s -f > bin/packages/mips_4kec/feeds.conf
+>?in dir /builder/mips_4kec/build/sdk (timeout 1200 secs)
+>?watching logfiles {}
+>?argv: b'./scripts/feeds list -s -f > bin/packages/mips_4kec/feeds.conf'
+>?environment:
+>? HOME=/builder
+>? HOSTNAME=009499ad9abd
+>? LANG=en_US.utf8
+>PATH=/opt/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+>? PWD=/builder/mips_4kec/build/sdk
+>? SHLVL=1
+>?using PTY: False
+>/bin/sh: 1: cannot create bin/packages/mips_4kec/feeds.conf: Directory nonexistent
+>program finished with exit code 2
+>elapsedTime=0.011390
+>
+>
+>similar error at the signpack step:
+>
+>find bin/packages/mips_4kec/ -mindepth 1 -maxdepth 2 -type f -name sha256sums -print0 -or -name Packages -print0 -or -name packages.adb -print0 | xargs -0 tar -czf sign.tar.gz
+>...
+>find: ?bin/packages/mips_4kec/?: No such file or directory
+>tar: Cowardly refusing to create an empty archive
+>
+>
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+Hi Hannu,
+
+the last/only target to ever use 4kec is Realtek RTL838x, and it only used it for packages while its kernel was compiled for arch 34kc.
+To save some space regarding toolchains etc. the developers switched the full target to 24kc on Juli 30th.
+<https://github.com/openwrt/openwrt/pull/19117#issuecomment-3135352437>
+
+I guess there is still some clean up that needs to be done but it's correct that those build jobs are failing. This arch is history unless another target shows up that requires it.
+
+Regards
+Felix Baumann / Djfe
+
+
+From mcr at sandelman.ca  Sat Aug 23 17:03:33 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Sat, 23 Aug 2025 20:03:33 -0400
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <2787.1755993813@obiwan.sandelman.ca>
+
+
+Tom Li via openwrt-devel <openwrt-devel at lists.openwrt.org> wrote:
+    > For OpenWrt routers, writing to NVRAM by default can serve useful
+    > purposes in several contexts:
+
+Would the discussion change if these things went into uboot variables?
+While that's often the same NVRAM as the system, sometimes it's not.
+NVRAM is also getting much better.
+(Of course, I think that there are systems that don't use uboot)
+
+Certainly the IPv6 prefix seems like a good candidate.
+It doesn't change that often.  So a READ-CHECK-MODIFY-WRITE process would
+avoid wear.
+
+urandom and last-known system date are ideally written only just before
+shutting down, but my bet is that 90% of shutdowns are because power loss.
+So, really both need to be written periodically, which is exactly what hurts NVRAM.
+
+    > As a result, any project discussion that involves writing to the
+    > filesystem would quickly become an off-topic one about "whether one
+    > should write to NVRAM by default" rather than its original
+    > problem. Although the answer seems to be "No, we shouldn't", but those
+    > discussions had an extremely limited audience - only a few developers
+    > (perhaps 3) who happened to work on that specific project were
+    > involved, their ideas and conclusions are not known to others. The next
+    > time the same problem is raised in a different context, the whole
+    > discussion repeats again. For example, in [1], Etienne Champetier said
+    > that they "would love to have more devs comment".
+
+:-)
+
+    > We need to answer these questions:
+
+    > 1. In the current OpenWrt Stable Release or Development Build, do we
+    > have anything that writes to the filesystem by default (e.g. do we
+    > still have /etc/dnsmasq.time)? If yes, do we have a full list of them?
+
+    > 2. When is it acceptable to write to NVRAM by default? Always banned?
+    > Or is it conditionally allowed, with a rate limit (based on the file's
+    > timestep and NTP time, via NTP hotplug)? My impression is that
+    > rate-limited writes are allowed by the project, but this needs
+    > clarification.
+
+I think this is the right policy.
+
+    > 3. Should we set a filesystem default-write policy for all OpenWrt
+    > packages?
+
+Packages should say if they follow that policy.
+(Probably we should have policies more subtle than 0/1)
+Perhaps no default/critical packages should write more often than X.
+
+    > 4. In a previous discussion, an alternative solution was suggested by
+    > John Crispin that "let's add a system.system.write_state_to_
+    > flash_on_boot=0/1 UCI option, and lock this and the DNSSEC time stuff
+    > with it, and default it to 0". Should we consider this idea?
+
+This is a good thing to do, regardless.
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 511 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250823/62c0354b/attachment.sig>
+
+From mcr at sandelman.ca  Sat Aug 23 17:05:47 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Sat, 23 Aug 2025 20:05:47 -0400
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <CA+_ehUxVWV3mUZr59esx7-drTh+ZYJydHJpd=7tHeUcon=BN2g@mail.gmail.com>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org> <CA+_ehUxVWV3mUZr59esx7-drTh+ZYJydHJpd=7tHeUcon=BN2g@mail.gmail.com>
+Message-ID: <3437.1755993947@obiwan.sandelman.ca>
+
+
+Christian Marangi (Ansuel) <ansuelsmth at gmail.com> wrote:
+    > Time and day is not saved as it's not valid anyway as it will lose time
+    > between the reboots.
+
+It's used by DNSSEC validation. It sets a *minimum* time.  
+In order to quickly enable DNSSEC validation, it's probably good enough to be
+within a week of reality.  
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 511 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250823/b70be426/attachment.sig>
+
+From mcr at sandelman.ca  Sat Aug 23 17:08:37 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Sat, 23 Aug 2025 20:08:37 -0400
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org> <79DC4CED-3CA5-4C77-87EF-BFD5F11A641B@slashdirt.org> <CAP52KpP=mJ0=jB4P38GEMMeDuhn=1XC+rHoZOKMGma8TWWDszQ@mail.gmail.com> <CA+_ehUyE=D19gxuL9vxkspPHkvH=QxAmoVq1SSBQyf7dxkcmVQ@mail.gmail.com> <2D954DC7-857F-4E7A-B68B-2D2E3FA14711@slashdirt.org>
+Message-ID: <4086.1755994117@obiwan.sandelman.ca>
+
+
+Thibaut <hacks at slashdirt.org> wrote:
+    > As I was pointing out earlier, how many users do you think actually ?
+    > reboot ? their devices? (outside of OpenWrt devs, that is ;P)
+
+none.
+
+    > Panics are pretty irrelevant because the elephant in the room is it?s
+    > either going to be power loss, i.e. ? let?s unplug it ? (or actual
+    > power loss, even) or ? it doesn?t work, let?s turn it off and on again
+    > ?, at which point a reboot (or more precisely a *shutdown*) handler
+    > will be totally useless.
+
+And a good scenario for causing multiple cycles of "it doesn't work" is
+because of stale v6-prefixes :-)
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 511 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250823/c9512a43/attachment.sig>
+
+From moeller0 at gmx.de  Sat Aug 23 23:46:28 2025
+From: moeller0 at gmx.de (Sebastian Moeller)
+Date: Sun, 24 Aug 2025 08:46:28 +0200
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <2787.1755993813@obiwan.sandelman.ca>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org> <2787.1755993813@obiwan.sandelman.ca>
+Message-ID: <A4DD6BD2-7925-4784-B1C5-7A46B1C51619@gmx.de>
+
+See below...
+
+On 24 August 2025 02:03:33 CEST, Michael Richardson <mcr at sandelman.ca> wrote:
+>
+>Tom Li via openwrt-devel <openwrt-devel at lists.openwrt.org> wrote:
+>    > For OpenWrt routers, writing to NVRAM by default can serve useful
+>    > purposes in several contexts:
+>
+>Would the discussion change if these things went into uboot variables?
+>While that's often the same NVRAM as the system, sometimes it's not.
+>NVRAM is also getting much better.
+>(Of course, I think that there are systems that don't use uboot)
+>
+>Certainly the IPv6 prefix seems like a good candidate.
+>It doesn't change that often.  
+
+That is a hypothesis, not a fact unfortunately. ISPs, as far as I can tell, do not all have a decent grasp on IPv6 provisioning so there will be cases in which the prefix changes quite often. Hopefully these will be transient, but I would not bet the farm on that...
+So I thing saving this information out should be done in a rate limited fashion and cause a report if attempted too often, no?
+
+>So a READ-CHECK-MODIFY-WRITE process would
+>avoid wear.
+>
+>urandom and last-known system date are ideally written only just before
+>shutting down, but my bet is that 90% of shutdowns are because power loss.
+>So, really both need to be written periodically, which is exactly what hurts NVRAM.
+>
+>    > As a result, any project discussion that involves writing to the
+>    > filesystem would quickly become an off-topic one about "whether one
+>    > should write to NVRAM by default" rather than its original
+>    > problem. Although the answer seems to be "No, we shouldn't", but those
+>    > discussions had an extremely limited audience - only a few developers
+>    > (perhaps 3) who happened to work on that specific project were
+>    > involved, their ideas and conclusions are not known to others. The next
+>    > time the same problem is raised in a different context, the whole
+>    > discussion repeats again. For example, in [1], Etienne Champetier said
+>    > that they "would love to have more devs comment".
+>
+>:-)
+>
+>    > We need to answer these questions:
+>
+>    > 1. In the current OpenWrt Stable Release or Development Build, do we
+>    > have anything that writes to the filesystem by default (e.g. do we
+>    > still have /etc/dnsmasq.time)? If yes, do we have a full list of them?
+>
+>    > 2. When is it acceptable to write to NVRAM by default? Always banned?
+>    > Or is it conditionally allowed, with a rate limit (based on the file's
+>    > timestep and NTP time, via NTP hotplug)? My impression is that
+>    > rate-limited writes are allowed by the project, but this needs
+>    > clarification.
+>
+>I think this is the right policy.
+>
+>    > 3. Should we set a filesystem default-write policy for all OpenWrt
+>    > packages?
+>
+>Packages should say if they follow that policy.
+>(Probably we should have policies more subtle than 0/1)
+>Perhaps no default/critical packages should write more often than X.
+>
+>    > 4. In a previous discussion, an alternative solution was suggested by
+>    > John Crispin that "let's add a system.system.write_state_to_
+>    > flash_on_boot=0/1 UCI option, and lock this and the DNSSEC time stuff
+>    > with it, and default it to 0". Should we consider this idea?
+>
+>This is a good thing to do, regardless.
+>
+
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity.
+
+
+From noreply at github.com  Sun Aug 24 13:29:58 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 24 Aug 2025 13:29:58 -0700
+Subject: [sdwalker/sdwalker.github.io] 559933: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/d540e0-559933@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 559933dd09bdcd1034a088f4245d0f6f5ad027d0
+      https://github.com/sdwalker/sdwalker.github.io/commit/559933dd09bdcd1034a088f4245d0f6f5ad027d0
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-08-24 (Sun, 24 Aug 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From adam.drzewiecki at vexro.pl  Mon Aug 25 01:15:14 2025
+From: adam.drzewiecki at vexro.pl (Adam Drzewiecki)
+Date: Mon, 25 Aug 2025 08:15:14 GMT
+Subject: =?UTF-8?Q?Pytanie_o_samoch=C3=B3d_?=
+Message-ID: <20250825084500-0.1.mz.3por2.0.i23dufebio@vexro.pl>
+
+Dzie? dobry,
+
+Czy interesuje Pa?stwa rozwi?zanie umo?liwiaj?ce monitorowanie samochod?w firmowych oraz optymalizacj? koszt?w ich utrzymania? 
+
+
+Pozdrawiam
+Adam Drzewiecki
+
+
+From mcr at sandelman.ca  Tue Aug 26 08:53:11 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Tue, 26 Aug 2025 11:53:11 -0400
+Subject: Clarify Project Policy on Default Writes to NVRAM
+In-Reply-To: <mailman.128613.1756018004.1866309.openwrt-devel@lists.openwrt.org>
+References: <mailman.127697.1755899887.1866309.openwrt-devel@lists.openwrt.org> <2787.1755993813@obiwan.sandelman.ca> <mailman.128613.1756018004.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <5704.1756223591@obiwan.sandelman.ca>
+
+
+Sebastian Moeller via openwrt-devel <openwrt-devel at lists.openwrt.org> wrote:
+    >> Tom Li via openwrt-devel <openwrt-devel at lists.openwrt.org> wrote: >
+    >> For OpenWrt routers, writing to NVRAM by default can serve useful >
+    >> purposes in several contexts:
+    >>
+    >> Would the discussion change if these things went into uboot variables?
+    >> While that's often the same NVRAM as the system, sometimes it's not.
+    >> NVRAM is also getting much better.  (Of course, I think that there are
+    >> systems that don't use uboot)
+    >>
+    >> Certainly the IPv6 prefix seems like a good candidate.  It doesn't
+    >> change that often.
+
+    > That is a hypothesis, not a fact unfortunately. ISPs, as far as I can
+    > tell, do not all have a decent grasp on IPv6 provisioning so there will
+
+Agreed. Among the ISPs that do not roll every 24h (often forced by law), they
+do not change that often.   I'd be curious to know if the ISPs that *do* roll
+every 24, if the PDs lifetime are appropriately set.  If done right, then the
+announcement on the LAN should also be equally short, and we do not need to
+write it.
+
+    > be cases in which the prefix changes quite often. Hopefully these will
+    > be transient, but I would not bet the farm on that...  So I thing
+    > saving this information out should be done in a rate limited fashion
+    > and cause a report if attempted too often, no?
+
+If we write to the same flash block once a day, 365 days/year, we get 27 years
+of write time before we run into 10,000 writes.  10,000 erase cycles per
+block is what I recall, but in doing some searches to see what it is now, I
+got lost in AI slop.  That assumes no wear leveling in the flash device
+itself (few of the onboard NAND devices we work with have that), and also
+that our file system has no wear leveling. But, both JFFS2 and UBIFS *do*
+have wear leveling.
+
+--
+]               Never tell me the odds!                 | ipv6 mesh networks [
+]   Michael Richardson, Sandelman Software Works        |    IoT architect   [
+]     mcr at sandelman.ca  http://www.sandelman.ca/        |   ruby on rails    [
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 511 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250826/da703b35/attachment.sig>
+
+From test at notificacionesbys.com  Fri Aug 29 10:41:27 2025
+From: test at notificacionesbys.com (Luis Fernandez Consultant)
+Date: 29 Aug 2025 19:41:27 +0200
+Subject: Good Investment Proposal
+Message-ID: <20250829194125.09E0F646E49A2F0D@notificacionesbys.com>
+
+Good Day, 
+
+
+My name is Luis Fernandez, I am contacting you because we have investors that have the capacity to invest in any massive project in your country or invest in your existing project that requires funding. Kindly get back to me for more details. 
+
+
+Best Regards, 
+
+Luis Fernandez
+
+
+From noreply at github.com  Sun Aug 31 11:39:39 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 31 Aug 2025 18:39:39 +0000 (UTC)
+Subject: [sdwalker/sdwalker.github.io] 0a851d: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/559933-0a851d@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 0a851d337a6ea23ff1ec6d9b8d4f11ba4d4bd83b
+      https://github.com/sdwalker/sdwalker.github.io/commit/0a851d337a6ea23ff1ec6d9b8d4f11ba4d4bd83b
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-08-31 (Sun, 31 Aug 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+

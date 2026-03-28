@@ -1,0 +1,107 @@
+From openwrt-bugs at lists.openwrt.org  Mon Oct 30 10:24:27 2023
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 30 Oct 2023 18:24:27 +0100
+Subject: OpenWrt mailing list for users ?
+Message-ID: <mailman.49765.1698686671.1880391.openwrt-bugs@lists.openwrt.org>
+
+On this page the OpenWrt mailing lists are listed:
+https://lists.openwrt.org/mailman/listinfo
+
+There it also says "If you are having trouble using the lists, please contact 
+mailman at lists.openwrt.org ".
+
+But mail sent to mailman at lists.openwrt.org bounces:
+"
+Rcpt To:   <mailman at lists.openwrt.org>
+Server:    <bombadil.infradead.org> [198.137.202.133]
+[<02>] The reason of the delivery failure was:
+550 Unknown recipient
+"
+
+
+My questions:
+-------------
+
+1) Is there no mailing list for OpenWrt users (not developers)?
+
+2) Does OpenWrt always use VLAN, maybe internally?
+
+3) I need to operate a router ("MikroTik hAP ac2" with OpenWrt)
+in bare-basic mode w/o NAT and also w/o any firewall,
+and also w/o any VLAN, bridge, switch etc.
+I just want to have the Ethernet ports, and configure them myself
+(IPs, Masks, gateways, routing etc.).
+Is this not possible in OpenWrt? I've not been able to get it working.
+Where can I discuss this question to find a solution?
+
+Thx
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Oct 31 14:28:15 2023
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 31 Oct 2023 21:28:15 +0000 (UTC)
+Subject: OpenWrt mailing list for users ?
+In-Reply-To: <mailman.49765.1698686671.1880391.openwrt-bugs@lists.openwrt.org>
+References: <mailman.49765.1698686671.1880391.openwrt-bugs@lists.openwrt.org>
+Message-ID: <mailman.50209.1698787703.1880391.openwrt-bugs@lists.openwrt.org>
+
+
+
+Feel free to ask a question in the community forum.?
+https://forum.openwrt.org
+
+1. The forum is used.
+2. It depends on make, model and OpenWrt version.
+3. Feel free to make a post on the community forum to discuss the question.
+
+
+- LLEACHII
+
+
+
+
+
+On Monday, October 30, 2023 at 01:24:49 PM EDT, OpenWrt Bugs <openwrt-bugs at lists.openwrt.org> wrote: 
+
+
+
+
+
+On this page the OpenWrt mailing lists are listed:
+https://lists.openwrt.org/mailman/listinfo
+
+There it also says "If you are having trouble using the lists, please contact 
+mailman at lists.openwrt.org ".
+
+But mail sent to mailman at lists.openwrt.org bounces:
+"
+Rcpt To:? <mailman at lists.openwrt.org>
+Server:? ? <bombadil.infradead.org> [198.137.202.133]
+[<02>] The reason of the delivery failure was:
+550 Unknown recipient
+"
+
+
+My questions:
+-------------
+
+1) Is there no mailing list for OpenWrt users (not developers)?
+
+2) Does OpenWrt always use VLAN, maybe internally?
+
+3) I need to operate a router ("MikroTik hAP ac2" with OpenWrt)
+in bare-basic mode w/o NAT and also w/o any firewall,
+and also w/o any VLAN, bridge, switch etc.
+I just want to have the Ethernet ports, and configure them myself
+(IPs, Masks, gateways, routing etc.).
+Is this not possible in OpenWrt? I've not been able to get it working.
+Where can I discuss this question to find a solution?
+
+Thx
+
+_______________________________________________
+openwrt-bugs mailing list
+openwrt-bugs at lists.openwrt.org
+https://lists.openwrt.org/mailman/listinfo/openwrt-bugs
+
+

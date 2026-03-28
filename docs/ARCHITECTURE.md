@@ -4,7 +4,7 @@
 
 This repository is a documentation production pipeline, not an application runtime. It gathers OpenWrt documentation from upstream repositories, the OpenWrt wiki, and hand-authored cookbook content; normalizes that material through stable intermediate layers; and publishes compact outputs for humans, IDE tooling, and LLM workflows.
 
-The active operating model is Windows-first local validation with GitHub Actions as the verified remote execution and publication path. The current public output contract is V6. The workflow name still carries the historical `v12` label, but the generated output and maintainer documentation now follow the V13/V6 contract set.
+The active operating model is Windows-first local validation with GitHub Actions as the verified remote execution and publication path. The current public output contract is V6. The generated output and maintainer documentation follow the V13/V6 contract set.
 
 ## Documentation Surfaces
 
@@ -20,7 +20,7 @@ This repository has two distinct documentation surfaces:
 | Path | Role | Notes |
 | --- | --- | --- |
 | `.github/scripts/` | Numbered pipeline scripts | Whole numbers define stage boundaries; letter suffixes define sibling scripts inside one stage family. |
-| `.github/workflows/` | Hosted workflow definitions | The main workflow is still named `openwrt-docs4ai pipeline (v12)`, but it runs the current V13/V6 pipeline. |
+| `.github/workflows/` | Hosted workflow definitions | The main workflow is named `openwrt-docs4ai-pipeline`. |
 | `lib/` | Shared Python support code | Shared config, provenance helpers, AI-store helpers, and extraction utilities. |
 | `tools/` | Non-numbered maintainer utilities | Local support CLIs such as `manage_ai_store.py`. |
 | `tests/` | Local verification surface | Focused pytest suites, smoke runners, and lint wrappers. |
@@ -83,9 +83,43 @@ Use `docs/specs/pipeline-stage-catalog.md` for stage ordering and rerun sequence
 
 - Hosted workflow runs build into `staging/` and validate there first.
 - Successful deploys synchronize staged output into `openwrt-condensed-docs/` and publish the validated `release-tree/` to external targets.
-- Generated source-repo update commits use the `docs: v12 auto-update YYYY-MM-DD` format because the workflow name and automation history still use the older label.
+- Generated source-repo update commits use the `docs: auto-update YYYY-MM-DD` format.
 - External publication targets receive only the `release-tree/` subtree plus the appropriate overlay material.
 
 ## Archive Policy
 
 Archived material is preserved for historical context, review evidence, and recovery of older design decisions. It is never authoritative over active specs, active guides, or verified code behavior. When archive content conflicts with active documentation or the live pipeline, the active contract wins.
+
+## Deployment Topology
+
+This pipeline publishes to multiple repositories across two GitHub accounts. Understanding which workflows are controlled here versus automatically triggered downstream prevents confusion when triaging CI warnings.
+
+### Repository Map
+
+| Account | Repository | Role | Managed here? |
+| --- | --- | --- | --- |
+| LuminairPrime | openwrt-docs4ai-pipeline | Pipeline source, staging root | Yes |
+| LuminairPrime | LuminairPrime.github.io | Personal site (not pipeline-related) | No |
+| openwrt-docs4ai (org) | openwrt-docs4ai.github.io | Production Pages deployment | Push target only |
+| openwrt-docs4ai (org) | corpus | Production corpus and release assets | Push target only |
+
+### Workflow Ownership
+
+| Workflow | Location | Type | Controlled from this repo? |
+| --- | --- | --- | --- |
+| openwrt-docs4ai-pipeline | LuminairPrime/openwrt-docs4ai-pipeline | Custom | Yes — action versions managed in `.github/workflows/` |
+| pages-build-deployment | LuminairPrime/openwrt-docs4ai-pipeline | GitHub automatic | No — triggered by gh-pages branch push; versions managed by GitHub |
+| pages-build-deployment | openwrt-docs4ai/openwrt-docs4ai.github.io | GitHub automatic | No — triggered by main push; versions managed by GitHub |
+| pages-build-deployment | openwrt-docs4ai/corpus | GitHub automatic | No — triggered by main push; versions managed by GitHub |
+
+### Publication Flow
+
+The `deploy` job performs three output publication actions:
+
+1. **Commit to main** — updates `openwrt-condensed-docs/` in this repository. Auto-commit format: `docs: auto-update YYYY-MM-DD`.
+2. **Push `gh-pages` branch** — triggers `pages-build-deployment` on this repo (test preview at `luminairprime.github.io/openwrt-docs4ai-pipeline/`).
+3. **Push to external distribution repos** (gated by `DIST_APP_ID` and `DIST_APP_PRIVATE_KEY` secrets):
+   - `openwrt-docs4ai/corpus` main — production corpus with dated release ZIP assets.
+   - `openwrt-docs4ai/openwrt-docs4ai.github.io` main — production Pages site.
+
+Node.js deprecation warnings from `pages-build-deployment` workflows are not actionable from this repository. Those workflows use GitHub-managed action versions that GitHub updates on their own schedule.

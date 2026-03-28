@@ -9,7 +9,7 @@ This document is the source of truth for stage ordering and stage-family ownersh
 
 All numbered scripts live in `.github/scripts/`. Whole numbers define stage boundaries. Letter suffixes such as `05a` and `05e` are sibling scripts inside the same stage family.
 
-The hosted workflow still uses the historical name `openwrt-docs4ai pipeline (v12)`, but the stage set below is the live pipeline contract.
+The hosted workflow is named `openwrt-docs4ai-pipeline`.
 
 ## Stage Table
 
@@ -97,3 +97,5 @@ These are the minimal local rerun paths when you already have the prerequisite s
 | LuCI type-generation change | `05e -> 06 -> 07 -> 08` |
 | Overlay-only local change | `07 -> 08` |
 | Validation-only check | `08` |
+
+For cookbook-only local authoring work, do not assume that rerunning `03 -> 05a -> 05b -> 06 -> 07` in a dirty workspace is isolated to the cookbook module. If unrelated generated module trees under `openwrt-condensed-docs/`, `release-tree/`, or `support-tree/` drift or disappear, restore the non-cookbook generated paths from `HEAD`, keep the cookbook slice, then rerun `06 -> 07 -> 08`.

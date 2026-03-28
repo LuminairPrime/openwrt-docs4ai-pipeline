@@ -1,0 +1,5349 @@
+From robert.paczkowski at venturio24.pl  Thu Oct  2 01:05:18 2025
+From: robert.paczkowski at venturio24.pl (Robert Paczkowski)
+Date: Thu,  2 Oct 2025 08:05:18 GMT
+Subject: =?UTF-8?Q?Wsp=C3=B3=C5=82praca?=
+Message-ID: <20251002064500-0.1.94.20hta.0.kjolhnkpiw@venturio24.pl>
+
+Dzie? dobry, 
+
+Czy interesuje Pa?stwa pozyskanie nowych klient?w?
+
+Zajmujemy si? profesjonalnie wsparciem firm w tym zakresie. 
+
+Nasi partnerzy zyskuj? sta?y nap?yw nowych zlece? oraz zam?wie?, a tym samym zwi?kszaj? swoje wyniki sprzeda?y.
+
+Czy mo?emy przedstawi? szczeg??y dotycz?ce zasad i mo?liwo?ci wsp??pracy?
+
+
+Pozdrawiam
+Robert Paczkowski
+
+
+From contact at hacktivis.me  Sun Oct  5 13:52:21 2025
+From: contact at hacktivis.me (Haelwenn (lanodan) Monnier)
+Date: Sun, 5 Oct 2025 22:52:21 +0200
+Subject: [PATCH usign] Use static buffer for default sigfile path
+Message-ID: <aOLahSIWurGdViOm@cloudsdale.lanodan.eu>
+
+This allows to compile usign with TinyCC on architectures like AArch64
+and riscv where it is missing an implementation of alloca.
+
+VLA could also be used as this is C99 code, but would reduce portability.
+
+malloc could be considered but musl's malloc is over 4KB of code and
+dynamic/static analyzers would require a bunch of free().
+
+Signed-off-by: Haelwenn (lanodan) Monnier <contact at hacktivis.me>
+---
+ main.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/main.c b/main.c
+index ebfdfb0..addbfb8 100644
+--- a/main.c
++++ b/main.c
+@@ -26,11 +26,16 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <inttypes.h>
++#include <limits.h>
+ 
+ #include "base64.h"
+ #include "edsign.h"
+ #include "ed25519.h"
+ 
++#ifndef PATH_MAX
++#define PATH_MAX 4096
++#endif
++
+ struct pubkey {
+ 	char pkalg[2];
+ 	uint8_t fingerprint[8];
+@@ -409,14 +414,19 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (!sigfile && msgfile) {
+-		char *buf = alloca(strlen(msgfile) + 5);
+-
+ 		if (!strcmp(msgfile, "-")) {
+ 			fprintf(stderr, "Need signature file when reading message from stdin\n");
+ 			return 1;
+ 		}
+ 
+-		sprintf(buf, "%s.sig", msgfile);
++		if ((strlen(msgfile) - 4) > PATH_MAX)
++		{
++			fprintf(stderr, "Need signature file when msgfile path is over %zd (PATH_MAX - 4)\n", (size_t)PATH_MAX);
++			return 1;
++		}
++
++		static char buf[PATH_MAX];
++		snprintf(buf, PATH_MAX, "%s.sig", msgfile);
+ 		sigfile = buf;
+ 	}
+ 
+
+base-commit: f1f65026a94137c91b5466b149ef3ea3f20091e9
+-- 
+2.49.1
+
+
+
+From noreply at github.com  Sun Oct  5 13:59:42 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 05 Oct 2025 13:59:42 -0700
+Subject: [sdwalker/sdwalker.github.io] 4de7c1: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/d4fedb-4de7c1@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 4de7c127291fbcd71d3ed8e025e8556339c4bbb2
+      https://github.com/sdwalker/sdwalker.github.io/commit/4de7c127291fbcd71d3ed8e025e8556339c4bbb2
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-10-05 (Sun, 05 Oct 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From cjd at cjdns.fr  Mon Oct  6 07:09:56 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Mon, 6 Oct 2025 16:09:56 +0200
+Subject: *** SPAM *** [PATCH] libfstools: partname: Create block device in
+ init if needed
+In-Reply-To: <20250919185420.3038448-1-cjd@cjdns.fr>
+References: <20250919185420.3038448-1-cjd@cjdns.fr>
+Message-ID: <8c14a893-c210-41fe-b2ae-8488dd4ddb1c@cjdns.fr>
+
+Does anybody have any opinions about this patch?
+It seems like a relatively non-controversial idea, and it
+makes USB rootfs able to work.
+
+
+Thanks,
+
+Caleb
+
+
+On 19/09/2025 20:54, Caleb James DeLisle wrote:
+> Rootfs on devices such as USB is currently impossible, but
+> not because the kernel modules aren't loaded early enough.
+> The only problem is that procd does not create hotplug
+> device files until after preinit.
+>
+> Update partname_volume_init to also create the device file
+> if necessary so that it will be able to be mounted. With
+> this patch, USB rootfs with normal kmods Just Works.
+>
+> Signed-off-by: Caleb James DeLisle <cjd at cjdns.fr>
+> ---
+>   libfstools/partname.c | 33 +++++++++++++++++++++++++++++++++
+>   1 file changed, 33 insertions(+)
+>
+> diff --git a/libfstools/partname.c b/libfstools/partname.c
+> index 9f2347a..a2b2b2c 100644
+> --- a/libfstools/partname.c
+> +++ b/libfstools/partname.c
+> @@ -2,6 +2,8 @@
+>   
+>   #include "common.h"
+>   
+> +#include <sys/sysmacros.h>
+> +
+>   #define BUFLEN 64
+>   
+>   struct devpath {
+> @@ -41,14 +43,45 @@ static int partname_volume_identify(struct volume *v)
+>   	return ret;
+>   }
+>   
+> +static int ensure_block_dev(struct partname_volume *p, const char *voldir)
+> +{
+> +	unsigned int major, minor;
+> +	struct stat s;
+> +	char dev[8];
+> +
+> +	if (stat(p->dev.devpathstr, &s) < 0) {
+> +		if (errno != ENOENT)
+> +			return -1;
+> +	} else {
+> +		return S_ISBLK(s.st_mode) ? 0 : -2;
+> +	}
+> +
+> +	if (read_string_from_file(voldir, "dev", dev, sizeof(dev)) == NULL)
+> +		return -3;
+> +
+> +	if (sscanf(dev, "%d:%d", &major, &minor) != 2)
+> +		return -4;
+> +
+> +	if (mknod(p->dev.devpathstr, S_IFBLK | 0600, makedev(major, minor)) < 0)
+> +		return -5;
+> +
+> +	return 0;
+> +}
+> +
+>   static int partname_volume_init(struct volume *v)
+>   {
+>   	struct partname_volume *p = container_of(v, struct partname_volume, v);
+>   	char voldir[BUFLEN];
+>   	unsigned int volsize;
+> +	int ret;
+>   
+>   	snprintf(voldir, sizeof(voldir), "%s/%s", block_dir_name, p->dev.devpath.device);
+>   
+> +	ret = ensure_block_dev(p, voldir);
+> +	if (ret < 0)
+> +		printf("Failed to create block device %s ret=%d errno=%d\n",
+> +			p->dev.devpathstr, ret, errno);
+> +
+>   	if (read_uint_from_file(voldir, "size", &volsize))
+>   		return -1;
+>   
+
+
+From newtwen at gmail.com  Wed Oct  8 11:53:32 2025
+From: newtwen at gmail.com (Paul D)
+Date: Wed, 8 Oct 2025 20:53:32 +0200
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+Message-ID: <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+
+
+
+https://www.iana.org/assignments/enterprise-numbers/assignment/apply/
+
+
+Motivation:
+
+https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382596182
+
+
+
+From mcr at sandelman.ca  Wed Oct  8 13:37:49 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Wed, 08 Oct 2025 16:37:49 -0400
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+References: <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+Message-ID: <615.1759955869@obiwan.sandelman.ca>
+
+
+Paul D <newtwen at gmail.com> wrote:
+    > https://www.iana.org/assignments/enterprise-numbers/assignment/apply/
+
+Yes.
+You don't need to be a registered legal entity.
+Individuals can even do it. see, for instance 64324.
+(My company has one)
+
+    > Motivation:
+
+    > https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382596182
+
+Sounds completely reasonable.
+If someone at IANA has an issue, I'd even use this to explain why.
+
+--
+]               Never tell me the odds!                 | ipv6 mesh networks [
+]   Michael Richardson, Sandelman Software Works        |    IoT architect   [
+]     mcr at sandelman.ca  http://www.sandelman.ca/        |   ruby on rails    [
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 487 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251008/7c5e3794/attachment.sig>
+
+From hauke at hauke-m.de  Wed Oct  8 13:40:20 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Wed, 8 Oct 2025 22:40:20 +0200
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+References: <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+Message-ID: <f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de>
+
+On 10/8/25 20:53, Paul D wrote:
+> 
+> 
+> https://www.iana.org/assignments/enterprise-numbers/assignment/apply/
+> 
+> 
+> Motivation:
+> 
+> https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382596182
+> 
+
+Hi,
+
+OpenWrt has a Organizationally unique identifier (OUI) from the IEEE.
+
+--------
+20-05-B6   (hex)		OpenWrt
+2005B6     (base 16)		OpenWrt
+				 137 MONTAGUE ST STE 380
+				Brooklyn  NY  11201
+				US
+--------
+
+I haven't fully understood why you need a DUID-EN from IANA. Could you 
+please explain it again.
+
+Does this cost money?
+
+Hauke
+
+
+From bjorn at mork.no  Wed Oct  8 23:20:15 2025
+From: bjorn at mork.no (=?utf-8?Q?Bj=C3=B8rn_Mork?=)
+Date: Thu, 09 Oct 2025 08:20:15 +0200
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de> (Hauke
+	Mehrtens's message of "Wed, 8 Oct 2025 22:40:20 +0200")
+References: <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+	<f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de>
+Message-ID: <877bx47g0w.fsf@miraculix.mork.no>
+
+Hauke Mehrtens <hauke at hauke-m.de> writes:
+> On 10/8/25 20:53, Paul D wrote:
+>> https://www.iana.org/assignments/enterprise-numbers/assignment/apply/
+>> Motivation:
+>> https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382596182
+>> 
+>
+> Hi,
+>
+> OpenWrt has a Organizationally unique identifier (OUI) from the IEEE.
+>
+> --------
+> 20-05-B6   (hex)		OpenWrt
+> 2005B6     (base 16)		OpenWrt
+> 				 137 MONTAGUE ST STE 380
+> 				Brooklyn  NY  11201
+> 				US
+> --------
+>
+> I haven't fully understood why you need a DUID-EN from IANA. Could you
+> please explain it again.
+
+Looks like a misunderstanding of how DUID-LLT is supposed to work:
+https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382270139
+
+If a DUID-EN can be generated once and stored forever, then so can a
+DUID-LLT.  It does not matter if the device donating a mac address is
+moved to another host.  The time makes the DUID unique.
+
+> Does this cost money?
+
+No, it doesn't.  It's free.  See
+https://www.rfc-editor.org/rfc/rfc9371.html
+
+But I guess the real cost is that OpenWrt would have to create a policy
+and internal registry of it's usage.  Otherwise it would pretty soon be
+unusable because of collisions.
+
+An enterprise number can also be useful e.g for your own SNMP OIDs,
+RADIUS VSAs, and structured syslog.
+
+But personally I don't think DUID-EN is a very good usecase for OpenWrt.
+That's more something for a hardware vendor which already issue unique
+serial numbers for example.  Then they can create a DUID with their
+enterprise number and the device serial number.  OpenWrt would have to
+create an maintain a serial number registry or similar to be able to use
+DUID-EN.  And there is absolutely no upside compared to the DUID-LLT.
+
+Just my .02 ?
+
+
+Bj?rn
+
+
+From david at hardeman.nu  Thu Oct  9 05:33:03 2025
+From: david at hardeman.nu (=?utf-8?B?RGF2aWQgSMOkcmRlbWFu?=)
+Date: Thu, 09 Oct 2025 12:33:03 +0000
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <mailman.11565.1759990846.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.11565.1759990846.2093109.openwrt-devel@lists.openwrt.org>
+ <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+ <f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de>
+Message-ID: <7244ffe06581b4282353fc8c911560fad063e5bc@hardeman.nu>
+
+9 October 2025 at 08:20, "Bj?rn Mork via openwrt-devel" <openwrt-devel at lists.openwrt.org> wrote:
+> Looks like a misunderstanding of how DUID-LLT is supposed to work:
+> https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382270139
+
+I wouldn't characterise it as a misunderstanding. Yes, DUID-LLT's exist, but 
+I think a DUID-EN has some advantages.
+
+The first one is simplicity. With a OpenWrt-specific enterprise number, the
+definition/generation of the DUID is up to the "vendor". And we could define
+the DUID-EN as being simply <enterprise-number> + a random identifier of
+suitable length/complexity (say, 128 bits), created on first boot, similar to
+how ULAs are handled today by OpenWrt [1].
+
+The DUID-LLT has the disadvantage that it is linked to a hardware address.
+That means that an interface has to be picked on first boot, and the
+MAC/hwaddr of the chosen interface will then be part of the DUID which will
+be used/visible on all interfaces "forever". I can see that that could be
+confusing to users. That's why I think DUID-LLTs are better suited for e.g.
+a printer with a single ethernet port. Heck, even OpenWrt's own odhcpd digs
+through DUID-LL/DUID-LLT identifiers and tries to convey meaning from them
+(i.e. try to derive a MAC address from the DUID).
+
+The DUID-EN is better suited to convey the purpose of the identifier, that
+it is a permanent per-host identifier with no real linkage to any particular
+interface and no particular meaning beyond that.
+
+In that sense, the scheme that I'm thinking of is kind of similar to
+DUID-UUIDs. This is also the approach used by e.g. systemd (they have
+an enterprise number and generate a DUID-EN using the "machine-id", which
+is generated on first boot [2]).
+
+> But I guess the real cost is that OpenWrt would have to create a policy
+> and internal registry of it's usage.  Otherwise it would pretty soon be
+> unusable because of collisions.
+
+I don't see why a registry would be necessary? Just create a random DUID
+with enough bits that the odds of a collision are astronomical...?
+
+Cheers,
+David
+
+(replying via webmail, I hope this won't get too awfully mangled...)
+
+[1] https://github.com/openwrt/openwrt/blob/main/package/base-files/files/etc/uci-defaults/12_network-generate-ula
+[2] https://unix.stackexchange.com/questions/743776/systemd-network-duid-iaid-and-dhcpv4-clientidentifier
+
+
+From newtwen at gmail.com  Thu Oct  9 07:11:32 2025
+From: newtwen at gmail.com (Paul D)
+Date: Thu, 9 Oct 2025 16:11:32 +0200
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <7244ffe06581b4282353fc8c911560fad063e5bc@hardeman.nu>
+References: <mailman.11565.1759990846.2093109.openwrt-devel@lists.openwrt.org>
+ <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+ <f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de>
+ <7244ffe06581b4282353fc8c911560fad063e5bc@hardeman.nu>
+Message-ID: <047da922-dac2-49f0-acb3-eb86f09a22e0@gmail.com>
+
+On 2025-10-09 14:33, David H?rdeman wrote:
+> 9 October 2025 at 08:20, "Bj?rn Mork via openwrt-devel" <openwrt-devel at lists.openwrt.org> wrote:
+>> Looks like a misunderstanding of how DUID-LLT is supposed to work:
+>> https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382270139
+> 
+> I wouldn't characterise it as a misunderstanding. Yes, DUID-LLT's exist, but 
+> I think a DUID-EN has some advantages.
+> 
+> The first one is simplicity. With a OpenWrt-specific enterprise number, the
+> definition/generation of the DUID is up to the "vendor". And we could define
+> the DUID-EN as being simply <enterprise-number> + a random identifier of
+> suitable length/complexity (say, 128 bits), created on first boot, similar to
+> how ULAs are handled today by OpenWrt [1].
+
+If/when openwrt gets an EN, then this is entirely viable. 
+
+> The DUID-LLT has the disadvantage that it is linked to a hardware address.
+> That means that an interface has to be picked on first boot, and the
+> MAC/hwaddr of the chosen interface will then be part of the DUID which will
+> be used/visible on all interfaces "forever". I can see that that could be
+> confusing to users. That's why I think DUID-LLTs are better suited for e.g.
+> a printer with a single ethernet port. Heck, even OpenWrt's own odhcpd digs
+> through DUID-LL/DUID-LLT identifiers and tries to convey meaning from them
+> (i.e. try to derive a MAC address from the DUID).
+> 
+
+The original RFC[1] discusses this case, which is why LLT is applicable today:
+
+   The choice of network interface can be completely arbitrary, as long
+   as that interface provides a globally unique link-layer address for
+   the link type, and the same DUID-LLT SHOULD be used in configuring
+   all network interfaces connected to the device, regardless of which
+   interface's link-layer address was used to generate the DUID-LLT.
+
+[1] https://datatracker.ietf.org/doc/html/rfc3315#section-9.2
+
+So we can use the device MAC. Once generated, a user can migrate their device config to a newer device, and retain the DUID.
+
+EN is just as flexible but requires an EN, not yet available today.
+
+
+Maintaining a stable DUID isn't critical - it helps maintain a more stable network environment. Home consumer networks are more dynamic. New devices, new internet providers, new routers every so often.
+
+
+> The DUID-EN is better suited to convey the purpose of the identifier, that
+> it is a permanent per-host identifier with no real linkage to any particular
+> interface and no particular meaning beyond that.
+
+Randomness further derived when an EN is available, vs randomness derived from hardware and time.
+
+> 
+> In that sense, the scheme that I'm thinking of is kind of similar to
+> DUID-UUIDs. This is also the approach used by e.g. systemd (they have
+> an enterprise number and generate a DUID-EN using the "machine-id", which
+> is generated on first boot [2]).
+> 
+>> But I guess the real cost is that OpenWrt would have to create a policy
+>> and internal registry of it's usage.  Otherwise it would pretty soon be
+>> unusable because of collisions.
+> 
+> I don't see why a registry would be necessary? Just create a random DUID
+> with enough bits that the odds of a collision are astronomical...?
+
+
+Agreed. ULA is sufficiently random. ULA were originally thought/designed to be globally unique. 
+
+
+
+From david at hardeman.nu  Thu Oct  9 07:46:24 2025
+From: david at hardeman.nu (=?utf-8?B?RGF2aWQgSMOkcmRlbWFu?=)
+Date: Thu, 09 Oct 2025 14:46:24 +0000
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <047da922-dac2-49f0-acb3-eb86f09a22e0@gmail.com>
+References: <047da922-dac2-49f0-acb3-eb86f09a22e0@gmail.com>
+ <mailman.11565.1759990846.2093109.openwrt-devel@lists.openwrt.org>
+ <1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+ <f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de>
+ <7244ffe06581b4282353fc8c911560fad063e5bc@hardeman.nu>
+Message-ID: <73f2e34556dc97f9d4d17070737e5b88c16aa3cc@hardeman.nu>
+
+9 October 2025 at 16:11, "Paul D" <newtwen at gmail.com> wrote:
+> On 2025-10-09 14:33, David H?rdeman wrote:
+>>  I think a DUID-EN has some advantages.
+>>  
+>>  The first one is simplicity. With a OpenWrt-specific enterprise number, the
+>>  definition/generation of the DUID is up to the "vendor". And we could define
+>>  the DUID-EN as being simply <enterprise-number> + a random identifier of
+>>  suitable length/complexity (say, 128 bits), created on first boot, similar to
+>>  how ULAs are handled today by OpenWrt [1].
+>> 
+> 
+> If/when openwrt gets an EN, then this is entirely viable. 
+
+Yes, which is why I hope that OpenWrt will get one :)
+
+>>  The DUID-LLT has the disadvantage that it is linked to a hardware address.
+>>  That means that an interface has to be picked on first boot, and the
+>>  MAC/hwaddr of the chosen interface will then be part of the DUID which will
+>>  be used/visible on all interfaces "forever". I can see that that could be
+>>  confusing to users. That's why I think DUID-LLTs are better suited for e.g.
+>>  a printer with a single ethernet port. Heck, even OpenWrt's own odhcpd digs
+>>  through DUID-LL/DUID-LLT identifiers and tries to convey meaning from them
+>>  (i.e. try to derive a MAC address from the DUID).
+>> 
+> 
+> The original RFC[1] discusses this case, which is why LLT is applicable today:
+...
+> [1] https://datatracker.ietf.org/doc/html/rfc3315#section-9.2
+> 
+> So we can use the device MAC. Once generated, a user can migrate their
+> device config to a newer device, and retain the DUID.
+
+Another advantage of not relying on MAC addresses is that the DUID can
+be trivially generated. I've created a draft PR to demonstrate how simple:
+
+https://github.com/openwrt/openwrt/pull/20359
+
+> Maintaining a stable DUID isn't critical - it helps maintain a more
+> stable network environment. Home consumer networks are more dynamic.
+> New devices, new internet providers, new routers every so often.
+
+Well...it's also a question of RFC-compliance to maintain a stable DUID
+across interfaces, hardware changes, etc (and yes, I realise that storing
+any of the DUID-* ids in uci would achieve that).
+
+
+From bjorn at mork.no  Thu Oct  9 07:48:55 2025
+From: bjorn at mork.no (=?utf-8?Q?Bj=C3=B8rn_Mork?=)
+Date: Thu, 09 Oct 2025 16:48:55 +0200
+Subject: Can Openwrt org apply for a (DUID-EN) org/enterprise number...?
+In-Reply-To: <7244ffe06581b4282353fc8c911560fad063e5bc@hardeman.nu> ("David
+	=?utf-8?Q?H=C3=A4rdeman=22's?= message of "Thu, 09 Oct 2025 12:33:03
+ +0000")
+References: <mailman.11565.1759990846.2093109.openwrt-devel@lists.openwrt.org>
+	<1467f8a8-92a5-4479-8f5a-4223064e0733@gmail.com>
+	<f24392e8-1722-4653-af9a-c471c27760a1@hauke-m.de>
+	<7244ffe06581b4282353fc8c911560fad063e5bc@hardeman.nu>
+Message-ID: <875xco5dwo.fsf@miraculix.mork.no>
+
+"David H?rdeman" <david at hardeman.nu> writes:
+
+> 9 October 2025 at 08:20, "Bj?rn Mork via openwrt-devel" <openwrt-devel at lists.openwrt.org> wrote:
+>> Looks like a misunderstanding of how DUID-LLT is supposed to work:
+>> https://github.com/openwrt/odhcp6c/pull/73#issuecomment-3382270139
+>
+> I wouldn't characterise it as a misunderstanding. Yes, DUID-LLT's exist, but 
+
+Quoting from the link I gave:
+
+ Hm, come to think of it....we might want to consider generating a
+ DUID-EN on first boot and stashing that in permanent storage via
+ UCI...then the DUID would remain stable even if interfaces change
+
+That's definitely misunderstanding how DUID-LLTs work. They are as
+stable as DUID-EN regardless of interfaces changes.
+
+> I think a DUID-EN has some advantages.
+>
+> The first one is simplicity. With a OpenWrt-specific enterprise number, the
+> definition/generation of the DUID is up to the "vendor". And we could define
+> the DUID-EN as being simply <enterprise-number> + a random identifier of
+> suitable length/complexity (say, 128 bits), created on first boot, similar to
+> how ULAs are handled today by OpenWrt [1].
+
+DUID-EN is not simpler.  You need entropy.  You need more storage.  You
+create larger network packets.  You create a non-standard OpenWrt
+specific DUID allocation scheme.
+
+Provided we accept that unlikely is good enough to satisfy this MUST:
+
+   The source of the identifier is left up to the vendor defining it,
+   but each identifier part of each DUID-EN MUST be unique to the device
+   that is using it, and MUST be assigned to the device no later than at
+   the first usage and stored in some form of non-volatile storage.
+
+> The DUID-LLT has the disadvantage that it is linked to a hardware address.
+> That means that an interface has to be picked on first boot, and the
+> MAC/hwaddr of the chosen interface will then be part of the DUID which will
+> be used/visible on all interfaces "forever".
+
+You can be tracked equally well with any DUID type.  They are all
+supposed to be stable identifiers.  That's the whole point.
+
+> I can see that that could be confusing to users.
+
+I can see random DUID-ENs being confusing to users.
+
+But if we use DUID-LLT then we can at least point the confused users to
+an RFC explaining it.
+
+> That's why I think DUID-LLTs are better suited for e.g.
+> a printer with a single ethernet port.
+
+Another misunderstanding which could have been avoided by reading
+RFC8415 (or RFC3315). It explicitly says this about DUID-LLT:
+
+   This method of DUID generation is recommended for all general-purpose
+   computing devices such as desktop computers and laptop computers, and
+   also for devices such as printers, routers, and so on, that contain
+   some form of writable non-volatile storage.
+
+There has never been any requirement that the address donating
+hardware should be related to the network interfaces running DHCPv6.  It
+could be, but that's the exception.  Not the other way around.
+
+   The choice of network interface can be completely arbitrary, as long
+   as that interface provides a globally unique link-layer address for
+   the link type; the same DUID-LLT SHOULD be used in configuring all
+   network interfaces connected to the device, regardless of which
+   interface's link-layer address was used to generate the DUID-LLT.
+
+> Heck, even OpenWrt's own odhcpd digs
+> through DUID-LL/DUID-LLT identifiers and tries to convey meaning from them
+> (i.e. try to derive a MAC address from the DUID).
+
+   Clients and servers MUST treat DUIDs as opaque values and MUST only
+   compare DUIDs for equality.  Clients and servers SHOULD NOT in any
+   other way interpret DUIDs.
+
+If odhcpd violates the RFC then the bug should be fixed.
+
+> The DUID-EN is better suited to convey the purpose of the identifier, that
+> it is a permanent per-host identifier with no real linkage to any particular
+> interface and no particular meaning beyond that.
+
+That's an opionion. I disagree.  DUID-ENs are completely unsuitable for
+any uncoordinated use.
+
+> In that sense, the scheme that I'm thinking of is kind of similar to
+> DUID-UUIDs. This is also the approach used by e.g. systemd (they have
+> an enterprise number and generate a DUID-EN using the "machine-id", which
+> is generated on first boot [2]).
+
+They don't care about standards and they don't have the luxury of
+globally unique mac addresses (being focused on containers and VMs with
+virtual network interfaces).
+
+I like to think that OpenWrt is different in both aspects.
+
+>> But I guess the real cost is that OpenWrt would have to create a policy
+>> and internal registry of it's usage.  Otherwise it would pretty soon be
+>> unusable because of collisions.
+>
+> I don't see why a registry would be necessary? Just create a random DUID
+> with enough bits that the odds of a collision are astronomical...?
+
+Sure, we can make it unlikely.
+
+But there is an alternative which guarantees uniqueess without the
+entropy cost.
+
+
+Bj?rn
+
+
+From lotigara at lotigara.ru  Thu Oct  9 10:02:04 2025
+From: lotigara at lotigara.ru (Ivan Davydov)
+Date: Thu, 09 Oct 2025 17:02:04 +0000
+Subject: =?US-ASCII?Q?Re=3A_***_SPAM_***_=5BPATCH=5D_libfstools=3A_partn?=
+ =?US-ASCII?Q?ame=3A_Create_block_device_in_init_if_needed?=
+In-Reply-To: <8c14a893-c210-41fe-b2ae-8488dd4ddb1c@cjdns.fr>
+References: <20250919185420.3038448-1-cjd@cjdns.fr> <8c14a893-c210-41fe-b2ae-8488dd4ddb1c@cjdns.fr>
+Message-ID: <60EEC887-3A69-4105-9182-78EFAE19394C@lotigara.ru>
+
+By the way, does this make rootfs on NFS work?
+
+Je 2025-oktobro-06 14:09:56 UTC, Caleb James DeLisle <cjd at cjdns.fr> skribis:
+>Does anybody have any opinions about this patch?
+>It seems like a relatively non-controversial idea, and it
+>makes USB rootfs able to work.
+>
+>
+>Thanks,
+>
+>Caleb
+>
+>
+>On 19/09/2025 20:54, Caleb James DeLisle wrote:
+>> Rootfs on devices such as USB is currently impossible, but
+>> not because the kernel modules aren't loaded early enough.
+>> The only problem is that procd does not create hotplug
+>> device files until after preinit.
+>> 
+>> Update partname_volume_init to also create the device file
+>> if necessary so that it will be able to be mounted. With
+>> this patch, USB rootfs with normal kmods Just Works.
+>> 
+>> Signed-off-by: Caleb James DeLisle <cjd at cjdns.fr>
+>> ---
+>>   libfstools/partname.c | 33 +++++++++++++++++++++++++++++++++
+>>   1 file changed, 33 insertions(+)
+>> 
+>> diff --git a/libfstools/partname.c b/libfstools/partname.c
+>> index 9f2347a..a2b2b2c 100644
+>> --- a/libfstools/partname.c
+>> +++ b/libfstools/partname.c
+>> @@ -2,6 +2,8 @@
+>>     #include "common.h"
+>>   +#include <sys/sysmacros.h>
+>> +
+>>   #define BUFLEN 64
+>>     struct devpath {
+>> @@ -41,14 +43,45 @@ static int partname_volume_identify(struct volume *v)
+>>   	return ret;
+>>   }
+>>   +static int ensure_block_dev(struct partname_volume *p, const char *voldir)
+>> +{
+>> +	unsigned int major, minor;
+>> +	struct stat s;
+>> +	char dev[8];
+>> +
+>> +	if (stat(p->dev.devpathstr, &s) < 0) {
+>> +		if (errno != ENOENT)
+>> +			return -1;
+>> +	} else {
+>> +		return S_ISBLK(s.st_mode) ? 0 : -2;
+>> +	}
+>> +
+>> +	if (read_string_from_file(voldir, "dev", dev, sizeof(dev)) == NULL)
+>> +		return -3;
+>> +
+>> +	if (sscanf(dev, "%d:%d", &major, &minor) != 2)
+>> +		return -4;
+>> +
+>> +	if (mknod(p->dev.devpathstr, S_IFBLK | 0600, makedev(major, minor)) < 0)
+>> +		return -5;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static int partname_volume_init(struct volume *v)
+>>   {
+>>   	struct partname_volume *p = container_of(v, struct partname_volume, v);
+>>   	char voldir[BUFLEN];
+>>   	unsigned int volsize;
+>> +	int ret;
+>>     	snprintf(voldir, sizeof(voldir), "%s/%s", block_dir_name, p->dev.devpath.device);
+>>   +	ret = ensure_block_dev(p, voldir);
+>> +	if (ret < 0)
+>> +		printf("Failed to create block device %s ret=%d errno=%d\n",
+>> +			p->dev.devpathstr, ret, errno);
+>> +
+>>   	if (read_uint_from_file(voldir, "size", &volsize))
+>>   		return -1;
+>>   
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From dwmw2 at infradead.org  Thu Oct  9 11:40:31 2025
+From: dwmw2 at infradead.org (David Woodhouse)
+Date: Thu, 09 Oct 2025 19:40:31 +0100
+Subject: [VOTE] OpenWrt Two
+In-Reply-To: <21584ed4-3f63-41ad-bf99-cc5670ae6392@gorani.run>
+References: <56022ffa-2e71-4335-ae3c-418552e7e088@phrozen.org>
+	 <21584ed4-3f63-41ad-bf99-cc5670ae6392@gorani.run>
+Message-ID: <421c7c9cc175bffae2a7a180b87d91d7daf0bdc9.camel@infradead.org>
+
+On Mon, 2025-02-17 at 22:58 +0900, Sungbo Eo wrote:
+> On 2025-02-13 03:44, John Crispin wrote:
+> > Hi,
+> > 
+> > starting a [VOTE] to get approval allowing me to begin the development
+> > of OpenWrt "Two".
+> > 
+> > "Two" will have all of the features that "One" has with the following
+> > upgrades.
+> > 
+> > * MT7988
+> > * 10G SFP
+> > * 5G copper
+> > * 4 port 2.5G copper
+> > * 1-2 port 1G copper
+> > * Tri-band Wi-Fi 7
+> > 
+> > "Two" will be produced by GL.iNet and we are exploring options for US/EU
+> > based distribution.
+> > 
+> > "Two" will (hopefully) be in the 250$ region with yet again a portion of
+> > that being donated to the project.
+> > 
+> > expected availability is late '25.
+
+And still PoE? On which port?
+
+I'm just starting to play with the OpenWrt One that's been sitting on
+my desk for a while. I'm trying to understand why anyone would get PoE
+on the *WAN* port, if that's coming for their ISP's fibre/VDSL dongle.
+Seems like that port is always just going to be a single wire to
+whatever the uplink is.
+
+Seems to me like I'd always want PoE to come from the internal network
+on the *LAN* side, surely? 
+
+Which is fine on the One, as I can just use the 2.5G/PoE port as the
+internal one, connect the VDSL dongle to the 1G port, and wonder why
+the box and default configuration have them mislabelled.
+
+But on the Two, it's going to matter more. I'd really want the PoE to
+be on one of the four 2.5G ports attached to the switch, and *not* the
+single port. Otherwise there's going to be a lot more software bridging
+than necessary...
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 5069 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251009/b6c837a3/attachment-0001.p7s>
+
+From daniel at makrotopia.org  Thu Oct  9 11:51:11 2025
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Thu, 9 Oct 2025 19:51:11 +0100
+Subject: [VOTE] OpenWrt Two
+In-Reply-To: <421c7c9cc175bffae2a7a180b87d91d7daf0bdc9.camel@infradead.org>
+References: <56022ffa-2e71-4335-ae3c-418552e7e088@phrozen.org>
+ <21584ed4-3f63-41ad-bf99-cc5670ae6392@gorani.run>
+ <421c7c9cc175bffae2a7a180b87d91d7daf0bdc9.camel@infradead.org>
+Message-ID: <aOgEH2M2nJUqs3iQ@makrotopia.org>
+
+On Thu, Oct 09, 2025 at 07:40:31PM +0100, David Woodhouse wrote:
+> On Mon, 2025-02-17 at 22:58 +0900, Sungbo Eo wrote:
+> > On 2025-02-13 03:44, John Crispin wrote:
+> > > Hi,
+> > > 
+> > > starting a [VOTE] to get approval allowing me to begin the development
+> > > of OpenWrt "Two".
+> > > 
+> > > "Two" will have all of the features that "One" has with the following
+> > > upgrades.
+> > > 
+> > > * MT7988
+> > > * 10G SFP
+> > > * 5G copper
+> > > * 4 port 2.5G copper
+> > > * 1-2 port 1G copper
+> > > * Tri-band Wi-Fi 7
+> > > 
+> > > "Two" will be produced by GL.iNet and we are exploring options for US/EU
+> > > based distribution.
+> > > 
+> > > "Two" will (hopefully) be in the 250$ region with yet again a portion of
+> > > that being donated to the project.
+> > > 
+> > > expected availability is late '25.
+> 
+> And still PoE? On which port?
+> 
+> I'm just starting to play with the OpenWrt One that's been sitting on
+> my desk for a while. I'm trying to understand why anyone would get PoE
+> on the *WAN* port, if that's coming for their ISP's fibre/VDSL dongle.
+> Seems like that port is always just going to be a single wire to
+> whatever the uplink is.
+
+The One got 1x 1GE and 1x 2.5GE, the assignment which of them is LAN
+and WAN is pretty arbitary and can be changed according to your needs.
+The decission to make 2.5GE port the PoE input was to make the One
+suitable as an access point supplied by a 2.5GE PoE switch -- we wanted
+the faster port to be with PoE.
+
+> 
+> Seems to me like I'd always want PoE to come from the internal network
+> on the *LAN* side, surely? 
+> 
+> Which is fine on the One, as I can just use the 2.5G/PoE port as the
+> internal one, connect the VDSL dongle to the 1G port, and wonder why
+> the box and default configuration have them mislabelled.
+
+On my case there aren't any labels destinguishing either port as WAN
+or LAN. It's all just default configuration.
+
+> 
+> But on the Two, it's going to matter more. I'd really want the PoE to
+> be on one of the four 2.5G ports attached to the switch, and *not* the
+> single port. Otherwise there's going to be a lot more software bridging
+> than necessary...
+
+Thanks to 'bridger'[1] it is easy to avoid CPU-intense "software bridging"
+from happening on MediaTek platforms which comes with MediaTek's PPE
+offloading engine.
+
+[1]: https://github.com/nbd168/bridger
+
+
+From mcr at sandelman.ca  Thu Oct  9 12:58:15 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Thu, 09 Oct 2025 15:58:15 -0400
+Subject: *** SPAM *** [PATCH] libfstools: partname: Create block device in
+ init if needed
+In-Reply-To: <mailman.11820.1760029330.2093109.openwrt-devel@lists.openwrt.org>
+References: <20250919185420.3038448-1-cjd@cjdns.fr>
+ <8c14a893-c210-41fe-b2ae-8488dd4ddb1c@cjdns.fr>
+ <mailman.11820.1760029330.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <7959.1760039895@obiwan.sandelman.ca>
+
+Ivan Davydov via openwrt-devel <openwrt-devel at lists.openwrt.org> wrote:
+    > By the way, does this make rootfs on NFS work?
+
+NFS doesn't use/need block devices.
+(Maybe there are network modules that could be loaded earlier that this would
+help, though)
+
+
+
+
+From dwmw2 at infradead.org  Fri Oct 10 00:59:43 2025
+From: dwmw2 at infradead.org (David Woodhouse)
+Date: Fri, 10 Oct 2025 08:59:43 +0100
+Subject: [VOTE] OpenWrt Two
+In-Reply-To: <aOgEH2M2nJUqs3iQ@makrotopia.org>
+References: <56022ffa-2e71-4335-ae3c-418552e7e088@phrozen.org>
+	 <21584ed4-3f63-41ad-bf99-cc5670ae6392@gorani.run>
+	 <421c7c9cc175bffae2a7a180b87d91d7daf0bdc9.camel@infradead.org>
+	 <aOgEH2M2nJUqs3iQ@makrotopia.org>
+Message-ID: <c0bbd08db2c1f2cdaa99c1715fb09197ef9f32d2.camel@infradead.org>
+
+On Thu, 2025-10-09 at 19:51 +0100, Daniel Golle wrote:
+> 
+> > 
+> > But on the Two, it's going to matter more. I'd really want the PoE to
+> > be on one of the four 2.5G ports attached to the switch, and *not* the
+> > single port. Otherwise there's going to be a lot more software bridging
+> > than necessary...
+> 
+> Thanks to 'bridger'[1] it is easy to avoid CPU-intense "software bridging"
+> from happening on MediaTek platforms which comes with MediaTek's PPE
+> offloading engine.
+> 
+> [1]: https://github.com/nbd168/bridger
+
+Nice. Does this work out of the box if I just configure a given VLAN on
+both ports using LUCI?
+
+And in particular with the tagged VLAN trunk on the single (PoE) port,
+bridging to individual VLANs untagged on the quad/dual ports? 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 5069 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251010/940e0c8a/attachment.p7s>
+
+From noreply at github.com  Sun Oct 12 08:21:24 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 12 Oct 2025 08:21:24 -0700
+Subject: [sdwalker/sdwalker.github.io] c97ae7: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/4de7c1-c97ae7@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: c97ae7be14f6f60f1636d0333f7b748db2863f20
+      https://github.com/sdwalker/sdwalker.github.io/commit/c97ae7be14f6f60f1636d0333f7b748db2863f20
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-10-12 (Sun, 12 Oct 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From marcin.wojciechowski at ventrazo.pl  Tue Oct 14 00:50:35 2025
+From: marcin.wojciechowski at ventrazo.pl (Marcin Wojciechowski)
+Date: Tue, 14 Oct 2025 07:50:35 GMT
+Subject: Zapytanie ofertowe 
+Message-ID: <20251014084500-0.1.ll.5t16w.0.9edq333qjb@OriginatePro.pl>
+
+Dzie? dobry,
+
+Pozwoli?em sobie na kontakt, poniewa? jestem zainteresowany weryfikacj? mo?liwo?ci nawi?zania wsp??pracy.
+
+Wspieramy firmy w pozyskiwaniu nowych klient?w biznesowych.
+
+Czy mo?emy porozmawia? w celu przedstawienia szczeg??owych informacji? 
+ 
+
+Pozdrawiam serdecznie
+Marcin Wojciechowski
+
+
+From brendon.roy at primefinix.com  Tue Oct 14 01:06:04 2025
+From: brendon.roy at primefinix.com (Brendon Roy)
+Date: Tue, 14 Oct 2025 08:06:04 GMT
+Subject: No stock, no hassle
+Message-ID: <20251014084500-0.1.nj.4a0nf.0.083ok1dce3@primefinix.com>
+
+Hi,
+
+I know you're probably bombarded with offers every day, so I'll get straight to the point ? we have mattresses that are selling very well, so we're offering collaboration.
+
+We're looking for partners to work with us in a dropshipping model ? no warehousing, no logistics, and customers receive their shipments directly from us. You focus solely on sales and margins.
+
+Does this sound interesting to you?
+
+
+Best regards
+Brendon Roy
+
+
+From flizarthanon at gmail.com  Wed Oct 15 03:09:17 2025
+From: flizarthanon at gmail.com (Jascha Sundaresan)
+Date: Wed, 15 Oct 2025 14:09:17 +0400
+Subject: [PATCH] filogic: add support for Netgear EAX17
+Message-ID: <20251015100917.1917507-1-flizarthanon@gmail.com>
+
+Hardware
+--------
+
+SOC:   MediaTek MT7981
+RAM:   512MB DDR4
+FLASH: 128MB SPI-NAND
+WIFI:  Mediatek MT7915 (integrated) 2x2 802.11ax 2.4 / 5 GHz
+ETH:   Mediatek MT7981 internal 1 GbE PHY
+UART:  3V3 115200 8N1 (Pinout silkscreened / Do not connect VCC)
+
+Installation
+------------
+
+1. Download the OpenWrt initramfs image. Copy the image to a TFTP server
+2. Connect the TFTP server to the EAX17. Conect to the serial console,
+   interrupt the autoboot process by pressing '0' when prompted.
+3. Download & Boot the OpenWrt initramfs image.
+
+   $ tftpboot openwrt.bin
+   $ bootm
+
+4. Wait for OpenWrt to boot. Transfer the sysupgrade image to the device
+   using scp and install using sysupgrade.
+
+   $ sysupgrade -n <path-to-sysupgrade.bin>
+
+Signed-off-by: Jascha Sundaresan <flizarthanon at gmail.com>
+---
+ include/image-commands.mk                     |   1 +
+ ...ilogic-add-support-for-Netgear-EAX17.patch | 543 ++++++++++++++++++
+ scripts/mkits.sh                              |  32 +-
+ .../mediatek/dts/mt7981b-netgear-eax17.dts    | 236 ++++++++
+ .../filogic/base-files/etc/board.d/01_leds    |  11 +
+ .../filogic/base-files/etc/board.d/02_network |  17 +
+ .../filogic/base-files/etc/init.d/eax17-ledq  |  26 +
+ .../base-files/etc/uci-defaults/99-eax17-ledq |   6 +
+ .../base-files/lib/upgrade/platform.sh        |  11 +
+ target/linux/mediatek/image/filogic.mk        |  34 ++
+ 10 files changed, 916 insertions(+), 1 deletion(-)
+ create mode 100644 patches/0001-filogic-add-support-for-Netgear-EAX17.patch
+ create mode 100644 target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
+ create mode 100644 target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
+ create mode 100644 target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
+
+diff --git a/include/image-commands.mk b/include/image-commands.mk
+index 7b2b346aa6..b0c71909fc 100644
+--- a/include/image-commands.mk
++++ b/include/image-commands.mk
+@@ -439,6 +439,7 @@ define Build/fit
+ 				-d $(KERNEL_BUILD_DIR)/image-$$(basename $(word 2,$(1))), \
+ 				-d $(word 2,$(1)))) \
+ 		$(if $(findstring with-rootfs,$(word 3,$(1))),-r $(IMAGE_ROOTFS)) \
++		$(if $(findstring with-netgear-rootfs-node,$(word 3,$(1))),-R $(KERNEL_BUILD_DIR)/root.squashfs) \
+ 		$(if $(findstring with-initrd,$(word 3,$(1))), \
+ 			$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE), \
+ 				-i $(KERNEL_BUILD_DIR)/initrd$(if $(TARGET_PER_DEVICE_ROOTFS),.$(ROOTFS_ID/$(DEVICE_NAME))).cpio$(strip $(call Build/initrd_compression)))) \
+diff --git a/patches/0001-filogic-add-support-for-Netgear-EAX17.patch b/patches/0001-filogic-add-support-for-Netgear-EAX17.patch
+new file mode 100644
+index 0000000000..958359b8b1
+--- /dev/null
++++ b/patches/0001-filogic-add-support-for-Netgear-EAX17.patch
+@@ -0,0 +1,542 @@
++From 75fa5c536e0613ad182f886ac46fe9c01ad98268 Mon Sep 17 00:00:00 2001
++From: Jascha Sundaresan <flizarthanon at gmail.com>
++Date: Thu, 18 Sep 2025 22:32:41 +0400
++Subject: [PATCH] filogic: add support for Netgear EAX17
++
++Hardware
++--------
++
++SOC:   MediaTek MT7981
++RAM:   512MB DDR4
++FLASH: 128MB SPI-NAND
++WIFI:  Mediatek MT7915 (integrated) 2x2 802.11ax 2.4 / 5 GHz
++ETH:   Mediatek MT7981 internal 1 GbE PHY
++UART:  3V3 115200 8N1 (Pinout silkscreened / Do not connect VCC)
++
++Installation
++------------
++
++1. Download the OpenWrt initramfs image. Copy the image to a TFTP server
++2. Connect the TFTP server to the EAX17. Conect to the serial console,
++   interrupt the autoboot process by pressing '0' when prompted.
++3. Download & Boot the OpenWrt initramfs image.
++
++   $ tftpboot openwrt.bin
++   $ bootm
++
++4. Wait for OpenWrt to boot. Transfer the sysupgrade image to the device
++   using scp and install using sysupgrade.
++
++   $ sysupgrade -n <path-to-sysupgrade.bin>
++
++Signed-off-by: Jascha Sundaresan <flizarthanon at gmail.com>
++---
++ include/image-commands.mk                     |   1 +
++ scripts/mkits.sh                              |  32 ++-
++ .../mediatek/dts/mt7981b-netgear-eax17.dts    | 236 ++++++++++++++++++
++ .../filogic/base-files/etc/board.d/01_leds    |  11 +
++ .../filogic/base-files/etc/board.d/02_network |  17 ++
++ .../filogic/base-files/etc/init.d/eax17-ledq  |  26 ++
++ .../base-files/etc/uci-defaults/99-eax17-ledq |   6 +
++ .../base-files/lib/upgrade/platform.sh        |  11 +
++ target/linux/mediatek/image/filogic.mk        |  34 +++
++ 9 files changed, 373 insertions(+), 1 deletion(-)
++ create mode 100644 target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
++ create mode 100644 target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
++ create mode 100644 target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
++
++diff --git a/include/image-commands.mk b/include/image-commands.mk
++index 7b2b346aa6..b0c71909fc 100644
++--- a/include/image-commands.mk
+++++ b/include/image-commands.mk
++@@ -439,6 +439,7 @@ define Build/fit
++				-d $(KERNEL_BUILD_DIR)/image-$$(basename $(word 2,$(1))), \
++				-d $(word 2,$(1)))) \
++		$(if $(findstring with-rootfs,$(word 3,$(1))),-r $(IMAGE_ROOTFS)) \
+++		$(if $(findstring with-netgear-rootfs-node,$(word 3,$(1))),-R $(KERNEL_BUILD_DIR)/root.squashfs) \
++		$(if $(findstring with-initrd,$(word 3,$(1))), \
++			$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE), \
++				-i $(KERNEL_BUILD_DIR)/initrd$(if $(TARGET_PER_DEVICE_ROOTFS),.$(ROOTFS_ID/$(DEVICE_NAME))).cpio$(strip $(call Build/initrd_compression)))) \
++diff --git a/scripts/mkits.sh b/scripts/mkits.sh
++index 46ab5ee023..047034d5ab 100755
++--- a/scripts/mkits.sh
+++++ b/scripts/mkits.sh
++@@ -31,6 +31,7 @@ usage() {
++	printf "\n\t-n ==> fdt unit-address 'address'"
++	printf "\n\t-d ==> include Device Tree Blob 'dtb'"
++	printf "\n\t-r ==> include RootFS blob 'rootfs'"
+++	printf "\n\t-R ==> include Netgear style top level RootFS blob 'rootfs'"
++	printf "\n\t-H ==> specify hash algo instead of SHA1"
++	printf "\n\t-l ==> legacy mode character (@ etc otherwise -)"
++	printf "\n\t-o ==> create output file 'its_file'"
++@@ -49,7 +50,7 @@ LOADABLES=
++ DTOVERLAY=
++ DTADDR=
++
++-while getopts ":A:a:c:C:D:d:e:f:i:k:l:n:o:O:v:r:s:H:" OPTION
+++while getopts ":A:a:c:C:D:d:e:f:i:k:l:n:o:O:v:r:R:s:H:" OPTION
++ do
++	case $OPTION in
++		A ) ARCH=$OPTARG;;
++@@ -67,6 +68,7 @@ do
++		o ) OUTPUT=$OPTARG;;
++		O ) DTOVERLAY="$DTOVERLAY ${OPTARG}";;
++		r ) ROOTFS=$OPTARG;;
+++		R ) ROOTFS_FILE=$OPTARG;;
++		s ) FDTADDR=$OPTARG;;
++		H ) HASH=$OPTARG;;
++		v ) VERSION=$OPTARG;;
++@@ -156,6 +158,32 @@ if [ -n "${ROOTFS}" ]; then
++	LOADABLES="${LOADABLES:+$LOADABLES, }\"rootfs${REFERENCE_CHAR}${ROOTFSNUM}\""
++ fi
++
+++if [ -f "${ROOTFS_FILE}" ]; then
+++	ROOTFS_SIZE=$(stat -c %s ${ROOTFS_FILE})
+++
+++	ROOTFS_SHA1=$(
+++	sha1sum "${ROOTFS_FILE}" | \
+++	awk '{
+++		print "<0x" substr($0, 1, 8) \
+++		      " 0x" substr($0, 9, 8) \
+++		      " 0x" substr($0, 17, 8) \
+++		      " 0x" substr($0, 25, 8) \
+++		      " 0x" substr($0, 33, 8) ">"
+++		}'
+++	)
+++
+++	TOP_LEVEL_ROOTFS="
+++	rootfs {
+++		size = <${ROOTFS_SIZE}>;
+++
+++		hash-1 {
+++			value = ${ROOTFS_SHA1};
+++			algo = \"sha1\";
+++		};
+++	};
+++"
+++fi
+++
++ # add DT overlay blobs
++ FDTOVERLAY_NODE=""
++ OVCONFIGS=""
++@@ -222,6 +250,8 @@ ${FDTOVERLAY_NODE}
++ ${ROOTFS_NODE}
++	};
++
+++${TOP_LEVEL_ROOTFS}
+++
++	configurations {
++		default = \"${CONFIG}\";
++		${CONFIG} {
++diff --git a/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts b/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
++new file mode 100644
++index 0000000000..6dfa8c5b90
++--- /dev/null
+++++ b/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
++@@ -0,0 +1,236 @@
+++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+++
+++/dts-v1/;
+++#include "mt7981b.dtsi"
+++
+++/ {
+++	model = "Netgear EAX17";
+++	compatible = "netgear,eax17", "mediatek,mt7981-spim-snand-rfb";
+++
+++	aliases {
+++		led-boot = &led_power_green;
+++		led-failsafe = &led_power_red;
+++		led-running = &led_power_green;
+++		led-upgrade = &led_power_red;
+++		serial0 = &uart0;
+++	};
+++
+++	chosen {
+++		stdout-path = "serial0:115200n8";
+++	};
+++
+++	memory at 40000000 {
+++		reg = <0 0x40000000 0 0x20000000>;
+++		device_type = "memory";
+++	};
+++
+++	gpio-keys {
+++		compatible = "gpio-keys";
+++
+++		reset {
+++			label = "reset";
+++			linux,code = <KEY_RESTART>;
+++			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		wps {
+++			label = "wps";
+++			linux,code = <KEY_WPS_BUTTON>;
+++			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
+++		};
+++	};
+++
+++	gpio-leds {
+++		compatible = "gpio-leds";
+++
+++		led_power_green: power_green {
+++			color = <LED_COLOR_ID_GREEN>;
+++			function = LED_FUNCTION_POWER;
+++			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_power_red: power_red {
+++			color = <LED_COLOR_ID_RED>;
+++			function = LED_FUNCTION_POWER;
+++			gpios = <&pio 12 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_rlink_red: rlink_red {
+++			color = <LED_COLOR_ID_RED>;
+++			function = LED_FUNCTION_LAN;
+++			gpios = <&pio 6 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_rlink_green: rlink_green {
+++			color = <LED_COLOR_ID_GREEN>;
+++			function = LED_FUNCTION_LAN;
+++			gpios = <&pio 7 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_clink_red: clink_red {
+++			color = <LED_COLOR_ID_RED>;
+++			function = LED_FUNCTION_WAN;
+++			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_clink_green: clink_green {
+++			color = <LED_COLOR_ID_GREEN>;
+++			function = LED_FUNCTION_WAN;
+++			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_wps_green: wps_green {
+++			color = <LED_COLOR_ID_GREEN>;
+++			function = LED_FUNCTION_WPS;
+++			gpios = <&pio 5 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_lan_speed_fast: lan_speed_fast {
+++			color = <LED_COLOR_ID_GREEN>;
+++			function = LED_FUNCTION_STATUS;
+++			gpios = <&pio 13 GPIO_ACTIVE_LOW>;
+++		};
+++
+++		led_lan_speed_slow: lan_speed_slow {
+++			color = <LED_COLOR_ID_YELLOW>;
+++			function = LED_FUNCTION_STATUS;
+++			gpios = <&pio 8 GPIO_ACTIVE_LOW>;
+++		};
+++
+++	};
+++
+++};
+++
+++&eth {
+++	status = "okay";
+++
+++	gmac0: mac at 0 {
+++		compatible = "mediatek,eth-mac";
+++		reg = <0>;
+++		status = "disabled";
+++	};
+++
+++	gmac1: mac at 1 {
+++		compatible = "mediatek,eth-mac";
+++		reg = <1>;
+++		phy-mode = "gmii";
+++		phy-handle = <&int_gbe_phy>;
+++	};
+++};
+++
+++
+++&crypto {
+++	status = "okay";
+++};
+++
+++&pio {
+++	spi_flash_pins: spi0-pins {
+++		mux {
+++			function = "spi";
+++			groups = "spi0", "spi0_wp_hold";
+++		};
+++
+++		conf-pu {
+++			pins = "SPI0_CS", "SPI0_HOLD", "SPI0_WP";
+++			drive-strength = <MTK_DRIVE_8mA>;
+++			bias-pull-up = <MTK_PUPD_SET_R1R0_11>;
+++		};
+++
+++		conf-pd {
+++			pins = "SPI0_CLK", "SPI0_MOSI", "SPI0_MISO";
+++			drive-strength = <MTK_DRIVE_8mA>;
+++			bias-pull-down = <MTK_PUPD_SET_R1R0_11>;
+++		};
+++	};
+++};
+++
+++&spi0 {
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&spi_flash_pins>;
+++	status = "okay";
+++
+++	spi_nand_flash: flash at 0 {
+++		#address-cells = <1>;
+++		#size-cells = <1>;
+++		compatible = "spi-nand";
+++		reg = <0>;
+++
+++		spi-max-frequency = <20000000>;
+++		spi-tx-bus-width = <4>;
+++		spi-rx-bus-width = <4>;
+++
+++		partitions {
+++			#address-cells = <1>;
+++			#size-cells = <1>;
+++			compatible = "fixed-partitions";
+++
+++			partition at 0 {
+++				label = "BL2";
+++				reg = <0x0 0x100000>;
+++				read-only;
+++			};
+++
+++			partition at 100000 {
+++				label = "u-boot-env";
+++				reg = <0x0100000 0x0080000>;
+++			};
+++
+++			factory: partition at 180000 {
+++				label = "Factory";
+++				reg = <0x180000 0x200000>;
+++			};
+++
+++			partition at 380000 {
+++				label = "FIP";
+++				reg = <0x380000 0x0200000>;
+++			};
+++
+++			partition at 580000 {
+++				label = "ubi";
+++				reg = <0x580000 0x5000000>;
+++			};
+++
+++			partition at 5580000 {
+++				label = "facenv";
+++				reg = <0x5580000 0x200000>;
+++			};
+++
+++			partition at 5780000 {
+++				label = "RAE";
+++				reg = <0x5780000 0x600000>;
+++			};
+++
+++			partition at 5D80000 {
+++				label = "POT";
+++				reg = <0x5D80000 0x020000>;
+++			};
+++
+++			partition at 5DA0000 {
+++				label = "LOG";
+++				reg = <0x5DA0000 0x040000>;
+++			};
+++
+++		};
+++	};
+++};
+++
+++&xhci {
+++	status = "disabled";
+++};
+++
+++&uart0 {
+++	status = "okay";
+++};
+++
+++&watchdog {
+++	status = "okay";
+++};
+++
+++&wifi {
+++	status = "okay";
+++	mediatek,mtd-eeprom = <&factory 0x0>;
+++};
+++
+++&pcie {
+++	status = "disabled";
+++};
++diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds b/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
++index 7e4512f30f..785ddecffa 100644
++--- a/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
+++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
++@@ -115,6 +115,17 @@ netcore,n60-pro)
++	ucidef_set_led_netdev "wanact" "WANACT" "mdio-bus:06:green:wan" "eth1" "tx rx"
++	ucidef_set_led_netdev "wanlink" "WANLINK" "blue:wan" "eth1" "link"
++	;;
+++netgear,eax17)
+++	ucidef_set_led_default power_green "Power (green)" green:power 1
+++	ucidef_set_led_default power_red   "Power (red)"   red:power   0
+++	ucidef_set_led_default rlink_red   "Client (red)"  red:lan     0
+++	ucidef_set_led_default clink_red   "Router (red)"  red:wan     0
+++	ucidef_set_led_wps     wps_green   "WPS (green)"   green:wps
+++	ucidef_set_led_netdev  lan_speed_fast  "LAN Link (green)"     green:status  eth0
+++	uci -q set system.lan_speed_fast.mode='link'
+++	ucidef_set_led_netdev  lan_speed_slow  "LAN Activity (yellow)" yellow:status eth0
+++	uci -q set system.lan_speed_slow.mode='tx rx'
+++	;;
++ netgear,wax220)
++	ucidef_set_led_netdev "eth0" "LAN" "green:lan" "eth0"
++	;;
++diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
++index 95af3b04e3..c242397ca6 100644
++--- a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
++@@ -99,6 +99,13 @@ mediatek_setup_interfaces()
++	cudy,ap3000outdoor-v1|\
++	cudy,ap3000-v1|\
++	cudy,re3000-v1|\
+++	netgear,eax17|\
+++	netgear,eax11v3|\
+++	netgear,eax15v3|\
+++	netgear,eax14v3|\
+++	netgear,eax12v2|\
+++	netgear,eax16|\
+++	netgear,eax19|\
++	netgear,wax220|\
++	openfi,6c|\
++	ubnt,unifi-6-plus|\
++@@ -212,6 +219,16 @@ mediatek_setup_macs()
++		label_mac=$(get_mac_binary "/tmp/tp_data/default-mac" 0)
++		lan_mac=$label_mac
++		;;
+++	netgear,eax17|\
+++	netgear,eax11v3|\
+++	netgear,eax15v3|\
+++	netgear,eax14v3|\
+++	netgear,eax12v2|\
+++	netgear,eax16|\
+++	netgear,eax19)
+++		lan_mac=$(grep -aoE '([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}' /dev/ubi0_0 | head -n1)
+++		label_mac=$lan_mac
+++		;;
++	netgear,wax220)
++		lan_mac=$(mtd_get_mac_ascii u-boot-env mac)
++		label_mac=$lan_mac
++diff --git a/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq b/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
++new file mode 100644
++index 0000000000..33b4c67f79
++--- /dev/null
+++++ b/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
++@@ -0,0 +1,26 @@
+++#!/bin/sh /etc/rc.common
+++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+++
+++START=69
+++USE_PROCD=1
+++NAME=eax17-ledq
+++start_service() {
+++	procd_open_instance
+++	procd_set_param command /bin/sh -c '
+++GOOD=-60; OK=-75; BAD=-90
+++on(){ echo 1 > "/sys/class/leds/$1/brightness"; }
+++off(){ echo 0 > "/sys/class/leds/$1/brightness"; }
+++set_color(){ g="green:$1"; r="red:$1"; case "$2" in off)off "$g";off "$r";; green)on "$g";off "$r";; amber)on "$g";on "$r";; red)off "$g";on "$r";; esac; }
+++uplink_iface(){ iw dev 2>/dev/null | awk "/Interface/{i=\$2} /type managed/ {print i; exit}"; }
+++best_client_dbm(){ for i in $(iw dev 2>/dev/null | awk "/Interface/{i=\$2} /type AP/ {print i}"); do iw dev "$i" station dump 2>/dev/null | awk "/signal:/ {print \$2}"; done | sort -nr | head -n1; }
+++quality(){ v=$1; [ -z "$v" ] && { echo off; return; }; [ "$v" -ge "$GOOD" ] && { echo green; return; }; [ "$v" -ge "$OK" ] && { echo amber; return; }; [ "$v" -ge "$BAD" ] && { echo red; return; }; echo red; }
+++while :; do
+++  uplink_dbm=$(iw dev "$(uplink_iface)" link 2>/dev/null | awk "/signal:/ {print \$2}")
+++  set_color wan "$(quality "$uplink_dbm")"
+++  set_color lan "$(quality "$(best_client_dbm)")"
+++  sleep 2
+++done'
+++	procd_set_param respawn 2000 1 0
+++	procd_close_instance
+++}
+++
++diff --git a/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq b/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
++new file mode 100644
++index 0000000000..b6d719c84b
++--- /dev/null
+++++ b/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
++@@ -0,0 +1,6 @@
+++#!/bin/sh
+++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+++
+++/etc/init.d/eax17-ledq enable
+++/etc/init.d/eax17-ledq start
+++exit 0
++diff --git a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
++index 0e2e84c791..1e9d278c1e 100755
++--- a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+++++ b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
++@@ -227,6 +227,17 @@ platform_do_upgrade() {
++		CI_ROOT_UBIPART=ubi
++		nand_do_upgrade "$1"
++		;;
+++	netgear,eax17)
+++		echo "UPGRADING SECOND SLOT"
+++		CI_KERNPART="kernel2"
+++		CI_ROOTPART="rootfs2"
+++		nand_do_flash_file "$1" || nand_do_upgrade_failed
+++		echo "UPGRADING PRIMARY SLOT"
+++		CI_KERNPART="kernel"
+++		CI_ROOTPART="rootfs"
+++		nand_do_flash_file "$1" || nand_do_upgrade_failed
+++		nand_do_upgrade_success
+++		;;
++	*)
++		nand_do_upgrade "$1"
++		;;
++diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
++index 908c63ef66..5c8d306df8 100644
++--- a/target/linux/mediatek/image/filogic.mk
+++++ b/target/linux/mediatek/image/filogic.mk
++@@ -1718,6 +1718,40 @@ define Device/netcore_n60-pro
++ endef
++ TARGET_DEVICES += netcore_n60-pro
++
+++define Device/netgear_eax17
+++  DEVICE_VENDOR := NETGEAR
+++  DEVICE_MODEL := EAX17
+++  DEVICE_ALT0_VENDOR := NETGEAR
+++  DEVICE_ALT0_MODEL := EAX11
+++  DEVICE_ALT0_VARIANT := v3
+++  DEVICE_ALT1_VENDOR := NETGEAR
+++  DEVICE_ALT1_MODEL := EAX15
+++  DEVICE_ALT1_VARIANT := v3
+++  DEVICE_ALT2_VENDOR := NETGEAR
+++  DEVICE_ALT2_MODEL := EAX14
+++  DEVICE_ALT2_VARIANT := v3
+++  DEVICE_ALT3_VENDOR := NETGEAR
+++  DEVICE_ALT3_MODEL := EAX12
+++  DEVICE_ALT3_VARIANT := v2
+++  DEVICE_ALT4_VENDOR := NETGEAR
+++  DEVICE_ALT4_MODEL := EAX16
+++  DEVICE_ALT5_VENDOR := NETGEAR
+++  DEVICE_ALT5_MODEL := EAX19
+++  DEVICE_DTS := mt7981b-netgear-eax17
+++  DEVICE_DTS_DIR := ../dts
+++  SUPPORTED_DEVICES += mediatek,mt7981-spim-snand-rfb
+++  UBINIZE_OPTS := -E 5
+++  BLOCKSIZE := 128k
+++  PAGESIZE := 2048
+++  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
+++  KERNEL = kernel-bin | lzma | \
+++	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-netgear-rootfs-node
+++  KERNEL_IN_UBI := 1
+++  IMAGE_SIZE := 81920k
+++  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+++endef
+++TARGET_DEVICES += netgear_eax17
+++
++ define Device/netgear_wax220
++   DEVICE_VENDOR := NETGEAR
++   DEVICE_MODEL := WAX220
++--
++2.39.5
+diff --git a/scripts/mkits.sh b/scripts/mkits.sh
+index 46ab5ee023..047034d5ab 100755
+--- a/scripts/mkits.sh
++++ b/scripts/mkits.sh
+@@ -31,6 +31,7 @@ usage() {
+ 	printf "\n\t-n ==> fdt unit-address 'address'"
+ 	printf "\n\t-d ==> include Device Tree Blob 'dtb'"
+ 	printf "\n\t-r ==> include RootFS blob 'rootfs'"
++	printf "\n\t-R ==> include Netgear style top level RootFS blob 'rootfs'"
+ 	printf "\n\t-H ==> specify hash algo instead of SHA1"
+ 	printf "\n\t-l ==> legacy mode character (@ etc otherwise -)"
+ 	printf "\n\t-o ==> create output file 'its_file'"
+@@ -49,7 +50,7 @@ LOADABLES=
+ DTOVERLAY=
+ DTADDR=
+ 
+-while getopts ":A:a:c:C:D:d:e:f:i:k:l:n:o:O:v:r:s:H:" OPTION
++while getopts ":A:a:c:C:D:d:e:f:i:k:l:n:o:O:v:r:R:s:H:" OPTION
+ do
+ 	case $OPTION in
+ 		A ) ARCH=$OPTARG;;
+@@ -67,6 +68,7 @@ do
+ 		o ) OUTPUT=$OPTARG;;
+ 		O ) DTOVERLAY="$DTOVERLAY ${OPTARG}";;
+ 		r ) ROOTFS=$OPTARG;;
++		R ) ROOTFS_FILE=$OPTARG;;
+ 		s ) FDTADDR=$OPTARG;;
+ 		H ) HASH=$OPTARG;;
+ 		v ) VERSION=$OPTARG;;
+@@ -156,6 +158,32 @@ if [ -n "${ROOTFS}" ]; then
+ 	LOADABLES="${LOADABLES:+$LOADABLES, }\"rootfs${REFERENCE_CHAR}${ROOTFSNUM}\""
+ fi
+ 
++if [ -f "${ROOTFS_FILE}" ]; then
++	ROOTFS_SIZE=$(stat -c %s ${ROOTFS_FILE})
++
++	ROOTFS_SHA1=$(
++	sha1sum "${ROOTFS_FILE}" | \
++	awk '{
++		print "<0x" substr($0, 1, 8) \
++		      " 0x" substr($0, 9, 8) \
++		      " 0x" substr($0, 17, 8) \
++		      " 0x" substr($0, 25, 8) \
++		      " 0x" substr($0, 33, 8) ">"
++		}'
++	)
++
++	TOP_LEVEL_ROOTFS="
++	rootfs {
++		size = <${ROOTFS_SIZE}>;
++
++		hash-1 {
++			value = ${ROOTFS_SHA1};
++			algo = \"sha1\";
++		};
++	};
++"
++fi
++
+ # add DT overlay blobs
+ FDTOVERLAY_NODE=""
+ OVCONFIGS=""
+@@ -222,6 +250,8 @@ ${FDTOVERLAY_NODE}
+ ${ROOTFS_NODE}
+ 	};
+ 
++${TOP_LEVEL_ROOTFS}
++
+ 	configurations {
+ 		default = \"${CONFIG}\";
+ 		${CONFIG} {
+diff --git a/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts b/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
+new file mode 100644
+index 0000000000..6dfa8c5b90
+--- /dev/null
++++ b/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++/dts-v1/;
++#include "mt7981b.dtsi"
++
++/ {
++	model = "Netgear EAX17";
++	compatible = "netgear,eax17", "mediatek,mt7981-spim-snand-rfb";
++
++	aliases {
++		led-boot = &led_power_green;
++		led-failsafe = &led_power_red;
++		led-running = &led_power_green;
++		led-upgrade = &led_power_red;
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory at 40000000 {
++		reg = <0 0x40000000 0 0x20000000>;
++		device_type = "memory";
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
++		};
++
++		wps {
++			label = "wps";
++			linux,code = <KEY_WPS_BUTTON>;
++			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		led_power_green: power_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_POWER;
++			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
++		};
++
++		led_power_red: power_red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_POWER;
++			gpios = <&pio 12 GPIO_ACTIVE_LOW>;
++		};
++
++		led_rlink_red: rlink_red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_LAN;
++			gpios = <&pio 6 GPIO_ACTIVE_LOW>;
++		};
++
++		led_rlink_green: rlink_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_LAN;
++			gpios = <&pio 7 GPIO_ACTIVE_LOW>;
++		};
++
++		led_clink_red: clink_red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_WAN;
++			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
++		};
++
++		led_clink_green: clink_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_WAN;
++			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
++		};
++
++		led_wps_green: wps_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_WPS;
++			gpios = <&pio 5 GPIO_ACTIVE_LOW>;
++		};
++
++		led_lan_speed_fast: lan_speed_fast {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 13 GPIO_ACTIVE_LOW>;
++		};
++
++		led_lan_speed_slow: lan_speed_slow {
++			color = <LED_COLOR_ID_YELLOW>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 8 GPIO_ACTIVE_LOW>;
++		};
++
++	};
++
++};
++
++&eth {
++	status = "okay";
++
++	gmac0: mac at 0 {
++		compatible = "mediatek,eth-mac";
++		reg = <0>;
++		status = "disabled";
++	};
++
++	gmac1: mac at 1 {
++		compatible = "mediatek,eth-mac";
++		reg = <1>;
++		phy-mode = "gmii";
++		phy-handle = <&int_gbe_phy>;
++	};
++};
++
++
++&crypto {
++	status = "okay";
++};
++
++&pio {
++	spi_flash_pins: spi0-pins {
++		mux {
++			function = "spi";
++			groups = "spi0", "spi0_wp_hold";
++		};
++
++		conf-pu {
++			pins = "SPI0_CS", "SPI0_HOLD", "SPI0_WP";
++			drive-strength = <MTK_DRIVE_8mA>;
++			bias-pull-up = <MTK_PUPD_SET_R1R0_11>;
++		};
++
++		conf-pd {
++			pins = "SPI0_CLK", "SPI0_MOSI", "SPI0_MISO";
++			drive-strength = <MTK_DRIVE_8mA>;
++			bias-pull-down = <MTK_PUPD_SET_R1R0_11>;
++		};
++	};
++};
++
++&spi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi_flash_pins>;
++	status = "okay";
++
++	spi_nand_flash: flash at 0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "spi-nand";
++		reg = <0>;
++
++		spi-max-frequency = <20000000>;
++		spi-tx-bus-width = <4>;
++		spi-rx-bus-width = <4>;
++
++		partitions {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "fixed-partitions";
++
++			partition at 0 {
++				label = "BL2";
++				reg = <0x0 0x100000>;
++				read-only;
++			};
++
++			partition at 100000 {
++				label = "u-boot-env";
++				reg = <0x0100000 0x0080000>;
++			};
++
++			factory: partition at 180000 {
++				label = "Factory";
++				reg = <0x180000 0x200000>;
++			};
++
++			partition at 380000 {
++				label = "FIP";
++				reg = <0x380000 0x0200000>;
++			};
++
++			partition at 580000 {
++				label = "ubi";
++				reg = <0x580000 0x5000000>;
++			};
++
++			partition at 5580000 {
++				label = "facenv";
++				reg = <0x5580000 0x200000>;
++			};
++
++			partition at 5780000 {
++				label = "RAE";
++				reg = <0x5780000 0x600000>;
++			};
++
++			partition at 5D80000 {
++				label = "POT";
++				reg = <0x5D80000 0x020000>;
++			};
++
++			partition at 5DA0000 {
++				label = "LOG";
++				reg = <0x5DA0000 0x040000>;
++			};
++
++		};
++	};
++};
++
++&xhci {
++	status = "disabled";
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&watchdog {
++	status = "okay";
++};
++
++&wifi {
++	status = "okay";
++	mediatek,mtd-eeprom = <&factory 0x0>;
++};
++
++&pcie {
++	status = "disabled";
++};
+diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds b/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
+index 7e4512f30f..785ddecffa 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
+@@ -115,6 +115,17 @@ netcore,n60-pro)
+ 	ucidef_set_led_netdev "wanact" "WANACT" "mdio-bus:06:green:wan" "eth1" "tx rx"
+ 	ucidef_set_led_netdev "wanlink" "WANLINK" "blue:wan" "eth1" "link"
+ 	;;
++netgear,eax17)
++	ucidef_set_led_default power_green "Power (green)" green:power 1
++	ucidef_set_led_default power_red   "Power (red)"   red:power   0
++	ucidef_set_led_default rlink_red   "Client (red)"  red:lan     0
++	ucidef_set_led_default clink_red   "Router (red)"  red:wan     0
++	ucidef_set_led_wps     wps_green   "WPS (green)"   green:wps
++	ucidef_set_led_netdev  lan_speed_fast  "LAN Link (green)"     green:status  eth0
++	uci -q set system.lan_speed_fast.mode='link'
++	ucidef_set_led_netdev  lan_speed_slow  "LAN Activity (yellow)" yellow:status eth0
++	uci -q set system.lan_speed_slow.mode='tx rx'
++	;;
+ netgear,wax220)
+ 	ucidef_set_led_netdev "eth0" "LAN" "green:lan" "eth0"
+ 	;;
+diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+index 95af3b04e3..c242397ca6 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+@@ -99,6 +99,13 @@ mediatek_setup_interfaces()
+ 	cudy,ap3000outdoor-v1|\
+ 	cudy,ap3000-v1|\
+ 	cudy,re3000-v1|\
++	netgear,eax17|\
++	netgear,eax11v3|\
++	netgear,eax15v3|\
++	netgear,eax14v3|\
++	netgear,eax12v2|\
++	netgear,eax16|\
++	netgear,eax19|\
+ 	netgear,wax220|\
+ 	openfi,6c|\
+ 	ubnt,unifi-6-plus|\
+@@ -212,6 +219,16 @@ mediatek_setup_macs()
+ 		label_mac=$(get_mac_binary "/tmp/tp_data/default-mac" 0)
+ 		lan_mac=$label_mac
+ 		;;
++	netgear,eax17|\
++	netgear,eax11v3|\
++	netgear,eax15v3|\
++	netgear,eax14v3|\
++	netgear,eax12v2|\
++	netgear,eax16|\
++	netgear,eax19)
++		lan_mac=$(grep -aoE '([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}' /dev/ubi0_0 | head -n1)
++		label_mac=$lan_mac
++		;;
+ 	netgear,wax220)
+ 		lan_mac=$(mtd_get_mac_ascii u-boot-env mac)
+ 		label_mac=$lan_mac
+diff --git a/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq b/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
+new file mode 100644
+index 0000000000..4fdab0ebb8
+--- /dev/null
++++ b/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
+@@ -0,0 +1,25 @@
++#!/bin/sh /etc/rc.common
++# SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++START=69
++USE_PROCD=1
++NAME=eax17-ledq
++start_service() {
++	procd_open_instance
++	procd_set_param command /bin/sh -c '
++GOOD=-60; OK=-75; BAD=-90
++on(){ echo 1 > "/sys/class/leds/$1/brightness"; }
++off(){ echo 0 > "/sys/class/leds/$1/brightness"; }
++set_color(){ g="green:$1"; r="red:$1"; case "$2" in off)off "$g";off "$r";; green)on "$g";off "$r";; amber)on "$g";on "$r";; red)off "$g";on "$r";; esac; }
++uplink_iface(){ iw dev 2>/dev/null | awk "/Interface/{i=\$2} /type managed/ {print i; exit}"; }
++best_client_dbm(){ for i in $(iw dev 2>/dev/null | awk "/Interface/{i=\$2} /type AP/ {print i}"); do iw dev "$i" station dump 2>/dev/null | awk "/signal:/ {print \$2}"; done | sort -nr | head -n1; }
++quality(){ v=$1; [ -z "$v" ] && { echo off; return; }; [ "$v" -ge "$GOOD" ] && { echo green; return; }; [ "$v" -ge "$OK" ] && { echo amber; return; }; [ "$v" -ge "$BAD" ] && { echo red; return; }; echo red; }
++while :; do
++  uplink_dbm=$(iw dev "$(uplink_iface)" link 2>/dev/null | awk "/signal:/ {print \$2}")
++  set_color wan "$(quality "$uplink_dbm")"
++  set_color lan "$(quality "$(best_client_dbm)")"
++  sleep 2
++done'
++	procd_set_param respawn 2000 1 0
++	procd_close_instance
++}
+diff --git a/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq b/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
+new file mode 100644
+index 0000000000..ba61b18f68
+--- /dev/null
++++ b/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
+@@ -0,0 +1,6 @@
++#!/bin/sh
++# SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++/etc/init.d/eax17-ledq enable
++/etc/init.d/eax17-ledq start
++exit 0
+diff --git a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+index 0e2e84c791..1e9d278c1e 100755
+--- a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
++++ b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+@@ -227,6 +227,17 @@ platform_do_upgrade() {
+ 		CI_ROOT_UBIPART=ubi
+ 		nand_do_upgrade "$1"
+ 		;;
++	netgear,eax17)
++		echo "UPGRADING SECOND SLOT"
++		CI_KERNPART="kernel2"
++		CI_ROOTPART="rootfs2"
++		nand_do_flash_file "$1" || nand_do_upgrade_failed
++		echo "UPGRADING PRIMARY SLOT"
++		CI_KERNPART="kernel"
++		CI_ROOTPART="rootfs"
++		nand_do_flash_file "$1" || nand_do_upgrade_failed
++		nand_do_upgrade_success
++		;;
+ 	*)
+ 		nand_do_upgrade "$1"
+ 		;;
+diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
+index 908c63ef66..5c8d306df8 100644
+--- a/target/linux/mediatek/image/filogic.mk
++++ b/target/linux/mediatek/image/filogic.mk
+@@ -1718,6 +1718,40 @@ define Device/netcore_n60-pro
+ endef
+ TARGET_DEVICES += netcore_n60-pro
+ 
++define Device/netgear_eax17
++  DEVICE_VENDOR := NETGEAR
++  DEVICE_MODEL := EAX17
++  DEVICE_ALT0_VENDOR := NETGEAR
++  DEVICE_ALT0_MODEL := EAX11
++  DEVICE_ALT0_VARIANT := v3
++  DEVICE_ALT1_VENDOR := NETGEAR
++  DEVICE_ALT1_MODEL := EAX15
++  DEVICE_ALT1_VARIANT := v3
++  DEVICE_ALT2_VENDOR := NETGEAR
++  DEVICE_ALT2_MODEL := EAX14
++  DEVICE_ALT2_VARIANT := v3
++  DEVICE_ALT3_VENDOR := NETGEAR
++  DEVICE_ALT3_MODEL := EAX12
++  DEVICE_ALT3_VARIANT := v2
++  DEVICE_ALT4_VENDOR := NETGEAR
++  DEVICE_ALT4_MODEL := EAX16
++  DEVICE_ALT5_VENDOR := NETGEAR
++  DEVICE_ALT5_MODEL := EAX19
++  DEVICE_DTS := mt7981b-netgear-eax17
++  DEVICE_DTS_DIR := ../dts
++  SUPPORTED_DEVICES += mediatek,mt7981-spim-snand-rfb
++  UBINIZE_OPTS := -E 5
++  BLOCKSIZE := 128k
++  PAGESIZE := 2048
++  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
++  KERNEL = kernel-bin | lzma | \
++	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-netgear-rootfs-node
++  KERNEL_IN_UBI := 1
++  IMAGE_SIZE := 81920k
++  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
++endef
++TARGET_DEVICES += netgear_eax17
++
+ define Device/netgear_wax220
+   DEVICE_VENDOR := NETGEAR
+   DEVICE_MODEL := WAX220
+-- 
+2.39.5
+
+
+
+From flizarthanon at gmail.com  Wed Oct 15 04:07:28 2025
+From: flizarthanon at gmail.com (Jascha Sundaresan)
+Date: Wed, 15 Oct 2025 15:07:28 +0400
+Subject: [PATCH v2] filogic: add support for Netgear EAX17
+Message-ID: <20251015110728.1919178-1-flizarthanon@gmail.com>
+
+Hardware
+--------
+
+SOC:   MediaTek MT7981
+RAM:   512MB DDR4
+FLASH: 128MB SPI-NAND
+WIFI:  Mediatek MT7915 (integrated) 2x2 802.11ax 2.4 / 5 GHz
+ETH:   Mediatek MT7981 internal 1 GbE PHY
+UART:  3V3 115200 8N1 (Pinout silkscreened / Do not connect VCC)
+
+Installation
+------------
+
+1. Download the OpenWrt initramfs image. Copy the image to a TFTP server
+2. Connect the TFTP server to the EAX17. Conect to the serial console,
+   interrupt the autoboot process by pressing '0' when prompted.
+3. Download & Boot the OpenWrt initramfs image.
+
+   $ tftpboot openwrt.bin
+   $ bootm
+
+4. Wait for OpenWrt to boot. Transfer the sysupgrade image to the device
+   using scp and install using sysupgrade.
+
+   $ sysupgrade -n <path-to-sysupgrade.bin>
+
+Signed-off-by: Jascha Sundaresan <flizarthanon at gmail.com>
+---
+ include/image-commands.mk                     |   1 +
+ scripts/mkits.sh                              |  32 ++-
+ .../mediatek/dts/mt7981b-netgear-eax17.dts    | 241 ++++++++++++++++++
+ .../filogic/base-files/etc/board.d/01_leds    |  11 +
+ .../filogic/base-files/etc/board.d/02_network |  17 ++
+ .../filogic/base-files/etc/init.d/eax17-ledq  |  26 ++
+ .../base-files/etc/uci-defaults/99-eax17-ledq |   6 +
+ .../base-files/lib/upgrade/platform.sh        |  11 +
+ target/linux/mediatek/image/filogic.mk        |  34 +++
+ 9 files changed, 378 insertions(+), 1 deletion(-)
+ create mode 100644 target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
+ create mode 100644 target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
+ create mode 100644 target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
+
+diff --git a/include/image-commands.mk b/include/image-commands.mk
+index 7b2b346aa6..b0c71909fc 100644
+--- a/include/image-commands.mk
++++ b/include/image-commands.mk
+@@ -439,6 +439,7 @@ define Build/fit
+ 				-d $(KERNEL_BUILD_DIR)/image-$$(basename $(word 2,$(1))), \
+ 				-d $(word 2,$(1)))) \
+ 		$(if $(findstring with-rootfs,$(word 3,$(1))),-r $(IMAGE_ROOTFS)) \
++		$(if $(findstring with-netgear-rootfs-node,$(word 3,$(1))),-R $(KERNEL_BUILD_DIR)/root.squashfs) \
+ 		$(if $(findstring with-initrd,$(word 3,$(1))), \
+ 			$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE), \
+ 				-i $(KERNEL_BUILD_DIR)/initrd$(if $(TARGET_PER_DEVICE_ROOTFS),.$(ROOTFS_ID/$(DEVICE_NAME))).cpio$(strip $(call Build/initrd_compression)))) \
+diff --git a/scripts/mkits.sh b/scripts/mkits.sh
+index 46ab5ee023..047034d5ab 100755
+--- a/scripts/mkits.sh
++++ b/scripts/mkits.sh
+@@ -31,6 +31,7 @@ usage() {
+ 	printf "\n\t-n ==> fdt unit-address 'address'"
+ 	printf "\n\t-d ==> include Device Tree Blob 'dtb'"
+ 	printf "\n\t-r ==> include RootFS blob 'rootfs'"
++	printf "\n\t-R ==> include Netgear style top level RootFS blob 'rootfs'"
+ 	printf "\n\t-H ==> specify hash algo instead of SHA1"
+ 	printf "\n\t-l ==> legacy mode character (@ etc otherwise -)"
+ 	printf "\n\t-o ==> create output file 'its_file'"
+@@ -49,7 +50,7 @@ LOADABLES=
+ DTOVERLAY=
+ DTADDR=
+ 
+-while getopts ":A:a:c:C:D:d:e:f:i:k:l:n:o:O:v:r:s:H:" OPTION
++while getopts ":A:a:c:C:D:d:e:f:i:k:l:n:o:O:v:r:R:s:H:" OPTION
+ do
+ 	case $OPTION in
+ 		A ) ARCH=$OPTARG;;
+@@ -67,6 +68,7 @@ do
+ 		o ) OUTPUT=$OPTARG;;
+ 		O ) DTOVERLAY="$DTOVERLAY ${OPTARG}";;
+ 		r ) ROOTFS=$OPTARG;;
++		R ) ROOTFS_FILE=$OPTARG;;
+ 		s ) FDTADDR=$OPTARG;;
+ 		H ) HASH=$OPTARG;;
+ 		v ) VERSION=$OPTARG;;
+@@ -156,6 +158,32 @@ if [ -n "${ROOTFS}" ]; then
+ 	LOADABLES="${LOADABLES:+$LOADABLES, }\"rootfs${REFERENCE_CHAR}${ROOTFSNUM}\""
+ fi
+ 
++if [ -f "${ROOTFS_FILE}" ]; then
++	ROOTFS_SIZE=$(stat -c %s ${ROOTFS_FILE})
++
++	ROOTFS_SHA1=$(
++	sha1sum "${ROOTFS_FILE}" | \
++	awk '{
++		print "<0x" substr($0, 1, 8) \
++		      " 0x" substr($0, 9, 8) \
++		      " 0x" substr($0, 17, 8) \
++		      " 0x" substr($0, 25, 8) \
++		      " 0x" substr($0, 33, 8) ">"
++		}'
++	)
++
++	TOP_LEVEL_ROOTFS="
++	rootfs {
++		size = <${ROOTFS_SIZE}>;
++
++		hash-1 {
++			value = ${ROOTFS_SHA1};
++			algo = \"sha1\";
++		};
++	};
++"
++fi
++
+ # add DT overlay blobs
+ FDTOVERLAY_NODE=""
+ OVCONFIGS=""
+@@ -222,6 +250,8 @@ ${FDTOVERLAY_NODE}
+ ${ROOTFS_NODE}
+ 	};
+ 
++${TOP_LEVEL_ROOTFS}
++
+ 	configurations {
+ 		default = \"${CONFIG}\";
+ 		${CONFIG} {
+diff --git a/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts b/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
+new file mode 100644
+index 0000000000..d33ccd13bf
+--- /dev/null
++++ b/target/linux/mediatek/dts/mt7981b-netgear-eax17.dts
+@@ -0,0 +1,241 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++/dts-v1/;
++#include "mt7981b.dtsi"
++
++/ {
++	model = "Netgear EAX17";
++	compatible = "netgear,eax17", "mediatek,mt7981-spim-snand-rfb";
++
++	aliases {
++		led-boot = &led_power_green;
++		led-failsafe = &led_power_red;
++		led-running = &led_power_green;
++		led-upgrade = &led_power_red;
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory at 40000000 {
++		reg = <0 0x40000000 0 0x20000000>;
++		device_type = "memory";
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
++		};
++
++		wps {
++			label = "wps";
++			linux,code = <KEY_WPS_BUTTON>;
++			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		led_power_green: power_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_POWER;
++			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
++		};
++
++		led_power_red: power_red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_POWER;
++			gpios = <&pio 12 GPIO_ACTIVE_LOW>;
++		};
++
++		led_rlink_red: rlink_red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_LAN;
++			gpios = <&pio 6 GPIO_ACTIVE_LOW>;
++		};
++
++		led_rlink_green: rlink_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_LAN;
++			gpios = <&pio 7 GPIO_ACTIVE_LOW>;
++		};
++
++		led_clink_red: clink_red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_WAN;
++			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
++		};
++
++		led_clink_green: clink_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_WAN;
++			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
++		};
++
++		led_wps_green: wps_green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_WPS;
++			gpios = <&pio 5 GPIO_ACTIVE_LOW>;
++		};
++
++		led_lan_speed_fast: lan_speed_fast {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 13 GPIO_ACTIVE_LOW>;
++		};
++
++		led_lan_speed_slow: lan_speed_slow {
++			color = <LED_COLOR_ID_YELLOW>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&pio 8 GPIO_ACTIVE_LOW>;
++		};
++
++	};
++
++};
++
++&eth {
++	status = "okay";
++
++	gmac0: mac at 0 {
++		compatible = "mediatek,eth-mac";
++		reg = <0>;
++		status = "disabled";
++	};
++
++	gmac1: mac at 1 {
++		compatible = "mediatek,eth-mac";
++		reg = <1>;
++		phy-mode = "gmii";
++		phy-handle = <&int_gbe_phy>;
++	};
++};
++
++
++&crypto {
++	status = "okay";
++};
++
++&pio {
++	spi_flash_pins: spi0-pins {
++		mux {
++			function = "spi";
++			groups = "spi0", "spi0_wp_hold";
++		};
++
++		conf-pu {
++			pins = "SPI0_CS", "SPI0_HOLD", "SPI0_WP";
++			drive-strength = <MTK_DRIVE_8mA>;
++			bias-pull-up = <MTK_PUPD_SET_R1R0_11>;
++		};
++
++		conf-pd {
++			pins = "SPI0_CLK", "SPI0_MOSI", "SPI0_MISO";
++			drive-strength = <MTK_DRIVE_8mA>;
++			bias-pull-down = <MTK_PUPD_SET_R1R0_11>;
++		};
++	};
++};
++
++&spi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi_flash_pins>;
++	status = "okay";
++
++	spi_nand_flash: flash at 0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "spi-nand";
++		reg = <0>;
++
++		spi-max-frequency = <20000000>;
++		spi-tx-bus-width = <4>;
++		spi-rx-bus-width = <4>;
++
++		partitions {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "fixed-partitions";
++
++			partition at 0 {
++				label = "bl2";
++				reg = <0x0 0x100000>;
++				read-only;
++			};
++
++			partition at 100000 {
++				label = "u-boot-env";
++				reg = <0x0100000 0x0080000>;
++			};
++
++			factory: partition at 180000 {
++				label = "factory";
++				reg = <0x180000 0x200000>;
++
++				eeprom_factory_0: eeprom at 0 {
++					reg = <0x0 0x1000>;
++				};
++			};
++
++			partition at 380000 {
++				label = "fip";
++				reg = <0x380000 0x0200000>;
++			};
++
++			partition at 580000 {
++				label = "ubi";
++				reg = <0x580000 0x5000000>;
++			};
++
++			partition at 5580000 {
++				label = "facenv";
++				reg = <0x5580000 0x200000>;
++			};
++
++			partition at 5780000 {
++				label = "rae";
++				reg = <0x5780000 0x600000>;
++			};
++
++			partition at 5D80000 {
++				label = "pot";
++				reg = <0x5D80000 0x020000>;
++			};
++
++			partition at 5DA0000 {
++				label = "log";
++				reg = <0x5DA0000 0x040000>;
++			};
++
++		};
++	};
++};
++
++&xhci {
++	status = "disabled";
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&watchdog {
++	status = "okay";
++};
++
++&wifi {
++	status = "okay";
++	nvmem-cells = <&eeprom_factory_0>;
++	nvmem-cell-names = "eeprom";
++};
++
++&pcie {
++	status = "disabled";
++};
+diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds b/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
+index 7e4512f30f..785ddecffa 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/01_leds
+@@ -115,6 +115,17 @@ netcore,n60-pro)
+ 	ucidef_set_led_netdev "wanact" "WANACT" "mdio-bus:06:green:wan" "eth1" "tx rx"
+ 	ucidef_set_led_netdev "wanlink" "WANLINK" "blue:wan" "eth1" "link"
+ 	;;
++netgear,eax17)
++	ucidef_set_led_default power_green "Power (green)" green:power 1
++	ucidef_set_led_default power_red   "Power (red)"   red:power   0
++	ucidef_set_led_default rlink_red   "Client (red)"  red:lan     0
++	ucidef_set_led_default clink_red   "Router (red)"  red:wan     0
++	ucidef_set_led_wps     wps_green   "WPS (green)"   green:wps
++	ucidef_set_led_netdev  lan_speed_fast  "LAN Link (green)"     green:status  eth0
++	uci -q set system.lan_speed_fast.mode='link'
++	ucidef_set_led_netdev  lan_speed_slow  "LAN Activity (yellow)" yellow:status eth0
++	uci -q set system.lan_speed_slow.mode='tx rx'
++	;;
+ netgear,wax220)
+ 	ucidef_set_led_netdev "eth0" "LAN" "green:lan" "eth0"
+ 	;;
+diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+index 95af3b04e3..c242397ca6 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+@@ -99,6 +99,13 @@ mediatek_setup_interfaces()
+ 	cudy,ap3000outdoor-v1|\
+ 	cudy,ap3000-v1|\
+ 	cudy,re3000-v1|\
++	netgear,eax17|\
++	netgear,eax11v3|\
++	netgear,eax15v3|\
++	netgear,eax14v3|\
++	netgear,eax12v2|\
++	netgear,eax16|\
++	netgear,eax19|\
+ 	netgear,wax220|\
+ 	openfi,6c|\
+ 	ubnt,unifi-6-plus|\
+@@ -212,6 +219,16 @@ mediatek_setup_macs()
+ 		label_mac=$(get_mac_binary "/tmp/tp_data/default-mac" 0)
+ 		lan_mac=$label_mac
+ 		;;
++	netgear,eax17|\
++	netgear,eax11v3|\
++	netgear,eax15v3|\
++	netgear,eax14v3|\
++	netgear,eax12v2|\
++	netgear,eax16|\
++	netgear,eax19)
++		lan_mac=$(grep -aoE '([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}' /dev/ubi0_0 | head -n1)
++		label_mac=$lan_mac
++		;;
+ 	netgear,wax220)
+ 		lan_mac=$(mtd_get_mac_ascii u-boot-env mac)
+ 		label_mac=$lan_mac
+diff --git a/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq b/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
+new file mode 100644
+index 0000000000..4fdab0ebb8
+--- /dev/null
++++ b/target/linux/mediatek/filogic/base-files/etc/init.d/eax17-ledq
+@@ -0,0 +1,26 @@
++#!/bin/sh /etc/rc.common
++# SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++START=69
++USE_PROCD=1
++NAME=eax17-ledq
++start_service() {
++	procd_open_instance
++	procd_set_param command /bin/sh -c '
++GOOD=-60; OK=-75; BAD=-90
++on(){ echo 1 > "/sys/class/leds/$1/brightness"; }
++off(){ echo 0 > "/sys/class/leds/$1/brightness"; }
++set_color(){ g="green:$1"; r="red:$1"; case "$2" in off)off "$g";off "$r";; green)on "$g";off "$r";; amber)on "$g";on "$r";; red)off "$g";on "$r";; esac; }
++uplink_iface(){ iw dev 2>/dev/null | awk "/Interface/{i=\$2} /type managed/ {print i; exit}"; }
++best_client_dbm(){ for i in $(iw dev 2>/dev/null | awk "/Interface/{i=\$2} /type AP/ {print i}"); do iw dev "$i" station dump 2>/dev/null | awk "/signal:/ {print \$2}"; done | sort -nr | head -n1; }
++quality(){ v=$1; [ -z "$v" ] && { echo off; return; }; [ "$v" -ge "$GOOD" ] && { echo green; return; }; [ "$v" -ge "$OK" ] && { echo amber; return; }; [ "$v" -ge "$BAD" ] && { echo red; return; }; echo red; }
++while :; do
++  uplink_dbm=$(iw dev "$(uplink_iface)" link 2>/dev/null | awk "/signal:/ {print \$2}")
++  set_color wan "$(quality "$uplink_dbm")"
++  set_color lan "$(quality "$(best_client_dbm)")"
++  sleep 2
++done'
++	procd_set_param respawn 2000 1 0
++	procd_close_instance
++}
++
+diff --git a/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq b/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
+new file mode 100644
+index 0000000000..ba61b18f68
+--- /dev/null
++++ b/target/linux/mediatek/filogic/base-files/etc/uci-defaults/99-eax17-ledq
+@@ -0,0 +1,6 @@
++#!/bin/sh
++# SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++/etc/init.d/eax17-ledq enable
++/etc/init.d/eax17-ledq start
++exit 0
+diff --git a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+index 0e2e84c791..1e9d278c1e 100755
+--- a/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
++++ b/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh
+@@ -227,6 +227,17 @@ platform_do_upgrade() {
+ 		CI_ROOT_UBIPART=ubi
+ 		nand_do_upgrade "$1"
+ 		;;
++	netgear,eax17)
++		echo "UPGRADING SECOND SLOT"
++		CI_KERNPART="kernel2"
++		CI_ROOTPART="rootfs2"
++		nand_do_flash_file "$1" || nand_do_upgrade_failed
++		echo "UPGRADING PRIMARY SLOT"
++		CI_KERNPART="kernel"
++		CI_ROOTPART="rootfs"
++		nand_do_flash_file "$1" || nand_do_upgrade_failed
++		nand_do_upgrade_success
++		;;
+ 	*)
+ 		nand_do_upgrade "$1"
+ 		;;
+diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
+index 908c63ef66..5c8d306df8 100644
+--- a/target/linux/mediatek/image/filogic.mk
++++ b/target/linux/mediatek/image/filogic.mk
+@@ -1718,6 +1718,40 @@ define Device/netcore_n60-pro
+ endef
+ TARGET_DEVICES += netcore_n60-pro
+ 
++define Device/netgear_eax17
++  DEVICE_VENDOR := NETGEAR
++  DEVICE_MODEL := EAX17
++  DEVICE_ALT0_VENDOR := NETGEAR
++  DEVICE_ALT0_MODEL := EAX11
++  DEVICE_ALT0_VARIANT := v3
++  DEVICE_ALT1_VENDOR := NETGEAR
++  DEVICE_ALT1_MODEL := EAX15
++  DEVICE_ALT1_VARIANT := v3
++  DEVICE_ALT2_VENDOR := NETGEAR
++  DEVICE_ALT2_MODEL := EAX14
++  DEVICE_ALT2_VARIANT := v3
++  DEVICE_ALT3_VENDOR := NETGEAR
++  DEVICE_ALT3_MODEL := EAX12
++  DEVICE_ALT3_VARIANT := v2
++  DEVICE_ALT4_VENDOR := NETGEAR
++  DEVICE_ALT4_MODEL := EAX16
++  DEVICE_ALT5_VENDOR := NETGEAR
++  DEVICE_ALT5_MODEL := EAX19
++  DEVICE_DTS := mt7981b-netgear-eax17
++  DEVICE_DTS_DIR := ../dts
++  SUPPORTED_DEVICES += mediatek,mt7981-spim-snand-rfb
++  UBINIZE_OPTS := -E 5
++  BLOCKSIZE := 128k
++  PAGESIZE := 2048
++  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
++  KERNEL = kernel-bin | lzma | \
++	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-netgear-rootfs-node
++  KERNEL_IN_UBI := 1
++  IMAGE_SIZE := 81920k
++  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
++endef
++TARGET_DEVICES += netgear_eax17
++
+ define Device/netgear_wax220
+   DEVICE_VENDOR := NETGEAR
+   DEVICE_MODEL := WAX220
+-- 
+2.39.5
+
+
+
+From Alexanne.Sapson at constructlab.expertmoldmakers.com  Wed Oct 15 17:41:09 2025
+From: Alexanne.Sapson at constructlab.expertmoldmakers.com (Alexanne.Sapson)
+Date: Thu, 16 Oct 2025 08:41:09 +0800
+Subject: Transform Innovation with Precision Molding Expertise
+Message-ID: <mailman.1.1760575276.2093106.openwrt-devel@lists.openwrt.org>
+
+Greetings openwrt-devel,
+Since its establishment in 2006, Shenzhen CNM has specialized in rapid prototyping of hand-board models and the production of high-precision non-standard parts, catering to both small-scale and large-scale orders.
+
+Our core business areas include:
+1.Main business scope includes: CNC prototype modeling, industrial product design.
+2.Materials used: ABS, POM, PC, PA6, PA66, PMMA, aluminum alloy, iron, steel, electric wood, EVA, etc.
+3.Products that can be undertaken: automotive accessories, smart home products, robots, electronic shell prototypes, medical equipment prototypes.
+4.Vacuum molding: Small batch replication, materials include: ABS, PU, PVC, silicone, transparent ABS, etc.
+
+With a comprehensive array of more than 100 sets of large precision CNC machine tools and advanced testing equipment including the Wanhao secondary yuan, Hexagon three yuan, TESA height meter, Mitutoyo roughness meter, and Aiseki colorimeter, we are dedicated to maintaining exceptional product quality.
+
+I appreciate your consideration of this opportunity. I look forward to the chance to collaborate. 
+
+Here's to a bright and beautiful future!
+Tel : +86 18565792083
+ATTN: Bill Liu
+
+From philipp_subx at redfish-solutions.com  Sun Oct 19 12:35:29 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 19 Oct 2025 13:35:29 -0600
+Subject: Meson expert needed for Kea packaging...
+Message-ID: <EB330AC1-4365-421D-8C1E-741D43D95C1B@redfish-solutions.com>
+
+Hi all,
+
+The latest versions of Kea fail to build for OpenWRT because, even though it?s explicitly flagged as a cross-build, it attempts to run the test suite anyway.
+
+Anyone able to look at this and maybe come up with a patch for upstream to fix it?
+
+Thanks,
+
+-Philip
+
+
+
+From ansuelsmth at gmail.com  Sun Oct 19 12:49:39 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Sun, 19 Oct 2025 21:49:39 +0200
+Subject: Meson expert needed for Kea packaging...
+In-Reply-To: <mailman.15466.1760902550.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.15466.1760902550.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <CA+_ehUxTziAs02TzfRKWBhgWudmoXYe9vW+uE7zTezSURm4LHg@mail.gmail.com>
+
+Il giorno dom 19 ott 2025 alle ore 21:37 Philip Prindeville via
+openwrt-devel <openwrt-devel at lists.openwrt.org> ha scritto:
+>
+> The sender domain has a DMARC Reject/Quarantine policy which disallows
+> sending mailing list messages using the original "From" header.
+>
+> To mitigate this problem, the original message has been wrapped
+> automatically by the mailing list software.
+>
+>
+> ---------- Forwarded message ----------
+> From: Philip Prindeville <philipp_subx at redfish-solutions.com>
+> To: openwrt-devel <openwrt-devel at lists.openwrt.org>
+> Cc:
+> Bcc:
+> Date: Sun, 19 Oct 2025 13:35:29 -0600
+> Subject: Meson expert needed for Kea packaging...
+> Hi all,
+>
+> The latest versions of Kea fail to build for OpenWRT because, even though it?s explicitly flagged as a cross-build, it attempts to run the test suite anyway.
+>
+> Anyone able to look at this and maybe come up with a patch for upstream to fix it?
+>
+
+Hi,
+I recently applied some patch for Meson... Is this a regression or you
+are trying to update it
+and with the new version there is this compilation error?
+
+If it's something for the new version, meson provide an API to
+understand if it's possible
+to run the test suite on the machine... Can you link an issue on
+github for this?
+
+
+From philipp_subx at redfish-solutions.com  Sun Oct 19 15:09:21 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 19 Oct 2025 16:09:21 -0600
+Subject: Meson expert needed for Kea packaging...
+In-Reply-To: <CA+_ehUxTziAs02TzfRKWBhgWudmoXYe9vW+uE7zTezSURm4LHg@mail.gmail.com>
+References: <mailman.15466.1760902550.2093109.openwrt-devel@lists.openwrt.org>
+ <CA+_ehUxTziAs02TzfRKWBhgWudmoXYe9vW+uE7zTezSURm4LHg@mail.gmail.com>
+Message-ID: <BD20689F-AEF2-437C-B34F-1C5E396CF3F8@redfish-solutions.com>
+
+
+
+> On Oct 19, 2025, at 1:49?PM, Christian Marangi (Ansuel) <ansuelsmth at gmail.com> wrote:
+> 
+> Il giorno dom 19 ott 2025 alle ore 21:37 Philip Prindeville via
+> openwrt-devel <openwrt-devel at lists.openwrt.org> ha scritto:
+>> 
+>> The sender domain has a DMARC Reject/Quarantine policy which disallows
+>> sending mailing list messages using the original "From" header.
+>> 
+>> To mitigate this problem, the original message has been wrapped
+>> automatically by the mailing list software.
+>> 
+>> 
+>> ---------- Forwarded message ----------
+>> From: Philip Prindeville <philipp_subx at redfish-solutions.com>
+>> To: openwrt-devel <openwrt-devel at lists.openwrt.org>
+>> Cc:
+>> Bcc:
+>> Date: Sun, 19 Oct 2025 13:35:29 -0600
+>> Subject: Meson expert needed for Kea packaging...
+>> Hi all,
+>> 
+>> The latest versions of Kea fail to build for OpenWRT because, even though it?s explicitly flagged as a cross-build, it attempts to run the test suite anyway.
+>> 
+>> Anyone able to look at this and maybe come up with a patch for upstream to fix it?
+>> 
+> 
+> Hi,
+> I recently applied some patch for Meson... Is this a regression or you
+> are trying to update it
+> and with the new version there is this compilation error?
+> 
+> If it's something for the new version, meson provide an API to
+> understand if it's possible
+> to run the test suite on the machine... Can you link an issue on
+> github for this?
+
+
+In 2.6.4 (where we are now) it used Makefiles and we patched the Makefiles to not run the tests.
+
+3.x moves to Meson, so the patch is no longer useful.  But we need an analogous patch to fix this:
+
+Run-time dependency GTest found: NO (tried pkgconfig and system)
+Looking for a fallback subproject for the dependency gtest
+Downloading gtest source from https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz
+Download size: 872667
+Downloading: ..........
+Downloading gtest patch from https://wrapdb.mesonbuild.com/v2/gtest_1.15.2-4/get_patch
+Download size: 2817
+Downloading: ..........
+
+Executing subproject gtest  
+gtest| Project name: gtest
+gtest| Project version: 1.15.2
+gtest| C++ compiler for the host machine: x86_64-openwrt-linux-musl-g++ (gcc 14.3.0 "x86_64-openwrt-linux-musl-g++ (OpenWrt GCC 14.3.0 r30067-69dce4f298) 14.3.0")
+gtest| C++ linker for the host machine: x86_64-openwrt-linux-musl-g++ ld.bfd 2.42
+gtest| C++ compiler for the build machine: /home/philipp/lede/staging_dir/host/bin/g++ (gcc 13.3.0 "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0")
+gtest| C++ linker for the build machine: /home/philipp/lede/staging_dir/host/bin/g++ ld.bfd 2.42
+gtest| Dependency threads found: YES unknown (cached)
+gtest| Build targets in project: 8
+gtest| Subproject gtest finished.
+
+Dependency gtest from subproject subprojects/googletest-1.15.2 found: YES 1.15.2
+Has header "boost/asio/ssl.hpp" with dependency boost: YES  Message: Using OpenSSL.
+Program python3 found: YES (/home/philipp/lede/staging_dir/host/bin/python3)
+
+../../../../build_dir/target-x86_64_musl/kea-3.1.2/meson.build:371:13: ERROR: Can not run test applications in this cross environment.
+
+A full log can be found at /home/philipp/lede/build_dir/target-x86_64_musl/kea-3.1.2/openwrt-build/meson-logs/meson-log.txt
+make[2]: *** [Makefile:294: /home/philipp/lede/build_dir/target-x86_64_musl/kea-3.1.2/.configured_68b329da9893e34099c7d8ad5cb9c940] Error 1
+make[2]: Leaving directory '/home/philipp/lede/feeds/packages/net/kea'
+time: package/feeds/packages/kea/compile#3.18#0.64#5.50
+    ERROR: package/feeds/packages/kea failed to build.
+make[1]: *** [package/Makefile:183: package/feeds/packages/kea/compile] Error 1
+make[1]: Leaving directory '/home/philipp/lede'
+make: *** [/home/philipp/lede/include/toplevel.mk:233: package/kea/compile] Error 2
+make: Leaving directory '/home/philipp/lede?
+
+
+Looking at the files:
+
+https://github.com/isc-projects/kea/blob/master/meson.build#L105
+
+https://github.com/isc-projects/kea/blob/master/meson.build#L304-L309
+
+https://github.com/isc-projects/kea/blob/master/meson.build#L371-L379
+
+https://github.com/isc-projects/kea/blob/master/meson.build#L919-L923
+
+https://github.com/isc-projects/kea/blob/master/src/lib/config_backend/tests/meson.build#L1-L3
+
+it?s not clear to me why it?s trying to run the tests.
+
+
+
+
+
+From noreply at github.com  Sun Oct 19 19:48:39 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 19 Oct 2025 19:48:39 -0700
+Subject: [sdwalker/sdwalker.github.io] fcf28a: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/c97ae7-fcf28a@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: fcf28a62d7f9d5c1ec8bf7570e0649b3a0d95270
+      https://github.com/sdwalker/sdwalker.github.io/commit/fcf28a62d7f9d5c1ec8bf7570e0649b3a0d95270
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-10-19 (Sun, 19 Oct 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From hauke at hauke-m.de  Tue Oct 21 16:43:27 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Wed, 22 Oct 2025 01:43:27 +0200
+Subject: OpenWrt 24.10.4 - Service Release
+Message-ID: <bdf5144c-37ae-4e54-900e-69f20d77ecfe@hauke-m.de>
+
+Hi,
+
+The OpenWrt community is proud to announce the newest stable release of 
+the OpenWrt 24.10 stable series.
+
+Download firmware images using the OpenWrt Firmware Selector:
+   * https://firmware-selector.openwrt.org?version=24.10.4
+
+Download firmware images directly from our download servers:
+   * https://downloads.openwrt.org/releases/24.10.4/targets/
+
+
+Main changes between OpenWrt 24.10.3 and OpenWrt 24.10.4
+========================================================
+
+Security fixes
+==============
+
+   * CVE-2025-62525: ltq-ptm: local privilege escalation
+     https://openwrt.org/advisory/2025-10-22-2
+   * CVE-2025-62526: ubusd: heap buffer overflow
+     https://openwrt.org/advisory/2025-10-22-1
+
+
+Device support
+==============
+
+   * Added new devices:
+     * ramips: Qding QC202
+     * ramips: Zbtlink ZBT-WG108
+   * ath79: TP-Link Archer C59 v1: Fix 5 GHz Wifi
+   * ath79: TP-Link Archer C60 v1: Fix 5 GHz Wifi
+   * ipq40xx: Linksys WHW01: Improve MAC address and LED configuration
+   * mediatek: filogic: GL.iNet GL-MT2500/GL-MT2500A: Add support for
+     new hardware revision
+   * mpc85xx: Aerohive BR200-WP: Fix flash usage
+   * qualcommax: ipq807x: Linksys MX4200/MX4300/MX5300/MX8500: Improve
+     upgrade stability
+   * ramips: Hongdian H7920: Fix pin configuration and MAC addresses
+
+
+Various fixes and improvements
+==============================
+
+   * mac80211: ath10k: improve "failed to flush transmit queue" errors
+   * rockchip: rk3399: Fix PCIe
+   * kernel: ksmbd: Fix SMB access from Linux clients
+   * bcm53xx: Fix bootup of devices
+
+
+Core components update
+======================
+
+   * Linux kernel: update from 6.6.104 to 6.6.110
+   * mac80211: update from 6.12.44 to 6.12.52
+   * odhcpd: update from 2024-05-08 to 2025-10-02
+   * ubus: update from 2025-07-02 to 2025-10-17
+   * mbedtls: update from 3.6.4 to 3.6.5
+   * openssl: update from 3.0.17 to 3.0.18
+
+
+Upgrading to 24.10
+==================
+
+Sysupgrade can be used to upgrade a device from 23.05 to 24.10, and 
+configuration will be preserved in most cases.
+
+For for upgrades inside the OpenWrt 24.10 stable series for example from 
+a OpenWrt 24.10 release candidate [Attended 
+Sysupgrade](https://openwrt.org/docs/guide-user/installation/attended.sysupgrade) 
+is supported in addition which allows preserving the installed packages too.
+
+  * Sysupgrade from 22.03 to 24.10 is not officially supported.
+
+  * There is no configuration migration path for users of the ipq806x
+    target for Qualcomm Atheros IPQ806X SoCs because it switched to DSA.
+    You have to upgrade without saving the configuration.
+
+  * User of the Linksys E8450 aka. Belkin RT3200 running OpenWrt 23.05 or
+    earlier will need to run installer version v1.1.3 or later in order
+    to reorganize the UBI layout for the 24.10 release. A detailed
+    description is in the OpenWrt wiki. Updating without using the
+    installer will break the device. Sysupgrade will show a warning
+    before doing an incompatible upgrade.
+    https://github.com/dangowrt/owrt-ubi-installer/releases/tag/v1.1.3
+
+https://openwrt.org/toh/linksys/e8450#upgrading_an_ubi_installation_to_new_releases_after_2024-02_includes_all_snapshots_2410-snapshots_24100-rcx_releases_and_all_releases_in_the_foreseable_future
+
+  * Users of the Xiaomi AX3200 aka. Redmi AX6S running OpenWrt 23.05 or
+    earlier have to follow a special upgrade procedure described in the
+    wiki. This will increase the flash memory available for OpenWrt.
+    Updating without following the guide in the wiki break the device.
+    Sysupgrade will show a warning before doing an incompatible upgrade.
+
+https://openwrt.org/toh/xiaomi/ax3200#upgrading_from_2305_and_earlier_to_upcoming_2410_or_snapshot
+
+  * Users of Zyxel GS1900 series switches running OpenWrt 23.05 or
+    earlier have to perform a new factory install with the initramfs
+    image due to a changed partition layout. Sysupgrade will show a
+    warning before doing an incompatible upgrade and is not possible.
+
+Known issues
+===========
+
+   * **LEDs for Airoha AN8855 are not yet supported.** Devices like the
+     Xiaomi AX3000T with an Airoha switch will have their switch LEDs
+     powered off. This issue will be addressed in an upcoming OpenWrt
+     SNAPSHOT and the OpenWrt 24.10 minor release.
+   * **5GHz WiFi is non-functional on certain devices with ath10k
+     chipsets.** Affected models include the Phicomm K2T,
+     TP-Link Archer C60 v2, TP-Link Archer C60 v3 and possibly others.
+     https://github.com/openwrt/openwrt/issues/14541
+
+-----------------
+
+Full release notes and upgrade instructions are available at
+  https://openwrt.org/releases/24.10/notes-24.10.4
+
+In particular, make sure to read the regressions and known issues before 
+upgrading:
+  https://openwrt.org/releases/24.10/notes-24.10.4#known_issues
+
+For a detailed list of all changes since 24.10.3, refer to
+  https://openwrt.org/releases/24.10/changelog-24.10.4
+
+To download the 24.10.4 images, navigate to:
+  https://downloads.openwrt.org/releases/24.10.4/targets/
+
+Use OpenWrt Firmware Selector to download:
+  https://firmware-selector.openwrt.org?version=24.10.4
+
+As always, a big thank you goes to all our active package maintainers, 
+testers, documenters and supporters.
+
+Have fun!
+
+The OpenWrt Community
+
+---
+
+To stay informed of new OpenWrt releases and security advisories, there
+are new channels available:
+
+   * a low-volume mailing list for important announcements:
+https://lists.openwrt.org/mailman/listinfo/openwrt-announce
+
+   * a dedicated "announcements" section in the forum:
+https://forum.openwrt.org/c/announcements/14
+
+   * other announcement channels (such as RSS feeds) might be added in
+     the future, they will be listed at https://openwrt.org/contact
+
+
+From openwrt at jonaslochmann.de  Sat Oct 25 04:27:31 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sat, 25 Oct 2025 13:27:31 +0200
+Subject: odhcp6c: "safe" parameter causes keeping invalid prefixes valid
+Message-ID: <wljpgaq5bdidkknitfd2dkkkgjhplpfkpmolfdb76bmpvbswcp@qkspk23uqvmb>
+
+I am operating OpenWrt routers with mwan3 and also know other people
+that do this. A longstanding issue is that IPv6 allows deprecated
+rules and mwan3 uses them and then has connectivity issues.
+
+However, deprecated routes should still work. So I suspected an issue
+in the upstream routers (issue was always with IPv6 RA with
+Fritz! routers, but never when OpenWrt itself did PPPoE). A packet
+capture showed that what OpenWrt considerd valid but deprecated was
+sent as invalid (valid lifetime = zero) from the uplink.
+
+odhcp6c handles RA prefixes here [1] by calling odhcp6c_update_entry;
+the third parameter (called "safe") is hardcoded as 7200 (2 hours).
+In its implementation, something strange is done using it [2]:
+
+803         if (x && x->valid > new->valid && new->valid < safe)
+804                 new->valid = safe;
+
+Note: x is the previous data for that prefix.
+
+If new->valid is zero, then it is very likely smaller than x->valid and
+at the same time smaller than safe (2 hours). In this case, valid = 0
+is replaced with valid = 2 hours. As the next RA is received within
+two hours, it is again extended to the full two hours.
+
+RFC 4861 recommends another behavior:
+
+> If the prefix is already present in the host's Prefix List as
+> the result of a previously received advertisement, reset its
+> invalidation timer to the Valid Lifetime value in the Prefix
+> Information option.  If the new Lifetime value is zero, time-out
+> the prefix immediately (see Section 6.3.5).
+
+Now, one could add valid = zero as special case. However, I see an
+bigger issue. I suspect that the whole if statement has a logic error
+and something else was intended. Maybe clamping valid to up to two
+hours?
+
+[1] https://git.openwrt.org/?p=project/odhcp6c.git;a=blob;f=src/ra.c;h=01a8b721d719f0e0e545a3ca7471c47490597969;hb=77e1ae21e67f81840024ffe5bb7cf69a8fb0d2f0#l511
+[2] https://git.openwrt.org/?p=project/odhcp6c.git;a=blob;f=src/odhcp6c.c;h=8354820746131b8d0c9d01f7141af635edc0b8fe;hb=77e1ae21e67f81840024ffe5bb7cf69a8fb0d2f0#l803
+
+
+From openwrt at jonaslochmann.de  Sun Oct 26 01:03:05 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sun, 26 Oct 2025 09:03:05 +0100
+Subject: [PATCH] fw4: add masquerade-prefix snat type
+In-Reply-To: <20250112131635.8660-1-openwrt@jonaslochmann.de>
+References: <20250112131635.8660-1-openwrt@jonaslochmann.de>
+Message-ID: <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+
+I want to continue this topic. For those who don't remember a short summary:
+
+- this is for use in combination with mwan3 to keep individual addresses
+  for the internal devices with IPv6
+- this is NOT NPTv6 and NPTv6 would not work; devices know their public
+  IPs and a stateless aproach never knows if a particular reply packet
+  must be rewritten and to which prefix it must be rewritten (the hosts
+  in the internal network have IPs (plural) and could have used any of
+  them to start the outbound connection)
+- the problem is so specific that there is no standard for it;
+  I had a conversation with the IPv6 WG about it [1]
+- NAT with IPv6 seems to be a political issue in standards [2]
+- the "normal" IPv6 NAT is not standardized either (as far as I know)
+
+[1] https://mailman.ripe.net/archives/list/ipv6-wg at ripe.net/thread/HQRLNKT7O6H7CIO4QVBNNOKWOOLTU5DQ/
+[2] https://mailman.ripe.net/archives/list/ipv6-wg at ripe.net/thread/HQRLNKT7O6H7CIO4QVBNNOKWOOLTU5DQ/#OGDOKF4LR6GHOJK4L3X4V2DLUK2A27BV
+
+Am Sun, Jan 12, 2025 at 02:16:35PM +0100, schrieb Jonas Lochmann:
+> OpenWrt supports requesting IPv6 network prefixes using DHCP. However,
+> the existing masquerade option delegates the rewriting to nftables that
+> knows the ip address used by the router itself but not the prefixes that
+> are only known by netifd and OpenWrt services that use its data.
+> 
+> The masquerade-prefix does the following:
+> 
+> - keep the source address for IPv6 link local addresses
+> - keep the source address for IPs that are assigned to the interface
+> - keep the source address if they belong to an assigned IPv6 prefix
+> - otherwise rewrite the prefix to the shortest assigned prefix
+> - if there is no assigned prefix: use the regular masquerade
+> 
+> This is useful when devices in the network use a private source address
+> or a public source address that belongs to another network/uplink. In
+> simple scenarios, addresses from the current uplink prefix are used by all
+> devices. This stops working if there are multiple uplinks and the
+> (OpenWrt) router selects the uplink, e.g. with the help of the mwan3
+> package. While the traditional masquerade could be used in scenarios like
+> this, all devices would use the same outgoing IP address in case of
+> rewriting. Individual snat rules could be used only if all devices are
+> known when creating the configuration and the assigned prefix is static.
+> 
+> Currently, there are workarounds described in the wiki [1]. They all share
+> the limitation that they are not well integrated into the firewall. That
+> is, they are just hooks that are called whenever the firewall configuration
+> was replaced. Due to that, they do not benefit from the atomic
+> configuration updates that nftables provides - there is always a short
+> moment after updating the configuration during that this rules do not take
+> effect. My previous own solution [2] used other hooks (technically not
+> necassary) and uses an own nftables table so that it is unaffected
+> whenever firewall4 sends its new configuration to nftables. This is poorly
+> integrated with firewall4 and to disable it users need to remove the files
+> and know nftables well enough (or reboot the device) to stop the effect.
+> 
+> Another limitation of the approaches from the wiki is that they use
+> "snat ip6 prefix to ip6 saddr". "The optional prefix keyword allows to
+> map to map n source addresses to n destination addresses." [3]. Altough
+> not clearly stated, it looks like this needs original and rewritten
+> prefixes of the same size. Moreover, this requires determining the
+> possible original source IPs while the suggested implementation does
+> not need to handle them at all.
+> 
+> [1] https://openwrt.org/docs/guide-user/firewall/fw3_configurations/
+>     fw3_nat?rev=1736642299#ipv6_npt
+> [2] https://forum.openwrt.org/t/multiwan-with-ipv6/136965/12
+> [3] https://www.netfilter.org/projects/nftables/manpage.html
+> 
+> Signed-off-by: Jonas Lochmann <openwrt at jonaslochmann.de>
+> ---
+>  root/usr/share/ucode/fw4.uc | 148 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 143 insertions(+), 5 deletions(-)
+> 
+> diff --git a/root/usr/share/ucode/fw4.uc b/root/usr/share/ucode/fw4.uc
+> index 2d77146..0c1cd78 100644
+> --- a/root/usr/share/ucode/fw4.uc
+> +++ b/root/usr/share/ucode/fw4.uc
+> @@ -192,7 +192,7 @@ const dscp_classes = {
+>  	"EF": 0x2e
+>  };
+>  
+> -function to_mask(bits, v6) {
+> +function to_mask_raw(bits, v6) {
+>  	let m = [], n = false;
+>  
+>  	if (bits < 0) {
+> @@ -209,7 +209,19 @@ function to_mask(bits, v6) {
+>  		bits -= b;
+>  	}
+>  
+> -	return arrtoip(m);
+> +	return m;
+> +}
+> +
+> +function to_mask(bits, v6) {
+> +	return arrtoip(to_mask_raw(bits, v6));
+> +}
+> +
+> +function to_inverse_mask(bits, v6) {
+> +	let mask = to_mask_raw(bits, v6);
+> +
+> +	mask = map(mask, (v) => v ^ 0xff);
+> +
+> +	return arrtoip(mask);
+>  }
+>  
+>  function to_bits(mask) {
+> @@ -658,6 +670,16 @@ return {
+>  					}
+>  				}
+>  
+> +				if (type(ifc["ipv6-prefix"]) == "array") {
+> +					for (let prefix in ifc["ipv6-prefix"]) {
+> +						push(net.ip6prefixes ||= [], {
+> +							addr: prefix.address,
+> +							mask: to_mask(prefix.mask, true),
+> +							bits: prefix.mask
+> +						});
+> +					}
+> +				}
+> +
+>  				if (type(ifc.data?.firewall) == "array") {
+>  					let n = 0;
+>  
+> @@ -1475,6 +1497,7 @@ return {
+>  			"dnat",
+>  			"snat",
+>  			"masquerade",
+> +			"masquerade-prefix",
+>  			"accept",
+>  			"reject",
+>  			"drop"
+> @@ -3071,7 +3094,7 @@ return {
+>  			return;
+>  		}
+>  
+> -		if (!(snat.target in ["accept", "snat", "masquerade"])) {
+> +		if (!(snat.target in ["accept", "snat", "masquerade", "masquerade-prefix"])) {
+>  			this.warn_section(data, "has invalid target specified, defaulting to masquerade");
+>  			snat.target = "masquerade";
+>  		}
+> @@ -3108,6 +3131,121 @@ return {
+>  			delete snat.log;
+>  		}
+>  
+> +		let add_rule_3 = (n) => {
+> +			push(this.state.redirects ||= [], n);
+> +		};
+> +
+> +		let add_rule_2 = (n) => {
+> +			if (n.target == "masquerade-prefix") {
+> +				let output_device_filter = null;
+> +
+> +				if (type(n.device) == "string") {
+> +					output_device_filter = [n.device];
+> +				} else if (n.src != null && !n.src.any) {
+> +					// avoid creating rules for interfaces in other zones
+> +					let zone = n.src.zone;
+> +
+> +					let simple = true;
+> +
+> +					simple &= zone.device == null || length(zone.device) == 0;
+> +					simple &= zone.subnet == null || length(zone.subnet) == 0;
+> +
+> +					if (simple) {
+> +						output_device_filter = zone.related_physdevs;
+> +					}
+> +				}
+> +
+> +				// accept (do nothing) for link local addresses
+> +				// otherwise, we will get DHCP issues and thus no prefix
+> +				if (n.family == 6) {
+> +					let saddrs_masked = slice(n.saddrs_masked || []);
+> +
+> +					push(saddrs_masked, {
+> +						addr: 'fe80::',
+> +						mask: to_mask(10, true),
+> +						invert: false
+> +					});
+> +
+> +					add_rule_3({
+> +						...n,
+> +						saddrs_masked: saddrs_masked,
+> +						target: "accept"
+> +					});
+> +				}
+> +
+> +				for (let name, net in this.state.networks) {
+> +					if (output_device_filter == null || index(output_device_filter, net.device) != -1) {
+> +						// accept (do nothing) if the src ip is ok
+> +						for (let addr in net.ipaddrs) {
+> +							if (addr.family == n.family) {
+> +								let saddrs_masked = slice(n.saddrs_masked || []);
+> +
+> +								push(saddrs_masked, {
+> +									addr: addr.addr,
+> +									// only permit the single ip itself
+> +									mask: n.family == 4 ? to_mask(32, false) : to_mask(128, true),
+> +									invert: false
+> +								});
+> +
+> +								add_rule_3({
+> +									...n,
+> +									device: net.device,
+> +									saddrs_masked: saddrs_masked,
+> +									target: "accept"
+> +								});
+> +							}
+> +						}
+> +
+> +						if (n.family == 6) {
+> +							// accept (do nothing) if the src ip belongs to a prefix
+> +							for (let prefix in net.ip6prefixes) {
+> +								let saddrs_masked = slice(n.saddrs_masked || []);
+> +
+> +								push(saddrs_masked, {
+> +									addr: prefix.addr,
+> +									mask: prefix.mask,
+> +									invert: false
+> +								});
+> +
+> +								add_rule_3({
+> +									...n,
+> +									device: net.device,
+> +									saddrs_masked: saddrs_masked,
+> +									target: "accept"
+> +								});
+> +							}
+> +
+> +							// otherwise rewrite the src ip
+> +							let best_prefix = null;
+> +
+> +							for (let prefix in net.ip6prefixes) {
+> +								if (best_prefix == null || best_prefix.bits > prefix.bits)
+> +									best_prefix = prefix;
+> +							}
+> +
+> +							// if there is no prefix, then the masquerade fallback will resolve this
+> +							if (best_prefix != null) {
+> +								let base_addr = apply_mask(best_prefix.addr, best_prefix.mask);
+> +								let suffix_mask = to_inverse_mask(best_prefix.bits, true);
+> +								let target = "snat ip6 to ip6 saddr and " + suffix_mask + " or " + base_addr;
+> +
+> +								add_rule_3({
+> +									...n,
+> +									device: net.device,
+> +									target: target
+> +								});
+> +							}
+> +						}
+> +					}
+> +				}
+> +
+> +				// use masquerade as fallback
+> +				add_rule_3({ ...n, target: "masquerade" });
+> +			} else {
+> +				add_rule_3(n);
+> +			}
+> +		};
+> +
+>  		let add_rule = (family, proto, saddrs, daddrs, raddrs, sport, dport, rport, snat) => {
+>  			let n = {
+>  				...snat,
+> @@ -3133,7 +3271,7 @@ return {
+>  				chain: snat.src?.zone ? `srcnat_${snat.src.zone.name}` : "srcnat"
+>  			};
+>  
+> -			push(this.state.redirects ||= [], n);
+> +			add_rule_2(n);
+>  		};
+>  
+>  		for (let proto in snat.proto) {
+> @@ -3182,7 +3320,7 @@ return {
+>  			}
+>  
+>  			/* check if there's no AF specific bits, in this case we can do an AF agnostic rule */
+> -			if (!family && !length(sip[0]) && !length(sip[1]) && !length(dip[0]) && !length(dip[1]) && !length(rip[0]) && !length(rip[1])) {
+> +			if (!family && !length(sip[0]) && !length(sip[1]) && !length(dip[0]) && !length(dip[1]) && !length(rip[0]) && !length(rip[1]) && snat.target != "masquerade-prefix") {
+>  				add_rule(0, proto, [], [], null, sport, dport, rport, snat);
+>  			}
+>  
+> -- 
+> 2.39.5
+> 
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From luizluca at gmail.com  Sun Oct 26 06:40:25 2025
+From: luizluca at gmail.com (Luiz Angelo Daros de Luca)
+Date: Sun, 26 Oct 2025 10:40:25 -0300
+Subject: [PATCH] fw4: add masquerade-prefix snat type
+In-Reply-To: <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+References: <20250112131635.8660-1-openwrt@jonaslochmann.de> <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+Message-ID: <CAJq09z5TiWXec1bk9tUWLkYMa003q-dssm1Yq8=d79akxFSF-w@mail.gmail.com>
+
+Hi Jonas,
+
+>
+> I want to continue this topic. For those who don't remember a short summary:
+>
+> - this is for use in combination with mwan3 to keep individual addresses
+>   for the internal devices with IPv6
+
+I also did the same thing a couple of years ago using hotplug scripts.
+When you have multiple ISPs, sometimes you need to rewrite the prefix
+when the internal source address does not match the interface mwan3
+selected, either because one link is now down or there is a rule that
+forces that traffic to a specific interface.
+
+There is another use case without multiple ISP or mwan3. When the
+delegated prefix is too small for the number of internal networks, you
+can translate the prefix from a specific ULA to the public prefix. In
+my case, the ISP only offers a single /64 prefix (it shouldn't), not
+enough for an additional guest network. In this case, you'll also need
+to rewrite the default route from ULA as it is, by design, not
+routable to the internet. I know that I'm abusing ULA but it gets the
+job done as ULA is still treated as a public address by the endpoints.
+
+> - this is NOT NPTv6 and NPTv6 would not work; devices know their public
+>   IPs and a stateless aproach never knows if a particular reply packet
+>   must be rewritten and to which prefix it must be rewritten (the hosts
+>   in the internal network have IPs (plural) and could have used any of
+>   them to start the outbound connection)
+
+The last time I tested NPTv6 it broke the conntrack. So, you either do
+the prefix translation or the statefull firewall, not both.
+
+> > +                                                     if (best_prefix != null) {
+> > +                                                             let base_addr = apply_mask(best_prefix.addr, best_prefix.mask);
+> > +                                                             let suffix_mask = to_inverse_mask(best_prefix.bits, true);
+> > +                                                             let target = "snat ip6 to ip6 saddr and " + suffix_mask + " or " + base_addr;
+
+I didn't try the patch in a real device but it looks like it is using
+a different approach than the one I'm using. In my case, I have:
+
+nft add rule inet fw4 srcnat_netmap oifname "$DEVICE" snat ip6 prefix
+to ip6 saddr map { $ip6addr : $ip6prefix/$ip6prefix_mask }
+
+I don't know if it is better or worse but it explicitly cites the
+prefix in the rule.
+
+Regards,
+
+Luiz
+
+
+From cjd at cjdns.fr  Sun Oct 26 07:07:55 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Sun, 26 Oct 2025 15:07:55 +0100
+Subject: EcoNet: MT7612E not working
+Message-ID: <288bc863-0869-4d5c-b278-6a44d8c300f3@cjdns.fr>
+
+This is a bit of a long-shot but I'm at a loss here. On both of my 
+EcoNet devices with MT7612 chips, it fails to start. MT7613 and MT7603 
+both work. I'm suspicious of my PCI controller because it's something I 
+worked on, but I don't see any evidence of PCI issues.
+
+
+Is there anything really unique about MT7612, particularly how it uses PCI ?
+
+
+MT7613E / Slot 2 -> Works (TP-Link Archer VR1200v (v2))
+
+MT7603 / Slot 1 or slot 2 -> Works (ZyXEL PMG5617GA and SmartFiber 
+XP8421-B respectively)
+
+MT7612 / Slot 1 or slot 2 -> Fails (SmartFiber XP8421-B and ZyXEL 
+PMG5617GA respectively)
+
+
+Here is my bootlog:
+
+[?? 13.252551] mt76x2e 0000:02:00.0: enabling device (0000 -> 0002)
+[?? 13.258716] pcibios_plat_dev_init: bus 2, slot 0
+[?? 13.263689] mt76x2e 0000:02:00.0: ASIC revision: 76120044
+[?? 13.269738] mt76x2_eeprom_init
+[?? 13.272871] mt76_get_of_eeprom 80004328
+[?? 13.276719] mt76_get_of_data_from_nvmem eeprom
+[?? 13.385361] mt76x2_eeprom_load 1
+[?? 13.388635] mt76x2_eeprom_load found=1
+[?? 13.523388] urngd: v1.0.2 started.
+[?? 14.042816] mt76x2e 0000:02:00.0: Invalid MAC address, using random 
+address b6:db:5e:21:55:82
+[?? 14.083630] mt76x2e 0000:02:00.0: ROM patch build: 20141115060606a
+[?? 14.113187] mt76x2e 0000:02:00.0: Firmware Version: 0.0.00
+[?? 14.118716] mt76x2e 0000:02:00.0: Build: 1
+[?? 14.122875] mt76x2e 0000:02:00.0: Build Time: 201607111443____
+[?? 14.572779] mt76x2e 0000:02:00.0: Firmware failed to start
+[?? 14.578409] mt76x2e 0000:02:00.0: probe with driver mt76x2e failed 
+with error -145
+
+
+I've added a few debug logs to confirm eeprom is loaded correctly and 
+passes mt76x2_check_eeprom().
+Firmware and ROM patch match (working) vendor OS bit-for-bit.
+
+Any ideas where else to look?
+
+
+Thanks,
+
+Caleb
+
+
+
+From daniel at makrotopia.org  Sun Oct 26 07:20:15 2025
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Sun, 26 Oct 2025 14:20:15 +0000
+Subject: EcoNet: MT7612E not working
+In-Reply-To: <288bc863-0869-4d5c-b278-6a44d8c300f3@cjdns.fr>
+References: <288bc863-0869-4d5c-b278-6a44d8c300f3@cjdns.fr>
+Message-ID: <aP4uHyDYROINMMzq@makrotopia.org>
+
+On Sun, Oct 26, 2025 at 03:07:55PM +0100, Caleb James DeLisle wrote:
+> This is a bit of a long-shot but I'm at a loss here. On both of my EcoNet
+> devices with MT7612 chips, it fails to start. MT7613 and MT7603 both work.
+> I'm suspicious of my PCI controller because it's something I worked on, but
+> I don't see any evidence of PCI issues.
+> 
+> 
+> Is there anything really unique about MT7612, particularly how it uses PCI ?
+> 
+> 
+> MT7613E / Slot 2 -> Works (TP-Link Archer VR1200v (v2))
+> 
+> MT7603 / Slot 1 or slot 2 -> Works (ZyXEL PMG5617GA and SmartFiber XP8421-B
+> respectively)
+> 
+> MT7612 / Slot 1 or slot 2 -> Fails (SmartFiber XP8421-B and ZyXEL PMG5617GA
+> respectively)
+> 
+> 
+> Here is my bootlog:
+> 
+> [?? 13.252551] mt76x2e 0000:02:00.0: enabling device (0000 -> 0002)
+> [?? 13.258716] pcibios_plat_dev_init: bus 2, slot 0
+> [?? 13.263689] mt76x2e 0000:02:00.0: ASIC revision: 76120044
+> [?? 13.269738] mt76x2_eeprom_init
+> [?? 13.272871] mt76_get_of_eeprom 80004328
+> [?? 13.276719] mt76_get_of_data_from_nvmem eeprom
+> [?? 13.385361] mt76x2_eeprom_load 1
+> [?? 13.388635] mt76x2_eeprom_load found=1
+> [?? 13.523388] urngd: v1.0.2 started.
+> [?? 14.042816] mt76x2e 0000:02:00.0: Invalid MAC address, using random
+> address b6:db:5e:21:55:82
+
+Are you sure the EEPROM data passed to the driver is correct?
+I wonder because it should also contain a valid MAC address...
+
+> [?? 14.083630] mt76x2e 0000:02:00.0: ROM patch build: 20141115060606a
+> [?? 14.113187] mt76x2e 0000:02:00.0: Firmware Version: 0.0.00
+> [?? 14.118716] mt76x2e 0000:02:00.0: Build: 1
+> [?? 14.122875] mt76x2e 0000:02:00.0: Build Time: 201607111443____
+> [?? 14.572779] mt76x2e 0000:02:00.0: Firmware failed to start
+> [?? 14.578409] mt76x2e 0000:02:00.0: probe with driver mt76x2e failed with
+> error -145
+> 
+> 
+> I've added a few debug logs to confirm eeprom is loaded correctly and passes
+> mt76x2_check_eeprom().
+> Firmware and ROM patch match (working) vendor OS bit-for-bit.
+> 
+> Any ideas where else to look?
+
+If the problem is not the missing or wrong EEPROM data, maybe the PCIe
+reset line is inverted or configured wrongly (-> pinctrl)?
+
+Just guessing, of course...
+
+
+
+From openwrt at jonaslochmann.de  Sun Oct 26 07:46:58 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sun, 26 Oct 2025 15:46:58 +0100
+Subject: [PATCH] fw4: add masquerade-prefix snat type
+In-Reply-To: <CAJq09z5TiWXec1bk9tUWLkYMa003q-dssm1Yq8=d79akxFSF-w@mail.gmail.com>
+References: <20250112131635.8660-1-openwrt@jonaslochmann.de>
+ <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+ <CAJq09z5TiWXec1bk9tUWLkYMa003q-dssm1Yq8=d79akxFSF-w@mail.gmail.com>
+Message-ID: <nvumre4r2omkxq43rkzncs55cvdq24dscncoexz4sdcm4fml5p@zlyekemazwt5>
+
+Am Sun, Oct 26, 2025 at 10:40:25AM -0300, schrieb Luiz Angelo Daros de Luca:
+> > > +                                                     if (best_prefix != null) {
+> > > +                                                             let base_addr = apply_mask(best_prefix.addr, best_prefix.mask);
+> > > +                                                             let suffix_mask = to_inverse_mask(best_prefix.bits, true);
+> > > +                                                             let target = "snat ip6 to ip6 saddr and " + suffix_mask + " or " + base_addr;
+> 
+> I didn't try the patch in a real device but it looks like it is using
+> a different approach than the one I'm using. In my case, I have:
+> 
+> nft add rule inet fw4 srcnat_netmap oifname "$DEVICE" snat ip6 prefix
+> to ip6 saddr map { $ip6addr : $ip6prefix/$ip6prefix_mask }
+
+Those $variables are not part of nftables (well, they are also supported
+when parsing nft files, but not with "nft add rule" from the CLI). So I
+assume that you have a shell script defining these (which is comparable
+to inserting the values in fw4). You could check the "rendered" ruleset
+with "nft list ruleset".
+
+> I don't know if it is better or worse but it explicitly cites the
+> prefix in the rule.
+
+let target = "snat ip6 prefix to " + best_prefix.addr + "/" + best_prefix.mask;
+
+This untested version would use this feature too instead of the manual
+bit operations on the IP.
+
+I don't know why you have that map with only one item in your rule.
+If $ip6addr filters your "local" subnet (not a single IP), it would work.
+Still, I consider it equivalent to
+
+nft add rule inet fw4 srcnat_netmap oifname "$DEVICE" \
+  ip6 saddr $ip6addr snat ip6 prefix to $ip6prefix/$ip6prefix_mask
+
+
+
+From cjd at cjdns.fr  Sun Oct 26 08:03:50 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Sun, 26 Oct 2025 16:03:50 +0100
+Subject: EcoNet: MT7612E not working
+In-Reply-To: <aP4uHyDYROINMMzq@makrotopia.org>
+References: <288bc863-0869-4d5c-b278-6a44d8c300f3@cjdns.fr>
+ <aP4uHyDYROINMMzq@makrotopia.org>
+Message-ID: <d711dbbe-ab5e-459d-8cd9-df83931c8c84@cjdns.fr>
+
+
+On 26/10/2025 15:20, Daniel Golle wrote:
+> On Sun, Oct 26, 2025 at 03:07:55PM +0100, Caleb James DeLisle wrote:
+>> This is a bit of a long-shot but I'm at a loss here. On both of my EcoNet
+>> devices with MT7612 chips, it fails to start. MT7613 and MT7603 both work.
+>> I'm suspicious of my PCI controller because it's something I worked on, but
+>> I don't see any evidence of PCI issues.
+>>
+>>
+>> Is there anything really unique about MT7612, particularly how it uses PCI ?
+>>
+>>
+>> MT7613E / Slot 2 -> Works (TP-Link Archer VR1200v (v2))
+>>
+>> MT7603 / Slot 1 or slot 2 -> Works (ZyXEL PMG5617GA and SmartFiber XP8421-B
+>> respectively)
+>>
+>> MT7612 / Slot 1 or slot 2 -> Fails (SmartFiber XP8421-B and ZyXEL PMG5617GA
+>> respectively)
+>>
+>>
+>> Here is my bootlog:
+>>
+>> [?? 13.252551] mt76x2e 0000:02:00.0: enabling device (0000 -> 0002)
+>> [?? 13.258716] pcibios_plat_dev_init: bus 2, slot 0
+>> [?? 13.263689] mt76x2e 0000:02:00.0: ASIC revision: 76120044
+>> [?? 13.269738] mt76x2_eeprom_init
+>> [?? 13.272871] mt76_get_of_eeprom 80004328
+>> [?? 13.276719] mt76_get_of_data_from_nvmem eeprom
+>> [?? 13.385361] mt76x2_eeprom_load 1
+>> [?? 13.388635] mt76x2_eeprom_load found=1
+>> [?? 13.523388] urngd: v1.0.2 started.
+>> [?? 14.042816] mt76x2e 0000:02:00.0: Invalid MAC address, using random
+>> address b6:db:5e:21:55:82
+> Are you sure the EEPROM data passed to the driver is correct?
+> I wonder because it should also contain a valid MAC address...
+
+I'm sure I'm giving it an EEPROM which is in the flash, and starts like 
+this:
+
+62 76 01 00 00 00 00 00? 00 00
+
+So I understand that means the MAC is zeroed. "mt76x2_eeprom_load 
+found=1" is my log saying it passed the check.
+
+>> [?? 14.083630] mt76x2e 0000:02:00.0: ROM patch build: 20141115060606a
+>> [?? 14.113187] mt76x2e 0000:02:00.0: Firmware Version: 0.0.00
+>> [?? 14.118716] mt76x2e 0000:02:00.0: Build: 1
+>> [?? 14.122875] mt76x2e 0000:02:00.0: Build Time: 201607111443____
+>> [?? 14.572779] mt76x2e 0000:02:00.0: Firmware failed to start
+>> [?? 14.578409] mt76x2e 0000:02:00.0: probe with driver mt76x2e failed with
+>> error -145
+>>
+>>
+>> I've added a few debug logs to confirm eeprom is loaded correctly and passes
+>> mt76x2_check_eeprom().
+>> Firmware and ROM patch match (working) vendor OS bit-for-bit.
+>>
+>> Any ideas where else to look?
+> If the problem is not the missing or wrong EEPROM data,
+
+
+Thank you, this is very helpful.
+
+
+> maybe the PCIe
+> reset line is inverted or configured wrongly (-> pinctrl)?
+>
+> Just guessing, of course...
+>
+
+Thanks, I'll go back and re-check all of the reset commands, while I 
+still have no confidence in my own PCI impl, I'm using a very lightly 
+modified version of 
+https://github.com/cjdelisle/kernel-49/blob/master/arch/mips/tc3262/pci_en75xx.c 
+which is vendor code, but I'll go around and look for suspicious GPIO or 
+pinctrl accesses in the rest of the init for that kernel.
+
+
+Thanks again,
+
+Caleb
+
+
+
+From noreply at github.com  Sun Oct 26 14:33:33 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 26 Oct 2025 14:33:33 -0700
+Subject: [sdwalker/sdwalker.github.io] 7aef55: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/fcf28a-7aef55@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 7aef5550f9537dc3d9f65af9f0d3c9989cc106c1
+      https://github.com/sdwalker/sdwalker.github.io/commit/7aef5550f9537dc3d9f65af9f0d3c9989cc106c1
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-10-26 (Sun, 26 Oct 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From alexander.wilhelm at westermo.com  Mon Oct 27 03:55:29 2025
+From: alexander.wilhelm at westermo.com (Alexander Wilhelm)
+Date: Mon, 27 Oct 2025 11:55:29 +0100
+Subject: Question about Build workflow
+Message-ID: <aP9PoT6BTtsv6PWp@FUE-ALEWI-WINX>
+
+I have a few questions regarding the build system. I?ve already read the Wiki
+pages and looked through the Makefiles, but I?m still having trouble
+understanding some parts. Maybe someone in the community can help me out?
+
+Here?s what I?m curious about: I know that under OpenWRT I can define a target
+and also a subtarget. I?ve also seen profile, and noticed that "Devices" are
+defined in the Makefiles. Are profile and "Device" equivalent? If so, which one
+is considered the "modern" approach?
+
+For example, I?ve defined my own targets and subtargets. Due to some deviations,
+I?ve overridden the following steps in the target-specific image/Makefile:
+* Image/Prepare
+* Image/BuildKernel
+* Image/BuildKernel/Initramfs
+* Image/InstallKernel
+
+Now I?ve decided to merge some subtargets and define different packages using
+"Devices". However, I?ve noticed that the steps above are executed at the
+subtarget level. I need to move some of these actions to the device level, but I
+haven?t seen anything like `Device/Prepare` or similar. I?ve tried to follow the
+structure of other device Makefiles, but they seem quite complex and extensive.
+Could someone in the community advise me on the best approach? Specifically, I?d
+like to know how to handle those four steps at the device level. Thanks in
+advance for your help!
+
+
+Best regards
+Alexander Wilhelm
+
+
+From openwrt at jonaslochmann.de  Mon Oct 27 09:25:08 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Mon, 27 Oct 2025 17:25:08 +0100
+Subject: [PATCH] fw4: add masquerade-prefix snat type
+In-Reply-To: <nvumre4r2omkxq43rkzncs55cvdq24dscncoexz4sdcm4fml5p@zlyekemazwt5>
+References: <20250112131635.8660-1-openwrt@jonaslochmann.de>
+ <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+ <CAJq09z5TiWXec1bk9tUWLkYMa003q-dssm1Yq8=d79akxFSF-w@mail.gmail.com>
+ <nvumre4r2omkxq43rkzncs55cvdq24dscncoexz4sdcm4fml5p@zlyekemazwt5>
+Message-ID: <gzxbil3a7f5o3x6grzzr2vc3mykjcmvozncbs6jtwq3sestyxg@2wlatixjzm5r>
+
+Am Sun, Oct 26, 2025 at 03:47:00PM +0100, schrieb Jonas Lochmann:
+> Am Sun, Oct 26, 2025 at 10:40:25AM -0300, schrieb Luiz Angelo Daros de Luca:
+> > nft add rule inet fw4 srcnat_netmap oifname "$DEVICE" snat ip6 prefix
+> > to ip6 saddr map { $ip6addr : $ip6prefix/$ip6prefix_mask }
+
+This is equivalent to the snat with the bit operations. It just uses
+some native code instead of nftables bytecode:
+
+> for (i = 0; i < len / sizeof(__be32); i++) {
+>   netmask = ~(range->min_addr.ip6[i] ^ range->max_addr.ip6[i]);
+>   new_addr.ip6[i] &= ~netmask;
+>   new_addr.ip6[i] |= range->min_addr.ip6[i] & netmask;
+> }
+
+So the "snat ip6 prefix" has the prefix internally as ip range from that
+a netmask is extracted by checking if min and max are the same for a
+particular bit. Bits from the netmask are cleared and then or-ed with the
+netmask. [1]
+
+For comparision the readable nftables action from my patch:
+
+> let target = "snat ip6 to ip6 saddr and " + suffix_mask + " or " + base_addr;
+
+The nftables code is based on the idea that a new range of IPs can be
+provided where any IP can be chosen. The "prefix" just calls the
+mentioned function that calculates the new_addr and then sets minimum
+and maximum of it to the same value for this particular invocation.
+
+This shows that the name masquerade-prefix is actually a good choice for
+this feature. One could call it snat-prefix but the prefix is (at fw4
+level) replaced by the assigned prefix and masquerade replaces the src
+ip just with the one assigned to the interface (altough this at nft
+level).
+
+[1] https://github.com/torvalds/linux/blob/v6.17/net/netfilter/nft_nat.c#L93
+
+
+From cjd at cjdns.fr  Mon Oct 27 10:21:25 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Mon, 27 Oct 2025 18:21:25 +0100
+Subject: EcoNet: MT7612E not working
+In-Reply-To: <d711dbbe-ab5e-459d-8cd9-df83931c8c84@cjdns.fr>
+References: <288bc863-0869-4d5c-b278-6a44d8c300f3@cjdns.fr>
+ <aP4uHyDYROINMMzq@makrotopia.org>
+ <d711dbbe-ab5e-459d-8cd9-df83931c8c84@cjdns.fr>
+Message-ID: <0dfea6bf-1ce4-4e20-9689-a1c336b5821c@cjdns.fr>
+
+Well, as it happens I found the issue and I made a patch to mt76 in 
+upstream.
+
+I should have CC'd you on it, it slipped my mind when I was sending.
+
+Anyway here's the patch:
+
+
+https://lore-kernel.gnuweeb.org/linux-wireless/20251027171759.1484844-1-cjd at cjdns.fr/#r
+
+
+Thanks,
+
+Caleb
+
+
+
+From newtwen at gmail.com  Mon Oct 27 11:06:01 2025
+From: newtwen at gmail.com (Paul D)
+Date: Mon, 27 Oct 2025 19:06:01 +0100
+Subject: odhcp6c: "safe" parameter causes keeping invalid prefixes valid
+In-Reply-To: <wljpgaq5bdidkknitfd2dkkkgjhplpfkpmolfdb76bmpvbswcp@qkspk23uqvmb>
+References: <wljpgaq5bdidkknitfd2dkkkgjhplpfkpmolfdb76bmpvbswcp@qkspk23uqvmb>
+Message-ID: <3db02350-14aa-462f-aec3-38bc7859a2c2@gmail.com>
+
+On 2025-10-25 13:27, Jonas Lochmann wrote:
+> I am operating OpenWrt routers with mwan3 and also know other people
+> that do this. A longstanding issue is that IPv6 allows deprecated
+> rules and mwan3 uses them and then has connectivity issues.
+> 
+> However, deprecated routes should still work. So I suspected an issue
+> in the upstream routers (issue was always with IPv6 RA with
+> Fritz! routers, but never when OpenWrt itself did PPPoE). A packet
+> capture showed that what OpenWrt considerd valid but deprecated was
+> sent as invalid (valid lifetime = zero) from the uplink.
+> 
+> odhcp6c handles RA prefixes here [1] by calling odhcp6c_update_entry;
+> the third parameter (called "safe") is hardcoded as 7200 (2 hours).
+> In its implementation, something strange is done using it [2]:
+> 
+> 803         if (x && x->valid > new->valid && new->valid < safe)
+> 804                 new->valid = safe;
+
+
+I was looking at this recently, and there is a PR which attempts to remedy exactly this although the PR seems to have other issues
+
+https://github.com/openwrt/odhcp6c/pull/97/files
+
+Good if you can contribute some comments there or submit a PR yourself?
+
+
+> 
+> Note: x is the previous data for that prefix.
+> 
+> If new->valid is zero, then it is very likely smaller than x->valid and
+> at the same time smaller than safe (2 hours). In this case, valid = 0
+> is replaced with valid = 2 hours. As the next RA is received within
+> two hours, it is again extended to the full two hours.
+> 
+> RFC 4861 recommends another behavior:
+> 
+>> If the prefix is already present in the host's Prefix List as
+>> the result of a previously received advertisement, reset its
+>> invalidation timer to the Valid Lifetime value in the Prefix
+>> Information option.  If the new Lifetime value is zero, time-out
+>> the prefix immediately (see Section 6.3.5).
+> 
+> Now, one could add valid = zero as special case. However, I see an
+> bigger issue. I suspect that the whole if statement has a logic error
+> and something else was intended. Maybe clamping valid to up to two
+> hours?
+> 
+> [1] https://git.openwrt.org/?p=project/odhcp6c.git;a=blob;f=src/ra.c;h=01a8b721d719f0e0e545a3ca7471c47490597969;hb=77e1ae21e67f81840024ffe5bb7cf69a8fb0d2f0#l511
+> [2] https://git.openwrt.org/?p=project/odhcp6c.git;a=blob;f=src/odhcp6c.c;h=8354820746131b8d0c9d01f7141af635edc0b8fe;hb=77e1ae21e67f81840024ffe5bb7cf69a8fb0d2f0#l803
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+
+From openwrt at jonaslochmann.de  Mon Oct 27 23:23:23 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Tue, 28 Oct 2025 07:23:23 +0100
+Subject: odhcp6c: "safe" parameter causes keeping invalid prefixes valid
+In-Reply-To: <3db02350-14aa-462f-aec3-38bc7859a2c2@gmail.com>
+References: <wljpgaq5bdidkknitfd2dkkkgjhplpfkpmolfdb76bmpvbswcp@qkspk23uqvmb>
+ <3db02350-14aa-462f-aec3-38bc7859a2c2@gmail.com>
+Message-ID: <j2gzhrmgvlumxjufxukveg4e2rvhbe4mvbeghm2okv6s47ppvm@umlpka67lmot>
+
+Am Mon, Oct 27, 2025 at 07:06:01PM +0100, schrieb Paul D:
+> I was looking at this recently, and there is a PR which attempts to remedy exactly this although the PR seems to have other issues
+> 
+> https://github.com/openwrt/odhcp6c/pull/97/files
+> 
+> Good if you can contribute some comments there or submit a PR yourself?
+
+It looks like the PR would solve the issue I described.
+
+
+From philipp at redfish-solutions.com  Wed Oct 29 12:23:06 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Wed, 29 Oct 2025 13:23:06 -0600
+Subject: [PATCH v2 3/3] jshn.sh: Add anonymous strings in arrays
+Message-ID: <20251029192306.246927-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+Add a convenience function for adding anonymous strings in arrays.
+
+---
+ sh/jshn.sh | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index e9c6a033981a1e877cf8de3a330b640e5094bf99..75faf8245841a0ba766548e79a14c8a24eceed24 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -150,6 +150,17 @@ json_add_string() {
+ 	_json_add_generic string "$1" "$2" "$cur"
+ }
+ 
++json_push_string() {
++	local cur
++	_json_get_var cur JSON_CUR
++	[ "${cur%%[0-9]*}" = "J_A" ] || {
++		[ -n "$_json_no_warning" ] || \
++			echo "WARNING: Not in an array" >&2
++		return 1
++	}
++	_json_add_generic string "" "$2" "$cur"
++}
++
+ json_add_int() {
+ 	local cur
+ 	_json_get_var cur JSON_CUR
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Wed Oct 29 12:23:05 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Wed, 29 Oct 2025 13:23:05 -0600
+Subject: [PATCH v2 1/3] jshn.sh: Send warnings to stderr
+Message-ID: <20251029192305.246901-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+There's one place where errors aren't sent to stderr.
+
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 1d3055711820e5a21ea59cae49e7bf3f56b626d8..3f2f679187db96d77ccf27b15f5fc47cb8ee9796 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -309,7 +309,7 @@ json_select() {
+ 		;;
+ 		*)
+ 			[ -n "$_json_no_warning" ] || \
+-				echo "WARNING: Variable '$target' does not exist or is not an array/object"
++				echo "WARNING: Variable '$target' does not exist or is not an array/object" >&2
+ 			return 1
+ 		;;
+ 	esac
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Wed Oct 29 12:23:05 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Wed, 29 Oct 2025 13:23:05 -0600
+Subject: [PATCH v2 2/3] jshn.sh: Minor cleanup
+Message-ID: <20251029192305.246914-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+Document what the arguments to user-callable functions are.
+
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 3f2f679187db96d77ccf27b15f5fc47cb8ee9796..e9c6a033981a1e877cf8de3a330b640e5094bf99 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -222,6 +222,7 @@ json_dump() {
+ }
+ 
+ json_get_type() {
++	# target=$2
+ 	local __dest="$1"
+ 	local __cur
+ 
+@@ -291,11 +292,11 @@ json_select() {
+ 	local type
+ 	local cur
+ 
+-	[ -z "$1" ] && {
++	[ -z "$target" ] && {
+ 		_json_set_var JSON_CUR "J_V"
+ 		return 0
+ 	}
+-	[[ "$1" == ".." ]] && {
++	[[ "$target" == ".." ]] && {
+ 		_json_get_var cur JSON_CUR
+ 		_json_get_var cur "U_$cur"
+ 		_json_set_var JSON_CUR "$cur"
+@@ -316,6 +317,8 @@ json_select() {
+ }
+ 
+ json_is_a() {
++	# target=$1
++	# type=$2
+ 	local type
+ 
+ 	json_get_type type "$1"
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Wed Oct 29 12:24:19 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Wed, 29 Oct 2025 13:24:19 -0600
+Subject: [PATCH v2 1/1] jshn.sh: Drop extraneous space when appending values to variable
+Message-ID: <20251029192420.246989-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+From: Felix Fietkau <nbd at nbd.name>
+
+There's a leading space if you build a value by appending to a variable.
+
+fixes: issue #15
+
+Signed-off-by: Felix Fietkau <nbd at nbd.name>
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 1d3055711820e5a21ea59cae49e7bf3f56b626d8..66ca9524a041ebd71cbad044d9a9fc595393296b 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -23,7 +23,7 @@ __jshn_raw_append() {
+ _jshn_append() {
+ 	# var=$1
+ 	local _a_value="$2"
+-	eval "${JSON_PREFIX}$1=\"\${${JSON_PREFIX}$1} \$_a_value\""
++	eval "${JSON_PREFIX}$1=\"\${${JSON_PREFIX}$1}\${${JSON_PREFIX}$1:+ }\$_a_value\""
+ }
+ 
+ _get_var() {
+-- 
+2.43.0
+
+
+
+From philipp at redfish-solutions.com  Wed Oct 29 12:27:11 2025
+From: philipp at redfish-solutions.com (Philip Prindeville)
+Date: Wed, 29 Oct 2025 13:27:11 -0600
+Subject: [PATCH v2 1/1] jshn.sh: Add getters for the cursor and its parent
+Message-ID: <20251029192711.247046-1-philipp@redfish-solutions.com>
+
+From: Philip Prindeville <philipp at redfish-solutions.com>
+
+The order that JSON is generated might not be linear with respect to
+the order that UCI is parsed.  Therefore, it's useful to have functions
+to manipulate the cursor within the object being generated.
+
+Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+---
+ sh/jshn.sh | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/sh/jshn.sh b/sh/jshn.sh
+index 1d3055711820e5a21ea59cae49e7bf3f56b626d8..5599c85835d0c81c8d47a9dfd73f32e4db2a7c9b 100644
+--- a/sh/jshn.sh
++++ b/sh/jshn.sh
+@@ -197,6 +197,42 @@ json_add_fields() {
+ 	done
+ }
+ 
++json_get_position() {
++	local __dest="$1"
++	eval "export -- \"$__dest=\${JSON_CUR}\"; [ -n \"\${JSON_CUR+x}\" ]"
++}
++
++json_move_to() {
++	local cur="$1"
++	_json_set_var JSON_CUR "$cur"
++}
++
++json_get_parent_position() {
++	local __dest="$1" cur parent
++	_json_get_var cur JSON_CUR
++	parent="U_$cur"
++	eval "export -- \"$__dest=\${$parent}\"; [ -n \"\${$parent+x}\" ]"
++}
++
++json_get_root_position() {
++	local __dest="$1" cur="J_V"
++	eval "export -- \"$__dest=\${cur}\"; [ -n \"\${cur+x}\" ]"
++}
++
++json_get_index() {
++	local __dest="$1"
++	local cur parent seq
++	_json_get_var cur JSON_CUR
++	_json_get_var parent "U_$cur"
++	if [ "${parent%%[0-9]*}" != "J_A" ]; then
++		[ -n "$_json_no_warning" ] || \
++			echo "WARNING: Not inside an array" >&2
++		return 1
++	fi
++	seq="S_$parent"
++	eval "export -- \"$__dest=\${$seq}\"; [ -n \"\${$seq+x}\" ]"
++}
++
+ # functions read access to json variables
+ 
+ json_compact() {
+-- 
+2.43.0
+
+
+
+From shep971 at spectrum.net  Thu Oct 30 16:45:23 2025
+From: shep971 at spectrum.net (J. Scott Heppler)
+Date: Thu, 30 Oct 2025 16:45:23 -0700
+Subject: [PATCH]ipq40xx: add support for linksys mr6350
+Message-ID: <aQP4k1HUtLgSQWDQ@spectrum.net>
+
+Developer Credits:
+         Many contributed as detailed in "https://forum.openwrt.org/t/
+         adding-openwrt-support-for-linksys-mr6350/82812".
+         Contributors of note: @rolandomagico, @rwl408, @Shine
+  
+Device Specs:
+  
+	IPQ4019
+	Quad Core CPU
+	256 MB RAM
+	256 MB FLASH
+	4 x 10/100/100 LAN ports, 1 x 10/100/1000 WAN port
+	2.4GHz (802.11n) and 5GHz (802.11c) wifi based on ath10k
+	3 LEDs (Red, blue, green) which are routed to one indicator at the top
+	of the case
+	2 buttons (Reset, WPS)
+	Dual boot with booted image changing after the 3rd boot
+  
+Disassembling the device:
+  
+	There are 4 screws at the bottom of the device which must be removed
+	Front Two, one under each front rubber foot pad
+	Two are under the labels in the back (corner next to the rear rubber
+	foot pads)
+	Photos in post 16 in the forum thread linked above
+  
+Serial interface:
+  
+	The serial interface is already populated on the device with a 6-pin
+	header
+	Pin 1 is next to the heatsink
+	Pinout: 1: 3.3V, 2: TX, 3: RX, 4: unknown, 5: GND, 6: GND
+	Settings: 115200, 8N1
+	Photo in post 16 of the forum thread
+  
+Two ways to Migrate to OpenWrt each requiring multiple steps:
+
+Installation overview:
+
+	For initial flash, aflash an image that has a <3MB kernel must be used
+	Can either be done by tftp+serial or OEM forced firmware flash. Once
+	the image loaded, ssh root at 192.168.1.1 and edit kernel size in fw_env
+	Then can use the either the Luci Administration firmware flash, or
+command line to install the *factory*.bin
+  
+tftp+serial:
+  
+	The @rwl408 images, linked in post 25 were tested with both
+	tftp+serial and OEM force flash. This image is not fully functional but
+	does boot, allow ssh access, editing fw_env kernsize and finally
+	flashing the sysupgrade image
+  
+	Connect serial interface
+	Set up a TFTP server on IP 192.168.1.254
+	Copy openwrt-ipq40xx-generic-linksys_mr6350-initramfs-zImage.itb
+	to TFTP server
+	Rename file to C0A80101.img
+	Boot up the device and stop in U-Boot
+	Run the following U-Boot commands after a link has been established:
+	"tftp" "bootm"
+	initramfs image should be started now.
+  
+OEM firmware flash - tested with OEM firmware 1.1.3.216612
+	username:password = admin:admin
+	select "ca" on the bottom
+	"Configuration" window should allow browsing to @rwl408 factory image:
+	Select and force upload.  Reboot into the 22.04 OpenWRT image
+
+Adjust U-Boot settings to support bigger kernels:
+  
+	ssh root at 192.168.1.1
+	Run "fw_printenv" in the image after booting
+	There should be an entry kernsize=300000 which indicates the maximum
+	size for the kernel is 3MB
+	When resetting the kernsize, do not reflexively insert an "=".
+	It will brick the router
+	Execute "fw_setenv kernsize 500000" to increase the max kernel size to
+	5MB
+	Check that the change are applied with "fw_printenv"
+  
+Flash the final image:
+  
+	Use *factory*.bin image.  
+  
+Dual boot settings:
+  
+	Consider the luci-app-advanced-reboot package and use it to
+	reboot/shutdown.
+	Alternatively, append the following commands to /etc/rc.local
+	to reset the bootcount to zero
+	"/rom/sbin/mtd unlock s_env"
+	"/rom/sbin/mtd erase s_env"
+	Note that the default /etc/rc.local file is -rw-rw-r--.
+	chmod 0774 /etc/rc.local to execute on boot. Test with
+	"sh /etc/rc.local"
+  
+Revert back to OEM firmware:
+  
+	Only tested with FW_MR6350_1.1.3.210129_prod.img
+	Flash the OEM firmware via sysupgrade
+	Forced update is required in the OEM interface
+
+Signed-off-by: "J. Scott Heppler" <shep971 at spectrum.net>
+Tested-by: "J. Scott Heppler" <shep971 at spectrum.net>
+
+diff --git a/package/boot/uboot-tools/uboot-envtools/files/ipq40xx b/package/boot/uboot-tools/uboot-envtools/files/ipq40xx
+index 717158b042..ff2ad72949 100644
+--- a/package/boot/uboot-tools/uboot-envtools/files/ipq40xx
++++ b/package/boot/uboot-tools/uboot-envtools/files/ipq40xx
+@@ -61,6 +61,7 @@ linksys,ea6350v3)
+  	ubootenv_add_uci_config "/dev/mtd7" "0x0" "0x20000" "0x20000"
+  	;;
+  linksys,ea8300|\
++linksys,mr6350|\
+  linksys,mr8300)
+  	ubootenv_add_uci_config "/dev/mtd7" "0x0" "0x40000" "0x20000"
+  	;;
+diff --git a/package/firmware/ipq-wifi/Makefile b/package/firmware/ipq-wifi/Makefile
+index 01d2990c61..e8f399f26c 100644
+--- a/package/firmware/ipq-wifi/Makefile
++++ b/package/firmware/ipq-wifi/Makefile
+@@ -48,6 +48,7 @@ ALLWIFIBOARDS:= \
+  	iodata_wn-dax3000gr \
+  	linksys_homewrk \
+  	linksys_mr5500 \
++	linksys_mr6350 \
+  	linksys_mr7350 \
+  	linksys_mr7500 \
+  	linksys_mx2000 \
+@@ -224,6 +225,7 @@ $(eval $(call generate-ipq-wifi-package,ignitenet_ss-w2-ac2600,Ignitenet SS-W2-A
+  $(eval $(call generate-ipq-wifi-package,iodata_wn-dax3000gr,I-O DATA WN-DAX3000GR))
+  $(eval $(call generate-ipq-wifi-package,linksys_homewrk,Linksys HomeWRK))
+  $(eval $(call generate-ipq-wifi-package,linksys_mr5500,Linksys MR5500))
++$(eval $(call generate-ipq-wifi-package,linksys_mr6350,Linksys MR6350))
+  $(eval $(call generate-ipq-wifi-package,linksys_mr7350,Linksys MR7350))
+  $(eval $(call generate-ipq-wifi-package,linksys_mr7500,Linksys MR7500))
+  $(eval $(call generate-ipq-wifi-package,linksys_mx2000,Linksys MX2000))
+diff --git a/target/linux/ipq40xx/base-files/etc/board.d/02_network b/target/linux/ipq40xx/base-files/etc/board.d/02_network
+index ba953216f5..f3f43e0584 100644
+--- a/target/linux/ipq40xx/base-files/etc/board.d/02_network
++++ b/target/linux/ipq40xx/base-files/etc/board.d/02_network
+@@ -17,6 +17,7 @@ ipq40xx_setup_interfaces()
+  	asus,rt-ac58u|\
+  	linksys,ea6350v3|\
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300|\
+  	mikrotik,hap-ac2|\
+  	mikrotik,hap-ac3|\
+@@ -218,6 +219,7 @@ ipq40xx_setup_macs()
+  		;;
+  	linksys,ea6350v3|\
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300)
+  		wan_mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+  		lan_mac=$(macaddr_add "$wan_mac" 1)
+diff --git a/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+index 0c8a5d8aa5..ab394d049d 100644
+--- a/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
++++ b/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+@@ -26,6 +26,7 @@ case "$FIRMWARE" in
+  		/usr/bin/fritz_cal_extract -i 1 -s 0x3C000 -e 0x212 -l 12064 -o /lib/firmware/$FIRMWARE $(find_mtd_chardev "urlader1")
+  		;;
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300)
+  		caldata_extract "ART" 0x9000 0x2f20
+  		# OEM assigns 4 sequential MACs
+@@ -94,6 +95,7 @@ case "$FIRMWARE" in
+  		ath10k_patch_mac $(mtd_get_mac_ascii CFG1 RADIOADDR0)
+  		;;
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300)
+  		caldata_extract "ART" 0x1000 0x2f20
+  		ath10k_patch_mac $(macaddr_add "$(cat /sys/class/net/eth0/address)" 2)
+@@ -188,6 +190,7 @@ case "$FIRMWARE" in
+  		ath10k_patch_mac $(mtd_get_mac_ascii CFG1 RADIOADDR1)
+  		;;
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300)
+  		caldata_extract "ART" 0x5000 0x2f20
+  		ath10k_patch_mac $(macaddr_add "$(cat /sys/class/net/eth0/address)" 3)
+diff --git a/target/linux/ipq40xx/base-files/etc/init.d/bootcount b/target/linux/ipq40xx/base-files/etc/init.d/bootcount
+index 0120f78cfe..079edce24c 100755
+--- a/target/linux/ipq40xx/base-files/etc/init.d/bootcount
++++ b/target/linux/ipq40xx/base-files/etc/init.d/bootcount
+@@ -39,6 +39,7 @@ boot() {
+  		;;
+  	linksys,ea6350v3|\
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300|\
+  	linksys,whw01|\
+  	linksys,whw03v2)
+diff --git a/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version b/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version
+index 9ee8adbf7f..e0547c3650 100644
+--- a/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version
++++ b/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version
+@@ -4,6 +4,7 @@ case "$(board_name)" in
+  ezviz,cs-w3-wd1200g-eup|\
+  linksys,ea6350v3|\
+  linksys,ea8300|\
++linksys,mr6350|\
+  linksys,mr8300)
+  	uci set system. at system[0].compat_version="2.0"
+  	uci commit system
+diff --git a/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh b/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh
+index 092f9da440..8a8d224a45 100644
+--- a/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh
++++ b/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh
+@@ -25,6 +25,7 @@ preinit_set_mac_address() {
+  		ip link set dev eth0 address $(mtd_get_mac_ascii CFG1 ethaddr)
+  		;;
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300)
+  		base_mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+  		ip link set dev lan1 address $(macaddr_add "$base_mac" 1)
+diff --git a/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh b/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh
+index 860c3fd2de..256b3cfb91 100644
+--- a/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh
++++ b/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh
+@@ -16,7 +16,7 @@ linksys_get_target_firmware() {
+  			"${cur_boot_part}" "${mtd_ubi0}"
+  	fi
+  
+-	# OEM U-Boot for EA6350v3, EA8300 and MR8300; bootcmd=
++	# OEM U-Boot for EA6350v3, EA8300, MR6350 and MR8300; bootcmd=
+  	#  if test $auto_recovery = no;
+  	#      then bootipq;
+  	#  elif test $boot_part = 1;
+diff --git a/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh b/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh
+index 3f68c0a60e..3eda947100 100644
+--- a/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh
++++ b/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh
+@@ -165,6 +165,7 @@ platform_do_upgrade() {
+  		;;
+  	linksys,ea6350v3|\
+  	linksys,ea8300|\
++	linksys,mr6350|\
+  	linksys,mr8300|\
+  	linksys,whw01|\
+  	linksys,whw03v2)
+diff --git a/target/linux/ipq40xx/files-6.12/arch/arm/boot/dts/qcom/qcom-ipq4019-mr6350.dts b/target/linux/ipq40xx/files-6.12/arch/arm/boot/dts/qcom/qcom-ipq4019-mr6350.dts
+new file mode 100644
+index 0000000000..d936e720e4
+--- /dev/null
++++ b/target/linux/ipq40xx/files-6.12/arch/arm/boot/dts/qcom/qcom-ipq4019-mr6350.dts
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include "qcom-ipq4019-xx8300.dtsi"
++#include <dt-bindings/leds/common.h>
++
++/ {
++	model = "Linksys MR6350";
++	compatible = "linksys,mr6350", "qcom,ipq4019";
++
++	aliases {
++		led-boot = &led_blue;
++		led-failsafe = &led_red;
++		led-running = &led_green;
++		led-upgrade = &led_blue;
++		serial0 = &blsp1_uart1;
++	};
++
++	// Top panel LEDs, above Linksys logo
++	leds {
++		compatible = "gpio-leds";
++		
++		led_blue: led-blue {
++			color = <LED_COLOR_ID_BLUE>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&tlmm 46 GPIO_ACTIVE_LOW>;
++		};
++
++		led_red: led-red {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&tlmm 47 GPIO_ACTIVE_HIGH>;
++			panic-indicator;
++		};
++
++		led_green: led-green {
++			color = <LED_COLOR_ID_GREEN>;
++			function = LED_FUNCTION_STATUS;
++			gpios = <&tlmm 49 GPIO_ACTIVE_HIGH>;
++		};
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		button-reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&tlmm 50 GPIO_ACTIVE_LOW>;
++		};
++
++		button-wps {
++			label = "wps";
++			linux,code = <KEY_WPS_BUTTON>;
++			gpios = <&tlmm 18 GPIO_ACTIVE_LOW>;
++		};
++	};
++};
++
++&mdio {
++	status = "okay";
++	pinctrl-0 = <&mdio_pins>;
++	pinctrl-names = "default";
++	reset-gpios = <&tlmm 54 GPIO_ACTIVE_LOW>;
++	reset-delay-us = <2000>;
++	reset-post-delay-us = <5000>;
++};
++	
++&tlmm {
++	status = "okay";
++
++	mdio_pins: mdio_pinmux {
++		mdio {
++			pins = "gpio6";
++			function = "mdio";
++			bias-pull-up;
++		};
++
++		mdc {
++			pins = "gpio7";
++			function = "mdc";
++			bias-pull-up;
++		};
++	};
++};
++
++&wifi0 {
++	status = "okay";
++	qcom,ath10k-calibration-variant = "linksys-mr6350";
++};
++
++&wifi1 {
++	status = "okay";
++	qcom,ath10k-calibration-variant = "linksys-mr6350";
++};
++
++&swport1 {
++	label = "wan";
++};
++
++&swport2 {
++	label = "lan1";
++};
++
++&swport3 {
++	label = "lan2";
++};
++
++&swport4 {
++	label = "lan3";
++};
++
++&swport5 {
++	label = "lan4";
++};
+diff --git a/target/linux/ipq40xx/image/generic.mk b/target/linux/ipq40xx/image/generic.mk
+index eeab128008..398419c0dd 100644
+--- a/target/linux/ipq40xx/image/generic.mk
++++ b/target/linux/ipq40xx/image/generic.mk
+@@ -705,6 +705,23 @@ define Device/linksys_ea8300
+  endef
+  TARGET_DEVICES += linksys_ea8300
+  
++define Device/linksys_mr6350
++	$(call Device/FitzImage)
++	$(call Device/kernel-size-6350-8300)
++	DEVICE_VENDOR := Linksys
++	DEVICE_MODEL := MR6350
++	SOC := qcom-ipq4019
++	KERNEL_SIZE := 5120k
++	IMAGE_SIZE := 84992k
++	BLOCKSIZE := 128k
++	PAGESIZE := 2048
++	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
++	IMAGES += factory.bin
++	IMAGE/factory.bin  := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | linksys-image type=MR6350
++	DEVICE_PACKAGES := ipq-wifi-linksys_mr6350 kmod-usb-ledtrig-usbport
++endef
++TARGET_DEVICES += linksys_mr6350
++
+  define Device/linksys_mr8300
+  	$(call Device/FitzImage)
+  	$(call Device/kernel-size-6350-8300)
+
+
+
+From openwrt at jonaslochmann.de  Fri Oct 31 03:15:20 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Fri, 31 Oct 2025 11:15:20 +0100
+Subject: odhcp6c: expire processing and script calling
+Message-ID: <wd6b76ze6xgz563lm4zp5i2dmlssx2vxepxs5kwtvjjgncsrra@4rxzfe3pgv6q>
+
+There is the PR about the "ipv6 iol intact certification" [1]. There is
+no useful description but I found out that this is about the results
+from some automated testing tool that found issues with odhcp6c.
+
+One of those issues could be solved by my PR [2]. Two others remain.
+Both are related to DNS related RA items that do not seem to expire
+correctly. Right now, the expiry is implemented mostly within netifd.
+However, odhcp6c does the same thing too. There are two issues with it:
+
+- the expired items are removed from the odhcp6c internal state, but
+  this does not trigger calling the hook script; it is also unclear
+  which "action" would be used if the expiry caused changes
+- the expiry is processed whenever something is received (RA or DHCP
+  reply) but it would be necassary to also process it when something
+  is due (which would be as simple as calculating the minimum valid
+  value and schedule the expire task with this delay except if the
+  minimum is the "never expires" magic value)
+
+The proposed solution in the existing PR [1] involves bigger
+architectural changes by exporting the expire times to netifd and
+let it deal with it. Still, I see an advantage of keeping this
+within odhcp6c for use cases involving odhcp6c without netifd
+(e.g. outside of OpenWrt; Debian contains odhcp6c too and if I
+knew that earlier I would have used it in some setup; in this
+case, I definitly would not want to develop a custom expire
+processing).
+
+It is probably best to wait with this topic until the "Purple
+patchset" [3] is done that adds ubus support and makes the DHCP
+part async.
+
+[1] https://github.com/openwrt/odhcp6c/pull/97
+[2] https://github.com/openwrt/odhcp6c/pull/108
+[3] https://github.com/openwrt/odhcp6c/pull/106
+
+
+From robimarko at gmail.com  Fri Oct 31 03:30:16 2025
+From: robimarko at gmail.com (Robert Marko)
+Date: Fri, 31 Oct 2025 11:30:16 +0100
+Subject: [PATCH]ipq40xx: add support for linksys mr6350
+In-Reply-To: <aQP4k1HUtLgSQWDQ@spectrum.net>
+References: <aQP4k1HUtLgSQWDQ@spectrum.net>
+Message-ID: <CAOX2RU75n7Hp_cnCvjRSiLFtxRmeXrtxNLS+V_WCPYhLMi428A@mail.gmail.com>
+
+On Fri, 31 Oct 2025 at 00:47, J. Scott Heppler <shep971 at spectrum.net> wrote:
+>
+> Developer Credits:
+>          Many contributed as detailed in "https://forum.openwrt.org/t/
+>          adding-openwrt-support-for-linksys-mr6350/82812".
+>          Contributors of note: @rolandomagico, @rwl408, @Shine
+>
+> Device Specs:
+>
+>         IPQ4019
+>         Quad Core CPU
+>         256 MB RAM
+>         256 MB FLASH
+>         4 x 10/100/100 LAN ports, 1 x 10/100/1000 WAN port
+>         2.4GHz (802.11n) and 5GHz (802.11c) wifi based on ath10k
+>         3 LEDs (Red, blue, green) which are routed to one indicator at the top
+>         of the case
+>         2 buttons (Reset, WPS)
+>         Dual boot with booted image changing after the 3rd boot
+>
+> Disassembling the device:
+>
+>         There are 4 screws at the bottom of the device which must be removed
+>         Front Two, one under each front rubber foot pad
+>         Two are under the labels in the back (corner next to the rear rubber
+>         foot pads)
+>         Photos in post 16 in the forum thread linked above
+>
+> Serial interface:
+>
+>         The serial interface is already populated on the device with a 6-pin
+>         header
+>         Pin 1 is next to the heatsink
+>         Pinout: 1: 3.3V, 2: TX, 3: RX, 4: unknown, 5: GND, 6: GND
+>         Settings: 115200, 8N1
+>         Photo in post 16 of the forum thread
+>
+> Two ways to Migrate to OpenWrt each requiring multiple steps:
+>
+> Installation overview:
+>
+>         For initial flash, aflash an image that has a <3MB kernel must be used
+>         Can either be done by tftp+serial or OEM forced firmware flash. Once
+>         the image loaded, ssh root at 192.168.1.1 and edit kernel size in fw_env
+>         Then can use the either the Luci Administration firmware flash, or
+> command line to install the *factory*.bin
+>
+> tftp+serial:
+>
+>         The @rwl408 images, linked in post 25 were tested with both
+>         tftp+serial and OEM force flash. This image is not fully functional but
+>         does boot, allow ssh access, editing fw_env kernsize and finally
+>         flashing the sysupgrade image
+>
+>         Connect serial interface
+>         Set up a TFTP server on IP 192.168.1.254
+>         Copy openwrt-ipq40xx-generic-linksys_mr6350-initramfs-zImage.itb
+>         to TFTP server
+>         Rename file to C0A80101.img
+>         Boot up the device and stop in U-Boot
+>         Run the following U-Boot commands after a link has been established:
+>         "tftp" "bootm"
+>         initramfs image should be started now.
+>
+> OEM firmware flash - tested with OEM firmware 1.1.3.216612
+>         username:password = admin:admin
+>         select "ca" on the bottom
+>         "Configuration" window should allow browsing to @rwl408 factory image:
+>         Select and force upload.  Reboot into the 22.04 OpenWRT image
+>
+> Adjust U-Boot settings to support bigger kernels:
+>
+>         ssh root at 192.168.1.1
+>         Run "fw_printenv" in the image after booting
+>         There should be an entry kernsize=300000 which indicates the maximum
+>         size for the kernel is 3MB
+>         When resetting the kernsize, do not reflexively insert an "=".
+>         It will brick the router
+>         Execute "fw_setenv kernsize 500000" to increase the max kernel size to
+>         5MB
+>         Check that the change are applied with "fw_printenv"
+>
+> Flash the final image:
+>
+>         Use *factory*.bin image.
+>
+> Dual boot settings:
+>
+>         Consider the luci-app-advanced-reboot package and use it to
+>         reboot/shutdown.
+>         Alternatively, append the following commands to /etc/rc.local
+>         to reset the bootcount to zero
+>         "/rom/sbin/mtd unlock s_env"
+>         "/rom/sbin/mtd erase s_env"
+>         Note that the default /etc/rc.local file is -rw-rw-r--.
+>         chmod 0774 /etc/rc.local to execute on boot. Test with
+>         "sh /etc/rc.local"
+>
+> Revert back to OEM firmware:
+>
+>         Only tested with FW_MR6350_1.1.3.210129_prod.img
+>         Flash the OEM firmware via sysupgrade
+>         Forced update is required in the OEM interface
+>
+> Signed-off-by: "J. Scott Heppler" <shep971 at spectrum.net>
+> Tested-by: "J. Scott Heppler" <shep971 at spectrum.net>
+
+Hi,
+There is already an pending PR for this device:
+https://github.com/openwrt/openwrt/pull/17977
+
+Regards,
+Robert
+>
+> diff --git a/package/boot/uboot-tools/uboot-envtools/files/ipq40xx b/package/boot/uboot-tools/uboot-envtools/files/ipq40xx
+> index 717158b042..ff2ad72949 100644
+> --- a/package/boot/uboot-tools/uboot-envtools/files/ipq40xx
+> +++ b/package/boot/uboot-tools/uboot-envtools/files/ipq40xx
+> @@ -61,6 +61,7 @@ linksys,ea6350v3)
+>         ubootenv_add_uci_config "/dev/mtd7" "0x0" "0x20000" "0x20000"
+>         ;;
+>   linksys,ea8300|\
+> +linksys,mr6350|\
+>   linksys,mr8300)
+>         ubootenv_add_uci_config "/dev/mtd7" "0x0" "0x40000" "0x20000"
+>         ;;
+> diff --git a/package/firmware/ipq-wifi/Makefile b/package/firmware/ipq-wifi/Makefile
+> index 01d2990c61..e8f399f26c 100644
+> --- a/package/firmware/ipq-wifi/Makefile
+> +++ b/package/firmware/ipq-wifi/Makefile
+> @@ -48,6 +48,7 @@ ALLWIFIBOARDS:= \
+>         iodata_wn-dax3000gr \
+>         linksys_homewrk \
+>         linksys_mr5500 \
+> +       linksys_mr6350 \
+>         linksys_mr7350 \
+>         linksys_mr7500 \
+>         linksys_mx2000 \
+> @@ -224,6 +225,7 @@ $(eval $(call generate-ipq-wifi-package,ignitenet_ss-w2-ac2600,Ignitenet SS-W2-A
+>   $(eval $(call generate-ipq-wifi-package,iodata_wn-dax3000gr,I-O DATA WN-DAX3000GR))
+>   $(eval $(call generate-ipq-wifi-package,linksys_homewrk,Linksys HomeWRK))
+>   $(eval $(call generate-ipq-wifi-package,linksys_mr5500,Linksys MR5500))
+> +$(eval $(call generate-ipq-wifi-package,linksys_mr6350,Linksys MR6350))
+>   $(eval $(call generate-ipq-wifi-package,linksys_mr7350,Linksys MR7350))
+>   $(eval $(call generate-ipq-wifi-package,linksys_mr7500,Linksys MR7500))
+>   $(eval $(call generate-ipq-wifi-package,linksys_mx2000,Linksys MX2000))
+> diff --git a/target/linux/ipq40xx/base-files/etc/board.d/02_network b/target/linux/ipq40xx/base-files/etc/board.d/02_network
+> index ba953216f5..f3f43e0584 100644
+> --- a/target/linux/ipq40xx/base-files/etc/board.d/02_network
+> +++ b/target/linux/ipq40xx/base-files/etc/board.d/02_network
+> @@ -17,6 +17,7 @@ ipq40xx_setup_interfaces()
+>         asus,rt-ac58u|\
+>         linksys,ea6350v3|\
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300|\
+>         mikrotik,hap-ac2|\
+>         mikrotik,hap-ac3|\
+> @@ -218,6 +219,7 @@ ipq40xx_setup_macs()
+>                 ;;
+>         linksys,ea6350v3|\
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300)
+>                 wan_mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+>                 lan_mac=$(macaddr_add "$wan_mac" 1)
+> diff --git a/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+> index 0c8a5d8aa5..ab394d049d 100644
+> --- a/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+> +++ b/target/linux/ipq40xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+> @@ -26,6 +26,7 @@ case "$FIRMWARE" in
+>                 /usr/bin/fritz_cal_extract -i 1 -s 0x3C000 -e 0x212 -l 12064 -o /lib/firmware/$FIRMWARE $(find_mtd_chardev "urlader1")
+>                 ;;
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300)
+>                 caldata_extract "ART" 0x9000 0x2f20
+>                 # OEM assigns 4 sequential MACs
+> @@ -94,6 +95,7 @@ case "$FIRMWARE" in
+>                 ath10k_patch_mac $(mtd_get_mac_ascii CFG1 RADIOADDR0)
+>                 ;;
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300)
+>                 caldata_extract "ART" 0x1000 0x2f20
+>                 ath10k_patch_mac $(macaddr_add "$(cat /sys/class/net/eth0/address)" 2)
+> @@ -188,6 +190,7 @@ case "$FIRMWARE" in
+>                 ath10k_patch_mac $(mtd_get_mac_ascii CFG1 RADIOADDR1)
+>                 ;;
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300)
+>                 caldata_extract "ART" 0x5000 0x2f20
+>                 ath10k_patch_mac $(macaddr_add "$(cat /sys/class/net/eth0/address)" 3)
+> diff --git a/target/linux/ipq40xx/base-files/etc/init.d/bootcount b/target/linux/ipq40xx/base-files/etc/init.d/bootcount
+> index 0120f78cfe..079edce24c 100755
+> --- a/target/linux/ipq40xx/base-files/etc/init.d/bootcount
+> +++ b/target/linux/ipq40xx/base-files/etc/init.d/bootcount
+> @@ -39,6 +39,7 @@ boot() {
+>                 ;;
+>         linksys,ea6350v3|\
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300|\
+>         linksys,whw01|\
+>         linksys,whw03v2)
+> diff --git a/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version b/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version
+> index 9ee8adbf7f..e0547c3650 100644
+> --- a/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version
+> +++ b/target/linux/ipq40xx/base-files/etc/uci-defaults/05_fix-compat-version
+> @@ -4,6 +4,7 @@ case "$(board_name)" in
+>   ezviz,cs-w3-wd1200g-eup|\
+>   linksys,ea6350v3|\
+>   linksys,ea8300|\
+> +linksys,mr6350|\
+>   linksys,mr8300)
+>         uci set system. at system[0].compat_version="2.0"
+>         uci commit system
+> diff --git a/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh b/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh
+> index 092f9da440..8a8d224a45 100644
+> --- a/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh
+> +++ b/target/linux/ipq40xx/base-files/lib/preinit/05_set_iface_mac_ipq40xx.sh
+> @@ -25,6 +25,7 @@ preinit_set_mac_address() {
+>                 ip link set dev eth0 address $(mtd_get_mac_ascii CFG1 ethaddr)
+>                 ;;
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300)
+>                 base_mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+>                 ip link set dev lan1 address $(macaddr_add "$base_mac" 1)
+> diff --git a/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh b/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh
+> index 860c3fd2de..256b3cfb91 100644
+> --- a/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh
+> +++ b/target/linux/ipq40xx/base-files/lib/upgrade/linksys.sh
+> @@ -16,7 +16,7 @@ linksys_get_target_firmware() {
+>                         "${cur_boot_part}" "${mtd_ubi0}"
+>         fi
+>
+> -       # OEM U-Boot for EA6350v3, EA8300 and MR8300; bootcmd=
+> +       # OEM U-Boot for EA6350v3, EA8300, MR6350 and MR8300; bootcmd=
+>         #  if test $auto_recovery = no;
+>         #      then bootipq;
+>         #  elif test $boot_part = 1;
+> diff --git a/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh b/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh
+> index 3f68c0a60e..3eda947100 100644
+> --- a/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh
+> +++ b/target/linux/ipq40xx/base-files/lib/upgrade/platform.sh
+> @@ -165,6 +165,7 @@ platform_do_upgrade() {
+>                 ;;
+>         linksys,ea6350v3|\
+>         linksys,ea8300|\
+> +       linksys,mr6350|\
+>         linksys,mr8300|\
+>         linksys,whw01|\
+>         linksys,whw03v2)
+> diff --git a/target/linux/ipq40xx/files-6.12/arch/arm/boot/dts/qcom/qcom-ipq4019-mr6350.dts b/target/linux/ipq40xx/files-6.12/arch/arm/boot/dts/qcom/qcom-ipq4019-mr6350.dts
+> new file mode 100644
+> index 0000000000..d936e720e4
+> --- /dev/null
+> +++ b/target/linux/ipq40xx/files-6.12/arch/arm/boot/dts/qcom/qcom-ipq4019-mr6350.dts
+> @@ -0,0 +1,114 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +
+> +#include "qcom-ipq4019-xx8300.dtsi"
+> +#include <dt-bindings/leds/common.h>
+> +
+> +/ {
+> +       model = "Linksys MR6350";
+> +       compatible = "linksys,mr6350", "qcom,ipq4019";
+> +
+> +       aliases {
+> +               led-boot = &led_blue;
+> +               led-failsafe = &led_red;
+> +               led-running = &led_green;
+> +               led-upgrade = &led_blue;
+> +               serial0 = &blsp1_uart1;
+> +       };
+> +
+> +       // Top panel LEDs, above Linksys logo
+> +       leds {
+> +               compatible = "gpio-leds";
+> +
+> +               led_blue: led-blue {
+> +                       color = <LED_COLOR_ID_BLUE>;
+> +                       function = LED_FUNCTION_STATUS;
+> +                       gpios = <&tlmm 46 GPIO_ACTIVE_LOW>;
+> +               };
+> +
+> +               led_red: led-red {
+> +                       color = <LED_COLOR_ID_RED>;
+> +                       function = LED_FUNCTION_STATUS;
+> +                       gpios = <&tlmm 47 GPIO_ACTIVE_HIGH>;
+> +                       panic-indicator;
+> +               };
+> +
+> +               led_green: led-green {
+> +                       color = <LED_COLOR_ID_GREEN>;
+> +                       function = LED_FUNCTION_STATUS;
+> +                       gpios = <&tlmm 49 GPIO_ACTIVE_HIGH>;
+> +               };
+> +       };
+> +
+> +       keys {
+> +               compatible = "gpio-keys";
+> +
+> +               button-reset {
+> +                       label = "reset";
+> +                       linux,code = <KEY_RESTART>;
+> +                       gpios = <&tlmm 50 GPIO_ACTIVE_LOW>;
+> +               };
+> +
+> +               button-wps {
+> +                       label = "wps";
+> +                       linux,code = <KEY_WPS_BUTTON>;
+> +                       gpios = <&tlmm 18 GPIO_ACTIVE_LOW>;
+> +               };
+> +       };
+> +};
+> +
+> +&mdio {
+> +       status = "okay";
+> +       pinctrl-0 = <&mdio_pins>;
+> +       pinctrl-names = "default";
+> +       reset-gpios = <&tlmm 54 GPIO_ACTIVE_LOW>;
+> +       reset-delay-us = <2000>;
+> +       reset-post-delay-us = <5000>;
+> +};
+> +
+> +&tlmm {
+> +       status = "okay";
+> +
+> +       mdio_pins: mdio_pinmux {
+> +               mdio {
+> +                       pins = "gpio6";
+> +                       function = "mdio";
+> +                       bias-pull-up;
+> +               };
+> +
+> +               mdc {
+> +                       pins = "gpio7";
+> +                       function = "mdc";
+> +                       bias-pull-up;
+> +               };
+> +       };
+> +};
+> +
+> +&wifi0 {
+> +       status = "okay";
+> +       qcom,ath10k-calibration-variant = "linksys-mr6350";
+> +};
+> +
+> +&wifi1 {
+> +       status = "okay";
+> +       qcom,ath10k-calibration-variant = "linksys-mr6350";
+> +};
+> +
+> +&swport1 {
+> +       label = "wan";
+> +};
+> +
+> +&swport2 {
+> +       label = "lan1";
+> +};
+> +
+> +&swport3 {
+> +       label = "lan2";
+> +};
+> +
+> +&swport4 {
+> +       label = "lan3";
+> +};
+> +
+> +&swport5 {
+> +       label = "lan4";
+> +};
+> diff --git a/target/linux/ipq40xx/image/generic.mk b/target/linux/ipq40xx/image/generic.mk
+> index eeab128008..398419c0dd 100644
+> --- a/target/linux/ipq40xx/image/generic.mk
+> +++ b/target/linux/ipq40xx/image/generic.mk
+> @@ -705,6 +705,23 @@ define Device/linksys_ea8300
+>   endef
+>   TARGET_DEVICES += linksys_ea8300
+>
+> +define Device/linksys_mr6350
+> +       $(call Device/FitzImage)
+> +       $(call Device/kernel-size-6350-8300)
+> +       DEVICE_VENDOR := Linksys
+> +       DEVICE_MODEL := MR6350
+> +       SOC := qcom-ipq4019
+> +       KERNEL_SIZE := 5120k
+> +       IMAGE_SIZE := 84992k
+> +       BLOCKSIZE := 128k
+> +       PAGESIZE := 2048
+> +       UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
+> +       IMAGES += factory.bin
+> +       IMAGE/factory.bin  := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | linksys-image type=MR6350
+> +       DEVICE_PACKAGES := ipq-wifi-linksys_mr6350 kmod-usb-ledtrig-usbport
+> +endef
+> +TARGET_DEVICES += linksys_mr6350
+> +
+>   define Device/linksys_mr8300
+>         $(call Device/FitzImage)
+>         $(call Device/kernel-size-6350-8300)
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From openwrt at jonaslochmann.de  Fri Oct 31 03:47:21 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Fri, 31 Oct 2025 11:47:21 +0100
+Subject: odhcp6c, netifd and the interface ip sorting
+Message-ID: <24xw4eq37nm76rkrg46st5yzgqh6sviwtrj6dcd25ouxqzutbc@lpuc2p2jrskc>
+
+Right now, the sorting of the list of IPs for an interface that can be
+received from the ubus interface of netifd is kind of unspecified. With
+IPv6 where multiple IPs are more common (e.g. ULA and public), this is
+quite bad in combination with the implementation of network_get_ipaddr6
+that just returns the first address [1]. So it can be the ULA or the
+public address.
+
+Part of the issue is the comparator function in netifd for
+addresses [2]. First, there index is compared, then the actual content.
+The index is just based on the order of the IPs as they are configured
+or received [3].
+
+In case of odhcp6c, this list is updated from its hook and sent to
+netifd. The hook sends all IPs (the new list of IPs) and their order
+is in the end the one that is returned by netifd when queried using
+the ubus interface. odhcp6c itself just adds new IPs to the end of
+its list and cuts out old addresses from the list (using memmove to
+overwrite it with the following list items [4]).
+
+The end result: One can start with the public IP as the first IP and
+once it changes, the public IP is the second one in the list and the
+ULA one is the first. And this first IP is returned by
+network_get_ipaddr6.
+
+My favorite solution would be to sort the IPs first by their value and
+then by their index in netifd. This would be more deterministic and
+have the side effect of returning the public IPs first and then the ULA
+IPs (which matches e.g. "ip a").
+
+[1] https://github.com/openwrt/openwrt/blob/v24.10.4/package/base-files/files/lib/functions/network.sh#L37
+[2] https://github.com/openwrt/netifd/blob/777f5942fa7d6245f6ad29daa1daecc400344d37/interface-ip.c#L540
+[3] https://github.com/openwrt/netifd/blob/777f5942fa7d6245f6ad29daa1daecc400344d37/proto.c#L175
+[4] https://github.com/openwrt/odhcp6c/blob/77e1ae21e67f81840024ffe5bb7cf69a8fb0d2f0/src/odhcp6c.c#L759
+
+
+From aaronngray.lists at gmail.com  Fri Oct 31 09:30:49 2025
+From: aaronngray.lists at gmail.com (Aaron Gray)
+Date: Fri, 31 Oct 2025 16:30:49 +0000
+Subject: New firewalling technique proposal
+Message-ID: <CANkmNDeMxJuosaYG64YV-Wo-zsGMxH4QeZtbJ+dgf4Fnvu9WFw@mail.gmail.com>
+
+I am writing looking for developers interested in a new idea for
+firewalling on OpenWRT.
+
+The initial concept is very simple, basically tallying all outgoing
+and optionally incoming IP packets with a record of all DNS IP
+requests, by using an iptables extension module.
+
+In addition to this, is the idea of an OpenWRT web user interface
+extension to manage connections, this would show all open connections.
+With the additional optional functionality of only allowing new
+connections to new IP addresses and/or domains when they are validated
+by the user. Any unknown IP traffic will be denied and flagged up with
+reverse IP lookup attempted and domains displayed. Opinions for
+allowing a whitelists of all Ubuntu, Debian, Microsoft Windows,
+installer and update IP's can also be added.
+
+In addition user desktop apps may allow this to be displayed on the
+users desktop, as an icon tray app on Windows for example.
+
+I have developed and ported command line tools for Linux, Windows, and
+MacOS, and have potentially Android and iOS skills. I have done simple
+Hello World, and Map apps in the past for both mobile platforms, so we
+could add mobile app support too.
+
+Anyone interested in working on this project on whatever level ideally
+first the iptables extension please do chime in or get in touch.
+
+Regards,
+
+Aaron
+--
+Aaron Gray - https://github.com/AaronNGray
+
+Meta-Mathematician, Independent Open Source Software Engineer,
+Computer Language Researcher and Designer, Type Theorist, Computer
+Scientist, Environmentalist and Climate Science Researcher and
+Disseminator.
+
+
+From ich at jolo.software  Fri Oct 31 10:30:57 2025
+From: ich at jolo.software (Jonas Lochmann)
+Date: Fri, 31 Oct 2025 18:30:57 +0100
+Subject: New firewalling technique proposal
+In-Reply-To: <CANkmNDeMxJuosaYG64YV-Wo-zsGMxH4QeZtbJ+dgf4Fnvu9WFw@mail.gmail.com>
+References: <CANkmNDeMxJuosaYG64YV-Wo-zsGMxH4QeZtbJ+dgf4Fnvu9WFw@mail.gmail.com>
+Message-ID: <5cp4akqohegpl663jdq5dy6m7hwv3pzagszuo5wmyud6fu7kxc@jeix52ybr6j2>
+
+Am Fri, Oct 31, 2025 at 04:30:49PM +0000, schrieb Aaron Gray:
+> The initial concept is very simple, basically tallying all outgoing
+> and optionally incoming IP packets with a record of all DNS IP
+> requests, by using an iptables extension module.
+
+Why iptables and not nftables? Why an extension module? All you need
+is already in the kernel: ip sets, rules and forwarding specific packets
+(DNS) to the user space.
+
+> In addition to this, is the idea of an OpenWRT web user interface
+> extension to manage connections, this would show all open connections.
+> With the additional optional functionality of only allowing new
+> connections to new IP addresses and/or domains when they are validated
+> by the user. Any unknown IP traffic will be denied and flagged up with
+> reverse IP lookup attempted and domains displayed. Opinions for
+> allowing a whitelists of all Ubuntu, Debian, Microsoft Windows,
+> installer and update IP's can also be added.
+
+Honestly, this sounds like some toy for people that don't know what
+they are doing. CDNs limit its use.
+
+For restrictive setups, proxies are used today. Those could be
+transparent proxies.
+
+
+From aaronngray.lists at gmail.com  Fri Oct 31 12:20:48 2025
+From: aaronngray.lists at gmail.com (Aaron Gray)
+Date: Fri, 31 Oct 2025 19:20:48 +0000
+Subject: New firewalling technique proposal
+In-Reply-To: <5cp4akqohegpl663jdq5dy6m7hwv3pzagszuo5wmyud6fu7kxc@jeix52ybr6j2>
+References: <CANkmNDeMxJuosaYG64YV-Wo-zsGMxH4QeZtbJ+dgf4Fnvu9WFw@mail.gmail.com>
+ <5cp4akqohegpl663jdq5dy6m7hwv3pzagszuo5wmyud6fu7kxc@jeix52ybr6j2>
+Message-ID: <CANkmNDcSfnRbA0FadO8_ZzY8f8ioFfRtKwD2rJHo5eR+x3HQyw@mail.gmail.com>
+
+Hi Jonas,
+
+On Fri, 31 Oct 2025 at 17:31, Jonas Lochmann <ich at jolo.software> wrote:
+>
+> Am Fri, Oct 31, 2025 at 04:30:49PM +0000, schrieb Aaron Gray:
+> > The initial concept is very simple, basically tallying all outgoing
+> > and optionally incoming IP packets with a record of all DNS IP
+> > requests, by using an iptables extension module.
+>
+> Why iptables and not nftables?
+
+Sorry I actually meant nftables, I have been using firewalling since
+the mid 2000's for server.
+
+> Why an extension module?
+
+I thought a purpose built module would potentially be more efficient
+and only possibly require one or two rules.
+
+> All you need
+> is already in the kernel: ip sets, rules and forwarding specific packets
+> (DNS) to the user space.
+
+So does the existing OpenVPN actually check IP's against previous DNS
+request reply IP's ?
+
+If it is not an out of the box configuration, how would I configure
+OpenVPN to do so please ?
+
+> > In addition to this, is the idea of an OpenWRT web user interface
+> > extension to manage connections, this would show all open connections.
+> > With the additional optional functionality of only allowing new
+> > connections to new IP addresses and/or domains when they are validated
+> > by the user. Any unknown IP traffic will be denied and flagged up with
+> > reverse IP lookup attempted and domains displayed. Opinions for
+> > allowing a whitelists of all Ubuntu, Debian, Microsoft Windows,
+> > installer and update IP's can also be added.
+>
+> Honestly, this sounds like some toy for people that don't know what
+> they are doing.
+
+I am not really that much of a noob, I did happen to have run dual
+mirrored servers for 7 years with 36 hours downtime due to power and
+internet outages, of which 1 hour was my fault ;)
+
+For running multiple devices using OpenWRT I would find proper
+instrumentation more than useful.
+
+> CDNs limit its use.
+
+How do Content Delivery Networks work with this, is this just
+blacklists and whitelists rather than DNS based blacklists ? If there
+are whitelists for all the major operating systems installation and
+updates this would be great !
+
+> For restrictive setups, proxies are used today. Those could be
+> transparent proxies.
+
+I am not really sure how proxies are relevant, please explain.
+
+Sorry I don't wish to sound rude, I really don't know OpenWRT itself
+that well yet despite using it for a while.
+
+Regards,
+
+Aaron
+-- 
+Aaron Gray - https://github.com/AaronNGray
+
+Meta-Mathematician, Independent Open Source Software Engineer,
+Computer Language Researcher and Designer, Type Theorist, Computer
+Scientist, Environmentalist and Climate Science Researcher and
+Disseminator.
+
+
+From openwrt at jonaslochmann.de  Fri Oct 31 13:23:28 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Fri, 31 Oct 2025 21:23:28 +0100
+Subject: New firewalling technique proposal
+In-Reply-To: <CANkmNDcSfnRbA0FadO8_ZzY8f8ioFfRtKwD2rJHo5eR+x3HQyw@mail.gmail.com>
+References: <CANkmNDeMxJuosaYG64YV-Wo-zsGMxH4QeZtbJ+dgf4Fnvu9WFw@mail.gmail.com>
+ <5cp4akqohegpl663jdq5dy6m7hwv3pzagszuo5wmyud6fu7kxc@jeix52ybr6j2>
+ <CANkmNDcSfnRbA0FadO8_ZzY8f8ioFfRtKwD2rJHo5eR+x3HQyw@mail.gmail.com>
+Message-ID: <thuwsbra63rei7rt3km4hmoxckybg5wk27qndmgoxw5xdcg2zw@jycr4smo67bc>
+
+Am Fri, Oct 31, 2025 at 07:20:48PM +0000, schrieb Aaron Gray:
+> So does the existing OpenVPN actually check IP's against previous DNS
+> request reply IP's ?
+
+I assume you are not talking about OpenVPN but about another component.
+I assume nftables.
+
+> If it is not an out of the box configuration, how would I configure
+> OpenVPN to do so please ?
+
+The glue you need is a DNS processor that needs to be implemented.
+
+I would assume the rules: dport 53 queue; sport 53 queue;
+
+Maybe "dup lo" (or some extra interface) could work too. The advantage
+of queue is that the userspace process could process the packet before
+it is forwarded in the network and the effect should apply.
+
+The permited IPs would be added to some nft set from that userspace
+process. Then there would be a filter rule expecting the item in the
+set:
+
+ip daddr @ip_set accept; ip saddr @ip_set accept;
+
+Otherwise, one would reject or drop.
+
+IPs should also be removed from the set at some point. Set items can
+expire, but active traffic to it should probably reset the timer.
+
+This DNS processor could in theory be implemented in the kernel.
+I would not recommend this. I would not expect an amount of DNS traffic
+where performance would become a problem.
+
+> > Honestly, this sounds like some toy for people that don't know what
+> > they are doing.
+> 
+> I am not really that much of a noob, I did happen to have run dual
+> mirrored servers for 7 years with 36 hours downtime due to power and
+> internet outages, of which 1 hour was my fault ;)
+
+I am talking about people using this solution. I saw people using some
+"traffic analyzer solutions" interpreting the data wrongly because they
+have no idea about the limitations of reverse DNS and geolocation (or
+don't know at all what this actually is).
+
+> > CDNs limit its use.
+> 
+> How do Content Delivery Networks work with this, is this just
+> blacklists and whitelists rather than DNS based blacklists ? If there
+> are whitelists for all the major operating systems installation and
+> updates this would be great !
+
+One CDN is used for many services. Thus, the same IP is used for many
+services. So it is possible to permit way too much in the end. This
+also opens the possibilities for Domain Fronting 2.0. Original Domain
+Fronting was about using different hostnames in the TLS and HTTP level.
+Now, there is a motivation to specify another legitimate domain at the
+DNS level that uses the same CDN as the target service to unblock the
+IP.
+
+> > For restrictive setups, proxies are used today. Those could be
+> > transparent proxies.
+> 
+> I am not really sure how proxies are relevant, please explain.
+
+Outbound internet access/any internet access only using some proxy
+server that enforces domain filters and device/user authentication.
+Example: squid3
+
+> Sorry I don't wish to sound rude, I really don't know OpenWRT itself
+> that well yet despite using it for a while.
+
+This is not related to OpenWrt. I consider it general networking.
+
+

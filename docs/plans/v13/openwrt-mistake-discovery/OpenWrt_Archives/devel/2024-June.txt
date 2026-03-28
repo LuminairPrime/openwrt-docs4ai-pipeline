@@ -1,0 +1,3414 @@
+From arinc.unal at arinc9.com  Sat Jun  1 13:23:20 2024
+From: arinc.unal at arinc9.com (=?UTF-8?B?QXLEsW7DpyDDnE5BTA==?=)
+Date: Sat, 1 Jun 2024 23:23:20 +0300
+Subject: OpenWrt's out-of-tree 204-module_strip.patch causes issues
+Message-ID: <e408bbbe-ac55-4bca-a13c-815b7fd74bbd@arinc9.com>
+
+I've been working on porting MP-DCCP to Teltonika SDK 7.6.10. The SDK is
+based off of OpenWrt, close to 22.03.6. After spending hours on figuring
+out why my MP-DCCP port works on the vanilla 5.10.201 but not OpenWrt's
+5.10.201, I've started looking for OpenWrt's out-of-tree kernel patches. I
+was able to pinpoint it to
+target/linux/generic/hack-5.10/204-module_strip.patch. I see that this
+patch is still there for 6.6 on the main branch of the OpenWrt repository.
+
+For my case, I just removed this patch and moved on. I'm only sending this
+email as proof that OpenWrt's out-of-tree patches cause issues.
+
+[    1.897757] ------------[ cut here ]------------
+[    1.902441] WARNING: CPU: 0 PID: 1 at fs/sysfs/group.c:116 internal_create_group+0x3ac/0x3d4
+[    1.911179] Modules linked in:
+[    1.914253] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.201 #0
+[    1.920346] Hardware name: Mediatek Cortex-A7 (Device Tree)
+[    1.925936] [<c010d780>] (unwind_backtrace) from [<c0109c00>] (show_stack+0x10/0x14)
+[    1.933688] [<c0109c00>] (show_stack) from [<c04c21f8>] (dump_stack+0x88/0x9c)
+[    1.940917] [<c04c21f8>] (dump_stack) from [<c011ead8>] (__warn+0x9c/0xf8)
+[    1.947796] [<c011ead8>] (__warn) from [<c011eb9c>] (warn_slowpath_fmt+0x68/0x78)
+[    1.955287] [<c011eb9c>] (warn_slowpath_fmt) from [<c02f0300>] (internal_create_group+0x3ac/0x3d4)
+[    1.964258] [<c02f0300>] (internal_create_group) from [<c08efb98>] (mpdccp_link_sysfs_init+0x90/0xb4)
+[    1.973489] [<c08efb98>] (mpdccp_link_sysfs_init) from [<c0d2786c>] (mpdccp_link_module_init+0x24/0xdc)
+[    1.982889] [<c0d2786c>] (mpdccp_link_module_init) from [<c0101920>] (do_one_initcall+0x54/0x1f4)
+[    1.991769] [<c0101920>] (do_one_initcall) from [<c0d0125c>] (kernel_init_freeable+0x22c/0x280)
+[    2.000474] [<c0d0125c>] (kernel_init_freeable) from [<c0900454>] (kernel_init+0x8/0x118)
+[    2.008657] [<c0900454>] (kernel_init) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+[    2.016229] Exception stack(0xc1079fb0 to 0xc1079ff8)
+[    2.021282] 9fa0:                                     00000000 00000000 00000000 00000000
+[    2.029465] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    2.037645] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    2.044348] ---[ end trace a1a1b229e3c1a883 ]---
+
+Ar?n?
+
+
+From linus.walleij at linaro.org  Sat Jun  1 13:34:00 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Sat, 01 Jun 2024 22:34:00 +0200
+Subject: [PATCH] kirkwood: Add Marvell RTC to two devices
+Message-ID: <20240601-kirkwood-dns320l-rtc-v1-1-6e3e925ea917@linaro.org>
+
+The recently added D-Link DNS-320L and the Zyxel NSA310S
+is missing an RTC module so let's give them the default
+Marvell RTC at least.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/kirkwood/image/Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/target/linux/kirkwood/image/Makefile b/target/linux/kirkwood/image/Makefile
+index 48de5bee2b84..2bd2f6415987 100644
+--- a/target/linux/kirkwood/image/Makefile
++++ b/target/linux/kirkwood/image/Makefile
+@@ -186,7 +186,7 @@ define Device/dlink_dns320l
+   DEVICE_VENDOR := D-Link
+   DEVICE_MODEL := DNS-320L
+   DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug \
+-	kmod-usb-storage kmod-usb-ledtrig-usbport dns320l-mcu
++	kmod-usb-storage kmod-usb-ledtrig-usbport dns320l-mcu kmod-rtc-mv
+ endef
+ TARGET_DEVICES += dlink_dns320l
+ 
+@@ -386,7 +386,8 @@ TARGET_DEVICES += zyxel_nsa310b
+ define Device/zyxel_nsa310s
+   DEVICE_VENDOR := ZyXEL
+   DEVICE_MODEL := NSA310S
+-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug
++  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
++	kmod-gpio-button-hotplug kmod-rtc-mv
+ endef
+ TARGET_DEVICES += zyxel_nsa310s
+ 
+
+---
+base-commit: 37ff0ea7269271feffaa5bd3042a551b1d735c57
+change-id: 20240601-kirkwood-dns320l-rtc-fba7532f1a21
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij at linaro.org>
+
+
+
+From daniel at makrotopia.org  Sat Jun  1 14:48:04 2024
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Sat, 01 Jun 2024 21:48:04 +0000
+Subject: OpenWrt's out-of-tree 204-module_strip.patch causes issues
+In-Reply-To: <e408bbbe-ac55-4bca-a13c-815b7fd74bbd@arinc9.com>
+References: <e408bbbe-ac55-4bca-a13c-815b7fd74bbd@arinc9.com>
+Message-ID: <BF36B2E4-BF98-4C34-B279-1EB158CC07AC@makrotopia.org>
+
+
+
+On 1 June 2024 20:23:20 UTC, "Ar?n? ?NAL" <arinc.unal at arinc9.com> wrote:
+>I've been working on porting MP-DCCP to Teltonika SDK 7.6.10. The SDK is
+>based off of OpenWrt, close to 22.03.6. After spending hours on figuring
+>out why my MP-DCCP port works on the vanilla 5.10.201 but not OpenWrt's
+>5.10.201, I've started looking for OpenWrt's out-of-tree kernel patches. I
+>was able to pinpoint it to
+>target/linux/generic/hack-5.10/204-module_strip.patch. I see that this
+>patch is still there for 6.6 on the main branch of the OpenWrt repository.
+
+I guess that's the price to pay for space reduction.... And I guess the fact that Teltonika bases their OS on OpenWrt is also because they manage to implement a dual-boot system with 16MB of flash, so there is some direct causal connection here, SPI-NOR still being much more reliable and cheaper than an eMMC which could fit Debian or whatever other OS...
+
+Anyway, does that warning also occur if CONFIG_MODULE_STRIPPED isn't selected? And is there any functional impact besides that warning?
+
+
+>
+>For my case, I just removed this patch and moved on. I'm only sending this
+>email as proof that OpenWrt's out-of-tree patches cause issues.
+>
+>[    1.897757] ------------[ cut here ]------------
+>[    1.902441] WARNING: CPU: 0 PID: 1 at fs/sysfs/group.c:116 internal_create_group+0x3ac/0x3d4
+>[    1.911179] Modules linked in:
+>[    1.914253] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.201 #0
+>[    1.920346] Hardware name: Mediatek Cortex-A7 (Device Tree)
+>[    1.925936] [<c010d780>] (unwind_backtrace) from [<c0109c00>] (show_stack+0x10/0x14)
+>[    1.933688] [<c0109c00>] (show_stack) from [<c04c21f8>] (dump_stack+0x88/0x9c)
+>[    1.940917] [<c04c21f8>] (dump_stack) from [<c011ead8>] (__warn+0x9c/0xf8)
+>[    1.947796] [<c011ead8>] (__warn) from [<c011eb9c>] (warn_slowpath_fmt+0x68/0x78)
+>[    1.955287] [<c011eb9c>] (warn_slowpath_fmt) from [<c02f0300>] (internal_create_group+0x3ac/0x3d4)
+>[    1.964258] [<c02f0300>] (internal_create_group) from [<c08efb98>] (mpdccp_link_sysfs_init+0x90/0xb4)
+>[    1.973489] [<c08efb98>] (mpdccp_link_sysfs_init) from [<c0d2786c>] (mpdccp_link_module_init+0x24/0xdc)
+>[    1.982889] [<c0d2786c>] (mpdccp_link_module_init) from [<c0101920>] (do_one_initcall+0x54/0x1f4)
+>[    1.991769] [<c0101920>] (do_one_initcall) from [<c0d0125c>] (kernel_init_freeable+0x22c/0x280)
+>[    2.000474] [<c0d0125c>] (kernel_init_freeable) from [<c0900454>] (kernel_init+0x8/0x118)
+>[    2.008657] [<c0900454>] (kernel_init) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+>[    2.016229] Exception stack(0xc1079fb0 to 0xc1079ff8)
+>[    2.021282] 9fa0:                                     00000000 00000000 00000000 00000000
+>[    2.029465] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+>[    2.037645] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+>[    2.044348] ---[ end trace a1a1b229e3c1a883 ]---
+>
+>Ar?n?
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From arinc.unal at arinc9.com  Sat Jun  1 23:41:20 2024
+From: arinc.unal at arinc9.com (=?UTF-8?B?QXLEsW7DpyDDnE5BTA==?=)
+Date: Sun, 2 Jun 2024 09:41:20 +0300
+Subject: OpenWrt's out-of-tree 204-module_strip.patch causes issues
+In-Reply-To: <BF36B2E4-BF98-4C34-B279-1EB158CC07AC@makrotopia.org>
+References: <e408bbbe-ac55-4bca-a13c-815b7fd74bbd@arinc9.com>
+ <BF36B2E4-BF98-4C34-B279-1EB158CC07AC@makrotopia.org>
+Message-ID: <eefd8265-18d5-48bc-b5c1-714a23a3a2ea@arinc9.com>
+
+On 02/06/2024 00.48, Daniel Golle wrote:
+> 
+> 
+> On 1 June 2024 20:23:20 UTC, "Ar?n? ?NAL" <arinc.unal at arinc9.com> wrote:
+>> I've been working on porting MP-DCCP to Teltonika SDK 7.6.10. The SDK is
+>> based off of OpenWrt, close to 22.03.6. After spending hours on figuring
+>> out why my MP-DCCP port works on the vanilla 5.10.201 but not OpenWrt's
+>> 5.10.201, I've started looking for OpenWrt's out-of-tree kernel patches. I
+>> was able to pinpoint it to
+>> target/linux/generic/hack-5.10/204-module_strip.patch. I see that this
+>> patch is still there for 6.6 on the main branch of the OpenWrt repository.
+> 
+> I guess that's the price to pay for space reduction.... And I guess the fact that Teltonika bases their OS on OpenWrt is also because they manage to implement a dual-boot system with 16MB of flash, so there is some direct causal connection here, SPI-NOR still being much more reliable and cheaper than an eMMC which could fit Debian or whatever other OS...
+> 
+> Anyway, does that warning also occur if CONFIG_MODULE_STRIPPED isn't selected? And is there any functional impact besides that warning?
+
+The warning doesn't occur when CONFIG_MODULE_STRIPPED isn't selected.
+internal_create_group() will return -EINVAL when this warning is caused so
+it breaks functionality.
+
+Ar?n?
+
+
+From noreply at github.com  Sun Jun  2 14:17:33 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 02 Jun 2024 14:17:33 -0700
+Subject: [sdwalker/sdwalker.github.io] 295d95: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/8ea33e-295d95@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 295d95f0cd085985c4d55a28a9b94246c9b762ce
+      https://github.com/sdwalker/sdwalker.github.io/commit/295d95f0cd085985c4d55a28a9b94246c9b762ce
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-06-02 (Sun, 02 Jun 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From pepe.schlehofer at gmail.com  Tue Jun  4 02:35:08 2024
+From: pepe.schlehofer at gmail.com (Josef Schlehofer)
+Date: Tue, 4 Jun 2024 11:35:08 +0200
+Subject: Preferred tarball extension to download
+Message-ID: <BB4A0F19-AABC-4D7C-903E-5F4DAA87C077@gmail.com>
+
+Hi guys,
+
+Since commit [1], I see that OpenWrt switched to zst compression for checking out Git sources, but it looks like the conversation about enforcing package source code integrity checks [2] did not reach a conclusion (and it is problematic, though). Anyway, in OpenWrt feeds, we are downloading tarballs with .tar.xz extensions, which is preferred, as said in our CONTRIBUTING.md [3].
+
+What should we agree upon with this?
+1. Should we stick to using still .tar.xz?
+2. Should we use .tar.gz or any other extensions?
+However, tar.gz is bigger, but that should not be an issue at all since we are downloading these packages on hosts. However, we need to keep an eye on mirrors's storage.
+
+This discussion is raised because package maintainers are not sure what to do, and once in a while, we switch to .tar.gz and then to .tar.xz for no reason [4]. 
+
+[1] https://github.com/openwrt/openwrt/commit/706f0e395f5392da0a502f1039aa01ca14849ec5 
+[2] https://lists.openwrt.org/pipermail/openwrt-devel/2024-April/042594.html
+[3] https://github.com/openwrt/packages/blob/master/CONTRIBUTING.md#package-sources-archives-and-repositories
+[4] https://github.com/openwrt/packages/pull/24299/files
+
+Regards,
+Josef
+
+From contato at waatmessenger.com.br  Tue Jun  4 04:07:36 2024
+From: contato at waatmessenger.com.br (contato at waatmessenger.com.br)
+Date: Tue,  4 Jun 2024 08:07:36 -0300 (-03)
+Subject: Introducing waatMessenger: Simplest Library for WhatsApp Integration via HTTP POST
+Message-ID: <20240604110736.773BF20587@UBMSA02.spo2.umbler.com>
+
+
+Hi openwrt-devel,
+
+I hope all is well. I came across your profile on GitHub and thought you might find value in a devtool I'm building.
+
+I'm excited to introduce waatMessenger, the simplest library for integrating WhatsApp via HTTP POST. Our platform is designed to simplify and enhance your communication experience on WhatsApp, offering a range of features tailored for ease of use, efficiency, and seamless integration with your existing workflows.
+
+With waatMessenger, you can:
+- Easily send WhatsApp messages programmatically using secure HTTP POST requests
+- Integrate seamlessly with any application, including Zapier and Make.com
+- Quickly and efficiently send bulk messages without getting blocked
+- Securely share WhatsApp Web sessions with multiple users
+
+For more details, please visit our website: https://waatmessenger.com.br/
+
+alternative; https://browbot-waatmessenger-html.pages.dev/
+api; api.waatmessenger.com.br
+
+If you have any questions, please let me know. I apologize for reaching out if this is not relevant to you.
+
+Best regards,  
+The waatMessenger Team
+
+Unsubscribe: We will never email you again if you choose to.  
+Privacy Policy: https://waatmessenger.com.br/privacy.html or https://browbot-waatmessenger-html.pages.dev/privacy.html
+
+From roman.azarenko at iopsys.eu  Tue Jun  4 09:00:03 2024
+From: roman.azarenko at iopsys.eu (Roman Azarenko)
+Date: Tue,  4 Jun 2024 18:00:03 +0200
+Subject: [PATCH] build: add explicit timezone in CycloneDX SBOM
+Message-ID: <20240604160003.1178243-1-roman.azarenko@iopsys.eu>
+
+Per the CycloneDX 1.4 spec, the `metadata.timestamp` field contains
+the date/time when the BOM was created [1].
+
+Before the change, the value generated by the package-metadata.pl
+script would look like this:
+
+	2024-06-03T15:51:10
+
+CycloneDX 1.4 relies on the JSON Schema specification version draft-07,
+which defines the `date-time` format [2] as derived from RFC 3339,
+section 5.6 [3]. In this format, the `time-offset` component is required,
+however in the original version of package-metadata.pl it is omitted.
+
+This is causing problems with OWASP Dependency-Track version 4.11.0 or
+newer, where it now validates submitted SBOMs against the JSON schema
+by default [4]. SBOMs with incorrect timestamp values are rejected with
+the following error:
+
+	{
+	    "detail": "Schema validation failed",
+	    "errors": [
+	        "$.metadata.timestamp: 2024-06-03T15:51:10 is an invalid date-time"
+	    ],
+	    "status": 400,
+	    "title": "The uploaded BOM is invalid"
+	}
+
+Add explicit `Z` (UTC) timezone offset in the `timestamp` field
+to satisfy the CycloneDX schema.
+
+[1]: https://github.com/CycloneDX/specification/blob/1.4/schema/bom-1.4.schema.json#L116-L121
+[2]: https://json-schema.org/draft-07/draft-handrews-json-schema-validation-01#rfc.section.7.3.1
+[3]: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+[4]: https://github.com/DependencyTrack/dependency-track/pull/3522
+
+Signed-off-by: Roman Azarenko <roman.azarenko at iopsys.eu>
+---
+ scripts/package-metadata.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/package-metadata.pl b/scripts/package-metadata.pl
+index 1e47052ba028..82bd4360f3bb 100755
+--- a/scripts/package-metadata.pl
++++ b/scripts/package-metadata.pl
+@@ -655,7 +655,7 @@ sub dump_cyclonedxsbom_json {
+ 		serialNumber => "urn:uuid:$uuid",
+ 		version => 1,
+ 		metadata => {
+-			timestamp => gmtime->datetime,
++			timestamp => gmtime->datetime . 'Z',
+ 		},
+ 		"components" => [@components],
+ 	};
+-- 
+2.45.1
+
+
+
+From e9hack at gmail.com  Thu Jun  6 12:18:35 2024
+From: e9hack at gmail.com (e9hack)
+Date: Thu, 6 Jun 2024 21:18:35 +0200
+Subject: exception in hostapd/hostapd.uc
+Message-ID: <CALxbwRrM3J_Z-zLCgq1d3FQfKg38C1=we0okX_pcuvvkwme_9A@mail.gmail.com>
+
+Hi,
+
+after the update of hostapd from today, I see some exceptions at start
+of hostapd:
+
+Thu Jun  6 21:06:43 2024 daemon.notice hostapd: Exception in ubus
+function: left-hand side is not a function In [anonymous function](),
+file /usr/share/hostap/hostapd.uc, line 837, byte 50:   called from
+anonymous function (/usr/share/hostap/hostapd.uc:718:22)   `
+ hostapd.data.auth_obj.notify("reload", { phy });`   Near here
+------------------------------------------------^
+Thu Jun  6 21:06:43 2024 daemon.notice netifd: radio1 (12927): Command
+failed: ubus call hostapd config_set { "phy": "phy1", "config": "",
+"prev_config": "/var/run/hostapd-phy1.conf" } (Unknown error)
+
+Thu Jun  6 21:06:44 2024 daemon.notice hostapd: Exception in ubus
+function: { "type": "Type error", "message": "left-hand side is not a
+function", "stacktrace": [ { "filename":
+"/usr/share/hostap/hostapd.uc", "line": 837, "byte": 50, "function":
+"[anonymous function]", "context": "In [anonymous function](), file
+/usr/share/hostap/hostapd.uc, line 837, byte 50:\n  called from
+anonymous function (/usr/share/hostap/hostapd.uc:718:22)\n\n `
+   hostapd.data.auth_obj.notify(\"reload\", { phy });`\n  Near here
+------------------------------------------------^\n" }, { "filename":
+"/usr/share/hostap/hostapd.uc", "line": 718, "byte": 22 } ] } In
+[anonymous function](), file /usr/share/hostap/hostapd.uc, line 837,
+byte 50:   called from anonymous function
+(/usr/share/hostap/hostapd.uc:718:22)   `
+hostapd.data.auth_obj.notify("reload", { phy });`   Near here
+------------------------------------------------^
+Thu Jun  6 21:06:44 2024 daemon.notice netifd: radio0 (12926): Command
+failed: ubus call hostapd config_set { "phy": "phy0", "config": "",
+"prev_config": "/var/run/hostapd-phy0.conf" } (Unknown error)
+
+Thu Jun  6 21:06:48 2024 daemon.notice hostapd: Exception in ubus
+function: { "type": "Type error", "message": "left-hand side is not a
+function", "stacktrace": [ { "filename":
+"/usr/share/hostap/hostapd.uc", "line": 837, "byte": 50, "function":
+"[anonymous function]", "context": "In [anonymous function](), file
+/usr/share/hostap/hostapd.uc, line 837, byte 50:\n  called from
+anonymous function (/usr/share/hostap/hostapd.uc:718:22)\n\n `
+   hostapd.data.auth_obj.notify(\"reload\", { phy });`\n  Near here
+------------------------------------------------^\n" }, { "filename":
+"/usr/share/hostap/hostapd.uc", "line": 718, "byte": 22 } ] } In
+[anonymous function](), file /usr/share/hostap/hostapd.uc, line 837,
+byte 50:   called from anonymous function
+(/usr/share/hostap/hostapd.uc:718:22)   `
+hostapd.data.auth_obj.notify("reload", { phy });`   Near here
+------------------------------------------------^
+Thu Jun  6 21:06:48 2024 daemon.notice netifd: radio1 (12927): Command
+failed: ubus call hostapd config_set { "phy": "phy1",
+"config":"/var/run/hostapd-phy1.conf", "prev_config":
+"/var/run/hostapd-phy1.conf.prev"} (Unknown error)
+
+Thu Jun  6 21:06:56 2024 daemon.notice hostapd: Exception in ubus
+function: { "type": "Type error", "message": "left-hand side is not a
+function", "stacktrace": [ { "filename":
+"/usr/share/hostap/hostapd.uc", "line": 837, "byte": 50, "function":
+"[anonymous function]", "context": "In [anonymous function](), file
+/usr/share/hostap/hostapd.uc, line 837, byte 50:\n  called from
+anonymous function (/usr/share/hostap/hostapd.uc:718:22)\n\n `
+   hostapd.data.auth_obj.notify(\"reload\", { phy });`\n  Near here
+------------------------------------------------^\n" }, { "filename":
+"/usr/share/hostap/hostapd.uc", "line": 718, "byte": 22 } ] } In
+[anonymous function](), file /usr/share/hostap/hostapd.uc, line 837,
+byte 50:   called from anonymous function
+(/usr/share/hostap/hostapd.uc:718:22)   `
+hostapd.data.auth_obj.notify("reload", { phy });`   Near here
+------------------------------------------------^
+Thu Jun  6 21:06:56 2024 daemon.notice netifd: radio0 (12926): Command
+failed: ubus call hostapd config_set { "phy": "phy0",
+"config":"/var/run/hostapd-phy0.conf", "prev_config":
+"/var/run/hostapd-phy0.conf.prev"} (Unknown error)
+
+The line numbers in hostapd.uc have an offset by 1. I added an entry
+to the array hostapd.data.file_fields.
+
+Regards,
+Hartmut
+
+
+From adam0320a at gmail.com  Thu Jun  6 19:45:41 2024
+From: adam0320a at gmail.com (Adam)
+Date: Fri, 7 Jun 2024 10:45:41 +0800
+Subject: [PATCH] mtd: fix compile warnings
+Message-ID: <CABg9-KKApmiMXLtJ=BMAxSe7mb8JjPe_HnB6ZR30z9TmqKZe+g@mail.gmail.com>
+
+From: Adam-0320 <adam0320a at gmail.com>
+
+ubi-mdeia.h defines 'struct ubi_vid_hdr'. It is used as a parameter type
+of function 'ubigen_init_ec_hdr', which is declared in libubigen.h.
+ubiformat.c and liubigen.c use this function. And they both have
+included ubi-mdeia.h and libubigen.h. However, mtdinfo.c includes
+libubigen.h but not ubi-mdeia.h. This also happens to 'ubi_ec_hdr'.
+These issues lead to warnings:
+
+In file included from ubi-utils/mtdinfo.c:34:
+./include/libubigen.h:124:32: warning: 'struct ubi_ec_hdr' declared
+inside parameter list will not be visible outside of this definition
+or declaration
+  124 |                         struct ubi_ec_hdr *hdr, long long ec);
+      |                                ^~~~~~~~~~
+./include/libubigen.h:140:33: warning: 'struct ubi_vid_hdr' declared
+inside parameter list will not be visible outside of this definition
+or declaration
+  140 |                          struct ubi_vid_hdr *hdr, int lnum,
+      |                                 ^~~~~~~~~~~
+
+So include ubi-media.h in libubigen.h.
+
+Signed-off-by: Adam-0320 <adam0320a at gmail.com>
+---
+ .../patches/140-mtd-fix-compile-warnings.patch       | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644
+package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+
+diff --git a/package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+b/package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+new file mode 100644
+index 0000000..bb07c55
+--- /dev/null
++++ b/package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+@@ -0,0 +1,12 @@
++diff --git a/include/libubigen.h b/include/libubigen.h
++index 48d2fad..0c20979 100644
++--- a/include/libubigen.h
+++++ b/include/libubigen.h
++@@ -26,6 +26,7 @@
++ #define __LIBUBIGEN_H__
++
++ #include <stdint.h>
+++#include "ubi-media.h"
++
++ #ifdef __cplusplus
++ extern "C" {
+
+
+From kamil.tralewski at suavjarvi.pl  Fri Jun  7 00:31:06 2024
+From: kamil.tralewski at suavjarvi.pl (Kamil Tralewski)
+Date: Fri,  7 Jun 2024 07:31:06 GMT
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+Message-ID: <20240607084500-0.1.40.8ug5.0.h4516rs68z@suavjarvi.pl>
+
+Dzie? dobry,
+
+zapozna?em si? z Pa?stwa ofert? i z przyjemno?ci? przyznaj?, ?e przyci?ga uwag? i zach?ca do dalszych rozm?w. 
+
+Pomy?la?em, ?e mo?e m?g?bym mie? sw?j wk?ad w Pa?stwa rozw?j i pom?c dotrze? z t? ofert? do wi?kszego grona odbiorc?w. Pozycjonuj? strony www, dzi?ki czemu generuj? ?wietny ruch w sieci.
+
+Mo?emy porozmawia? w najbli?szym czasie?
+
+
+Pozdrawiam
+Kamil Tralewski
+
+
+From dqfext at gmail.com  Fri Jun  7 02:55:38 2024
+From: dqfext at gmail.com (Qingfang Deng)
+Date: Fri,  7 Jun 2024 17:55:38 +0800
+Subject: [PATCH] config: kernel: remove KASAN_EXTRA
+Message-ID: <20240607095538.886086-1-dqfext@gmail.com>
+
+The option has been removed from the kernel since 5.1.
+
+Signed-off-by: Qingfang Deng <dqfext at gmail.com>
+---
+ config/Config-kernel.in | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/config/Config-kernel.in b/config/Config-kernel.in
+index 2d90abcfe8..ddf81d67da 100644
+--- a/config/Config-kernel.in
++++ b/config/Config-kernel.in
+@@ -173,16 +173,6 @@ config KERNEL_KASAN
+ 	  Currently CONFIG_KASAN doesn't work with CONFIG_DEBUG_SLAB
+ 	  (the resulting kernel does not boot).
+ 
+-config KERNEL_KASAN_EXTRA
+-	bool "KAsan: extra checks"
+-	depends on KERNEL_KASAN && KERNEL_DEBUG_KERNEL
+-	help
+-	  This enables further checks in the kernel address sanitizer, for now
+-	  it only includes the address-use-after-scope check that can lead
+-	  to excessive kernel stack usage, frame size warnings and longer
+-	  compile time.
+-	  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 has more
+-
+ config KERNEL_KASAN_VMALLOC
+ 	bool "Back mappings in vmalloc space with real shadow memory"
+ 	depends on KERNEL_KASAN
+-- 
+2.34.1
+
+
+
+From robimarko at gmail.com  Fri Jun  7 03:06:45 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Fri, 7 Jun 2024 12:06:45 +0200
+Subject: [PATCH] build: add explicit timezone in CycloneDX SBOM
+In-Reply-To: <mailman.41555.1717516823.1280.openwrt-devel@lists.openwrt.org>
+References: <mailman.41555.1717516823.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <CAOX2RU5if5drh_YU0fDUKAejfVtYo7iiQQcGUpwxX2L86Sa7hw@mail.gmail.com>
+
+On Tue, 4 Jun 2024 at 18:00, Roman Azarenko via openwrt-devel
+<openwrt-devel at lists.openwrt.org> wrote:
+>
+> The sender domain has a DMARC Reject/Quarantine policy which disallows
+> sending mailing list messages using the original "From" header.
+>
+> To mitigate this problem, the original message has been wrapped
+> automatically by the mailing list software.
+>
+>
+> ---------- Forwarded message ----------
+> From: Roman Azarenko <roman.azarenko at iopsys.eu>
+> To: openwrt-devel at lists.openwrt.org
+> Cc:
+> Bcc:
+> Date: Tue,  4 Jun 2024 18:00:03 +0200
+> Subject: [PATCH] build: add explicit timezone in CycloneDX SBOM
+> Per the CycloneDX 1.4 spec, the `metadata.timestamp` field contains
+> the date/time when the BOM was created [1].
+>
+> Before the change, the value generated by the package-metadata.pl
+> script would look like this:
+>
+>         2024-06-03T15:51:10
+>
+> CycloneDX 1.4 relies on the JSON Schema specification version draft-07,
+> which defines the `date-time` format [2] as derived from RFC 3339,
+> section 5.6 [3]. In this format, the `time-offset` component is required,
+> however in the original version of package-metadata.pl it is omitted.
+>
+> This is causing problems with OWASP Dependency-Track version 4.11.0 or
+> newer, where it now validates submitted SBOMs against the JSON schema
+> by default [4]. SBOMs with incorrect timestamp values are rejected with
+> the following error:
+>
+>         {
+>             "detail": "Schema validation failed",
+>             "errors": [
+>                 "$.metadata.timestamp: 2024-06-03T15:51:10 is an invalid date-time"
+>             ],
+>             "status": 400,
+>             "title": "The uploaded BOM is invalid"
+>         }
+>
+> Add explicit `Z` (UTC) timezone offset in the `timestamp` field
+> to satisfy the CycloneDX schema.
+>
+> [1]: https://github.com/CycloneDX/specification/blob/1.4/schema/bom-1.4.schema.json#L116-L121
+> [2]: https://json-schema.org/draft-07/draft-handrews-json-schema-validation-01#rfc.section.7.3.1
+> [3]: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+> [4]: https://github.com/DependencyTrack/dependency-track/pull/3522
+>
+> Signed-off-by: Roman Azarenko <roman.azarenko at iopsys.eu>
+
+Thanks for the patch, merged to main in:
+https://github.com/openwrt/openwrt/commit/2ded629864de779df8ddd0224a875edf17f9fea5
+
+Regards,
+Robert
+> ---
+>  scripts/package-metadata.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/package-metadata.pl b/scripts/package-metadata.pl
+> index 1e47052ba028..82bd4360f3bb 100755
+> --- a/scripts/package-metadata.pl
+> +++ b/scripts/package-metadata.pl
+> @@ -655,7 +655,7 @@ sub dump_cyclonedxsbom_json {
+>                 serialNumber => "urn:uuid:$uuid",
+>                 version => 1,
+>                 metadata => {
+> -                       timestamp => gmtime->datetime,
+> +                       timestamp => gmtime->datetime . 'Z',
+>                 },
+>                 "components" => [@components],
+>         };
+> --
+> 2.45.1
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From robimarko at gmail.com  Fri Jun  7 03:07:18 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Fri, 7 Jun 2024 12:07:18 +0200
+Subject: [PATCH] config: kernel: remove KASAN_EXTRA
+In-Reply-To: <20240607095538.886086-1-dqfext@gmail.com>
+References: <20240607095538.886086-1-dqfext@gmail.com>
+Message-ID: <CAOX2RU7PeP2voOK=692VnnPHmAfaJ4w=FORnffJcisFANEDfhg@mail.gmail.com>
+
+On Fri, 7 Jun 2024 at 11:56, Qingfang Deng <dqfext at gmail.com> wrote:
+>
+> The option has been removed from the kernel since 5.1.
+>
+> Signed-off-by: Qingfang Deng <dqfext at gmail.com>
+
+Thanks for the patch, merged to main in:
+https://github.com/openwrt/openwrt/commit/60ea3d6d46954553b7b50460dfe6b86878fe5990
+
+Regards,
+Robert
+
+> ---
+>  config/Config-kernel.in | 10 ----------
+>  1 file changed, 10 deletions(-)
+>
+> diff --git a/config/Config-kernel.in b/config/Config-kernel.in
+> index 2d90abcfe8..ddf81d67da 100644
+> --- a/config/Config-kernel.in
+> +++ b/config/Config-kernel.in
+> @@ -173,16 +173,6 @@ config KERNEL_KASAN
+>           Currently CONFIG_KASAN doesn't work with CONFIG_DEBUG_SLAB
+>           (the resulting kernel does not boot).
+>
+> -config KERNEL_KASAN_EXTRA
+> -       bool "KAsan: extra checks"
+> -       depends on KERNEL_KASAN && KERNEL_DEBUG_KERNEL
+> -       help
+> -         This enables further checks in the kernel address sanitizer, for now
+> -         it only includes the address-use-after-scope check that can lead
+> -         to excessive kernel stack usage, frame size warnings and longer
+> -         compile time.
+> -         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 has more
+> -
+>  config KERNEL_KASAN_VMALLOC
+>         bool "Back mappings in vmalloc space with real shadow memory"
+>         depends on KERNEL_KASAN
+> --
+> 2.34.1
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From robimarko at gmail.com  Fri Jun  7 03:08:00 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Fri, 7 Jun 2024 12:08:00 +0200
+Subject: [PATCH] kirkwood: Add Marvell RTC to two devices
+In-Reply-To: <20240601-kirkwood-dns320l-rtc-v1-1-6e3e925ea917@linaro.org>
+References: <20240601-kirkwood-dns320l-rtc-v1-1-6e3e925ea917@linaro.org>
+Message-ID: <CAOX2RU7rHv3BAQ+CtWVufp-QQE=0WZF3XNZMvo6sctxLXaGydQ@mail.gmail.com>
+
+On Sat, 1 Jun 2024 at 22:34, Linus Walleij <linus.walleij at linaro.org> wrote:
+>
+> The recently added D-Link DNS-320L and the Zyxel NSA310S
+> is missing an RTC module so let's give them the default
+> Marvell RTC at least.
+>
+> Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+
+Reviewed-by: Robert Marko <robimarko at gmail.com>
+
+Regards,
+Robert
+> ---
+>  target/linux/kirkwood/image/Makefile | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/target/linux/kirkwood/image/Makefile b/target/linux/kirkwood/image/Makefile
+> index 48de5bee2b84..2bd2f6415987 100644
+> --- a/target/linux/kirkwood/image/Makefile
+> +++ b/target/linux/kirkwood/image/Makefile
+> @@ -186,7 +186,7 @@ define Device/dlink_dns320l
+>    DEVICE_VENDOR := D-Link
+>    DEVICE_MODEL := DNS-320L
+>    DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug \
+> -       kmod-usb-storage kmod-usb-ledtrig-usbport dns320l-mcu
+> +       kmod-usb-storage kmod-usb-ledtrig-usbport dns320l-mcu kmod-rtc-mv
+>  endef
+>  TARGET_DEVICES += dlink_dns320l
+>
+> @@ -386,7 +386,8 @@ TARGET_DEVICES += zyxel_nsa310b
+>  define Device/zyxel_nsa310s
+>    DEVICE_VENDOR := ZyXEL
+>    DEVICE_MODEL := NSA310S
+> -  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug
+> +  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
+> +       kmod-gpio-button-hotplug kmod-rtc-mv
+>  endef
+>  TARGET_DEVICES += zyxel_nsa310s
+>
+>
+> ---
+> base-commit: 37ff0ea7269271feffaa5bd3042a551b1d735c57
+> change-id: 20240601-kirkwood-dns320l-rtc-fba7532f1a21
+>
+> Best regards,
+> --
+> Linus Walleij <linus.walleij at linaro.org>
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From rosenp at gmail.com  Fri Jun  7 18:25:56 2024
+From: rosenp at gmail.com (Rosen Penev)
+Date: Fri, 7 Jun 2024 18:25:56 -0700
+Subject: [PATCH] mtd: fix compile warnings
+In-Reply-To: <CABg9-KKApmiMXLtJ=BMAxSe7mb8JjPe_HnB6ZR30z9TmqKZe+g@mail.gmail.com>
+References: <CABg9-KKApmiMXLtJ=BMAxSe7mb8JjPe_HnB6ZR30z9TmqKZe+g@mail.gmail.com>
+Message-ID: <CAKxU2N-A-v4x9MSevVL05O12ueVeAZJBFoe2eoedQCTjZCROGQ@mail.gmail.com>
+
+On Thu, Jun 6, 2024 at 7:48?PM Adam <adam0320a at gmail.com> wrote:
+>
+> From: Adam-0320 <adam0320a at gmail.com>
+>
+> ubi-mdeia.h defines 'struct ubi_vid_hdr'. It is used as a parameter type
+> of function 'ubigen_init_ec_hdr', which is declared in libubigen.h.
+> ubiformat.c and liubigen.c use this function. And they both have
+> included ubi-mdeia.h and libubigen.h. However, mtdinfo.c includes
+> libubigen.h but not ubi-mdeia.h. This also happens to 'ubi_ec_hdr'.
+> These issues lead to warnings:
+>
+> In file included from ubi-utils/mtdinfo.c:34:
+> ./include/libubigen.h:124:32: warning: 'struct ubi_ec_hdr' declared
+> inside parameter list will not be visible outside of this definition
+> or declaration
+>   124 |                         struct ubi_ec_hdr *hdr, long long ec);
+>       |                                ^~~~~~~~~~
+> ./include/libubigen.h:140:33: warning: 'struct ubi_vid_hdr' declared
+> inside parameter list will not be visible outside of this definition
+> or declaration
+>   140 |                          struct ubi_vid_hdr *hdr, int lnum,
+>       |                                 ^~~~~~~~~~~
+>
+> So include ubi-media.h in libubigen.h.
+>
+> Signed-off-by: Adam-0320 <adam0320a at gmail.com>
+Send this in the packages feed instead
+> ---
+>  .../patches/140-mtd-fix-compile-warnings.patch       | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>  create mode 100644
+> package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+>
+> diff --git a/package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+> b/package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+> new file mode 100644
+> index 0000000..bb07c55
+> --- /dev/null
+> +++ b/package/utils/mtd-utils/patches/140-mtd-fix-compile-warnings.patch
+> @@ -0,0 +1,12 @@
+> +diff --git a/include/libubigen.h b/include/libubigen.h
+> +index 48d2fad..0c20979 100644
+> +--- a/include/libubigen.h
+> ++++ b/include/libubigen.h
+> +@@ -26,6 +26,7 @@
+> + #define __LIBUBIGEN_H__
+> +
+> + #include <stdint.h>
+> ++#include "ubi-media.h"
+> +
+> + #ifdef __cplusplus
+> + extern "C" {
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From angelogioacchino.delregno at collabora.com  Mon Jun  3 00:37:38 2024
+From: angelogioacchino.delregno at collabora.com (AngeloGioacchino Del Regno)
+Date: Mon, 3 Jun 2024 09:37:38 +0200
+Subject: [PATCH 1/3] dt-bindings: vendor-prefixes: add OpenWrt
+In-Reply-To: <CACRpkda-egxVtP8Tan9T_EfQX6ekqQDf3LaVUu0by7aWY1Qmag@mail.gmail.com>
+References: <20240527115933.7396-1-zajec5@gmail.com>
+ <20240527115933.7396-2-zajec5@gmail.com>
+ <CACRpkda-egxVtP8Tan9T_EfQX6ekqQDf3LaVUu0by7aWY1Qmag@mail.gmail.com>
+Message-ID: <ed191114-0259-4de9-8e32-6718fd5e6747@collabora.com>
+
+Il 29/05/24 09:42, Linus Walleij ha scritto:
+> On Mon, May 27, 2024 at 2:00?PM Rafa? Mi?ecki <zajec5 at gmail.com> wrote:
+> 
+>> From: Rafa? Mi?ecki <rafal at milecki.pl>
+>>
+>> OpenWrt project (with the help of MediaTek and Banana Pi) has produced
+>> its very first own hardware. It needs its own prefix.
+>>
+>> Signed-off-by: Rafa? Mi?ecki <rafal at milecki.pl>
+> 
+> Reviewed-by: Linus Walleij <linus.walleij at linaro.org>
+> 
+
+Hello,
+
+I'm not sure about who should pick this particular patch - should I pick it into
+the MediaTek tree, or...?
+
+Cheers,
+Angelo
+
+
+
+From zajec5 at gmail.com  Tue Jun  4 00:14:30 2024
+From: zajec5 at gmail.com (=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=)
+Date: Tue, 4 Jun 2024 09:14:30 +0200
+Subject: [PATCH 1/3] dt-bindings: vendor-prefixes: add OpenWrt
+In-Reply-To: <ed191114-0259-4de9-8e32-6718fd5e6747@collabora.com>
+References: <20240527115933.7396-1-zajec5@gmail.com>
+ <20240527115933.7396-2-zajec5@gmail.com>
+ <CACRpkda-egxVtP8Tan9T_EfQX6ekqQDf3LaVUu0by7aWY1Qmag@mail.gmail.com>
+ <ed191114-0259-4de9-8e32-6718fd5e6747@collabora.com>
+Message-ID: <a8845e9a-839c-4741-a868-1f415b926d40@gmail.com>
+
+On 3.06.2024 09:37, AngeloGioacchino Del Regno wrote:
+> Il 29/05/24 09:42, Linus Walleij ha scritto:
+>> On Mon, May 27, 2024 at 2:00?PM Rafa? Mi?ecki <zajec5 at gmail.com> wrote:
+>>
+>>> From: Rafa? Mi?ecki <rafal at milecki.pl>
+>>>
+>>> OpenWrt project (with the help of MediaTek and Banana Pi) has produced
+>>> its very first own hardware. It needs its own prefix.
+>>>
+>>> Signed-off-by: Rafa? Mi?ecki <rafal at milecki.pl>
+>>
+>> Reviewed-by: Linus Walleij <linus.walleij at linaro.org>
+>>
+> 
+> Hello,
+> 
+> I'm not sure about who should pick this particular patch - should I pick it into
+> the MediaTek tree, or...?
+
+We have ack from DT maintainer. Similar PATCH was picked by you during
+the previous merge windows in the commit d67c211261d1 ("dt-bindings:
+vendor-prefixes: add Cudy"). I don't see why this one couldn't go
+through your / mediatek tree :)
+
+
+From angelogioacchino.delregno at collabora.com  Tue Jun  4 05:41:43 2024
+From: angelogioacchino.delregno at collabora.com (AngeloGioacchino Del Regno)
+Date: Tue, 4 Jun 2024 14:41:43 +0200
+Subject: [PATCH 1/3] dt-bindings: vendor-prefixes: add OpenWrt
+In-Reply-To: <a8845e9a-839c-4741-a868-1f415b926d40@gmail.com>
+References: <20240527115933.7396-1-zajec5@gmail.com>
+ <20240527115933.7396-2-zajec5@gmail.com>
+ <CACRpkda-egxVtP8Tan9T_EfQX6ekqQDf3LaVUu0by7aWY1Qmag@mail.gmail.com>
+ <ed191114-0259-4de9-8e32-6718fd5e6747@collabora.com>
+ <a8845e9a-839c-4741-a868-1f415b926d40@gmail.com>
+Message-ID: <281bb6eb-dbd1-4f85-872b-0fe105b940a9@collabora.com>
+
+Il 04/06/24 09:14, Rafa? Mi?ecki ha scritto:
+> On 3.06.2024 09:37, AngeloGioacchino Del Regno wrote:
+>> Il 29/05/24 09:42, Linus Walleij ha scritto:
+>>> On Mon, May 27, 2024 at 2:00?PM Rafa? Mi?ecki <zajec5 at gmail.com> wrote:
+>>>
+>>>> From: Rafa? Mi?ecki <rafal at milecki.pl>
+>>>>
+>>>> OpenWrt project (with the help of MediaTek and Banana Pi) has produced
+>>>> its very first own hardware. It needs its own prefix.
+>>>>
+>>>> Signed-off-by: Rafa? Mi?ecki <rafal at milecki.pl>
+>>>
+>>> Reviewed-by: Linus Walleij <linus.walleij at linaro.org>
+>>>
+>>
+>> Hello,
+>>
+>> I'm not sure about who should pick this particular patch - should I pick it into
+>> the MediaTek tree, or...?
+> 
+> We have ack from DT maintainer. Similar PATCH was picked by you during
+> the previous merge windows in the commit d67c211261d1 ("dt-bindings:
+> vendor-prefixes: add Cudy"). I don't see why this one couldn't go
+> through your / mediatek tree :)
+
+Ah, yes, right.
+
+Cheers,
+Angelo
+
+
+From angelogioacchino.delregno at collabora.com  Tue Jun  4 05:43:48 2024
+From: angelogioacchino.delregno at collabora.com (AngeloGioacchino Del Regno)
+Date: Tue, 04 Jun 2024 14:43:48 +0200
+Subject: [PATCH 0/3] Add initial DT for OpenWrt One
+In-Reply-To: <20240527115933.7396-1-zajec5@gmail.com>
+References: <20240527115933.7396-1-zajec5@gmail.com>
+Message-ID: <171750502829.333704.14436657931851729298.b4-ty@collabora.com>
+
+On Mon, 27 May 2024 13:59:30 +0200, Rafa? Mi?ecki wrote:
+> From: Rafa? Mi?ecki <rafal at milecki.pl>
+> 
+> OpenWrt project (https://openwrt.org/) celebrates its 20 years by
+> releasing an OpenWrt One product. Early units have been produced and
+> will be followed by DVT samples really soon. Then the mass production
+> is about to start.
+> 
+> [...]
+
+Applied to v6.10-next/dts64, thanks!
+
+[1/3] dt-bindings: vendor-prefixes: add OpenWrt
+      commit: 80468ed25791e9c749cd12117111650a7f014928
+[2/3] dt-bindings: arm64: dts: mediatek: Add OpenWrt One
+      commit: 33e9d52fd89c8101a72fd95f648c8094ef4488a1
+[3/3] arm64: dts: mediatek: Add OpenWrt One
+      commit: c8770738f12ac3eced96dd7768be62b6c5018ed3
+
+Cheers,
+Angelo
+
+
+
+
+From noreply at github.com  Sun Jun  9 12:38:31 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 09 Jun 2024 12:38:31 -0700
+Subject: [sdwalker/sdwalker.github.io] 059cd6: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/295d95-059cd6@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 059cd69054adc1c6f8cca2cbdbdbbd68bca08beb
+      https://github.com/sdwalker/sdwalker.github.io/commit/059cd69054adc1c6f8cca2cbdbdbbd68bca08beb
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-06-09 (Sun, 09 Jun 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From fe at dev.tdt.de  Mon Jun 10 01:52:52 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Mon, 10 Jun 2024 10:52:52 +0200
+Subject: [PATCH] kernel: modules: netdevice: remove kmod-of-mdio dependency for kmod-stmmac-core
+Message-ID: <20240610085252.160723-1-fe@dev.tdt.de>
+
+The 'kmod-stmmac-core' package is referenced by the following packages:
+* kmod-dwmac-intel
+* kmod-dwmac-imx
+* kmod-dwmac-sun8i
+
+The problem is that 'kmod-of-mdio' is not selectable for 'TARGET_x86'.
+That means the package 'kmod-dwmac-intel' is not available on this
+architecture and so the package 'kmod-dwmac-intel' could not be enabled.
+
+To fix this remove the dependencies 'kmod-of-mdio' from 'kmod-stmmac-core'.
+This is not needed on this level, because the modules 'kmod-of-mdio' is
+already selected by the packages 'kmod-dwmac-imx' and 'kmod-dwmac-sun8i'.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ package/kernel/linux/modules/netdevices.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package/kernel/linux/modules/netdevices.mk b/package/kernel/linux/modules/netdevices.mk
+index cf253ff9e0..06bae6a7ed 100644
+--- a/package/kernel/linux/modules/netdevices.mk
++++ b/package/kernel/linux/modules/netdevices.mk
+@@ -1607,7 +1607,7 @@ $(eval $(call KernelPackage,pcs-xpcs))
+ define KernelPackage/stmmac-core
+   SUBMENU:=$(NETWORK_DEVICES_MENU)
+   TITLE:=Synopsis Ethernet Controller core (NXP,STMMicro,others)
+-  DEPENDS:=@TARGET_x86_64||TARGET_armsr_armv8 +kmod-pcs-xpcs +LINUX_6_6:kmod-of-mdio +kmod-ptp
++  DEPENDS:=@TARGET_x86_64||TARGET_armsr_armv8 +kmod-pcs-xpcs +kmod-ptp
+   KCONFIG:=CONFIG_STMMAC_ETH \
+     CONFIG_STMMAC_SELFTESTS=n \
+     CONFIG_STMMAC_PLATFORM \
+-- 
+2.39.2
+
+
+
+From robimarko at gmail.com  Tue Jun 11 01:31:44 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Tue, 11 Jun 2024 10:31:44 +0200
+Subject: Preferred tarball extension to download
+In-Reply-To: <BB4A0F19-AABC-4D7C-903E-5F4DAA87C077@gmail.com>
+References: <BB4A0F19-AABC-4D7C-903E-5F4DAA87C077@gmail.com>
+Message-ID: <CAOX2RU5UvL6aXzY92qeGEJX=Yr8O8gsLj+V3B=uzAFn0HLdtzA@mail.gmail.com>
+
+On Tue, 4 Jun 2024 at 11:35, Josef Schlehofer <pepe.schlehofer at gmail.com> wrote:
+>
+> Hi guys,
+>
+> Since commit [1], I see that OpenWrt switched to zst compression for checking out Git sources, but it looks like the conversation about enforcing package source code integrity checks [2] did not reach a conclusion (and it is problematic, though). Anyway, in OpenWrt feeds, we are downloading tarballs with .tar.xz extensions, which is preferred, as said in our CONTRIBUTING.md [3].
+>
+> What should we agree upon with this?
+> 1. Should we stick to using still .tar.xz?
+> 2. Should we use .tar.gz or any other extensions?
+> However, tar.gz is bigger, but that should not be an issue at all since we are downloading these packages on hosts. However, we need to keep an eye on mirrors's storage.
+>
+> This discussion is raised because package maintainers are not sure what to do, and once in a while, we switch to .tar.gz and then to .tar.xz for no reason [4].
+
+Hi Josef,
+
+This is my personal opinion and nothing more.
+Personally, I have moved away from XZ as much as possible after the
+security nightmare.
+Ideally, projects would start to finally provide ZSTD compressed tarballs.
+
+Regards,
+Robert
+
+>
+> [1] https://github.com/openwrt/openwrt/commit/706f0e395f5392da0a502f1039aa01ca14849ec5
+> [2] https://lists.openwrt.org/pipermail/openwrt-devel/2024-April/042594.html
+> [3] https://github.com/openwrt/packages/blob/master/CONTRIBUTING.md#package-sources-archives-and-repositories
+> [4] https://github.com/openwrt/packages/pull/24299/files
+>
+> Regards,
+> Josef
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From mail at aparcar.org  Thu Jun 13 04:29:17 2024
+From: mail at aparcar.org (Paul Spooren)
+Date: Thu, 13 Jun 2024 13:29:17 +0200
+Subject: State of APK package manger integration
+Message-ID: <051F0283-AF31-4522-B4A9-1F56086E5A4C@aparcar.org>
+
+Dear all,
+
+With great contributions from Timo, Ansuel, Jonas, Daniel, Petr, John, and many others, APK is evolving smoothly, and the integration is progressing well!
+
+We have established a staging buildbot environment[1] that compiles firmware images and certain packages. To replicate this setup locally, simply enable ?Use APK instead of OPKG to build distribution? (`USE_APK`) in the ?Global build settings?.
+
+Once the firmware is compiled, it is uploaded to the staging downloads page[2]. Currently, we have limited the targets created to a subset that we have found useful for testing purposes.The firmware images boot up successfully and allow for the installation of external feeds[3]!
+
+Be aware, there is still some work required on the package feeds to accommodate the new version requirements. If you are maintaining something, please take a look (e.g. [4]).
+
+We are facing an architectural challenge that needs to be addressed. In the past, both OPKG and APKv2 would only sign the package indexes and automatically trust the included packages. With APKv3 (the version we are using), each individual package is signed. We are exploring ways to securely integrate this into the existing setup, where build workers do not have a private key but upload the package index to a dedicated server for signing. We will keep you updated on our progress.
+
+I will provide more updates as we make further advancements. Please stay tuned for more information.
+
+Sunshine,
+Paul
+
+PS: since we do parallel experiments with the Buildbot itself some packages are missing, please be aware that your milage may vary when testing package installation
+
+[1]: https://buildbot.staging.openwrt.org <https://buildbot.staging.openwrt.org/>
+[2]: https://downloads.staging.openwrt.org/snapshots/targets/
+[2]: apk add --allow-untrusted kmod-usb-serial-cp210x
+[4]: https://github.com/openwrt/packages/issues/23706
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: Message signed with OpenPGP
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20240613/2f45e557/attachment.sig>
+
+From por at oranjevos.nl  Sun Jun 16 03:19:48 2024
+From: por at oranjevos.nl (Paul Oranje)
+Date: Sun, 16 Jun 2024 12:19:48 +0200
+Subject: Free software's not-so-eXZellent adventure
+Message-ID: <adf28028-1d4b-49f4-9b62-708d3feb35fb@oranjevos.nl>
+
+As to be expected LWN has an excellent article from Corbet [1] that 
+comes up with questions to be taken seriously by the FOSS community and 
+especially communities such as OpenWrt that distribute (binary) releases.
+
+One of the comments [2] names some practical rules that may help to 
+compartmentalise the build processes to enhance resilience against 
+advanced attacks as experienced by xz.
+
+Another comment [3] touches on a little know but possible useful feature 
+of github that allows to block/ban presumed trolls etc. That functions 
+comes with some moral questions though. At the least, this subthread 
+identifies some of the ("sockpuppet") accounts (on github) that were 
+used to pressure the maintainer of xz.
+
+[1] https://lwn.net/Articles/967866/
+[2] https://lwn.net/Articles/968150/
+[3] https://lwn.net/Articles/968496/
+
+Regards,
+
+-- 
+paul oranje
+
+
+
+From noreply at github.com  Sun Jun 16 21:04:45 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 16 Jun 2024 21:04:45 -0700
+Subject: [sdwalker/sdwalker.github.io] d842bb: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/059cd6-d842bb@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: d842bb006dcd59b8d346a175166e827797fe9338
+      https://github.com/sdwalker/sdwalker.github.io/commit/d842bb006dcd59b8d346a175166e827797fe9338
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-06-17 (Mon, 17 Jun 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From Yeking at Red54.com  Mon Jun 17 09:03:27 2024
+From: Yeking at Red54.com (=?UTF-8?q?=E8=B0=A2=E8=87=B4=E9=82=A6=20=28XIE=20Zhibang=29?=)
+Date: Mon, 17 Jun 2024 16:03:27 +0000
+Subject: [PATCH fstools] libfstools: partname: drop parent_dev
+Message-ID: <tencent_5459CFFC553FD7B627FF480592D2F2F7B40A@qq.com>
+
+Using parent_dev will cause use_f2fs() to make wrong detection.
+
+Signed-off-by: ??? (XIE Zhibang) <Yeking at Red54.com>
+---
+Resend email due to DMARC issue.
+
+ libfstools/partname.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/libfstools/partname.c b/libfstools/partname.c
+index 9f2347a..a950efe 100644
+--- a/libfstools/partname.c
++++ b/libfstools/partname.c
+@@ -15,11 +15,6 @@ struct partname_volume {
+ 		char devpathstr[16];
+ 		struct devpath devpath;
+ 	} dev;
+-
+-	union {
+-		char devpathstr[16];
+-		struct devpath devpath;
+-	} parent_dev;
+ };
+ 
+ static struct driver partname_driver;
+@@ -56,7 +51,7 @@ static int partname_volume_init(struct volume *v)
+ 	v->size = volsize << 9; /* size is returned in sectors of 512 bytes */
+ 	v->blk = p->dev.devpathstr;
+ 
+-	return block_volume_format(v, 0, p->parent_dev.devpathstr);
++	return block_volume_format(v, 0, p->dev.devpathstr);
+ }
+ 
+ /* adapted from procd/utils.c -> should go to libubox */
+@@ -182,14 +177,6 @@ static struct volume *partname_volume_find(char *name)
+ 	strncpy(p->dev.devpath.device, devname, sizeof(p->dev.devpath.device) - 1);
+ 	p->dev.devpath.device[sizeof(p->dev.devpath.device)-1] = '\0';
+ 
+-	memcpy(p->parent_dev.devpath.prefix, "/dev/", sizeof(p->parent_dev.devpath.prefix));
+-	if (rootdev)
+-		strncpy(p->parent_dev.devpath.device, rootdev, sizeof(p->parent_dev.devpath.device) - 1);
+-	else
+-		strncpy(p->parent_dev.devpath.device, rootdevname(devname), sizeof(p->parent_dev.devpath.device) - 1);
+-
+-	p->parent_dev.devpath.device[sizeof(p->parent_dev.devpath.device)-1] = '\0';
+-
+ 	p->v.drv = &partname_driver;
+ 	p->v.blk = p->dev.devpathstr;
+ 	p->v.name = name;
+-- 
+2.44.0
+
+
+
+From Yeking at Red54.com  Mon Jun 17 09:07:53 2024
+From: Yeking at Red54.com (=?UTF-8?q?=E8=B0=A2=E8=87=B4=E9=82=A6=20=28XIE=20Zhibang=29?=)
+Date: Mon, 17 Jun 2024 16:07:53 +0000
+Subject: [PATCH] netfilter: kmod-nft-netdev: add egress support
+Message-ID: <tencent_EB1DF62723D08576A747D0DAE16FFB99B505@qq.com>
+
+The netdev egress hook was added in Linux kernel 5.16.
+
+Signed-off-by: ??? (XIE Zhibang) <Yeking at Red54.com>
+---
+Resend email due to DMARC issue.
+
+ package/kernel/linux/modules/netfilter.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/package/kernel/linux/modules/netfilter.mk b/package/kernel/linux/modules/netfilter.mk
+index da3e69e49a..e90c8382a1 100644
+--- a/package/kernel/linux/modules/netfilter.mk
++++ b/package/kernel/linux/modules/netfilter.mk
+@@ -1205,6 +1205,7 @@ define KernelPackage/nft-netdev
+   DEPENDS:=+kmod-nft-core
+   KCONFIG:= \
+ 	CONFIG_NETFILTER_INGRESS=y \
++	CONFIG_NETFILTER_EGRESS=y \
+ 	CONFIG_NF_TABLES_NETDEV \
+ 	CONFIG_NF_DUP_NETDEV \
+ 	CONFIG_NFT_DUP_NETDEV \
+-- 
+2.44.0
+
+
+
+From newtwen at gmail.com  Mon Jun 17 12:55:24 2024
+From: newtwen at gmail.com (Paul D)
+Date: Mon, 17 Jun 2024 21:55:24 +0200
+Subject: [PATCH] ipq40xx: add PCIe magic hack to improve VRX518
+ compatibility
+In-Reply-To: <CA+_ehUw=FfRTrKXnbr78kOrhUjRa0FWaXF03AcOfeohuP6AtTA@mail.gmail.com>
+References: <20230130224020.473703-1-jan@3e8.eu>
+ <CAOX2RU4a4Ev7n+jT+FLOtaq+rWdJC_GO=7TSeU8+N=2=oJwitg@mail.gmail.com>
+ <ZjpbuwqQ6CNhVxeO@rivendell>
+ <CA+_ehUw=FfRTrKXnbr78kOrhUjRa0FWaXF03AcOfeohuP6AtTA@mail.gmail.com>
+Message-ID: <90efcd72-6725-4572-be11-b6d636bc18fd@gmail.com>
+
+On 2024-05-07 20:48, Christian Marangi (Ansuel) wrote:
+> Il giorno mar 7 mag 2024 alle ore 18:53 Enrico Mioso
+> <mrkiko.rs at gmail.com> ha scritto:
+>>
+>> Hello all!!
+>>
+>> is there any chance we can merge any form of this patch?
+>> The device it is related seems pretty popular and one of the rare devices supporting VDSL, 35B profile and with nice specs.
+>> Even tough I can understand it is not desirable to maintain this patch indefinitely should that be the case, I don't think leaving it out of OpenWrt is the right answer.
+>> Also due to the fact this seems, in my opinion, one of these things that can act as barrier to entry for a typical setup (at least when VDSL is involved).
+>>
+>> Thanks a lot to all of you for your great work.
+>>
+> 
+> For everyone involved, I would really love if we can move here
+> https://github.com/openwrt/openwrt/pull/15421 and test the alternative
+> patch. It does have a different and more restricted approach.
+> 
+
+ping
+
+ping
+
+
+PING
+
+pinnnnggggggggg
+
+:D
+
+
+
+From fe at dev.tdt.de  Tue Jun 18 06:23:43 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Tue, 18 Jun 2024 15:23:43 +0200
+Subject: [PATCH] base-files: add SOURCE_DATE_EPOCH /usr/lib/os-release
+Message-ID: <20240618132343.3740920-1-fe@dev.tdt.de>
+
+The variable 'SOURCE_DATE_EPOCH' is used in the build system to have a
+defined build time for the entire software. This information is discovered
+with the script '/scripts/get_source_date_epoch.sh'.
+
+This information is used to generate reproducible binary builds and should
+therefore be available in the file '/usr/lib/os-release' on the target.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ include/version.mk                          | 3 ++-
+ package/base-files/files/usr/lib/os-release | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/version.mk b/include/version.mk
+index cdee0976da..1ac29b629a 100644
+--- a/include/version.mk
++++ b/include/version.mk
+@@ -104,5 +104,6 @@ VERSION_SED_SCRIPT:=$(SED) 's,%U,$(call sed_escape,$(VERSION_REPO)),g' \
+ 	-e 's,%u,$(call sed_escape,$(VERSION_HOME_URL)),g' \
+ 	-e 's,%s,$(call sed_escape,$(VERSION_SUPPORT_URL)),g' \
+ 	-e 's,%P,$(call sed_escape,$(VERSION_PRODUCT)),g' \
+-	-e 's,%h,$(call sed_escape,$(VERSION_HWREV)),g'
++	-e 's,%h,$(call sed_escape,$(VERSION_HWREV)),g' \
++	-e 's,%B,$(call sed_escape,$(SOURCE_DATE_EPOCH)),g'
+ 
+diff --git a/package/base-files/files/usr/lib/os-release b/package/base-files/files/usr/lib/os-release
+index c39913d54f..12db2c0ac6 100644
+--- a/package/base-files/files/usr/lib/os-release
++++ b/package/base-files/files/usr/lib/os-release
+@@ -16,3 +16,4 @@ OPENWRT_DEVICE_MANUFACTURER_URL="%m"
+ OPENWRT_DEVICE_PRODUCT="%P"
+ OPENWRT_DEVICE_REVISION="%h"
+ OPENWRT_RELEASE="%D %V %C"
++OPENWRT_BUILD_DATE="%B"
+-- 
+2.39.2
+
+
+
+From champetier.etienne at gmail.com  Tue Jun 18 07:56:37 2024
+From: champetier.etienne at gmail.com (Etienne Champetier)
+Date: Tue, 18 Jun 2024 16:56:37 +0200
+Subject: [PATCH] base-files: add SOURCE_DATE_EPOCH /usr/lib/os-release
+In-Reply-To: <20240618132343.3740920-1-fe@dev.tdt.de>
+References: <20240618132343.3740920-1-fe@dev.tdt.de>
+Message-ID: <CAOdf3gqi0m7KDHPk0eOZ3BvqvZjPx9BeGjvukc2S2P4=vYxA1A@mail.gmail.com>
+
+Hello Florian,
+
+Le mar. 18 juin 2024 ? 15:25, Florian Eckert <fe at dev.tdt.de> a ?crit :
+>
+> The variable 'SOURCE_DATE_EPOCH' is used in the build system to have a
+> defined build time for the entire software. This information is discovered
+> with the script '/scripts/get_source_date_epoch.sh'.
+>
+> This information is used to generate reproducible binary builds and should
+> therefore be available in the file '/usr/lib/os-release' on the target.
+
+Why not set SOURCE_DATE_EPOCH to 1 and never change it again ?
+(setting it to 0 might break stuff)
+Having the last commit date in os-release is still interesting
+
+Best
+Etienne
+
+
+From sudobash418 at gmail.com  Tue Jun 18 11:01:18 2024
+From: sudobash418 at gmail.com (sudobash418)
+Date: Tue, 18 Jun 2024 12:01:18 -0600
+Subject: Regarding the real-name-only contribution policy
+Message-ID: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+
+Hello everyone,
+
+I am new to contributing to OpenWrt, and have recently opened a couple 
+of PRs against the openwrt repo:
+- https://github.com/openwrt/openwrt/pull/15684
+- https://github.com/openwrt/openwrt/pull/15695
+
+I have authored and signed-off on each commit using my username, 
+`sudoBash418`, as I have for all my OSS contributions in the past.
+At the time, the wiki page on submitting patches stated that using a 
+"known identity" was permitted [1].
+
+[1]: 
+https://openwrt.org/submitting-patches?rev=1704903503#submission_guidelines
+
+However, I have since been informed that the official project policy 
+requires a "real name", and that a known identity such as my username 
+does not qualify [2].
+The wiki has since been updated to reflect this policy.
+
+[2]: https://github.com/openwrt/openwrt/pull/15684#issuecomment-2172752403
+
+I've now read through:
+- The history of the submitting-patches page on the OpenWrt Wiki [3]
+- The "Real name vs. known identity in contributions" thread on 
+openwrt-adm, started 2023-02-27 [4]
+- A revival of that thread on openwrt-devel, started 2024-01-10 [5]
+- The "here we are again: real name 'discussion'" thread on 
+openwrt-devel, started 2024-03-26 [6]
+- Numerous PRs across the OpenWrt project, including:
+ ??? - openwrt/openwrt#14380 ("ci: no longer require real name") [7]
+ ??? - openwrt/packages#23084 ("ci: no longer require real name") [8]
+ ??? - openwrt/packages#17993 ("[21.02] Bump yggdrasil to 0.4.3") [9]
+ ??? - openwrt/packages#23072 ("yggdrasil-jumper: add new package") [10]
+
+[3]: https://openwrt.org/submitting-patches?do=revisions
+[4]: 
+https://lists.openwrt.org/pipermail/openwrt-adm/2023-February/002358.html
+[5]: 
+https://lists.openwrt.org/pipermail/openwrt-devel/2024-January/042058.html
+[6]: 
+https://lists.openwrt.org/pipermail/openwrt-devel/2024-March/042472.html
+[7]: https://github.com/openwrt/openwrt/pull/14380
+[8]: https://github.com/openwrt/packages/pull/23084
+[9]: https://github.com/openwrt/packages/pull/17993#issuecomment-1059783673
+[10]: https://github.com/openwrt/packages/pull/23072#issuecomment-2023805052
+
+As I understand it, the question of whether OpenWrt should change its 
+policy on names to match the Linux kernel's has never been *formally* 
+answered (via a vote), despite being raised over 15 months ago.
+
+Therefore, I would like to request that the OpenWrt committers hold a 
+formal vote in accordance with the OpenWrt rules [11], and that they do 
+so in a timely manner (i.e. not stalling for months without cause).
+
+[11]: https://openwrt.org/rules
+
+Thank you from hopefully a future contributor,
+sudoBash418
+
+
+
+From arinc.unal at arinc9.com  Tue Jun 18 11:43:15 2024
+From: arinc.unal at arinc9.com (=?UTF-8?B?QXLEsW7DpyDDnE5BTA==?=)
+Date: Tue, 18 Jun 2024 21:43:15 +0300
+Subject: Regarding the real-name-only contribution policy
+In-Reply-To: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+References: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+Message-ID: <40e0496b-00c6-4f2d-8cab-eb80a7d1e99e@arinc9.com>
+
+After the xz backdoor incident, I don't think it would be very wise to
+start allowing usernames. Not just that, anyone with a full name that
+cannot be tied to a real person through either public knowledge on the
+internet, or information privately provided to the maintainers of the
+project is a potential infiltrator in my eyes.
+
+But, I think usernames should be allowed for submissions, and the
+submissions must be reviewed thoroughly. Becoming a maintainer or a member
+of the project on the other hand, must not be possible unless the person's
+real life identity is privately provided.
+
+Ar?n?
+
+On 18/06/2024 21.01, sudobash418 wrote:
+> Hello everyone,
+> 
+> I am new to contributing to OpenWrt, and have recently opened a couple of PRs against the openwrt repo:
+> - https://github.com/openwrt/openwrt/pull/15684
+> - https://github.com/openwrt/openwrt/pull/15695
+> 
+> I have authored and signed-off on each commit using my username, `sudoBash418`, as I have for all my OSS contributions in the past.
+> At the time, the wiki page on submitting patches stated that using a "known identity" was permitted [1].
+> 
+> [1]: https://openwrt.org/submitting-patches?rev=1704903503#submission_guidelines
+> 
+> However, I have since been informed that the official project policy requires a "real name", and that a known identity such as my username does not qualify [2].
+> The wiki has since been updated to reflect this policy.
+> 
+> [2]: https://github.com/openwrt/openwrt/pull/15684#issuecomment-2172752403
+> 
+> I've now read through:
+> - The history of the submitting-patches page on the OpenWrt Wiki [3]
+> - The "Real name vs. known identity in contributions" thread on openwrt-adm, started 2023-02-27 [4]
+> - A revival of that thread on openwrt-devel, started 2024-01-10 [5]
+> - The "here we are again: real name 'discussion'" thread on openwrt-devel, started 2024-03-26 [6]
+> - Numerous PRs across the OpenWrt project, including:
+>  ??? - openwrt/openwrt#14380 ("ci: no longer require real name") [7]
+>  ??? - openwrt/packages#23084 ("ci: no longer require real name") [8]
+>  ??? - openwrt/packages#17993 ("[21.02] Bump yggdrasil to 0.4.3") [9]
+>  ??? - openwrt/packages#23072 ("yggdrasil-jumper: add new package") [10]
+> 
+> [3]: https://openwrt.org/submitting-patches?do=revisions
+> [4]: https://lists.openwrt.org/pipermail/openwrt-adm/2023-February/002358.html
+> [5]: https://lists.openwrt.org/pipermail/openwrt-devel/2024-January/042058.html
+> [6]: https://lists.openwrt.org/pipermail/openwrt-devel/2024-March/042472.html
+> [7]: https://github.com/openwrt/openwrt/pull/14380
+> [8]: https://github.com/openwrt/packages/pull/23084
+> [9]: https://github.com/openwrt/packages/pull/17993#issuecomment-1059783673
+> [10]: https://github.com/openwrt/packages/pull/23072#issuecomment-2023805052
+> 
+> As I understand it, the question of whether OpenWrt should change its policy on names to match the Linux kernel's has never been *formally* answered (via a vote), despite being raised over 15 months ago.
+> 
+> Therefore, I would like to request that the OpenWrt committers hold a formal vote in accordance with the OpenWrt rules [11], and that they do so in a timely manner (i.e. not stalling for months without cause).
+> 
+> [11]: https://openwrt.org/rules
+> 
+> Thank you from hopefully a future contributor,
+> sudoBash418
+> 
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From hacks at slashdirt.org  Tue Jun 18 11:54:50 2024
+From: hacks at slashdirt.org (Thibaut)
+Date: Tue, 18 Jun 2024 20:54:50 +0200
+Subject: Regarding the real-name-only contribution policy
+In-Reply-To: <40e0496b-00c6-4f2d-8cab-eb80a7d1e99e@arinc9.com>
+References: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+ <40e0496b-00c6-4f2d-8cab-eb80a7d1e99e@arinc9.com>
+Message-ID: <324C4F72-95F4-4F33-83E9-3D8A85319A5E@slashdirt.org>
+
+
+
+> Le 18 juin 2024 ? 20:43, Ar?n? ?NAL <arinc.unal at arinc9.com> a ?crit :
+> 
+> After the xz backdoor incident, I don't think it would be very wise to
+> start allowing usernames.
+[?]
+> But, I think usernames should be allowed for submissions, and the
+> submissions must be reviewed thoroughly.
+
+I?m sorry, this doesn?t compute.
+The xz "incident" was perpetrated through *submissions* that were *reviewed*.
+
+Also note that the contributor did manage to come up with an (unverifiable) "real name".
+
+my 2c.
+T.
+
+PS: for the sake of clarity, I don?t think allowing arbitrary usernames is a good idea.
+The reasons have been exposed by others already.
+
+From sudobash418 at gmail.com  Tue Jun 18 12:00:21 2024
+From: sudobash418 at gmail.com (sudobash418)
+Date: Tue, 18 Jun 2024 13:00:21 -0600
+Subject: Regarding the real-name-only contribution policy
+In-Reply-To: <40e0496b-00c6-4f2d-8cab-eb80a7d1e99e@arinc9.com>
+References: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+ <40e0496b-00c6-4f2d-8cab-eb80a7d1e99e@arinc9.com>
+Message-ID: <65cb7438-038f-477a-96dd-15f808103a7f@gmail.com>
+
+On 2024-06-18 12:43, Ar?n? ?NAL wrote:
+> After the xz backdoor incident, I don't think it would be very wise to
+> start allowing usernames. Not just that, anyone with a full name that
+> cannot be tied to a real person through either public knowledge on the
+> internet, or information privately provided to the maintainers of the
+> project is a potential infiltrator in my eyes.
+>
+> But, I think usernames should be allowed for submissions, and the
+> submissions must be reviewed thoroughly. Becoming a maintainer or a 
+> member
+> of the project on the other hand, must not be possible unless the 
+> person's
+> real life identity is privately provided.
+>
+> Ar?n? 
+
+IMHO, neither version of the contribution policy ("real-name-only" or 
+"known identity") matters for malicious (or compromised) contributors.
+A malicious "contributor" can simply fake their name, and under the 
+current policy, it would be accepted at face value.
+
+Note that I am ignoring *committers*, because that is a much more 
+selective and trusted group, and has different rules from what I understand.
+The policy change that I am talking about is for contributors, not 
+committers (the ~50 people who can merge changes into the project repos).
+
+Proof-of-identity is a valid concern, but I think it's largely 
+orthogonal from this specific policy.
+
+sudoBash418
+
+
+From sudobash418 at gmail.com  Tue Jun 18 14:24:26 2024
+From: sudobash418 at gmail.com (sudobash418)
+Date: Tue, 18 Jun 2024 15:24:26 -0600
+Subject: Regarding the real-name-only contribution policy
+In-Reply-To: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+References: <bbee2423-b3f1-4494-990e-3226eeb2ac12@gmail.com>
+Message-ID: <aa60eff7-c6bb-4930-b806-5cef1413bde8@gmail.com>
+
+I'd like to follow-up on my first email by explaining why I think the 
+policy should be changed.
+
+First, let me clarify exactly what I am proposing: that the submission 
+policy for contributions to OpenWrt, which currently disallows 
+"pseudonymous contributions", be changed to allow the use of 
+identifiable pseudonyms.
+This is in line with (among others) the CNCF, whose policy [1] states that:
+
+ > A real name does not require a legal name, nor a birth name, nor any
+ > name that appears on an official ID (e.g. a passport). Your real
+ > name is the name you convey to people in the community for them to
+ > use to identify you as you. The key concern is that your
+ > identification is sufficient enough to contact you if an issue were
+ > to arise in the future about your contribution.
+
+[1]: https://github.com/cncf/foundation/blob/main/dco-guidelines.md
+
+(CNCF has a broader definition of "real name" than OpenWrt)
+In other words, a pseudonym would be accepted so long as it uniquely 
+identifies a contributor within the community, and can be used to 
+contact that contributor, should the need arise.
+
+Using myself as an example, `sudoBash418` would be an acceptable 
+pseudonym, as I use it elsewhere within the community (OpenWrt forums) 
+and it can easily be used to contact me (either through community 
+channels, or after a web search which would quickly surface other 
+channels of communication, including my GitHub account).
+In contrast, my legal name is actually less suited to this purpose, as 
+it is only unique within the OpenWrt community (a web search would not 
+surface any contact methods).
+
+---
+
+There are many reasons why someone would choose to use a known identity 
+besides their "real name".
+Some may simply prefer to be known by a chosen identity throughout 
+OpenWrt community spaces, while others have more serious reasons to 
+avoid publicizing their "real name", such as deadnaming or the threat of 
+being doxxed.
+
+Keep in mind that any contributions to OpenWrt repositories are 
+generally *immutable*, in contrast to other instances of a contributor's 
+name (e.g. forums, IRC).
+
+Drew DeVault has a blog post on this subject [2], which I'll cite here:
+
+ > That said, intent or otherwise, these policies can cause harm. The
+ > profile of the contributor who is comfortable using their ?real
+ > name? is likely to fall more narrowly into over-represented
+ > demographics in our community; enforcing a real-name policy will
+ > ostracize some people. Those with marginalized identities tend to be
+ > less comfortable with disclosing their ?real name?. Someone who has
+ > been subject to harassment may not be comfortable with this
+ > disclosure, since it offers more fuel to harassers keeping tabs on
+ > their activities. The use of a ?real name? also confers a gender
+ > bias; avoiding a ?real name? policy neatly eliminates discrimination
+ > on this basis. Of course, there are also many falsehoods programmers
+ > believe about names [3] which can present in the implementation of
+ > such a policy.
+
+[2]: https://drewdevault.com/2023/10/31/On-real-names.html
+[3]: 
+https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+
+Accepting contributions from those using pseudonyms benefits the OpenWrt 
+community in two ways: technically (in the form of additional 
+contributions), and socially (in the form of a larger, more diverse set 
+of contributors and community members).
+
+ From a legal standpoint, it seems unlikely to me that this change would 
+pose a significant risk to the project, given the many other projects 
+that accept "known identities" (e.g. the Linux kernel, Gentoo, CNCF).
+That said, I am not a lawyer, and it would seem prudent to get an 
+opinion from OpenWrt's legal counsel (i.e. SFC, if I'm not mistaken).
+
+Regarding the use of "inappropriate" usernames, I would argue that 
+common-sense moderation should apply, similar to other community spaces 
+(the forum, IRC, etc.)
+
+Thank you,
+sudoBash418
+
+
+From fe at dev.tdt.de  Wed Jun 19 00:48:59 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Wed, 19 Jun 2024 09:48:59 +0200
+Subject: [PATCH] base-files: add SOURCE_DATE_EPOCH /usr/lib/os-release
+In-Reply-To: <CAOdf3gqi0m7KDHPk0eOZ3BvqvZjPx9BeGjvukc2S2P4=vYxA1A@mail.gmail.com>
+References: <20240618132343.3740920-1-fe@dev.tdt.de>
+ <CAOdf3gqi0m7KDHPk0eOZ3BvqvZjPx9BeGjvukc2S2P4=vYxA1A@mail.gmail.com>
+Message-ID: <b8b9c2b28d5363136060c67b4ea938a6@dev.tdt.de>
+
+Hello Etienne,
+
+>> The variable 'SOURCE_DATE_EPOCH' is used in the build system to have a
+>> defined build time for the entire software. This information is 
+>> discovered
+>> with the script '/scripts/get_source_date_epoch.sh'.
+>> 
+>> This information is used to generate reproducible binary builds and 
+>> should
+>> therefore be available in the file '/usr/lib/os-release' on the 
+>> target.
+> 
+> Why not set SOURCE_DATE_EPOCH to 1 and never change it again ?
+
+Unfortunately, I don't understand what you're trying to tell me. The
+'SOURCE_DATE_EPOCH' is the last commit time in OpenWrt git repo. This
+is discovered with the script '/scripts/get_source_date_epoch.sh' [1].
+
+
+> Having the last commit date in os-release is still interesting
+
+:+1:
+
+Best regards
+
+Florian
+
+[1] 
+https://github.com/openwrt/openwrt/blob/main/scripts/get_source_date_epoch.sh
+
+
+From robert.solarek at doueloul.pl  Wed Jun 19 00:40:40 2024
+From: robert.solarek at doueloul.pl (Robert Solarek)
+Date: Wed, 19 Jun 2024 07:40:40 GMT
+Subject: =?UTF-8?Q?Nowy_sprz=C4=99t_dla_firmy?=
+Message-ID: <20240619084500-0.1.u.26l7.0.0cex4pfmyq@doueloul.pl>
+
+Dzie? dobry,
+
+wyposa?amy firmy w niezawodny sprz?t i przygotowujemy do pracy stanowiska komputerowe.
+
+Jeste?my najwy?ej certyfikowanym partnerem Dell w Polsce. Dzi?ki wsp??pracy z czo?owymi markami technologicznymi, takimi jak Lenovo, HP, Cisco, Microsoft, Vmware oraz Schneider Electric zapewniamy szerok? gam? produkt?w dostosowanych do r??nych potrzeb biznesowych.
+
+Z 15-letnim do?wiadczeniem na rynku, dostarczyli?my 71 000 laptop?w, 40 000 desktop?w, 10 100 stacji roboczych, 70 000 monitor?w oraz 9300 serwer?w. Zaufanie, jakim obdarzaj? nas Klienci, stanowi najlepsz? rekomendacj? jako partnera w kreowaniu nowoczesnych i wydajnych ?rodowisk pracy.
+
+Zyskuj? Pa?stwo nie tylko wi?cej oszcz?dno?ci, ale tak?e komfort dzia?ania dzi?ki bezproblemowym dzia?aniu komputer?w i sieci.
+
+Ch?tnie przedstawi? wi?cej szczeg???w - prosz? o wiadomo?? w przypadku zainteresowania.
+
+
+Pozdrawiam
+Robert Solarek
+
+
+From champetier.etienne at gmail.com  Wed Jun 19 01:30:33 2024
+From: champetier.etienne at gmail.com (Etienne Champetier)
+Date: Wed, 19 Jun 2024 10:30:33 +0200
+Subject: [PATCH] base-files: add SOURCE_DATE_EPOCH /usr/lib/os-release
+In-Reply-To: <b8b9c2b28d5363136060c67b4ea938a6@dev.tdt.de>
+References: <20240618132343.3740920-1-fe@dev.tdt.de> <CAOdf3gqi0m7KDHPk0eOZ3BvqvZjPx9BeGjvukc2S2P4=vYxA1A@mail.gmail.com>
+ <b8b9c2b28d5363136060c67b4ea938a6@dev.tdt.de>
+Message-ID: <CAOdf3gro+JXxqBXm=w9E7kz0e_P0wkPigHoSWE+L+-FtZ1uD9g@mail.gmail.com>
+
+Le mer. 19 juin 2024 ? 09:49, Florian Eckert <fe at dev.tdt.de> a ?crit :
+>
+> Hello Etienne,
+>
+> >> The variable 'SOURCE_DATE_EPOCH' is used in the build system to have a
+> >> defined build time for the entire software. This information is
+> >> discovered
+> >> with the script '/scripts/get_source_date_epoch.sh'.
+> >>
+> >> This information is used to generate reproducible binary builds and
+> >> should
+> >> therefore be available in the file '/usr/lib/os-release' on the
+> >> target.
+> >
+> > Why not set SOURCE_DATE_EPOCH to 1 and never change it again ?
+>
+> Unfortunately, I don't understand what you're trying to tell me. The
+> 'SOURCE_DATE_EPOCH' is the last commit time in OpenWrt git repo. This
+> is discovered with the script '/scripts/get_source_date_epoch.sh' [1].
+
+This is not directly related to your patch, what I'm trying to say is
+why spend cpu cycles
+getting the last commit date for each package and not just hardcode it ?
+
+> > Having the last commit date in os-release is still interesting
+>
+> :+1:
+>
+> Best regards
+>
+> Florian
+>
+> [1]
+> https://github.com/openwrt/openwrt/blob/main/scripts/get_source_date_epoch.sh
+
+
+From zajec5 at gmail.com  Wed Jun 19 03:50:26 2024
+From: zajec5 at gmail.com (=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=)
+Date: Wed, 19 Jun 2024 12:50:26 +0200
+Subject: [PATCH] base-files: migrate old UCI network sections defining
+ bridges
+In-Reply-To: <20210518214133.6622-1-zajec5@gmail.com>
+References: <20210518214133.6622-1-zajec5@gmail.com>
+Message-ID: <782c93d7-ba53-43ff-b095-9d15076d20a6@gmail.com>
+
+On 18.05.2021 23:41, Rafa? Mi?ecki wrote:
+> From: Rafa? Mi?ecki <rafal at milecki.pl>
+> 
+> Old "interface" sections for bridges were mixing layer 2 and layer 3.
+> That syntax got deprecated and UCI section "device" is used for bridge
+> configuration now.
+> 
+> Backward compatibility may be dropped from netifd soon now so migrate
+> old configs using uci-defaults script.
+> 
+> Signed-off-by: Rafa? Mi?ecki <rafal at milecki.pl>
+> ---
+> That "soon" is relative, I'm not planning to push this patch yet. We may
+> give updated /etc/config/network few months to receive proper testing.
+
+I decided to push this PATCH after giving people 3 years to update their
+configs manually.
+
+
+> ---
+>   .../uci-defaults/11_network-migrate-bridges   | 24 +++++++++++++++++++
+>   1 file changed, 24 insertions(+)
+> 
+> diff --git a/package/base-files/files/etc/uci-defaults/11_network-migrate-bridges b/package/base-files/files/etc/uci-defaults/11_network-migrate-bridges
+> index 745648531f..7188c06ce3 100644
+> --- a/package/base-files/files/etc/uci-defaults/11_network-migrate-bridges
+> +++ b/package/base-files/files/etc/uci-defaults/11_network-migrate-bridges
+> @@ -17,7 +17,31 @@ migrate_ports() {
+>   	uci delete network.$config.ifname
+>   }
+>   
+> +migrate_bridge() {
+> +	local config="$1"
+> +	local type ifname
+> +
+> +	config_get type "$config" type
+> +	[ "$type" != "bridge" ] && return
+> +
+> +	config_get ifname "$config" ifname
+> +
+> +	uci -q batch <<-EOF
+> +		add network device
+> +		set network. at device[-1].name='br-$config'
+> +		set network. at device[-1].type='bridge'
+> +	EOF
+> +	for port in $ifname; do uci add_list network. at device[-1].ports="$port"; done
+> +
+> +	uci -q batch <<-EOF
+> +		delete network.$config.type
+> +		set network.$config.ifname='br-$config'
+> +	EOF
+> +}
+> +
+>   config_load network
+>   config_foreach migrate_ports device
+> +config_foreach migrate_bridge interface
+> +uci commit network
+>   
+>   exit 1
+
+
+
+From fe at dev.tdt.de  Thu Jun 20 00:53:12 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Thu, 20 Jun 2024 09:53:12 +0200
+Subject: [PATCH] procd: system: replace openwrt_release with os-release
+Message-ID: <20240620075312.18954-1-fe@dev.tdt.de>
+
+The information required for output via the ubus is currently read from
+the file '/etc/openwrt_release'. The same information can also be found
+under '/usr/lib/os-release'. This file contains further information and is
+also the most common used file in other Linux distributions.
+
+So let?s use this file.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+This is a preparatory commit to make the 'SOURCE_DATE_EPOCH' information
+for reproducable commits availbale via ubus [1]. This additional commit
+is adding the information to the file '/usr/lib/os-release'.
+
+[1] https://patchwork.ozlabs.org/project/openwrt/patch/20240618132343.3740920-1-fe at dev.tdt.de/
+
+ system.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/system.c b/system.c
+index 21ec3cd..dcc37e0 100644
+--- a/system.c
++++ b/system.c
+@@ -251,7 +251,7 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
+ 	if (rootfs_type)
+ 		blobmsg_add_string(&b, "rootfs_type", rootfs_type);
+ 
+-	if ((f = fopen("/etc/openwrt_release", "r")) != NULL)
++	if ((f = fopen("/usr/lib/os-release", "r")) != NULL)
+ 	{
+ 		c = blobmsg_open_table(&b, "release");
+ 
+@@ -267,17 +267,17 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
+ 
+ 			*(val++) = 0;
+ 
+-			if (!strcasecmp(key, "DISTRIB_ID"))
++			if (!strcasecmp(key, "NAME"))
+ 				key = "distribution";
+-			else if (!strcasecmp(key, "DISTRIB_RELEASE"))
++			else if (!strcasecmp(key, "VERSION"))
+ 				key = "version";
+-			else if (!strcasecmp(key, "DISTRIB_REVISION"))
++			else if (!strcasecmp(key, "BUILD_ID"))
+ 				key = "revision";
+-			else if (!strcasecmp(key, "DISTRIB_CODENAME"))
++			else if (!strcasecmp(key, "VERSION_CODENAME"))
+ 				key = "codename";
+-			else if (!strcasecmp(key, "DISTRIB_TARGET"))
++			else if (!strcasecmp(key, "OPENWRT_BOARD"))
+ 				key = "target";
+-			else if (!strcasecmp(key, "DISTRIB_DESCRIPTION"))
++			else if (!strcasecmp(key, "PRETTY_NAME"))
+ 				key = "description";
+ 			else
+ 				continue;
+-- 
+2.39.2
+
+
+
+From fe at dev.tdt.de  Thu Jun 20 03:45:55 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Thu, 20 Jun 2024 12:45:55 +0200
+Subject: [PATCH v2] system: replace openwrt_release with os-release
+Message-ID: <20240620104555.24233-1-fe@dev.tdt.de>
+
+The information required for output via the ubus is currently read from
+the file '/etc/openwrt_release'. The same information can also be found
+under '/usr/lib/os-release'. This file contains further information and is
+also the most common used file in other Linux distributions.
+
+Let?s use '/usr/lib/os-release'.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+v2:
+- fixed spelling
+
+info:
+This is a preparatory commit to make the 'SOURCE_DATE_EPOCH' information
+also available via ubus [1]. The 'SOURCE_DATE_EPOCH' value is used for
+reproducible builds. After the merge of this and the referenced [1] commit,
+this information can also be made readable via the ubus. To do this, the
+reading of '/usr/lib/os-release' must be extended.
+
+[1] https://patchwork.ozlabs.org/project/openwrt/patch/20240618132343.3740920-1-fe at dev.tdt.de/
+
+ system.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/system.c b/system.c
+index 21ec3cd..dcc37e0 100644
+--- a/system.c
++++ b/system.c
+@@ -251,7 +251,7 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
+ 	if (rootfs_type)
+ 		blobmsg_add_string(&b, "rootfs_type", rootfs_type);
+ 
+-	if ((f = fopen("/etc/openwrt_release", "r")) != NULL)
++	if ((f = fopen("/usr/lib/os-release", "r")) != NULL)
+ 	{
+ 		c = blobmsg_open_table(&b, "release");
+ 
+@@ -267,17 +267,17 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
+ 
+ 			*(val++) = 0;
+ 
+-			if (!strcasecmp(key, "DISTRIB_ID"))
++			if (!strcasecmp(key, "NAME"))
+ 				key = "distribution";
+-			else if (!strcasecmp(key, "DISTRIB_RELEASE"))
++			else if (!strcasecmp(key, "VERSION"))
+ 				key = "version";
+-			else if (!strcasecmp(key, "DISTRIB_REVISION"))
++			else if (!strcasecmp(key, "BUILD_ID"))
+ 				key = "revision";
+-			else if (!strcasecmp(key, "DISTRIB_CODENAME"))
++			else if (!strcasecmp(key, "VERSION_CODENAME"))
+ 				key = "codename";
+-			else if (!strcasecmp(key, "DISTRIB_TARGET"))
++			else if (!strcasecmp(key, "OPENWRT_BOARD"))
+ 				key = "target";
+-			else if (!strcasecmp(key, "DISTRIB_DESCRIPTION"))
++			else if (!strcasecmp(key, "PRETTY_NAME"))
+ 				key = "description";
+ 			else
+ 				continue;
+-- 
+2.39.2
+
+
+
+From janusz.dziedzic at gmail.com  Fri Jun 21 01:55:43 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Fri, 21 Jun 2024 10:55:43 +0200
+Subject: backports kick?
+Message-ID: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+
+Hello,
+I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+Is there plan to kick backports to smth like 6.10?
+
+BR
+Janusz
+
+
+From nbd at nbd.name  Fri Jun 21 03:59:29 2024
+From: nbd at nbd.name (Felix Fietkau)
+Date: Fri, 21 Jun 2024 12:59:29 +0200
+Subject: backports kick?
+In-Reply-To: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+References: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+Message-ID: <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name>
+
+On 21.06.24 10:55, Janusz Dziedzic wrote:
+> Hello,
+> I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+> Is there plan to kick backports to smth like 6.10?
+
+I have 6.9.1 in my staging tree for testing.
+
+- Felix
+
+
+
+From bmoffitt at ayrstone.com  Fri Jun 21 08:42:49 2024
+From: bmoffitt at ayrstone.com (Bill Moffitt)
+Date: Fri, 21 Jun 2024 08:42:49 -0700
+Subject: Mesh Problem
+Message-ID: <CAAA=3KQLjr7Ss3kBkHEgzo91d=CEatsNFRL2rpQCnXeNHa+vZQ@mail.gmail.com>
+
+Trying to set up meshing on Comfast EW-72 v2 - my first time working
+with the Mediatek chipset. I have played around with meshing quite a
+bit on Atheros chips.
+
+The interesting problem is that it seems to work in v23.05.2 and
+v23.05.3 with wpad-basic-mbedtls, but, when I swap it out for
+wpad-mesh (tried both mbedtls and wolfssl), it won't work. When I use
+iw phy0-mesh0 mesh_param dump, I see that mesh_auto_open_plinks=0,
+which explains why it won't connect to the mesh.
+
+However, trying to set it never works:
+
+root at OpenWrt:~# iw phy0-mesh0 set mesh_param mesh_auto_open_plinks=1
+command failed: Resource busy (-16)
+
+Interestingly, when I swap wpad-basic back in, it does work, but it
+appears to connect with encryption.
+
+uci set wireless.mesh.encryption='psk'
+uci set wireless.mesh.key='xxxxxxxxxx'
+wifi
+
+and the nodes connect. However, if I leave encryption off on one node,
+it STILL CONNECTS, meaning that encryption is failing silently
+(nothing in the logs). It seems like there should be at least a
+message ("Encryption configured for interface mesh but not enabled" or
+something).
+
+I'm not quite sure how to even debug this.
+
+All suggestions gratefully accepted.
+
+-Bill
+
+
+From noreply at github.com  Sun Jun 23 18:00:58 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 23 Jun 2024 18:00:58 -0700
+Subject: [sdwalker/sdwalker.github.io] 92d507: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/d842bb-92d507@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 92d5077fdd0e35f88e32445c4c2056058d20fdb7
+      https://github.com/sdwalker/sdwalker.github.io/commit/92d5077fdd0e35f88e32445c4c2056058d20fdb7
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-06-23 (Sun, 23 Jun 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From janusz.dziedzic at gmail.com  Mon Jun 24 04:46:01 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Mon, 24 Jun 2024 13:46:01 +0200
+Subject: backports kick?
+In-Reply-To: <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name>
+References: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+ <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name>
+Message-ID: <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+
+pt., 21 cze 2024 o 12:59 Felix Fietkau <nbd at nbd.name> napisa?(a):
+>
+> On 21.06.24 10:55, Janusz Dziedzic wrote:
+> > Hello,
+> > I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+> > Is there plan to kick backports to smth like 6.10?
+>
+> I have 6.9.1 in my staging tree for testing.
+>
+
+Nice, are also patches (reworked) available?
+
+BR
+Janusz
+
+
+From robimarko at gmail.com  Mon Jun 24 04:52:09 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Mon, 24 Jun 2024 13:52:09 +0200
+Subject: backports kick?
+In-Reply-To: <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+References: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+ <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name> <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+Message-ID: <CAOX2RU4SH=WyOyB=4mkAOvemTPmgN1BFDQ_Sk4ZYvSWCh9L__A@mail.gmail.com>
+
+On Mon, 24 Jun 2024 at 13:46, Janusz Dziedzic <janusz.dziedzic at gmail.com> wrote:
+>
+> pt., 21 cze 2024 o 12:59 Felix Fietkau <nbd at nbd.name> napisa?(a):
+> >
+> > On 21.06.24 10:55, Janusz Dziedzic wrote:
+> > > Hello,
+> > > I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+> > > Is there plan to kick backports to smth like 6.10?
+> >
+> > I have 6.9.1 in my staging tree for testing.
+> >
+>
+> Nice, are also patches (reworked) available?
+
+Its all there, you can just pick the commit.
+
+Robert
+>
+> BR
+> Janusz
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From nbd at nbd.name  Mon Jun 24 05:38:15 2024
+From: nbd at nbd.name (Felix Fietkau)
+Date: Mon, 24 Jun 2024 14:38:15 +0200
+Subject: backports kick?
+In-Reply-To: <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+References: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+ <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name>
+ <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+Message-ID: <f5621e47-cf42-4b43-a665-509ea496aff5@nbd.name>
+
+On 24.06.24 13:46, Janusz Dziedzic wrote:
+> pt., 21 cze 2024 o 12:59 Felix Fietkau <nbd at nbd.name> napisa?(a):
+>>
+>> On 21.06.24 10:55, Janusz Dziedzic wrote:
+>> > Hello,
+>> > I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+>> > Is there plan to kick backports to smth like 6.10?
+>>
+>> I have 6.9.1 in my staging tree for testing.
+>>
+> 
+> Nice, are also patches (reworked) available?
+
+My modified backports tree is here:
+https://github.com/nbd168/backports
+
+- Felix
+
+
+From janusz.dziedzic at gmail.com  Mon Jun 24 10:45:40 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Mon, 24 Jun 2024 19:45:40 +0200
+Subject: backports kick?
+In-Reply-To: <f5621e47-cf42-4b43-a665-509ea496aff5@nbd.name>
+References: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+ <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name> <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+ <f5621e47-cf42-4b43-a665-509ea496aff5@nbd.name>
+Message-ID: <CAFED-jm7RR+9M4eWTxtt5GZ9aFJKUBTUHbK4RWQCSw30EAjcUw@mail.gmail.com>
+
+pon., 24 cze 2024 o 14:38 Felix Fietkau <nbd at nbd.name> napisa?(a):
+>
+> On 24.06.24 13:46, Janusz Dziedzic wrote:
+> > pt., 21 cze 2024 o 12:59 Felix Fietkau <nbd at nbd.name> napisa?(a):
+> >>
+> >> On 21.06.24 10:55, Janusz Dziedzic wrote:
+> >> > Hello,
+> >> > I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+> >> > Is there plan to kick backports to smth like 6.10?
+> >>
+> >> I have 6.9.1 in my staging tree for testing.
+> >>
+> >
+> > Nice, are also patches (reworked) available?
+>
+> My modified backports tree is here:
+> https://github.com/nbd168/backports
+>
+Thanks, this is what I needed.
+Hope will be soon in main :)
+
+BR
+Janusz
+
+
+From hauke at hauke-m.de  Mon Jun 24 13:07:22 2024
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Mon, 24 Jun 2024 22:07:22 +0200
+Subject: contact@openwrt.org mails gone since November 2023
+Message-ID: <65d004cf-5d81-415d-86ee-8bc645069172@hauke-m.de>
+
+Hi,
+
+We lost the mails send to contact at openwrt.org between 2023-11-18 and 
+2024-06-21. If you send anything important to this address please resend 
+it. Probably no error message was send back by the mail system.
+
+Hauke
+
+
+From bmoffitt at ayrstone.com  Mon Jun 24 21:36:27 2024
+From: bmoffitt at ayrstone.com (Bill Moffitt)
+Date: Mon, 24 Jun 2024 21:36:27 -0700
+Subject: Mesh Problem
+In-Reply-To: <CAAA=3KQLjr7Ss3kBkHEgzo91d=CEatsNFRL2rpQCnXeNHa+vZQ@mail.gmail.com>
+References: <CAAA=3KQLjr7Ss3kBkHEgzo91d=CEatsNFRL2rpQCnXeNHa+vZQ@mail.gmail.com>
+Message-ID: <CAAA=3KTLq0Nq9VuLJFxHZzC7HDDtu8+o1PEaerF1ZR_-Y5TQPg@mail.gmail.com>
+
+Follow-up:
+
+I tried it on an Atheros-based AP (Alfa N2Q) and found the same thing
+- works for unencrypted mesh, but adding wpad-mesh-mbedtls causes the
+mesh to fail completely, and mesh_params cannot be set:
+
+root at OpenWrt:~# iw phy0-mesh0 set mesh_param mesh_gate_announcements=1
+command failed: Link has been severed (-67)
+
+I set log_level to 0 and got some interesting errors:
+
+Tue Jun 25 00:40:11 2024 kern.info kernel: [ 2898.625083] br-lan: port
+4(phy0-mesh0) entered blocking state
+Tue Jun 25 00:40:11 2024 kern.info kernel: [ 2898.631437] br-lan: port
+4(phy0-mesh0) entered disabled state
+Tue Jun 25 00:40:11 2024 kern.info kernel: [ 2898.637879] device
+phy0-mesh0 entered promiscuous mode
+Tue Jun 25 00:40:11 2024 kern.info kernel: [ 2898.643613] br-lan: port
+4(phy0-mesh0) entered blocking state
+Tue Jun 25 00:40:11 2024 kern.info kernel: [ 2898.649659] br-lan: port
+4(phy0-mesh0) entered forwarding state
+Tue Jun 25 00:40:11 2024 daemon.err wpa_supplicant[1211]: Line 8: too
+large mode (value=5 max_value=4)
+Tue Jun 25 00:40:11 2024 daemon.err wpa_supplicant[1211]: Line 8:
+failed to parse mode '5'.
+Tue Jun 25 00:40:11 2024 daemon.err wpa_supplicant[1211]: Line 15:
+failed to parse network block.
+Tue Jun 25 00:40:11 2024 daemon.err wpa_supplicant[1211]: Failed to
+read or parse configuration '/var/run/wpa_supplicant-phy0-mesh0.conf'.
+Tue Jun 25 00:40:11 2024 daemon.notice wpa_supplicant[1211]: :
+CTRL-EVENT-DSCP-POLICY clear_all
+Tue Jun 25 00:40:11 2024 daemon.notice netifd: radio0 (4079): WARNING
+(wireless_add_process): executable path /usr/sbin/wpad does not match
+process 1212 path (/usr/sbin/wpad (deleted))
+Tue Jun 25 00:40:11 2024 kern.info kernel: [ 2899.068199] br-lan: port
+4(phy0-mesh0) entered disabled state
+Tue Jun 25 00:40:12 2024 daemon.notice wpa_supplicant[1211]: Set new
+config for phy phy0
+
+So it definitely looks like a problem with wpa_supplicant.
+
+root at OpenWrt:~# wpa_supplicant -v
+wpa_supplicant v2.11-devel
+
+Again, any suggestions appreciated.
+
+-Bill
+
+
+On Fri, Jun 21, 2024 at 8:42?AM Bill Moffitt <bmoffitt at ayrstone.com> wrote:
+>
+> Trying to set up meshing on Comfast EW-72 v2 - my first time working
+> with the Mediatek chipset. I have played around with meshing quite a
+> bit on Atheros chips.
+>
+> The interesting problem is that it seems to work in v23.05.2 and
+> v23.05.3 with wpad-basic-mbedtls, but, when I swap it out for
+> wpad-mesh (tried both mbedtls and wolfssl), it won't work. When I use
+> iw phy0-mesh0 mesh_param dump, I see that mesh_auto_open_plinks=0,
+> which explains why it won't connect to the mesh.
+>
+> However, trying to set it never works:
+>
+> root at OpenWrt:~# iw phy0-mesh0 set mesh_param mesh_auto_open_plinks=1
+> command failed: Resource busy (-16)
+>
+> Interestingly, when I swap wpad-basic back in, it does work, but it
+> appears to connect with encryption.
+>
+> uci set wireless.mesh.encryption='psk'
+> uci set wireless.mesh.key='xxxxxxxxxx'
+> wifi
+>
+> and the nodes connect. However, if I leave encryption off on one node,
+> it STILL CONNECTS, meaning that encryption is failing silently
+> (nothing in the logs). It seems like there should be at least a
+> message ("Encryption configured for interface mesh but not enabled" or
+> something).
+>
+> I'm not quite sure how to even debug this.
+>
+> All suggestions gratefully accepted.
+>
+> -Bill
+
+
+From evil.function at proton.me  Wed Jun 26 14:44:04 2024
+From: evil.function at proton.me (Eric)
+Date: Wed, 26 Jun 2024 21:44:04 +0000
+Subject: sysupgrade.openwrt.org IPv6 appears dead
+Message-ID: <WvXFViVlmPKNzy9ihS2HixPOmZ89RnYTsupfFqsAtbHvbkcu2lxVz_lpsgUScjRZdkq7wRJbBEhd96hlV9Ez6YxwYX4_Gfnx8vOsna67hLk=@proton.me>
+
+Maybe DNS isn't updating or something?  
+
+In any case, attempts to grab stuff from https://sysupgrade.openwrt.org are a crapshoot, depending on whether the client chooses the IPv4 or IPv6 address.
+
+This 'wget' keeps retrying forever, while '-4' gets the file without pause.
+
+$ wget -6 --connect-timeout=10 https://sysupgrade.openwrt.org/json/v1/overview.json
+--2024-06-26 14:41:43--  https://sysupgrade.openwrt.org/json/v1/overview.json
+Resolving sysupgrade.openwrt.org... 2a03:b0c0:3:d0::1574:1
+Connecting to sysupgrade.openwrt.org|2a03:b0c0:3:d0::1574:1|:443... failed: Operation timed out.
+Retrying.
+
+
+
+$ nslookup sysupgrade.openwrt.org
+Non-authoritative answer:
+sysupgrade.openwrt.org  canonical name = asu-01.infra.openwrt.org
+Name:   asu-01.infra.openwrt.org
+Address: 206.81.21.114
+
+Non-authoritative answer:
+sysupgrade.openwrt.org  canonical name = asu-01.infra.openwrt.org
+Name:   asu-01.infra.openwrt.org
+Address: 2a03:b0c0:3:d0::1574:1
+
+$ ping -c4 206.81.21.114
+PING 206.81.21.114 (206.81.21.114): 56 data bytes
+64 bytes from 206.81.21.114: seq=0 ttl=47 time=175.577 ms
+64 bytes from 206.81.21.114: seq=1 ttl=47 time=172.185 ms
+64 bytes from 206.81.21.114: seq=2 ttl=47 time=174.383 ms
+64 bytes from 206.81.21.114: seq=3 ttl=47 time=172.736 ms
+
+--- 206.81.21.114 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 172.185/173.720/175.577 ms
+
+$ ping 2a03:b0c0:3:d0::1574:1
+PING 2a03:b0c0:3:d0::1574:1 (2a03:b0c0:3:d0::1574:1): 56 data bytes
+^C
+--- 2a03:b0c0:3:d0::1574:1 ping statistics ---
+26 packets transmitted, 0 packets received, 100% packet loss
+
+
+
+From daniel at makrotopia.org  Wed Jun 26 15:00:58 2024
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Wed, 26 Jun 2024 23:00:58 +0100
+Subject: sysupgrade.openwrt.org IPv6 appears dead
+In-Reply-To: <mailman.52664.1719438258.1280.openwrt-devel@lists.openwrt.org>
+References: <mailman.52664.1719438258.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <ZnyPmjB1QB6KrB0x@makrotopia.org>
+
+Hi Eric,
+
+On Wed, Jun 26, 2024 at 09:44:04PM +0000, Eric via openwrt-devel wrote:
+> The sender domain has a DMARC Reject/Quarantine policy which disallows
+> sending mailing list messages using the original "From" header.
+> 
+> To mitigate this problem, the original message has been wrapped
+> automatically by the mailing list software.
+
+> Date: Wed, 26 Jun 2024 21:44:04 +0000
+> From: Eric <evil.function at proton.me>
+> To: openwrt-devel <openwrt-devel at lists.openwrt.org>, Paul Spooren
+>  <mail at aparcar.org>
+> Subject: sysupgrade.openwrt.org IPv6 appears dead
+> 
+> Maybe DNS isn't updating or something?  
+> 
+> In any case, attempts to grab stuff from https://sysupgrade.openwrt.org are a crapshoot, depending on whether the client chooses the IPv4 or IPv6 address.
+> 
+> This 'wget' keeps retrying forever, while '-4' gets the file without pause.
+> 
+> $ wget -6 --connect-timeout=10 https://sysupgrade.openwrt.org/json/v1/overview.json
+> --2024-06-26 14:41:43--  https://sysupgrade.openwrt.org/json/v1/overview.json
+> Resolving sysupgrade.openwrt.org... 2a03:b0c0:3:d0::1574:1
+> Connecting to sysupgrade.openwrt.org|2a03:b0c0:3:d0::1574:1|:443... failed: Operation timed out.
+> Retrying.
+> 
+
+please check your IPv6 routing and firewall, it definitely works fine
+for me:
+
+[daniel at box ~]$ wget -6 --connect-timeout=10 https://sysupgrade.openwrt.org/json/v1/overview.json
+--2024-06-26 22:53:54--  https://sysupgrade.openwrt.org/json/v1/overview.json
+Loaded CA certificate '/etc/ssl/certs/ca-certificates.crt'
+Resolving sysupgrade.openwrt.org (sysupgrade.openwrt.org)... 2a03:b0c0:3:d0::1574:1
+Connecting to sysupgrade.openwrt.org (sysupgrade.openwrt.org)|2a03:b0c0:3:d0::1574:1|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 17634 (17K) [application/json]
+Saving to: ?overview.json?
+
+overview.json                                               100%[=========================================================================================================================================>]  17.22K  --.-KB/s    in 0.04s   
+
+2024-06-26 22:53:55 (449 KB/s) - ?overview.json? saved [17634/17634]
+
+[daniel at box ~]$ tracepath -6 sysupgrade.openwrt.org
+ 1?: [LOCALHOST]                        0.013ms pmtu 1500
+ 1:  [privacy]                          0.369ms
+ 1:  [privacy]                          0.306ms
+ 2:  [privacy]                          0.824ms asymm  1
+ 3:  [privacy]
+ 4:  [privacy]                          4.474ms asymm  3
+ 5:  [privacy]
+ 6:  [privacy]                         39.110ms asymm  5
+ 7:  fra2-edge1.digitalocean.com       38.661ms asymm  6
+ 8:  fra2-edge1.digitalocean.com       39.138ms asymm  6
+ 9:  no reply
+10:  no reply
+11:  no reply
+12:  no reply
+13:  no reply
+14:  asu-01.infra.openwrt.org          39.495ms reached
+     Resume: pmtu 1500 hops 14 back 12 
+
+
+Cheers
+
+
+Daniel
+
+
+From evil.function at proton.me  Wed Jun 26 15:54:36 2024
+From: evil.function at proton.me (Eric)
+Date: Wed, 26 Jun 2024 22:54:36 +0000
+Subject: sysupgrade.openwrt.org IPv6 appears dead
+In-Reply-To: <ZnyPmjB1QB6KrB0x@makrotopia.org>
+References: <mailman.52664.1719438258.1280.openwrt-devel@lists.openwrt.org> <ZnyPmjB1QB6KrB0x@makrotopia.org>
+Message-ID: <-PZRhwyuDvQP-xuULFh41eFm3nrooKwrqGoEHFBZyvacPZEQJUZXsjAg36Denp6mVLIjdQZe6DoYXp4OZYaMwVr_MJH0o1faWLfWFdmXdFw=@proton.me>
+
+
+
+
+
+
+Sent with Proton Mail secure email.
+
+On Wednesday, June 26th, 2024 at 15:00, Daniel Golle <daniel at makrotopia.org> wrote:
+
+> Hi Eric,
+> 
+> On Wed, Jun 26, 2024 at 09:44:04PM +0000, Eric via openwrt-devel wrote:
+> 
+> > The sender domain has a DMARC Reject/Quarantine policy which disallows
+> > sending mailing list messages using the original "From" header.
+> > 
+> > To mitigate this problem, the original message has been wrapped
+> > automatically by the mailing list software.
+> 
+> > Date: Wed, 26 Jun 2024 21:44:04 +0000
+> > From: Eric evil.function at proton.me
+> > To: openwrt-devel openwrt-devel at lists.openwrt.org, Paul Spooren
+> > mail at aparcar.org
+> > Subject: sysupgrade.openwrt.org IPv6 appears dead
+> > 
+> > Maybe DNS isn't updating or something?
+> > 
+> > In any case, attempts to grab stuff from https://sysupgrade.openwrt.org are a crapshoot, depending on whether the client chooses the IPv4 or IPv6 address.
+> > 
+> > This 'wget' keeps retrying forever, while '-4' gets the file without pause.
+> > 
+> > $ wget -6 --connect-timeout=10 https://sysupgrade.openwrt.org/json/v1/overview.json
+> > --2024-06-26 14:41:43-- https://sysupgrade.openwrt.org/json/v1/overview.json
+> > Resolving sysupgrade.openwrt.org... 2a03:b0c0:3:d0::1574:1
+> > Connecting to sysupgrade.openwrt.org|2a03:b0c0:3:d0::1574:1|:443... failed: Operation timed out.
+> > Retrying.
+> 
+> 
+> please check your IPv6 routing and firewall, it definitely works fine
+> for me:
+> 
+> [daniel at box ~]$ wget -6 --connect-timeout=10 https://sysupgrade.openwrt.org/json/v1/overview.json
+> --2024-06-26 22:53:54-- https://sysupgrade.openwrt.org/json/v1/overview.json
+> Loaded CA certificate '/etc/ssl/certs/ca-certificates.crt'
+> Resolving sysupgrade.openwrt.org (sysupgrade.openwrt.org)... 2a03:b0c0:3:d0::1574:1
+> Connecting to sysupgrade.openwrt.org (sysupgrade.openwrt.org)|2a03:b0c0:3:d0::1574:1|:443... connected.
+> HTTP request sent, awaiting response... 200 OK
+> Length: 17634 (17K) [application/json]
+> Saving to: ?overview.json?
+> 
+> overview.json 100%[=========================================================================================================================================>] 17.22K --.-KB/s in 0.04s
+> 
+> 
+> 2024-06-26 22:53:55 (449 KB/s) - ?overview.json? saved [17634/17634]
+> 
+> [daniel at box ~]$ tracepath -6 sysupgrade.openwrt.org
+> 1?: [LOCALHOST] 0.013ms pmtu 1500
+> 1: [privacy] 0.369ms
+> 1: [privacy] 0.306ms
+> 2: [privacy] 0.824ms asymm 1
+> 3: [privacy]
+> 4: [privacy] 4.474ms asymm 3
+> 5: [privacy]
+> 6: [privacy] 39.110ms asymm 5
+> 7: fra2-edge1.digitalocean.com 38.661ms asymm 6
+> 8: fra2-edge1.digitalocean.com 39.138ms asymm 6
+> 9: no reply
+> 10: no reply
+> 11: no reply
+> 12: no reply
+> 13: no reply
+> 14: asu-01.infra.openwrt.org 39.495ms reached
+> Resume: pmtu 1500 hops 14 back 12
+> 
+> 
+> Cheers
+> 
+> 
+> Daniel
+
+Hey Daniel,
+
+Originally reported with this post on the forum https://forum.openwrt.org/t/owut-openwrt-upgrade-tool/200035/23.  I don't know the OP @cdes's geographic location.
+
+Yeah, it's clearly a route issue, looks like after it crosses the Atlantic (that's usually when I see rtt jump from up to 150ms).  Those early ones are probably Los Angeles, as most of my traffic exits through there.
+
+$ tracepath -6 2a03:b0c0:3:d0::1574:1
+ 1?: [LOCALHOST]                        0.015ms pmtu 1500
+ 1:  rtr00-br-lan.brain.lan                                4.688ms
+ 1:  rtr00-br-lan.brain.lan                                3.027ms
+ 2:  2600:8802:48ff:ffff::1111                            16.854ms
+ 3:  2001:578:400:7:f:0:2:8024                            14.782ms
+ 4:  2001:578:400:4:5000::32                              10.528ms
+ 5:  2001:578:1:0:172:17:249:32                           22.080ms
+ 6:  las-b23-link.ip.twelve99.net                         16.332ms
+ 7:  rest-bb1-v6.ip.twelve99.net                          69.931ms
+ 8:  nyk-bb2-v6.ip.twelve99.net                           78.901ms
+ 9:  ldn-bb1-v6.ip.twelve99.net                          151.764ms
+10:  no reply
+11:  digitalocean-ic-378007.ip.twelve99-cust.net         162.834ms
+12:  2a03:b0c0:fffe::92                                  151.227ms
+13:  no reply
+... all no reply
+30:  no reply
+     Too many hops: pmtu 1500
+     Resume: pmtu 1500
+
+I seem to recall that twelve99 has a less than stellar reputation for this sort of issue...
+
+How would one report such a problem?  Or do we just wait for the routing tables to get updated?
+
+Eric
+
+
+From daniel at makrotopia.org  Wed Jun 26 17:02:55 2024
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Thu, 27 Jun 2024 01:02:55 +0100
+Subject: sysupgrade.openwrt.org IPv6 appears dead
+In-Reply-To: <mailman.52706.1719442486.1280.openwrt-devel@lists.openwrt.org>
+References: <mailman.52664.1719438258.1280.openwrt-devel@lists.openwrt.org>
+ <ZnyPmjB1QB6KrB0x@makrotopia.org>
+ <mailman.52706.1719442486.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <ZnysL-ZxX6YSPN20@makrotopia.org>
+
+Hi Eric,
+Hi Digitalocean operators,
+
+On Wed, Jun 26, 2024 at 10:54:36PM +0000, Eric via openwrt-devel wrote:
+> [...]
+> 11:  digitalocean-ic-378007.ip.twelve99-cust.net         162.834ms
+> 12:  2a03:b0c0:fffe::92                                  151.227ms
+> 13:  no reply
+> ... all no reply
+> 30:  no reply
+>      Too many hops: pmtu 1500
+>      Resume: pmtu 1500
+> 
+> I seem to recall that twelve99 has a less than stellar reputation for this sort of issue...
+> 
+> How would one report such a problem?  Or do we just wait for the routing tables to get updated?
+
+inet6num:       2a03:b0c0::/32
+netname:        US-DIGITALOCEANLLC-20121228
+country:        NL
+
+Something seems wrong with the route from twelve99 to our host at digitalocean,
+as hop 12 is within DO network and our sysupgrade.openwrt.org box is hosted
+with DO.
+
+Maybe Paul or someone with direct contact to DO can create a ticket there, I'm
+not sure if sending an email to the noc@ address is enough.
+
+
+Cheers
+
+
+Daniel
+
+
+
+From evil.function at proton.me  Wed Jun 26 17:31:07 2024
+From: evil.function at proton.me (Eric)
+Date: Thu, 27 Jun 2024 00:31:07 +0000
+Subject: sysupgrade.openwrt.org IPv6 appears dead
+In-Reply-To: <ZnysL-ZxX6YSPN20@makrotopia.org>
+References: <mailman.52664.1719438258.1280.openwrt-devel@lists.openwrt.org> <ZnyPmjB1QB6KrB0x@makrotopia.org> <mailman.52706.1719442486.1280.openwrt-devel@lists.openwrt.org> <ZnysL-ZxX6YSPN20@makrotopia.org>
+Message-ID: <LDNofDpxtnPw6r_sh7wBicACRCs_C3nejwJTKB4MgkvVpFeKPywIeAZ3cM3bsRf3FKITZdBUCZQks8jeAIoEGkaixlltz2FEiD1vM_iBBsY=@proton.me>
+
+On Wednesday, June 26th, 2024 at 17:02, Daniel Golle <daniel at makrotopia.org> wrote:
+
+> Hi Eric,
+> Hi Digitalocean operators,
+> 
+> On Wed, Jun 26, 2024 at 10:54:36PM +0000, Eric via openwrt-devel wrote:
+> 
+> > [...]
+> > 11: digitalocean-ic-378007.ip.twelve99-cust.net 162.834ms
+> > 12: 2a03:b0c0:fffe::92 151.227ms
+> > 13: no reply
+> > ... all no reply
+> > 30: no reply
+> > Too many hops: pmtu 1500
+> > Resume: pmtu 1500
+> > 
+> > I seem to recall that twelve99 has a less than stellar reputation for this sort of issue...
+> > 
+> > How would one report such a problem? Or do we just wait for the routing tables to get updated?
+> 
+> 
+> inet6num: 2a03:b0c0::/32
+> netname: US-DIGITALOCEANLLC-20121228
+> country: NL
+> 
+> Something seems wrong with the route from twelve99 to our host at digitalocean,
+> as hop 12 is within DO network and our sysupgrade.openwrt.org box is hosted
+> with DO.
+> 
+> Maybe Paul or someone with direct contact to DO can create a ticket there, I'm
+> not sure if sending an email to the noc@ address is enough.
+> 
+> 
+> Cheers
+> 
+> 
+> Daniel
+
+Appears to be working again:
+
+$ tracepath -6 2a03:b0c0:3:d0::1574:1
+...
+ 8:  nyk-bb1-v6.ip.twelve99.net                           89.371ms
+ 9:  ldn-bb2-v6.ip.twelve99.net                          150.534ms asymm 11
+10:  slou-b2-v6.ip.twelve99.net                          149.089ms
+11:  digitalocean-ic-378006.ip.twelve99-cust.net         151.966ms
+12:  2a03:b0c0:fffe::92                                  148.894ms
+13:  no reply
+14:  no reply
+15:  no reply
+16:  no reply
+17:  asu-01.infra.openwrt.org                            170.037ms reached
+     Resume: pmtu 1500 hops 17 back 17
+
+Thanks everyone,
+Eric
+
+
+
+From janusz.dziedzic at gmail.com  Thu Jun 27 00:54:20 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Thu, 27 Jun 2024 09:54:20 +0200
+Subject: backports kick?
+In-Reply-To: <CAFED-jm7RR+9M4eWTxtt5GZ9aFJKUBTUHbK4RWQCSw30EAjcUw@mail.gmail.com>
+References: <CAFED-j=+sZ_dkpXidcdByT+jX74ZW+zrhLx=rAT5cgFG4pRNbw@mail.gmail.com>
+ <36dc9fea-20a7-44ec-adf4-417ab8a2bbc4@nbd.name> <CAFED-jkOBhnXA7rubL_qXYpLAi1sqRCV=23VjdimjqeQbRX+eA@mail.gmail.com>
+ <f5621e47-cf42-4b43-a665-509ea496aff5@nbd.name> <CAFED-jm7RR+9M4eWTxtt5GZ9aFJKUBTUHbK4RWQCSw30EAjcUw@mail.gmail.com>
+Message-ID: <CAFED-jkcUnqMGH_dPHdq7MUJ2Zabz8oogi-TtLKZBxv_46eJNA@mail.gmail.com>
+
+pon., 24 cze 2024 o 19:45 Janusz Dziedzic <janusz.dziedzic at gmail.com>
+napisa?(a):
+>
+> pon., 24 cze 2024 o 14:38 Felix Fietkau <nbd at nbd.name> napisa?(a):
+> >
+> > On 24.06.24 13:46, Janusz Dziedzic wrote:
+> > > pt., 21 cze 2024 o 12:59 Felix Fietkau <nbd at nbd.name> napisa?(a):
+> > >>
+> > >> On 21.06.24 10:55, Janusz Dziedzic wrote:
+> > >> > Hello,
+> > >> > I see we have backports older than kernel on main (6.6.15 vs 6.6.32)?
+> > >> > Is there plan to kick backports to smth like 6.10?
+> > >>
+> > >> I have 6.9.1 in my staging tree for testing.
+> > >>
+> > >
+> > > Nice, are also patches (reworked) available?
+> >
+> > My modified backports tree is here:
+> > https://github.com/nbd168/backports
+> >
+> Thanks, this is what I needed.
+> Hope will be soon in main :)
+>
+Any chance for 6.10.x in main?
+Or we will use 6.9.1?
+
+Asking because of BE200,
+6.9.1 don't support FW90 (with MLO support) - while 6.10 support it
+correctly (FW90 and MLO/MLD).
+
+So, any chance for that soon?
+BTW, do we have somewhere openwrt backports copy-list or git/data we
+are used during backport generation?
+And regarding backports - did someone patch it to use python3?
+After some fight generate correctly my backports - but is there some
+wiki description how we should do it correctly for openwrt?
+Would be useful :)
+
+BR
+Janusz
+
+
+From hauke at hauke-m.de  Thu Jun 27 11:20:35 2024
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Thu, 27 Jun 2024 20:20:35 +0200
+Subject: Next OpenWrt 23.05 and 22.03 minor releases
+Message-ID: <b673e14a-201d-4006-a65a-cc1094762937@hauke-m.de>
+
+Hi,
+
+I am planning a new minor release of the 23.05 series and the final 
+release of the 22.03 series in about 1 week.
+
+If you want some commits backported please answer to this mail with the 
+upstream commit hash or create a PR on github for the stable branch.
+
+PRs for OpenWrt 23.05:
+https://github.com/openwrt/openwrt/pulls?q=is%3Apr+is%3Aopen+label%3Arelease%2F23.05+sort%3Aupdated-desc
+
+PRs for OpenWrt 22.03:
+https://github.com/openwrt/openwrt/pulls?q=is%3Apr+is%3Aopen+label%3Arelease%2F22.03+sort%3Aupdated-desc
+
+Hauke
+
+
+From linus.walleij at linaro.org  Thu Jun 27 14:38:17 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 27 Jun 2024 23:38:17 +0200
+Subject: [PATCH 0/2] bmips: xg6846: Fixes
+Message-ID: <20240627-xg6846-fixes-v1-0-b72e08d1c966@linaro.org>
+
+Two fixes requested by pauld.
+
+Would be great to get tested.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+Linus Walleij (2):
+      bmips: intento-xg6846: Add EEPROM node
+      bmips: inteno-xg6846: Fix pin control for USB LED
+
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+---
+base-commit: 7c9644a7b5e557f05b818296287cdebdd38f1097
+change-id: 20240627-xg6846-fixes-abb7dc2ebcf6
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij at linaro.org>
+
+
+
+From linus.walleij at linaro.org  Thu Jun 27 14:38:18 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 27 Jun 2024 23:38:18 +0200
+Subject: [PATCH 1/2] bmips: intento-xg6846: Add EEPROM node
+In-Reply-To: <20240627-xg6846-fixes-v1-0-b72e08d1c966@linaro.org>
+References: <20240627-xg6846-fixes-v1-0-b72e08d1c966@linaro.org>
+Message-ID: <20240627-xg6846-fixes-v1-1-b72e08d1c966@linaro.org>
+
+For some troublesome devices it is necessary to obtain direct access
+to the SFP module EEPROM so define it in the device tree.
+
+Suggested-by: Paul Donald <newtwen at gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+index 72f85a53ca7c..9044f17c4f59 100644
+--- a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
++++ b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+@@ -49,6 +49,12 @@
+ 		scl-gpios = <&gpio 19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++
++		sfp_eeprom: eeprom at 50 {
++			compatible = "atmel,24c02";
++			reg = <0x50>;
++			read-only;
++		};
+ 	};
+ 
+ 	/* This I2C bus is used for the external CATV connector (usually unused) */
+
+-- 
+2.45.2
+
+
+
+From linus.walleij at linaro.org  Thu Jun 27 14:38:19 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 27 Jun 2024 23:38:19 +0200
+Subject: [PATCH 2/2] bmips: inteno-xg6846: Fix pin control for USB LED
+In-Reply-To: <20240627-xg6846-fixes-v1-0-b72e08d1c966@linaro.org>
+References: <20240627-xg6846-fixes-v1-0-b72e08d1c966@linaro.org>
+Message-ID: <20240627-xg6846-fixes-v1-2-b72e08d1c966@linaro.org>
+
+The USB LED is GPIO16 not GPIO17, as can be seen further
+down the device tree.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+index 9044f17c4f59..22055f3ea24e 100644
+--- a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
++++ b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+@@ -279,7 +279,7 @@
+ &pinctrl {
+ 	pinctrl_xg6846_usb_spd_led: xg6846_usb_spd_led-pins {
+ 		function = "led";
+-		pins = "gpio17";
++		pins = "gpio16";
+ 	};
+ };
+ 
+
+-- 
+2.45.2
+
+
+
+From dqfext at gmail.com  Fri Jun 28 01:20:09 2024
+From: dqfext at gmail.com (Qingfang Deng)
+Date: Fri, 28 Jun 2024 16:20:09 +0800
+Subject: [PATCH] kernel: switch crc32 implementation back to default
+Message-ID: <20240628082009.2472-1-dqfext@gmail.com>
+
+From: Qingfang Deng <qingfang.deng at siflower.com.cn>
+
+Commit ec885796c05a switched the crc32 implementation from default to
+byte-at-a-time algorithm, which runs slower but consumes less memory.
+A decade has passed, and we have already abandoned targets that had
+small memory, so switch it back to default for faster speed.
+
+Signed-off-by: Qingfang Deng <qingfang.deng at siflower.com.cn>
+---
+ target/linux/generic/config-5.15 | 4 ++--
+ target/linux/generic/config-6.1  | 4 ++--
+ target/linux/generic/config-6.6  | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/target/linux/generic/config-5.15 b/target/linux/generic/config-5.15
+index cba00711ca..8e2223aebb 100644
+--- a/target/linux/generic/config-5.15
++++ b/target/linux/generic/config-5.15
+@@ -1043,10 +1043,10 @@ CONFIG_CRAMFS_BLOCKDEV=y
+ # CONFIG_CRC16 is not set
+ CONFIG_CRC32=y
+ # CONFIG_CRC32_BIT is not set
+-CONFIG_CRC32_SARWATE=y
++# CONFIG_CRC32_SARWATE is not set
+ # CONFIG_CRC32_SELFTEST is not set
+ # CONFIG_CRC32_SLICEBY4 is not set
+-# CONFIG_CRC32_SLICEBY8 is not set
++CONFIG_CRC32_SLICEBY8=y
+ # CONFIG_CRC4 is not set
+ # CONFIG_CRC64 is not set
+ # CONFIG_CRC7 is not set
+diff --git a/target/linux/generic/config-6.1 b/target/linux/generic/config-6.1
+index 70e87665b7..aa47384137 100644
+--- a/target/linux/generic/config-6.1
++++ b/target/linux/generic/config-6.1
+@@ -1102,10 +1102,10 @@ CONFIG_CRAMFS_BLOCKDEV=y
+ # CONFIG_CRC16 is not set
+ CONFIG_CRC32=y
+ # CONFIG_CRC32_BIT is not set
+-CONFIG_CRC32_SARWATE=y
++# CONFIG_CRC32_SARWATE is not set
+ # CONFIG_CRC32_SELFTEST is not set
+ # CONFIG_CRC32_SLICEBY4 is not set
+-# CONFIG_CRC32_SLICEBY8 is not set
++CONFIG_CRC32_SLICEBY8=y
+ # CONFIG_CRC4 is not set
+ # CONFIG_CRC64 is not set
+ # CONFIG_CRC64_ROCKSOFT is not set
+diff --git a/target/linux/generic/config-6.6 b/target/linux/generic/config-6.6
+index 20fe98099f..46cf505969 100644
+--- a/target/linux/generic/config-6.6
++++ b/target/linux/generic/config-6.6
+@@ -1003,10 +1003,10 @@ CONFIG_CRAMFS_BLOCKDEV=y
+ # CONFIG_CRC16 is not set
+ CONFIG_CRC32=y
+ # CONFIG_CRC32_BIT is not set
+-CONFIG_CRC32_SARWATE=y
++# CONFIG_CRC32_SARWATE is not set
+ # CONFIG_CRC32_SELFTEST is not set
+ # CONFIG_CRC32_SLICEBY4 is not set
+-# CONFIG_CRC32_SLICEBY8 is not set
++CONFIG_CRC32_SLICEBY8=y
+ # CONFIG_CRC4 is not set
+ # CONFIG_CRC64 is not set
+ # CONFIG_CRC64_ROCKSOFT is not set
+-- 
+2.34.1
+
+
+
+From dqfext at gmail.com  Fri Jun 28 01:31:59 2024
+From: dqfext at gmail.com (Qingfang Deng)
+Date: Fri, 28 Jun 2024 16:31:59 +0800
+Subject: [PATCH] kernel: mtdsplit: fix fit rootfs_data split
+Message-ID: <20240628083159.2931-1-dqfext@gmail.com>
+
+From: Chuanhong Guo <gch981213 at gmail.com>
+
+fit size should be rounded up instead of rounding down first and adding
+a block. Otherwise the calculated size is one block more than needed
+when fit size is exactly multiples of one block size.
+
+Fixes: 9a863f803ec1 ("kernel: mtdsplit: add support for FIT image")
+Signed-off-by: Chuanhong Guo <gch981213 at gmail.com>
+Signed-off-by: Qingfang Deng <qingfang.deng at siflower.com.cn>
+---
+ .../linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_fit.c   | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/target/linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_fit.c b/target/linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_fit.c
+index 3b71597d23..a271a676e1 100644
+--- a/target/linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_fit.c
++++ b/target/linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_fit.c
+@@ -278,7 +278,7 @@ mtdsplit_fit_parse(struct mtd_info *mtd,
+ 
+ 		parts[0].name = KERNEL_PART_NAME;
+ 		parts[0].offset = fit_offset;
+-		parts[0].size = mtd_rounddown_to_eb(fit_size + offset_start, mtd) + mtd->erasesize;
++		parts[0].size = mtd_roundup_to_eb(fit_size + offset_start, mtd);
+ 
+ 		if (type == MTDSPLIT_PART_TYPE_UBI)
+ 			parts[1].name = UBI_PART_NAME;
+@@ -327,7 +327,7 @@ mtdsplit_fit_parse(struct mtd_info *mtd,
+ 			return -ENOMEM;
+ 
+ 		parts[0].name = ROOTFS_SPLIT_NAME;
+-		parts[0].offset = fit_offset + mtd_rounddown_to_eb(max_size, mtd) + mtd->erasesize;
++		parts[0].offset = fit_offset + mtd_roundup_to_eb(max_size, mtd);
+ 		parts[0].size = mtd->size - parts[0].offset;
+ 
+ 		*pparts = parts;
+-- 
+2.34.1
+
+
+
+From dqfext at gmail.com  Fri Jun 28 02:01:00 2024
+From: dqfext at gmail.com (Qingfang Deng)
+Date: Fri, 28 Jun 2024 17:01:00 +0800
+Subject: [PATCH] mediatek: fit: fix use of uninitialized variable
+Message-ID: <20240628090100.3303-1-dqfext@gmail.com>
+
+From: Qingfang Deng <qingfang.deng at siflower.com.cn>
+
+When building the kernel with -Wmaybe-uninitialized, GCC reports this
+warning:
+
+block/partitions/fit.c: In function 'parse_fit_partitions':
+block/partitions/fit.c:164:3: warning: 'images' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  164 |   printk(KERN_ERR "FIT: Cannot find %s node: %d\n", FIT_CONFS_PATH, images);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It appears to be a copy paste error. It's the "config" variable that is
+supposed to be printed.
+
+Fixes: e6aac8d98f56 ("image: add support for building FIT image with filesystem")
+Signed-off-by: Qingfang Deng <qingfang.deng at siflower.com.cn>
+---
+ target/linux/mediatek/files/block/partitions/fit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/target/linux/mediatek/files/block/partitions/fit.c b/target/linux/mediatek/files/block/partitions/fit.c
+index 463cd4e9ab..01b0f42c7c 100644
+--- a/target/linux/mediatek/files/block/partitions/fit.c
++++ b/target/linux/mediatek/files/block/partitions/fit.c
+@@ -161,7 +161,7 @@ int parse_fit_partitions(struct parsed_partitions *state, u64 fit_start_sector,
+ 
+ 	config = fdt_path_offset(fit, FIT_CONFS_PATH);
+ 	if (config < 0) {
+-		printk(KERN_ERR "FIT: Cannot find %s node: %d\n", FIT_CONFS_PATH, images);
++		printk(KERN_ERR "FIT: Cannot find %s node: %d\n", FIT_CONFS_PATH, config);
+ 		ret = -ENOENT;
+ 		goto ret_out;
+ 	}
+-- 
+2.34.1
+
+
+
+From ggoerisch at gmail.com  Fri Jun 28 07:03:19 2024
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Fri, 28 Jun 2024 16:03:19 +0200
+Subject: sysupgrade.openwrt.org IPv6 appears dead
+In-Reply-To: <mailman.52737.1719448277.1280.openwrt-devel@lists.openwrt.org>
+References: <mailman.52664.1719438258.1280.openwrt-devel@lists.openwrt.org>
+ <ZnyPmjB1QB6KrB0x@makrotopia.org> <mailman.52706.1719442486.1280.openwrt-devel@lists.openwrt.org>
+ <ZnysL-ZxX6YSPN20@makrotopia.org> <mailman.52737.1719448277.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <CAP52KpM-mn9_unmo5Aw_uDcNoJZ07+xWN820r87WWT8Eh4tUkg@mail.gmail.com>
+
+Hi all,
+
+I did a measurement from RIPE Atlas anchors to
+asu-01.infra.openwrt.org, as sysupgrade.openwrt.org CNAME resolution
+fails sometimes:
+
+https://atlas.ripe.net/measurements/74524089/overview
+
+TL;DR not reachable from certain parts of the earth.
+
+>From my traceroute, the digital ocean infrastructure does not respond
+to ICMPv6 requests, which violates RFC4890.
+
+Additionally the routing is asymmetric
+
+ tracepath sysupgrade.openwrt.org
+ 1?: [LOCALHOST]                        0.016ms pmtu 1500
+ 1:  2a02:908:xxx:xxx::1                                 0.767ms
+ 1:  2a02:908:xxx:xxx::1                                 0.779ms
+ 2:  2a02:908:xxx:xxxx:xxxx:xxxx:xxxx:xxx1                1.407ms
+ 3:  2a02:908:xxx:5::1                                   12.764ms
+ 4:  7113a-mx960-01-ae10-1050.dar.unity-media.net         50.140ms
+ 5:  7113a-mx960-02.dar.unity-media.net                   12.959ms asymm  6
+ 6:  de-fra04d-rc1-lo0-0.v6.aorta.net                     13.427ms
+ 7:  telia-gw.fnt.cw.net                                  11.006ms
+ 8:  ffm-bb2-v6.ip.twelve99.net                           11.865ms asymm 10
+ 9:  digitalocean-ic-378009.ip.twelve99-cust.net          12.228ms asymm  8
+10:  2a03:b0c0:fffe::68                                    9.688ms asymm  9
+11:  2a03:b0c0:fffe::70                                   11.626ms asymm  9
+12:  no reply
+13:  no reply
+14:  no reply
+15:  no reply
+16:  no reply
+17:  asu-01.infra.openwrt.org                             12.240ms reached
+     Resume: pmtu 1500 hops 17 back 14
+
+ mtr sysupgrade.openwrt.org -z -6 -w
+Start: 2024-06-28T16:01:34+0200
+HOST:                                                  Loss%   Snt
+Last   Avg  Best  Wrst StDev
+  1. AS3209   2a02:908:xxx:xxx::1                          0.0%    10
+  0.6   0.6   0.6   0.7   0.0
+  2. AS3209   2a02:908:xxx:xxxx:xxxx:xxxx:xxxx:xxx1         0.0%    10
+   1.3   1.4   1.0   2.0   0.4
+  3. AS3209   2a02:908:xxx:5::1                             0.0%    10
+   9.0  13.4   8.9  24.8   5.3
+  4. AS3209   7113a-mx960-01-ae10-1050.dar.unity-media.net   0.0%
+10   11.3  11.4   9.1  16.7   2.5
+  5. AS3209   7113a-mx960-02.dar.unity-media.net             0.0%
+10    9.5  12.3   8.4  22.2   4.2
+  6. AS6830   de-fra04d-rc1-lo0-0.v6.aorta.net               0.0%
+10   11.9  14.9   8.9  34.9   7.6
+  7. AS1273   ae34-pcr1.fnt.cw.net                           0.0%
+10    8.3  15.1   8.3  42.3  10.6
+  8. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+  9. AS1299   ffm-bb2-v6.ip.twelve99.net                     0.0%
+10   15.0  11.9   8.3  17.4   3.0
+ 10. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 11. AS1299   digitalocean-ic-378009.ip.twelve99-cust.net    0.0%
+10   11.6  12.0   8.5  17.8   3.5
+ 12. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 13. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 14. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 15. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 16. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 17. AS???    ???                                           100.0
+10    0.0   0.0   0.0   0.0   0.0
+ 18. AS14061  asu-01.infra.openwrt.org                       0.0%
+10   10.1  11.5   7.8  17.9   3.4
+
+goetz
+
+Am Do., 27. Juni 2024 um 02:32 Uhr schrieb Eric via openwrt-devel
+<openwrt-devel at lists.openwrt.org>:
+>
+> The sender domain has a DMARC Reject/Quarantine policy which disallows
+> sending mailing list messages using the original "From" header.
+>
+> To mitigate this problem, the original message has been wrapped
+> automatically by the mailing list software.
+>
+>
+> ---------- Forwarded message ----------
+> From: Eric <evil.function at proton.me>
+> To: Daniel Golle <daniel at makrotopia.org>
+> Cc: noc at digitalocean.com, openwrt-devel <openwrt-devel at lists.openwrt.org>
+> Bcc:
+> Date: Thu, 27 Jun 2024 00:31:07 +0000
+> Subject: Re: sysupgrade.openwrt.org IPv6 appears dead
+> On Wednesday, June 26th, 2024 at 17:02, Daniel Golle <daniel at makrotopia.org> wrote:
+>
+> > Hi Eric,
+> > Hi Digitalocean operators,
+> >
+> > On Wed, Jun 26, 2024 at 10:54:36PM +0000, Eric via openwrt-devel wrote:
+> >
+> > > [...]
+> > > 11: digitalocean-ic-378007.ip.twelve99-cust.net 162.834ms
+> > > 12: 2a03:b0c0:fffe::92 151.227ms
+> > > 13: no reply
+> > > ... all no reply
+> > > 30: no reply
+> > > Too many hops: pmtu 1500
+> > > Resume: pmtu 1500
+> > >
+> > > I seem to recall that twelve99 has a less than stellar reputation for this sort of issue...
+> > >
+> > > How would one report such a problem? Or do we just wait for the routing tables to get updated?
+> >
+> >
+> > inet6num: 2a03:b0c0::/32
+> > netname: US-DIGITALOCEANLLC-20121228
+> > country: NL
+> >
+> > Something seems wrong with the route from twelve99 to our host at digitalocean,
+> > as hop 12 is within DO network and our sysupgrade.openwrt.org box is hosted
+> > with DO.
+> >
+> > Maybe Paul or someone with direct contact to DO can create a ticket there, I'm
+> > not sure if sending an email to the noc@ address is enough.
+> >
+> >
+> > Cheers
+> >
+> >
+> > Daniel
+>
+> Appears to be working again:
+>
+> $ tracepath -6 2a03:b0c0:3:d0::1574:1
+> ...
+>  8:  nyk-bb1-v6.ip.twelve99.net                           89.371ms
+>  9:  ldn-bb2-v6.ip.twelve99.net                          150.534ms asymm 11
+> 10:  slou-b2-v6.ip.twelve99.net                          149.089ms
+> 11:  digitalocean-ic-378006.ip.twelve99-cust.net         151.966ms
+> 12:  2a03:b0c0:fffe::92                                  148.894ms
+> 13:  no reply
+> 14:  no reply
+> 15:  no reply
+> 16:  no reply
+> 17:  asu-01.infra.openwrt.org                            170.037ms reached
+>      Resume: pmtu 1500 hops 17 back 17
+>
+> Thanks everyone,
+> Eric
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From ggoerisch at gmail.com  Sat Jun 29 04:18:01 2024
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Sat, 29 Jun 2024 13:18:01 +0200
+Subject: Next OpenWrt 23.05 and 22.03 minor releases
+In-Reply-To: <b673e14a-201d-4006-a65a-cc1094762937@hauke-m.de>
+References: <b673e14a-201d-4006-a65a-cc1094762937@hauke-m.de>
+Message-ID: <CAP52KpPfryVw9PM3cb-PACrTKc349w0mkfT_CBTJ0bis_Dd+cA@mail.gmail.com>
+
+Hi Hauke,
+
+How about package backports?
+
+There are a few pending in openwrt/packages for 23.05 and 22.03 incl.
+a security fix as far as I can tell from the description?
+
+https://github.com/openwrt/packages/pulls?q=is%3Apr+is%3Aopen+%5B23.05%5D
+
+Goetz
+
+
+Am Do., 27. Juni 2024 um 20:21 Uhr schrieb Hauke Mehrtens <hauke at hauke-m.de>:
+>
+> Hi,
+>
+> I am planning a new minor release of the 23.05 series and the final
+> release of the 22.03 series in about 1 week.
+>
+> If you want some commits backported please answer to this mail with the
+> upstream commit hash or create a PR on github for the stable branch.
+>
+> PRs for OpenWrt 23.05:
+> https://github.com/openwrt/openwrt/pulls?q=is%3Apr+is%3Aopen+label%3Arelease%2F23.05+sort%3Aupdated-desc
+>
+> PRs for OpenWrt 22.03:
+> https://github.com/openwrt/openwrt/pulls?q=is%3Apr+is%3Aopen+label%3Arelease%2F22.03+sort%3Aupdated-desc
+>
+> Hauke
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From noreply at github.com  Sun Jun 30 10:09:44 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 30 Jun 2024 10:09:44 -0700
+Subject: [sdwalker/sdwalker.github.io] f193e3: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/92d507-f193e3@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: f193e3772461141104744ea80a6b4f7e98535575
+      https://github.com/sdwalker/sdwalker.github.io/commit/f193e3772461141104744ea80a6b4f7e98535575
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-06-30 (Sun, 30 Jun 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From hauke at hauke-m.de  Sun Jun 30 10:09:37 2024
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sun, 30 Jun 2024 19:09:37 +0200
+Subject: Next OpenWrt 23.05 and 22.03 minor releases
+In-Reply-To: <CAP52KpPfryVw9PM3cb-PACrTKc349w0mkfT_CBTJ0bis_Dd+cA@mail.gmail.com>
+References: <b673e14a-201d-4006-a65a-cc1094762937@hauke-m.de>
+ <CAP52KpPfryVw9PM3cb-PACrTKc349w0mkfT_CBTJ0bis_Dd+cA@mail.gmail.com>
+Message-ID: <de8add15-4204-41c1-8d08-ca4fbe68b77e@hauke-m.de>
+
+Hi Goetz,
+
+I think Rosen can best comment on that.
+
+We anyway build the packages continually and they are not tied to a 
+release.
+
+Hauke
+
+On 6/29/24 13:18, Goetz Goerisch wrote:
+> Hi Hauke,
+> 
+> How about package backports?
+> 
+> There are a few pending in openwrt/packages for 23.05 and 22.03 incl.
+> a security fix as far as I can tell from the description?
+> 
+> https://github.com/openwrt/packages/pulls?q=is%3Apr+is%3Aopen+%5B23.05%5D
+> 
+> Goetz
+> 
+> 
+> Am Do., 27. Juni 2024 um 20:21 Uhr schrieb Hauke Mehrtens <hauke at hauke-m.de>:
+>>
+>> Hi,
+>>
+>> I am planning a new minor release of the 23.05 series and the final
+>> release of the 22.03 series in about 1 week.
+>>
+>> If you want some commits backported please answer to this mail with the
+>> upstream commit hash or create a PR on github for the stable branch.
+>>
+>> PRs for OpenWrt 23.05:
+>> https://github.com/openwrt/openwrt/pulls?q=is%3Apr+is%3Aopen+label%3Arelease%2F23.05+sort%3Aupdated-desc
+>>
+>> PRs for OpenWrt 22.03:
+>> https://github.com/openwrt/openwrt/pulls?q=is%3Apr+is%3Aopen+label%3Arelease%2F22.03+sort%3Aupdated-desc
+>>
+>> Hauke
+>>
+>> _______________________________________________
+>> openwrt-devel mailing list
+>> openwrt-devel at lists.openwrt.org
+>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+
+From newtwen at gmail.com  Sun Jun 30 13:32:39 2024
+From: newtwen at gmail.com (Paul D)
+Date: Sun, 30 Jun 2024 22:32:39 +0200
+Subject: [RFC PATCH 0/1] odhcpd uses also interafce dns_search
+In-Reply-To: <20240410012052.4025-1-newtwen+github@gmail.com>
+References: <20240410012052.4025-1-newtwen+github@gmail.com>
+Message-ID: <f3b4fc5f-947e-4f93-b9cc-1488820c059b@gmail.com>
+
+Any comments?
+
+
+On 2024-04-10 03:16, Paul Donald wrote:
+> From: Paul Donald <newtwen at gmail.com>
+> 
+> Applies to master d8118f6e76e5519881f9a37137c3a06b3cb60fd2
+> 
+> Na?ve implementation. Works well. 
+> 
+> Might have drawbacks: it parses interfaces, so if they happen to have the same parameter names, ???
+> 
+> The idea seems worth implementing.
+> 
+> 
+> Paul Donald (1):
+>   config: use network interface 'dns_search' and dhcp 'domain'
+> 
+>  src/config.c | 26 ++++++++++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
+> 
+
+
+
+From newtwen at gmail.com  Sun Jun 30 13:32:42 2024
+From: newtwen at gmail.com (Paul D)
+Date: Sun, 30 Jun 2024 22:32:42 +0200
+Subject: [RFC PATCH 00/14] odhcpd config value clamping
+In-Reply-To: <20240509223213.97389-1-newtwen+github@gmail.com>
+References: <20240509223213.97389-1-newtwen+github@gmail.com>
+Message-ID: <334e5004-3f1d-4ac7-a96e-decd9ffc554f@gmail.com>
+
+Any comments?
+
+
+
+On 2024-05-10 00:30, Paul Donald wrote:
+> Clamp values read from config to RFC mandated sane values instead of just
+> complaining. We also now implement valid_lifetime for ULA prefixes.
+> This is useful if you need to sunset or remove one from circulation.
+> ( Interestingly, if you spin up dev devices frequently which spam the
+> network with new ULA each time, which have no expiry, interesting things
+> start to happen. )
+> Fixed also a bug in MTU handling.
+> 
+> Paul Donald (14):
+>   config: refactor parse_leasetime() - branch amount remains same
+>   router: Apply updated values from RFC8319 (updates RFC4861) to RA/ND
+>   config: clamp ra_mininterval, ra_maxinterval, ra_lifetime at load time
+>   router: refactor calc_ra_lifetime, and define ra_lifetime as uint32_t
+>   router: redefine ra_mininterval and ra_maxinterval as uint32_t
+>   config: implement RFC4861 AdvValidLifetime (make configurable)
+>   config: lease times are all UINT32_MAX; drop double size handling
+>   router: clamp prefix valid_lt to interface valid_lifetime
+>   config: clamp ra_reachabletime to RFC maximum (instead of complaining)
+>   config: clamp ra_hoplimit to maximum (instead of complaining)
+>   config: clamp ra_retranstime
+>   config: clamp ra_mtu into 1280-65535 range
+>   config: clamp dhcpv6_hostid_len
+>   config: clamp dhcpv6_pd_min_len
+> 
+>  README       |   2 +
+>  src/config.c | 162 +++++++++++++++++++++++++++++++++------------------
+>  src/odhcpd.h |   7 ++-
+>  src/router.c |  34 +++++------
+>  src/router.h |  25 +++++++-
+>  5 files changed, 148 insertions(+), 82 deletions(-)
+> 
+
+
+

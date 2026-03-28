@@ -32,7 +32,6 @@ env:
   PUBLISH_DIR: openwrt-condensed-docs
   WORKDIR: ${{ github.workspace }}/tmp
   OUTDIR: ${{ github.workspace }}/staging
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
   DIST_TARGET_BRANCH: main
@@ -44,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@main
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -59,7 +58,7 @@ jobs:
           GITHUB_ENV: ${{ github.env }}
         run: python .github/scripts/openwrt-docs4ai-01-clone-repos.py
       - name: Upload L0 Repos & Manifest
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: L0-repos
           path: |
@@ -72,8 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@main
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -84,7 +83,7 @@ jobs:
       - name: Mark extractor start
         run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
       - name: Cache Wiki Metadata
-        uses: actions/cache@v5
+        uses: actions/cache@main
         with:
           path: |
             ${{ env.WORKDIR }}/.cache
@@ -182,7 +181,7 @@ jobs:
           echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
       - name: Upload L1 Artifacts (02a)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: L1-02a-scrape-wiki.py
           path: ${{ env.WORKDIR }}/L1-raw/
@@ -190,7 +189,7 @@ jobs:
           if-no-files-found: ignore
       - name: Upload extractor status (02a)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: extract-status-02a-scrape-wiki.py
           path: ${{ env.WORKDIR }}/extract-status/02a-scrape-wiki.py.json
@@ -206,8 +205,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@main
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -291,7 +290,7 @@ jobs:
           echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
       - name: Upload L1 Artifacts (02i)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: L1-02i-ingest-cookbook.py
           path: ${{ env.WORKDIR }}/L1-raw/
@@ -299,7 +298,7 @@ jobs:
           if-no-files-found: ignore
       - name: Upload extractor status (02i)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: extract-status-02i-ingest-cookbook.py
           path: ${{ env.WORKDIR }}/extract-status/02i-ingest-cookbook.py.json
@@ -341,8 +340,8 @@ jobs:
             module: "openwrt-hotplug"
             skip_with_buildroot: "true"
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@main
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -354,7 +353,7 @@ jobs:
       - name: Mark extractor start
         run: echo "EXTRACT_STARTED_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
       - name: Download L0
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           name: L0-repos
           path: ${{ env.WORKDIR }}
@@ -450,7 +449,7 @@ jobs:
           echo "contract_fail=$contract_fail" >> "$GITHUB_OUTPUT"
       - name: Upload L1 Artifacts
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: L1-${{ matrix.script }}
           path: ${{ env.WORKDIR }}/L1-raw/
@@ -458,7 +457,7 @@ jobs:
           if-no-files-found: ignore
       - name: Upload extractor status (${{ matrix.script }})
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: extract-status-${{ matrix.script }}
           path: ${{ env.WORKDIR }}/extract-status/${{ matrix.script }}.json
@@ -476,7 +475,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
       - name: Prepare extract summary workspace
@@ -485,7 +484,7 @@ jobs:
           mkdir -p "$WORKDIR/extract-summary"
       - name: Download extractor status manifests
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           pattern: extract-status-*
           path: ${{ env.WORKDIR }}/extract-status/
@@ -576,7 +575,7 @@ jobs:
           md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
       - name: Upload extract summary
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: extract-summary
           path: ${{ env.WORKDIR }}/extract-summary/
@@ -590,10 +589,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@main
         with:
           fetch-depth: 2
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
           cache: 'pip'
@@ -603,24 +602,24 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq build-essential cmake libjson-c-dev pkg-config
       - name: Download L0 (for manifest/registry)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           name: L0-repos
           path: ${{ env.WORKDIR }}
       - name: Download all L1 results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           pattern: L1-*
           path: ${{ env.WORKDIR }}/L1-raw/
           merge-multiple: true
       - name: Download extract summary
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           name: extract-summary
           path: ${{ env.WORKDIR }}/extract-summary/
       - name: Cache AI Summaries
-        uses: actions/cache@v5
+        uses: actions/cache@main
         with:
           path: ai-summaries-cache.json
           key: ai-cache-${{ runner.os }}-${{ github.run_id }}
@@ -682,7 +681,7 @@ jobs:
           _T=$(date +%s)
           python .github/scripts/openwrt-docs4ai-05a-assemble-references.py
           echo "PROC_TIMER_05A=$(($(date +%s) - _T))" >> "$GITHUB_ENV"
-      - name: Generate publication companion outputs (05b-05d)
+      - name: Generate publication companion outputs (05b-05e)
         env:
           BASELINE_DIR: ${{ github.workspace }}/baseline
         run: |
@@ -690,7 +689,8 @@ jobs:
           python .github/scripts/openwrt-docs4ai-05b-generate-agents-and-readme.py
           python .github/scripts/openwrt-docs4ai-05c-generate-ucode-ide-schemas.py
           python .github/scripts/openwrt-docs4ai-05d-generate-api-drift-changelog.py
-          echo "PROC_TIMER_05BCD=$(($(date +%s) - _T))" >> "$GITHUB_ENV"
+          python .github/scripts/openwrt-docs4ai-05e-generate-luci-dts.py
+          echo "PROC_TIMER_05BCDE=$(($(date +%s) - _T))" >> "$GITHUB_ENV"
       - name: Generate LLM routing indexes (06)
         run: |
           _T=$(date +%s)
@@ -831,7 +831,7 @@ jobs:
               ("PROC_TIMER_03",    "03-normalize"),
               ("PROC_TIMER_04",    "04-ai-summaries"),
               ("PROC_TIMER_05A",   "05a-assemble"),
-              ("PROC_TIMER_05BCD", "05bcd-companions"),
+              ("PROC_TIMER_05BCDE", "05bcde-companions"),
               ("PROC_TIMER_06",    "06-llm-indexes"),
               ("PROC_TIMER_07",    "07-web-index"),
               ("PROC_TIMER_08",    "08-validate"),
@@ -891,7 +891,7 @@ jobs:
           PY
       - name: Upload process summary
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: process-summary
           path: ${{ env.WORKDIR }}/run-summary/
@@ -909,7 +909,7 @@ jobs:
           echo "Staging contract failed. See process-summary artifact for details."
           exit 1
       - name: Upload Final Staging
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: final-staging
           path: ${{ env.OUTDIR }}
@@ -926,11 +926,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@main
         with:
           fetch-depth: 0
       - name: Download Staging
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           name: final-staging
           path: ${{ env.OUTDIR }}
@@ -944,12 +944,18 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "docs: v12 auto-update $(date -u +%Y-%m-%d)"
+            git commit -m "docs: auto-update $(date -u +%Y-%m-%d)"
             # Rebase on remote first in case a concurrent run or our own push
             # landed on main between checkout and now (race condition avoidance).
             git pull --rebase origin main
             git push
           fi
+      # --- Publication targets ---
+      # The gh-pages push below triggers GitHub's built-in pages-build-deployment
+      # on LuminairPrime/openwrt-docs4ai-pipeline (test preview).
+      # The external distribution pushes (further down) trigger pages-build-deployment
+      # on the openwrt-docs4ai org repos (production). Those downstream workflows
+      # are GitHub-managed; their action versions cannot be controlled from here.
       - name: Publish GitHub Pages branch mirror
         env:
           GH_PAGES_BRANCH: gh-pages
@@ -1107,7 +1113,7 @@ jobs:
       - name: Create corpus distribution token
         if: steps.distribution_gate.outputs.enabled == 'true'
         id: corpus_app_token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@main
         with:
           app-id: ${{ secrets.DIST_APP_ID }}
           private-key: ${{ secrets.DIST_APP_PRIVATE_KEY }}
@@ -1115,7 +1121,7 @@ jobs:
           repositories: corpus
       - name: Checkout corpus distribution repository
         if: steps.distribution_gate.outputs.enabled == 'true'
-        uses: actions/checkout@v5
+        uses: actions/checkout@main
         with:
           repository: ${{ env.DIST_RELEASE_REPO }}
           token: ${{ steps.corpus_app_token.outputs.token }}
@@ -1170,7 +1176,7 @@ jobs:
       - name: Create external Pages distribution token
         if: steps.distribution_gate.outputs.enabled == 'true'
         id: pages_app_token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@main
         with:
           app-id: ${{ secrets.DIST_APP_ID }}
           private-key: ${{ secrets.DIST_APP_PRIVATE_KEY }}
@@ -1178,7 +1184,7 @@ jobs:
           repositories: openwrt-docs4ai.github.io
       - name: Checkout external Pages distribution repository
         if: steps.distribution_gate.outputs.enabled == 'true'
-        uses: actions/checkout@v5
+        uses: actions/checkout@main
         with:
           repository: ${{ env.DIST_PAGES_REPO }}
           token: ${{ steps.pages_app_token.outputs.token }}
@@ -1218,7 +1224,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@main
         with:
           python-version: "3.12"
       - name: Prepare summary directories
@@ -1227,13 +1233,13 @@ jobs:
           mkdir -p "$WORKDIR/extract-summary"
       - name: Download extract summary artifact
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           name: extract-summary
           path: ${{ env.WORKDIR }}/extract-summary/
       - name: Download process summary artifact
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@main
         with:
           name: process-summary
           path: ${{ env.WORKDIR }}/run-summary/
@@ -1341,7 +1347,7 @@ jobs:
           (run_summary_dir / "pipeline-summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
       - name: Upload pipeline summary artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@main
         with:
           name: pipeline-summary
           path: |

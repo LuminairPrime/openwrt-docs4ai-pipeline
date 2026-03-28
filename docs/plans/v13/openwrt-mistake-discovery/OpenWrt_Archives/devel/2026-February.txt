@@ -1,0 +1,4283 @@
+From hauke at hauke-m.de  Sun Feb  1 09:46:13 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sun, 1 Feb 2026 18:46:13 +0100
+Subject: OpenWrt 25.12.0-rc4 - Release Candidate
+Message-ID: <7679a72a-f720-4591-824d-4dfcc6e88b83@hauke-m.de>
+
+Hi,
+
+The OpenWrt community is proud to announce the fourth release candidate 
+of the OpenWrt 25.12 stable series.
+
+Download firmware images using the OpenWrt Firmware Selector:
+   * https://firmware-selector.openwrt.org?version=25.12.0-rc4
+
+Download firmware images directly from our download servers:
+   * https://downloads.openwrt.org/releases/25.12.0-rc4/targets/
+
+Please test this version
+========================
+
+This is not the final version, this is a test version. Please report 
+problems and bugs in our issue tracker.
+https://github.com/openwrt/openwrt/issues
+
+
+Highlights in OpenWrt 25.12
+===========================
+
+OpenWrt 25.12.0-rc4 incorporates over 4300 commits since branching the 
+previous OpenWrt 24.10 release and has been under development for over 
+one year.
+
+Only the main changes are listed below.
+
+
+General changes
+===============
+
+The hardware requirements did not change significantly, most devices 
+supported by OpenWrt 24.10 should also work with OpenWrt 25.12.
+
+
+Switch package manager from opkg to apk
+=======================================
+
+OpenWrt has transitioned from the traditional **opkg** package manager 
+to **apk** (Alpine Package Keeper).
+
+This change brings several advantages:
+   * apk is still maintained, the OpenWrt opkg fork was not maintained 
+any more.
+
+apk supports most features of opkg. Only very few package names changed. 
+The command line arguments of apk are different from the command line 
+arguments of opkg.
+
+For users migrating existing systems, an official opkg to apk cheatsheet 
+is available to ease the transition and map common workflows.
+https://openwrt.org/docs/guide-user/additional-software/opkg-to-apk-cheatsheet
+
+Integration of attended sysupgrade
+==================================
+
+The attended sysupgrade LuCI application is now installed by default.
+
+ASU allows devices to:
+   * Upgrade to new OpenWrt firmware versions
+   * Automatically rebuild firmware images with all currently installed 
+packages
+   * Preserve system configuration during upgrades
+
+This dramatically simplifies upgrades: with just a few clicks in LuCI 
+and a short wait, a custom firmware image is built and installed without 
+manual intervention.
+
+
+Shell history is preserved
+==========================
+
+Shell command history is now preserved across sessions by storing it in 
+a **RAM-backed filesystem**.
+
+Benefits:
+   * Command history is no longer lost between logins
+   * No unnecessary writes to flash storage by default
+
+For users who prefer persistent history storage, this behavior can be 
+changed by editing: `/etc/profile.d/busybox-history-file.sh`
+
+?? **Note:** Storing history on flash will increase write cycles and may 
+impact flash endurance over time.
+
+
+Integration of video feed
+==========================
+
+The OpenWrt video feed with Qt5 and UI applications is integrated by 
+default.
+
+
+Wi-Fi scripts in ucode
+======================
+
+The wifi scripts were rewritten in ucode.
+
+
+Target changes
+==============
+
+   * Extend realtek target with support for more switch SoCs like 10G 
+Ethernet switches.
+   * Extend qualcommax target with support for ipq50xx and ipq60xx SoCs.
+   * Added siflower target for Siflower SF21A6826/SF21H8898 SoCs
+   * Added sunxi/arm926ejs subtarget for Allwinner F1C100/200s SoCs
+
+
+Many new devices added
+======================
+
+OpenWrt 25.12 supports over 2180 devices. Support for over 160 new 
+devices was added in addition to the device support by OpenWrt 24.10.
+
+
+Core components update
+===================
+
+Core components have the following versions in 25.12.0-rc4:
+
+   * Updated toolchain:
+     * musl libc 1.2.5
+     * glibc 2.41
+     * gcc 14.3.0
+     * binutils 2.44
+   * Updated Linux kernel
+     * 6.12.66 for all targets
+   * main packages:
+     * cfg80211/mac80211 from kernel 6.18.7
+     * hostapd master snapshot from August 2025
+     * dnsmasq 2.91
+     * dropbear 2025.89
+     * busybox 1.37.0
+
+In addition to the listed applications, many others were also updated.
+
+
+Upgrading to 25.12
+===================
+
+Upgrading from 24.10 to 25.12 should be transparent on most devices, as 
+most configuration data has either remained the same or will be 
+translated correctly on first boot by the package init scripts.
+
+  * Sysupgrade from 23.05 to 25.12 is not officially supported.
+
+  *  Cron log level was fixed in busybox. 
+`system. at system[0].cronloglevel` should be set to `7` for normal 
+logging. `7` is the default now. If this option is not set, the default 
+is used and no manual action is needed.
+
+  *  Bananapi BPI-R4: Interfaces `eth1` was renamed to `sfp-lan` or 
+`lan4` and the interface `eth2` was renamed to `sfp-wan` to match the 
+labels. You have to upgrade without saving the configuration.
+
+Scratch installs/upgrades
+=========================
+
+If you wish to start from scratch (always the safest, but also the most 
+work), simply download the pre-built image from the [downloads 
+site](https://downloads.openwrt.org/releases/25.12.0-rc4/targets/) or 
+from the [Firmware 
+Selector](https://openwrt.github.io/firmware-selector-openwrt-org?version=25.12.0-rc4) 
+to your device.  Make sure to create and save a backup, then install the 
+image using `sysupgrade -n /tmp/firmware.bin` or the LuCI Backup/Flash 
+Firmware, being sure to set "Keep settings and retain the current 
+configuration" to its off position.  Restore or reconstruct your 
+configuration using the contents of the backup as a template.
+
+Attended Sysupgrade options
+===========================
+
+Attended Sysupgrade (ASU) allows you to build a custom image that 
+retains all of your installed packages and their configuration 
+transparently.  You need to use one of the three ASU clients that 
+interface with the ASU server to produce this custom image:
+
+   - [Firmware 
+Selector](https://openwrt.github.io/firmware-selector-openwrt-org?version=25.12.0-rc4) 
+- an online builder that requires you to manually supply it with the 
+packages you wish to have installed.  This package list is sent to the 
+ASU server, and a new custom device image is created containing those 
+packages.  You may then download and install the image in LuCI 
+Backup/Flash Firmware, but for this you would enable "Keep settings..."
+   - [Luci Attended 
+Sysupgrade](https://openwrt.org/docs/guide-user/installation/attended.sysupgrade#from_luci_web_page) 
+- the web interface to the ASU server.  This tool allows you to choose a 
+new OpenWrt version, then collects the names of the packages on your 
+device and sends them up to the ASU server.  LuCI ASU then downloads the 
+created image directly to your device and allows you to install it, 
+without having to do any of the bookkeeping tasks involved with using 
+the Firmware Selector.
+   - 
+[owut](https://openwrt.org/docs/guide-user/installation/sysupgrade.owut) 
+- a command line package that does the same job as LuCI ASU, but 
+provides more diagnostics and better visibility into what's happening at 
+the various steps before and during the build process.
+
+Both the LuCI ASU app and `owut` are optional packages in 24.10, so if 
+you have not installed them, they won't be there by default.  Use either 
+the LuCI Package Manager to install them, or you can do it from the 
+command line with `opkg`:
+
+```
+$ opkg update
+$ opkg install luci-app-attendedsysupgrade
+$ opkg install owut
+```
+
+Note that you can install one or the other, or both together, they are 
+completely independent packages.
+
+Upgrades with Firmware Selector
+===============================
+
+The Firmware Selector does an excellent job of searching through the 
+thousands of available device configurations and getting you to the 
+right place.  But, some devices have several variants and possibly 
+different image formats, so if you're unsure about which one you need or 
+which device you're dealing with or anything else, go to the [|Firmware 
+Selector support 
+thread](https://forum.openwrt.org/t/the-openwrt-firmware-selector/81721) 
+and ask away.
+
+Upgrades with LuCI Attended Sysupgrade
+======================================
+
+The LuCI web interface should be fairly self explanatory.  Since you 
+have fairly limited options there that should be pretty obvious, but if 
+anything is unclear or you're unsure about something, go to the [LuCI 
+Attended Sysupgrade support 
+thread](https://forum.openwrt.org/t/luci-attended-sysupgrade-support-thread/230552) 
+and ask.
+
+Upgrades with owut
+==================
+
+If you choose to use `owut`, the fact that it's a command line program 
+means you'll need a little more explanation regarding best practices. In 
+any situation, it's always safe to do a `check` to see what's going on.
+
+```
+$ owut check --verbose --version-to 25.12
+... a lot of output ...
+```
+
+This check should show you all the details of what this upgrade entails 
+with regards to the packages available, and will point out any issues 
+with package versions and so on.
+
+Assuming the results of the `check` look good, you can simply do an 
+`upgrade` next.
+
+```
+$ owut upgrade --verbose --version-to 25.12
+... even more output ...
+```
+
+If you are unsure of anything you see in the `check`, during the 
+`upgrade`, or simply have questions, jump on over to the [owut support 
+thread](https://forum.openwrt.org/t/owut-openwrt-upgrade-tool/200035) on 
+the forum and ask.
+
+
+Known issues
+============
+
+   * Users of Zyxel EX5601-T0 devices need to check their WAN interfaces 
+as port was renamed from `eth1` to `wan`.
+   * The rockchip target does not build. rockchip will be included in 
+the next release candidate again.
+
+
+-----------------
+
+Full release notes and upgrade instructions are available at
+  https://openwrt.org/releases/25.12/notes-25.12.0-rc4
+
+In particular, make sure to read the regressions and known issues before 
+upgrading:
+  https://openwrt.org/releases/25.12/notes-25.12.0-rc4#known_issues
+
+For a detailed list of all changes since 25.12.0-rc3, refer to
+  https://openwrt.org/releases/25.12/changelog-25.12.0-rc4
+
+To download the 25.12.0-rc4 images, navigate to:
+  https://downloads.openwrt.org/releases/25.12.0-rc4/targets/
+Use OpenWrt Firmware Selector to download:
+  https://firmware-selector.openwrt.org?version=25.12.0-rc4
+
+As always, a big thank you goes to all our active package maintainers, 
+testers, documenters and supporters.
+
+Have fun!
+
+The OpenWrt Community
+
+---
+
+To stay informed of new OpenWrt releases and security advisories, there
+are new channels available:
+
+   * a low-volume mailing list for important announcements:
+https://lists.openwrt.org/mailman/listinfo/openwrt-announce
+
+   * a dedicated "announcements" section in the forum:
+https://forum.openwrt.org/c/announcements/14
+
+   * other announcement channels (such as RSS feeds) might be added in
+     the future, they will be listed at https://openwrt.org/contact
+
+
+From noreply at github.com  Sun Feb  1 16:49:31 2026
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 01 Feb 2026 16:49:31 -0800
+Subject: [sdwalker/sdwalker.github.io] 3e47f6: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/8b1be2-3e47f6@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 3e47f6b80422823b02f1603d0b175d11fe2e4e6e
+      https://github.com/sdwalker/sdwalker.github.io/commit/3e47f6b80422823b02f1603d0b175d11fe2e4e6e
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2026-02-01 (Sun, 01 Feb 2026)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From michael at wagenhofer.de  Sun Feb  1 23:11:23 2026
+From: michael at wagenhofer.de (Michael Wagenhofer)
+Date: Mon,  2 Feb 2026 08:11:23 +0100
+Subject: [PATCH] realtek: add support for Xikestor SKS8300-12E2T2X
+Message-ID: <20260202071123.3777-1-michael@wagenhofer.de>
+
+Add board support for the Xikestor SKS8300-12E2T2X switch.
+Includes DTS definition and required RTL930x platform setup.
+
+Signed-off-by: Michael Wagenhofer <michael at wagenhofer.de>
+---
+ .../realtek/base-files/etc/board.d/02_network |   3 +-
+ .../dts/rtl9302_xikestor_sks8300-12e2t2x.dts  | 392 ++++++++++++++++++
+ target/linux/realtek/image/rtl930x.mk         |  18 +
+ 3 files changed, 412 insertions(+), 1 deletion(-)
+ create mode 100644 target/linux/realtek/dts/rtl9302_xikestor_sks8300-12e2t2x.dts
+
+diff --git a/target/linux/realtek/base-files/etc/board.d/02_network b/target/linux/realtek/base-files/etc/board.d/02_network
+index 09d9b02a4f..7a9d194441 100644
+--- a/target/linux/realtek/base-files/etc/board.d/02_network
++++ b/target/linux/realtek/base-files/etc/board.d/02_network
+@@ -89,7 +89,8 @@ realtek_setup_macs()
+ 		lan_mac=$(mtd_get_mac_ascii u-boot-env ethaddr)
+ 		[ -z "$lan_mac" ] || [ "$lan_mac" = "00:e0:4c:00:00:00" ] && lan_mac=$(macaddr_random)
+ 		;;
+-	xikestor,sks8300-8t)
++	xikestor,sks8300-8t|\
++	xikestor,sks8300-12e2t2x)
+ 		lan_mac="$(get_mac_label)"
+ 		label_mac="$lan_mac"
+ 		;;
+diff --git a/target/linux/realtek/dts/rtl9302_xikestor_sks8300-12e2t2x.dts b/target/linux/realtek/dts/rtl9302_xikestor_sks8300-12e2t2x.dts
+new file mode 100644
+index 0000000000..85886cfb75
+--- /dev/null
++++ b/target/linux/realtek/dts/rtl9302_xikestor_sks8300-12e2t2x.dts
+@@ -0,0 +1,392 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/dts-v1/;
++
++#include "rtl930x.dtsi"
++
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/gpio/gpio.h>
++
++/ {
++	compatible = "xikestor,sks8300-12e2t2x", "realtek,rtl9302-soc";
++	model = "XikeStor SKS8300-12E2T2X";
++
++	memory at 0 {
++		device_type = "memory";
++		reg = <0x00000000 0x10000000>, /* first 256 MiB */
++		      <0x20000000 0x10000000>; /* remaining 256 MiB */
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	keys {
++		compatible = "gpio-keys";
++		button-reset {
++			label = "reset";
++			gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_RESTART>;
++		};
++	};
++
++	led_set {
++		compatible = "realtek,rtl9300-leds";
++		active-low;
++
++		/*
++		 * 2,5G Ports LED0 (orange): 10M/100M/1G/LINK/ACT
++		 * 2,5G Ports LED1 (green): 2.5G/LINK/ACT
++		 */
++		led_set0 = <(RTL93XX_LED_SET_10M | RTL93XX_LED_SET_100M | RTL93XX_LED_SET_1G |
++			     RTL93XX_LED_SET_LINK | RTL93XX_LED_SET_ACT)
++			    (RTL93XX_LED_SET_2P5G | RTL93XX_LED_SET_LINK | RTL93XX_LED_SET_ACT)>;
++
++		/*
++		 * 10G Ports LED0 (orange): 10M/100M/1G/2.5G/5G/LINK/ACT
++		 * 10G Ports LED1 (green): 10G/LINK/ACT
++		 */
++		led_set1 = <(RTL93XX_LED_SET_10M | RTL93XX_LED_SET_100M | RTL93XX_LED_SET_1G |
++			     RTL93XX_LED_SET_2P5G | RTL93XX_LED_SET_5G |
++			     RTL93XX_LED_SET_LINK | RTL93XX_LED_SET_ACT)
++			    (RTL93XX_LED_SET_10G | RTL93XX_LED_SET_LINK | RTL93XX_LED_SET_ACT)>;
++	};
++
++	sfp0: sfp-p15 {
++		compatible = "sff,sfp";
++		i2c-bus = <&i2c_sfp0>;
++		maximum-power-milliwatt = <2500>;
++		mod-def0-gpios = <&gpio0 12 GPIO_ACTIVE_LOW>;
++		los-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
++		#thermal-sensor-cells = <0>;
++	};
++
++	sfp1: sfp-p16 {
++		compatible = "sff,sfp";
++		i2c-bus = <&i2c_sfp1>;
++		maximum-power-milliwatt = <2500>;
++		mod-def0-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
++		los-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
++		#thermal-sensor-cells = <0>;
++
++	};
++	aliases {
++		label-mac-device = &ethernet0;
++	};
++};
++
++&i2c_mst1 {
++	status = "okay";
++	i2c_sfp0: i2c at 0 {
++		reg = <0>;
++	};
++	i2c_sfp1: i2c at 1 {
++		reg = <1>;
++	};
++};
++
++&spi0 {
++	status = "okay";
++	flash at 0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <10000000>;
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			partition at 0 {
++				label = "u-boot";
++				reg = <0x0 0x1c0000>;
++				read-only;
++			};
++			partition at 1c0000 {
++				label = "u-boot-env";
++				reg = <0x1c0000 0x10000>;
++			};
++			partition at 1d0000 {
++				label = "sysinfo";
++				reg = <0x1d0000 0x10000>;
++				read-only;
++			};
++			partition at 1e0000 {
++				label = "factory";
++				reg = <0x1e0000 0x10000>;
++				read-only;
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++					factory_macaddr: macaddr at 80 {
++						reg = <0x80 0x6>;
++					};
++				};
++			};
++			partition at 1f0000 {
++				label = "sysdata";
++				reg = <0x1f0000 0x10000>;
++			};
++			partition at 200000 {
++				label = "jffs2_filesystem";
++				reg = <0x200000 0xa00000>;
++			};
++			partition at c00000 {
++				compatible = "openwrt,uimage", "denx,uimage";
++				label = "firmware";
++				reg = <0xc00000 0x1400000>;
++				openwrt,ih-magic = <0x93000000>;
++				openwrt,offset = <0x10>;
++			};
++		};
++	};
++};
++
++&ethernet0 {
++	nvmem-cells = <&factory_macaddr>;
++	nvmem-cell-names = "mac-address";
++};
++
++&mdio_bus0 {
++	phy0: ethernet-phy at 0 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <0>;
++	};
++	phy1: ethernet-phy at 1 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <1>;
++	};
++	phy2: ethernet-phy at 2 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <2>;
++	};
++	phy3: ethernet-phy at 3 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <3>;
++	};
++};
++
++&mdio_bus1 {
++	phy8: ethernet-phy at 8 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <8>;
++		realtek,smi-address = <0>;
++	};
++	phy9: ethernet-phy at 9 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <9>;
++		realtek,smi-address = <1>;
++	};
++	phy10: ethernet-phy at 10 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <10>;
++		realtek,smi-address = <2>;
++	};
++	phy11: ethernet-phy at 11 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <11>;
++		realtek,smi-address = <3>;
++	};
++};
++
++&mdio_bus2 {
++	phy16: ethernet-phy at 16 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <16>;
++		realtek,smi-address = <0>;
++	};
++	phy17: ethernet-phy at 17 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <17>;
++		realtek,smi-address = <1>;
++	};
++	phy18: ethernet-phy at 18 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <18>;
++		realtek,smi-address = <2>;
++	};
++	phy19: ethernet-phy at 19 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <19>;
++		realtek,smi-address = <3>;
++	};
++};
++
++&mdio_bus3 {
++	phy24: ethernet-phy at 24 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <24>;
++		realtek,smi-address = <0>;
++	};
++	phy25: ethernet-phy at 25 {
++		compatible = "ethernet-phy-ieee802.3-c45";
++		reg = <25>;
++		realtek,smi-address = <1>;
++	};
++};
++
++&switch0 {
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port at 0 {
++			reg = <0>;
++			label = "lan2";
++			led-set = <0>;
++			pcs-handle = <&serdes2>;
++			phy-handle = <&phy0>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 1 {
++			reg = <1>;
++			label = "lan1";
++			led-set = <0>;
++			pcs-handle = <&serdes2>;
++			phy-handle = <&phy1>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 2 {
++			reg = <2>;
++			label = "lan4";
++			led-set = <0>;
++			pcs-handle = <&serdes2>;
++			phy-handle = <&phy2>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 3 {
++			reg = <3>;
++			label = "lan3";
++			led-set = <0>;
++			pcs-handle = <&serdes2>;
++			phy-handle = <&phy3>;
++			phy-mode = "10g-qxgmii";
++		};
++
++		port at 8 {
++			reg = <8>;
++			label = "lan6";
++			led-set = <0>;
++			pcs-handle = <&serdes3>;
++			phy-handle = <&phy8>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 9 {
++			reg = <9>;
++			label = "lan5";
++			led-set = <0>;
++			pcs-handle = <&serdes3>;
++			phy-handle = <&phy9>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 10 {
++			reg = <10>;
++			label = "lan8";
++			led-set = <0>;
++			pcs-handle = <&serdes3>;
++			phy-handle = <&phy10>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 11 {
++			reg = <11>;
++			label = "lan7";
++			led-set = <0>;
++			pcs-handle = <&serdes3>;
++			phy-handle = <&phy11>;
++			phy-mode = "10g-qxgmii";
++		};
++
++		port at 16 {
++			reg = <16>;
++			label = "lan10";
++			led-set = <0>;
++			pcs-handle = <&serdes4>;
++			phy-handle = <&phy16>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 17 {
++			reg = <17>;
++			label = "lan9";
++			led-set = <0>;
++			pcs-handle = <&serdes4>;
++			phy-handle = <&phy17>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 18 {
++			reg = <18>;
++			label = "lan12";
++			led-set = <0>;
++			pcs-handle = <&serdes4>;
++			phy-handle = <&phy18>;
++			phy-mode = "10g-qxgmii";
++		};
++		port at 19 {
++			reg = <19>;
++			label = "lan11";
++			led-set = <0>;
++			pcs-handle = <&serdes4>;
++			phy-handle = <&phy19>;
++			phy-mode = "10g-qxgmii";
++		};
++
++		port at 24 {
++			reg = <24>;
++			label = "lan13";
++			led-set = <1>;
++			pcs-handle = <&serdes6>;
++			phy-handle = <&phy24>;
++			phy-mode = "usxgmii";
++		};
++		port at 25 {
++			reg = <25>;
++			label = "lan14";
++			led-set = <1>;
++			pcs-handle = <&serdes7>;
++			phy-handle = <&phy25>;
++			phy-mode = "usxgmii";
++		};
++
++		port at 26 {
++			reg = <26>;
++			label = "lan15";
++			led-set = <1>;
++			pcs-handle = <&serdes8>;
++			phy-mode = "1000base-x";
++			sfp = <&sfp0>;
++			managed = "in-band-status";
++		};
++		port at 27 {
++			reg = <27>;
++			label = "lan16";
++			led-set = <1>;
++			pcs-handle = <&serdes9>;
++			phy-mode = "1000base-x";
++			sfp = <&sfp1>;
++			managed = "in-band-status";
++		};
++
++		port at 28 {
++			reg = <28>;
++			ethernet = <&ethernet0>;
++			phy-mode = "internal";
++			fixed-link {
++				speed = <10000>;
++				full-duplex;
++			};
++		};
++	};
++};
++
++&thermal_zones {
++	sfp-thermal {
++		polling-delay-passive = <10000>;
++		polling-delay = <10000>;
++		thermal-sensors = <&sfp0>, <&sfp1>;
++		trips {
++			sfp-crit {
++				temperature = <110000>;
++				hysteresis = <1000>;
++				type = "critical";
++			};
++		};
++	};
++};
+diff --git a/target/linux/realtek/image/rtl930x.mk b/target/linux/realtek/image/rtl930x.mk
+index 462e6e0a96..75bd5bf46f 100644
+--- a/target/linux/realtek/image/rtl930x.mk
++++ b/target/linux/realtek/image/rtl930x.mk
+@@ -114,6 +114,24 @@ define Device/xikestor_sks8300-8x
+ endef
+ TARGET_DEVICES += xikestor_sks8300-8x
+ 
++define Device/xikestor_sks8300-12e2t2x
++  SOC := rtl9302
++  UIMAGE_MAGIC := 0x93000000
++  DEVICE_VENDOR := XikeStor
++  DEVICE_MODEL := SKS8300-12E2T2X
++  IMAGE_SIZE := 20480k
++  $(Device/kernel-lzma)
++  IMAGE/sysupgrade.bin := \
++    pad-extra 16 | \
++    append-kernel | \
++    pad-to 64k | \
++    append-rootfs | \
++    pad-rootfs | \
++    check-size | \
++    append-metadata
++endef
++TARGET_DEVICES += xikestor_sks8300-12e2t2x
++
+ define Device/xikestor_sks8310-8x
+   SOC := rtl9303
+   UIMAGE_MAGIC := 0x93000000
+-- 
+2.47.3
+
+
+
+From hkallweit1 at gmail.com  Mon Feb  2 23:11:46 2026
+From: hkallweit1 at gmail.com (Heiner Kallweit)
+Date: Tue, 3 Feb 2026 08:11:46 +0100
+Subject: [PATCH v2 net-next] net: lantiq_etop: remove driver
+In-Reply-To: <20260202171357.0e4a9e38@kernel.org>
+References: <73f3ea5f-57ed-40b1-9acb-ab595083aab6@gmail.com>
+ <20260202171357.0e4a9e38@kernel.org>
+Message-ID: <61594c17-5afc-4b88-9384-892232523790@gmail.com>
+
+On 2/3/2026 2:13 AM, Jakub Kicinski wrote:
+> On Fri, 30 Jan 2026 17:40:49 +0100 Heiner Kallweit wrote:
+>>  arch/mips/configs/xway_defconfig              |   1 -
+>>  .../include/asm/mach-lantiq/lantiq_platform.h |  18 -
+>>  drivers/net/ethernet/Kconfig                  |   6 -
+>>  drivers/net/ethernet/Makefile                 |   1 -
+>>  drivers/net/ethernet/lantiq_etop.c            | 745 ------------------
+>>  5 files changed, 771 deletions(-)
+>>  delete mode 100644 arch/mips/include/asm/mach-lantiq/lantiq_platform.h
+>>  delete mode 100644 drivers/net/ethernet/lantiq_etop.c
+> 
+> Also Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml ?
+> and arch/mips/boot/dts/lantiq/danube_easy50712.dts but that needs 
+> to go via the MIPS tree
+
+Right. The mainline version of lantiq_etop doesn't support OF,
+support for OF and the compatible lantiq,etop-xway is added
+only by downstream patches in OpenWRT.
+
+
+From kuba at kernel.org  Mon Feb  2 17:13:57 2026
+From: kuba at kernel.org (Jakub Kicinski)
+Date: Mon, 2 Feb 2026 17:13:57 -0800
+Subject: [PATCH v2 net-next] net: lantiq_etop: remove driver
+In-Reply-To: <73f3ea5f-57ed-40b1-9acb-ab595083aab6@gmail.com>
+References: <73f3ea5f-57ed-40b1-9acb-ab595083aab6@gmail.com>
+Message-ID: <20260202171357.0e4a9e38@kernel.org>
+
+On Fri, 30 Jan 2026 17:40:49 +0100 Heiner Kallweit wrote:
+>  arch/mips/configs/xway_defconfig              |   1 -
+>  .../include/asm/mach-lantiq/lantiq_platform.h |  18 -
+>  drivers/net/ethernet/Kconfig                  |   6 -
+>  drivers/net/ethernet/Makefile                 |   1 -
+>  drivers/net/ethernet/lantiq_etop.c            | 745 ------------------
+>  5 files changed, 771 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-lantiq/lantiq_platform.h
+>  delete mode 100644 drivers/net/ethernet/lantiq_etop.c
+
+Also Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml ?
+and arch/mips/boot/dts/lantiq/danube_easy50712.dts but that needs 
+to go via the MIPS tree
+-- 
+pw-bot: cr
+
+
+From philipp_subx at redfish-solutions.com  Tue Feb  3 15:23:16 2026
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Tue, 3 Feb 2026 16:23:16 -0700
+Subject: wget-ssl not building because of provides: error
+Message-ID: <2BE91FD7-3707-422F-95A9-FD05469A8C60@redfish-solutions.com>
+
+I'm seeing the following when trying to build a new Bpi-R4 image using apk (I previously used opkg).  Looks related to:
+
+--info "provides: wget   @wget-any "
+
+
+Here's the tail of the build:
+
+...
+rm -rf /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl
+mkdir -p /home/philipp/lede2/bin/targets/mediatek/filogic/packages /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl /home/philipp/lede2/staging_dir/target-aarch64_cortex-a53_musl/pkginfo
+install -d -m0755 /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/usr/libexec
+install -m0755 /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-install/usr/bin/wget /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/usr/libexec/wget-ssl
+find /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl -name 'CVS' -o -name '.svn' -o -name '.#*' -o -name '*~'| xargs -r rm -rf
+export CROSS="aarch64-openwrt-linux-musl-"  NO_RENAME=1 ; NM="aarch64-openwrt-linux-musl-nm" STRIP="/home/philipp/lede2/staging_dir/host/bin/sstrip -z" STRIP_KMOD="/home/philipp/lede2/scripts/strip-kmod.sh" PATCHELF="/home/philipp/lede2/staging_dir/host/bin/patchelf" /home/philipp/lede2/scripts/rstrip.sh /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl
+rstrip.sh: /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/usr/libexec/wget-ssl: executable
+install -d -m0755 /home/philipp/lede2/bin/packages/aarch64_cortex-a53/packages
+mkdir -p /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/
+mkdir -p /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/
+(cd /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl; )
+( echo "#!/bin/sh"; echo "[ \"\${IPKG_NO_SCRIPT}\" = \"1\" ] && exit 0"; echo "[ -s "\${IPKG_INSTROOT}/lib/functions.sh" ] || exit 0"; echo ". \${IPKG_INSTROOT}/lib/functions.sh"; echo 'export root="${IPKG_INSTROOT}"'; echo 'export pkgname="wget-ssl"'; echo "add_group_and_user"; echo "default_postinst"; [ ! -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/postinst-pkg ] || sed -z 's/^\s*#!/#!/' "/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/postinst-pkg"; ) > /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/post-install;
+( echo "#!/bin/sh"; echo 'export PKG_UPGRADE=1'; [ ! -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/post-install ] || sed -z 's/^\s*#!/#!/' "/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/post-install"; ) > /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/post-upgrade;
+( echo "#!/bin/sh"; echo "[ -s "\${IPKG_INSTROOT}/lib/functions.sh" ] || exit 0"; echo ". \${IPKG_INSTROOT}/lib/functions.sh"; echo 'export root="${IPKG_INSTROOT}"'; echo 'export pkgname="wget-ssl"'; echo "default_prerm"; [ ! -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/prerm-pkg ] || sed -z 's/^\s*#!/#!/' "/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/prerm-pkg"; ) > /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/pre-deinstall;
+[ ! -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/postrm ] || sed -zi 's/^\s*#!/#!/' "/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/postrm";
+if [ -n "" ]; then echo  > /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.rusers; fi;
+if [ -n "400:/usr/bin/wget:/usr/libexec/wget-ssl" ]; then echo 400:/usr/bin/wget:/usr/libexec/wget-ssl > /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.alternatives; fi;
+(cd /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl && find . -type f,l -printf "/%P\n" | sort > /home/philipp/lede2/tmp/wget-ssl.list && mv /home/philipp/lede2/tmp/wget-ssl.list /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.list)
+# Move conffiles to IDIR and build conffiles_static with csums
+if [ -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/conffiles ]; then mv -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/conffiles /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.conffiles; for file in $(cat /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.conffiles); do [ -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/$file ] || continue; csum=$(/home/philipp/lede2/staging_dir/host/bin/mkhash sha256 /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/$file); echo $file $csum >> /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.conffiles_static; done; fi
+# Some package (base-files) manually append stuff to conffiles
+# Append stuff from it and delete the CONTROL directory since everything else should be migrated
+if [ -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/CONTROL/conffiles ]; then echo $(IDIR_wget-ssl)/CONTROL/conffiles >> /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.conffiles; for file in $(cat /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/CONTROL/conffiles); do [ -f /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/$file ] || continue; csum=$(/home/philipp/lede2/staging_dir/host/bin/mkhash sha256 /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/$file); echo $file $csum >> /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/lib/apk/packages/wget-ssl.conffiles_static; done; rm -rf /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/CONTROL/conffiles; fi
+if [ -z "$(ls -A /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/CONTROL 2>/dev/null)" ]; then rm -rf /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/CONTROL; else echo "CONTROL directory /home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl/CONTROL is not empty! This is not right and should be checked!" >&2; exit 1; fi
+/home/philipp/lede2/staging_dir/host/bin/fakeroot /home/philipp/lede2/staging_dir/host/bin/apk mkpkg --info "name:wget-ssl" --info "version:1.25.0-r2"  --info "description:Wget is a network utility to retrieve files from the Web using http and ftp, the two most widely used Internet protocols. It works non-interactively, so it will work in the background, after having logged off. The program supports recursive retrieval of web-authoring pages as well as ftp sites -- you can use wget to make mirrors of archives and home pages or to travel the Web like a WWW robot. This package is built with SSL support." --info "arch:aarch64_cortex-a53" --info "license:GPL-3.0-or-later" --info "origin:feeds/packages/feeds/packages/net/wget" --info "url:https://www.gnu.org/software/wget/index.html" --info "maintainer:" --info "provides: wget   @wget-any " --info "provider-priority:1" --script "post-install:/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/post-install" --script "post-upgrade:/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/post-upgrade" --script "pre-deinstall:/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/apk-aarch64_cortex-a53/wget-ssl/pre-deinstall" --info "depends:libc libpcre2 zlib libopenssl3 librt" --files "/home/philipp/lede2/build_dir/target-aarch64_cortex-a53_musl/wget-ssl/wget-1.25.0/ipkg-aarch64_cortex-a53/wget-ssl" --output "/home/philipp/lede2/bin/packages/aarch64_cortex-a53/packages/wget-ssl-1.25.0-r2.apk"
+ERROR: info field 'provides' has invalid value: dependency format is invalid
+ERROR: failed to create package: dependency format is invalid
+make[2]: *** [Makefile:136: /home/philipp/lede2/bin/packages/aarch64_cortex-a53/packages/wget-ssl-1.25.0-r2.apk] Error 99
+make[2]: Leaving directory '/home/philipp/lede2/feeds/packages/net/wget'
+time: package/feeds/packages/wget/ssl/compile#51.87#16.48#63.52
+   ERROR: package/feeds/packages/wget failed to build (build variant: ssl).
+make[1]: *** [package/Makefile:187: package/feeds/packages/wget/compile] Error 1
+make[1]: Leaving directory '/home/philipp/lede2'
+make: *** [/home/philipp/lede2/include/toplevel.mk:233: package/wget/compile] Error 2
+
+
+Anyone else seeing this?
+
+From hauke at hauke-m.de  Thu Feb  5 15:45:59 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Fri, 6 Feb 2026 00:45:59 +0100
+Subject: Activate LuCI, attendedsysupgrade and owut based on CONFIG_BUILDBOT
+Message-ID: <b973944a-5a86-495e-8666-c5ddc3150c72@hauke-m.de>
+
+Currently the LuCI integration into the builds is activated in the 
+buildbot configuration. This configuration is not very publicly know. We 
+already have the CONFIG_BUILDBOT which activates multiple settings 
+needed for the buildbot builds which normal user builds normally do not 
+need. I propose some changes to also use this to activate additional 
+packages like LuCI, luci-app-attendedsysupgrade and owut.
+
+With this change we will not include luci-app-attendedsysupgrade by 
+default in normal user builds with LuCI any more.
+
+This will activate LuCI also in buildbot builds from the main branch 
+which is probably helpful anyway.
+
+I would like to add this also to the 25.12 branch.
+
+LuCI changes: https://github.com/openwrt/luci/pull/8303
+Packages changes: https://github.com/openwrt/packages/pull/28512
+
+I looked into this again because Paul started a discussion about this 
+topic today.
+
+Do We have more custom settings for buildbot builds?
+
+Hauke
+
+
+From ynezz at true.cz  Thu Feb  5 22:12:52 2026
+From: ynezz at true.cz (Petr =?utf-8?Q?=C5=A0tetiar?=)
+Date: Fri, 6 Feb 2026 07:12:52 +0100
+Subject: Activate LuCI, attendedsysupgrade and owut based on
+ CONFIG_BUILDBOT
+In-Reply-To: <b973944a-5a86-495e-8666-c5ddc3150c72@hauke-m.de>
+References: <b973944a-5a86-495e-8666-c5ddc3150c72@hauke-m.de>
+Message-ID: <20260206061252.GA71475@meh.true.cz>
+
+Hauke Mehrtens <hauke at hauke-m.de> [2026-02-06 00:45:59]:
+
+Hi,
+
+> Currently the LuCI integration into the builds is activated in the buildbot
+> configuration. This configuration is not very publicly know. 
+
+FYI, buildbot master ansible configs for snapshots and 25.12 branch:
+
+   - name: Snapshot
+     branch: main
+     build_priority: 3
+     seedconfig: |-
+       CONFIG_BUILDBOT=y
+       CONFIG_DEVEL=y
+       # CONFIG_CCACHE is not set
+       CONFIG_KERNEL_KALLSYMS=y
+       CONFIG_AUTOREMOVE=y
+
+   - name: OpenWrt 25.12
+     branch: openwrt-25.12
+     build_priority: 2
+     seedconfig: |-
+       CONFIG_BUILDBOT=y
+       CONFIG_DEVEL=y
+       CONFIG_IMAGEOPT=y
+       CONFIG_VERSIONOPT=y
+       CONFIG_CCACHE=n
+       CONFIG_KERNEL_KALLSYMS=n
+       CONFIG_AUTOREMOVE=y
+       CONFIG_PACKAGE_luci=y
+       CONFIG_PACKAGE_luci-ssl=y
+
+
+Cheers,
+
+Petr
+
+
+From hacks at slashdirt.org  Fri Feb  6 07:07:46 2026
+From: hacks at slashdirt.org (Thibaut)
+Date: Fri, 6 Feb 2026 16:07:46 +0100
+Subject: buildbot issue? / uspot packages removed from 24.10
+Message-ID: <E814602A-CC09-40F4-A9FF-7E57070C3570@slashdirt.org>
+
+Hi,
+
+For some reason, uspot now fails to build on 24.10 and was removed from the packages archive, see e.g.
+
+https://downloads.openwrt.org/releases/packages-24.10/x86_64/packages/
+
+The build error as listed here:
+https://downloads.openwrt.org/releases/faillogs-24.10/x86_64/packages/uspot/compile.txt
+
+shows:
+
+-- Generating done (0.0s)
+-- Build files have been written to: /builder/shared-workdir/build/sdk/build_dir/target-x86_64_musl/uspot-2025.08.07~8599a968
+<built-in>:1:10: fatal error: 'linux/kconfig.h' file not found
+    1 | #include "linux/kconfig.h"
+      |          ^~~~~~~~~~~~~~~~~
+1 error generated.
+make[3]: *** [Makefile:107: /builder/shared-workdir/build/sdk/build_dir/target-x86_64_musl/uspot-2025.08.07~8599a968/.built] Error 1
+time: package/feeds/packages/uspot/compile#0.58#0.57#1.15
+
+This appears to be coming from the BPF toolchain, but I cannot reproduce the issue when building using e.g. the 24.10-SNAPSHOT sdk (the build is successful there), so I?m clueless.
+
+The package has remained unchanged since the last successful build, available on archive:
+https://archive.openwrt.org/releases/24.10.5/packages/x86_64/packages/
+
+The timestamp suggests the package was last successfully built on Feb 1
+
+Can someone take a look?
+
+Thanks,
+T.
+
+From dmitrmax at gmail.com  Fri Feb  6 09:07:44 2026
+From: dmitrmax at gmail.com (Maksim Dmitrichenko)
+Date: Fri, 6 Feb 2026 21:07:44 +0400
+Subject: musl compatibility issue
+Message-ID: <CAMRqRqyutc0SwGvp6Oo3j-5koOX=SfnSNPOG5r8unpZ==k6ZuQ@mail.gmail.com>
+
+Hi!
+
+I'm trying to make a custom build for my router and I've got into some
+weird thing which I don't understand how it can be working at all.
+
+iproute2 depends on elfutils. elfutils provides several library
+packages and one of them is libdwfl. When this libdwfl is compiled
+I've got an error in file find-debuginfo.c
+
+The error is regarding the usage of function basename(). Clearly
+elfutils expects glibc where this function is declared in <string.h>
+and expects const char* as its argument. While musl provides another
+weird implementation of basename() declared in <libgen.h> which
+expects char* as its argument. So, even adding a patch that adds
+#include <libgen.h> doesn't help because the compiler asserts that
+const type qualifier is being discarded.
+
+I've looked for the patches in the OpenWRT tree but found nothing on
+this topic. What am I missing? How can it be compiled at all with
+musl?
+
+This error if compiling as is:
+
+find-debuginfo.c: In function 'find_debuginfo_in_path':
+find-debuginfo.c:168:58: error: implicit declaration of function
+'basename'; did you mean 'ptsname'?
+[-Werror=implicit-function-declaration]
+  const char *file_basename = file_name == NULL ? NULL : basename (file_name);
+                                                         ^~~~~~~~
+                                                         ptsname
+find-debuginfo.c:168:56: error: pointer/integer type mismatch in
+conditional expression [-Werror]
+  const char *file_basename = file_name == NULL ? NULL : basename (file_name);
+
+This error if I add patch to include <libgen.h>
+
+find-debuginfo.c:169:68: error: passing argument 1 of 'basename'
+discards 'const' qualifier from pointer target type
+[-Werror=discarded-qualifiers]
+  const char *file_basename = file_name == NULL ? NULL : basename (file_name);
+                                                                   ^~~~~~~~~
+In file included from find-debuginfo.c:36:
+/src/openwrt/staging_dir/toolchain-mipsel_24kc_gcc-8.3.0_musl/include/libgen.h:9:7:
+note: expected 'char *' but argument is of type 'const char *'
+char *basename(char *);
+      ^~~~~~~~
+
+
+-- 
+With best regards
+  Maksim Dmitrichenko
+
+
+From noreply at github.com  Sun Feb  8 12:37:21 2026
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 08 Feb 2026 12:37:21 -0800
+Subject: [sdwalker/sdwalker.github.io] a53635: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/3e47f6-a53635@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: a53635cb6e2f06b7595a4060f407e0e9c20bc3a3
+      https://github.com/sdwalker/sdwalker.github.io/commit/a53635cb6e2f06b7595a4060f407e0e9c20bc3a3
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2026-02-08 (Sun, 08 Feb 2026)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From hauke at hauke-m.de  Sun Feb  8 15:35:42 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Mon, 9 Feb 2026 00:35:42 +0100
+Subject: OpenWrt 25.12 release plan
+Message-ID: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+
+Hi,
+
+I plan to tag OpenWrt 25.12.0-rc5 next weekend and then the final 
+version about 1 week later.
+
+Between rc5 and the final version only small changes should get in to 
+reduce the risk of adding new regressions.
+
+@Felix: Could you please have a look at the changes you did in the main 
+branch and cherry pick bugfixes needed for 25.12.
+@Linus: Please have a look at the fixes you pushed to the main branch in 
+the last few weeks and check which should get backported to 25.12.
+
+Hauke
+
+
+From linusw at kernel.org  Mon Feb  9 01:47:48 2026
+From: linusw at kernel.org (Linus Walleij)
+Date: Mon, 9 Feb 2026 10:47:48 +0100
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+Message-ID: <CAD++jL=7wrU356e7hJ7LBLd-RgXwgdpPnh6KzYrvLzPo8+Wsww@mail.gmail.com>
+
+Hi Hauke,
+
+thanks for working on these releases!!
+
+On Mon, Feb 9, 2026 at 12:36?AM Hauke Mehrtens <hauke at hauke-m.de> wrote:
+
+> @Linus: Please have a look at the fixes you pushed to the main branch in
+> the last few weeks and check which should get backported to 25.12.
+
+As an effect of finally dusting off a Raidsonic IB-4220-B that was sent
+to me by a supporter in 2019 I realized what the problem was and fixed
+the root cause.
+
+What happened was that the kernel partition of 3072K used to fit
+the whole kernel and initramfs and everybody was happy. Then with
+new kernel releases it grew and doesn't fit anymore and everything
+crash.
+
+It's a shame because the device has lots of flash (128MB) and
+can work just fine as long as it's utilized right.
+
+The following overrides the built-in partitioning scheme on that and
+two related machines and make them work with latest OpenWrt:
+
+commit 92682593d53104f43f8b06c52faa5d05d471dea8
+gemini: Add DTS fix from upstream kernel
+
+commit 8dec72061f523227e2535863f25f8ff239c441b3
+gemini: Fix up the rootfs device for SQ201
+
+commit 0b0cd4efe25d9ee73896c8fa3079074dbae2637d
+gemini: support upgrade on reference designs
+
+commit 691aa70e1693542eee795df4bed2b46f6af26e63
+gemini: create a copy-kernel for 3072k kernels
+
+commit b8dc7ac9c68d7e3e3a838c2ca32545c57642653b
+gemini: select CONFIG_BLK_DEV_LOOP
+
+commit 04bc0b6d3f440cc139d6e320cba165b37cda9c9b
+gemini: Fix up sysupgrade platform.sh script
+
+commit db7a2fb217d7e5480e3f5c57c061a675cf9dd83a
+gemini: pad storlink reference firmware to 128kb
+
+commit 1977301b5f8f76b4d04b5950b09b2fd7cf607bc4
+gemini: use tar stream to write firmware
+
+commit 387752dc76ba2de2510147427ff1361dfd90c556
+gemini: override IB-4220-B partitions for firmware
+
+commit 81215f55e274b9127f3491590bd237d1f836a014
+gemini: sq201: override SQ201 partitions for firmware
+
+commit c579e1d04c35dc767964901b384d7bf42f672668
+gemini: sl93512r: override SL93512R partitions for firmware
+
+
+The following are more simple fixes:
+
+commit f52f1a85d187143f8f4f32441baa626b2a00762d
+gemini: set disk activity on orange LED
+
+commit 37b13b6ea65f64154d4e97d3cb677f31aebf5ec3
+gemini: select the right GPIO input package
+
+
+Yours,
+Linus Walleij
+
+
+From hauke at hauke-m.de  Mon Feb  9 16:42:11 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Tue, 10 Feb 2026 01:42:11 +0100
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <CAD++jL=7wrU356e7hJ7LBLd-RgXwgdpPnh6KzYrvLzPo8+Wsww@mail.gmail.com>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <CAD++jL=7wrU356e7hJ7LBLd-RgXwgdpPnh6KzYrvLzPo8+Wsww@mail.gmail.com>
+Message-ID: <6efa3511-4dc3-40fc-a6da-a25bd6ece0f0@hauke-m.de>
+
+On 2/9/26 10:47, Linus Walleij wrote:
+> Hi Hauke,
+> 
+> thanks for working on these releases!!
+> 
+> On Mon, Feb 9, 2026 at 12:36?AM Hauke Mehrtens <hauke at hauke-m.de> wrote:
+> 
+>> @Linus: Please have a look at the fixes you pushed to the main branch in
+>> the last few weeks and check which should get backported to 25.12.
+> 
+> As an effect of finally dusting off a Raidsonic IB-4220-B that was sent
+> to me by a supporter in 2019 I realized what the problem was and fixed
+> the root cause.
+> 
+> What happened was that the kernel partition of 3072K used to fit
+> the whole kernel and initramfs and everybody was happy. Then with
+> new kernel releases it grew and doesn't fit anymore and everything
+> crash.
+> 
+> It's a shame because the device has lots of flash (128MB) and
+> can work just fine as long as it's utilized right.
+> 
+> The following overrides the built-in partitioning scheme on that and
+> two related machines and make them work with latest OpenWrt:
+> 
+> commit 92682593d53104f43f8b06c52faa5d05d471dea8
+> gemini: Add DTS fix from upstream kernel
+> 
+> commit 8dec72061f523227e2535863f25f8ff239c441b3
+> gemini: Fix up the rootfs device for SQ201
+> 
+> commit 0b0cd4efe25d9ee73896c8fa3079074dbae2637d
+> gemini: support upgrade on reference designs
+> 
+> commit 691aa70e1693542eee795df4bed2b46f6af26e63
+> gemini: create a copy-kernel for 3072k kernels
+> 
+> commit b8dc7ac9c68d7e3e3a838c2ca32545c57642653b
+> gemini: select CONFIG_BLK_DEV_LOOP
+> 
+> commit 04bc0b6d3f440cc139d6e320cba165b37cda9c9b
+> gemini: Fix up sysupgrade platform.sh script
+> 
+> commit db7a2fb217d7e5480e3f5c57c061a675cf9dd83a
+> gemini: pad storlink reference firmware to 128kb
+> 
+> commit 1977301b5f8f76b4d04b5950b09b2fd7cf607bc4
+> gemini: use tar stream to write firmware
+> 
+> commit 387752dc76ba2de2510147427ff1361dfd90c556
+> gemini: override IB-4220-B partitions for firmware
+> 
+> commit 81215f55e274b9127f3491590bd237d1f836a014
+> gemini: sq201: override SQ201 partitions for firmware
+> 
+> commit c579e1d04c35dc767964901b384d7bf42f672668
+> gemini: sl93512r: override SL93512R partitions for firmware
+> 
+> 
+> The following are more simple fixes:
+> 
+> commit f52f1a85d187143f8f4f32441baa626b2a00762d
+> gemini: set disk activity on orange LED
+> 
+> commit 37b13b6ea65f64154d4e97d3cb677f31aebf5ec3
+> gemini: select the right GPIO input package
+> 
+> 
+> Yours,
+> Linus Walleij
+
+Hi Linus,
+
+Thanks for the list, you can just cherry pick them yourself and push 
+them to the branch. If you want some review and automated tests you can 
+also create a PR on github with them the CI will them build test the code.
+
+Hauke
+
+
+From cjd at cjdns.fr  Tue Feb 10 11:25:36 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Tue, 10 Feb 2026 20:25:36 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+References: <eea3e8b3-fcb2-4c26-aef2-888fc3a4b95a@cjdns.fr>
+ <6ad97bde-36a6-49b6-b790-5d21168ba5c7@cjdns.fr>
+ <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+Message-ID: <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+
+Hello guys,
+
+I have an update on this MT7530. As I mentioned in my initial email 
+there are two switches that are stacked, so I'm needing to do quite a 
+bit of patching to mt7530.c to create anything that is going to work.
+
+I'm trying to handle incoming traffic from the MCM ("external") switch 
+to the on-die switch. It comes in port 4 of the external, where I have a 
+cable attached, then goes to port 6 which the external is treating as a 
+CPU port. Then it comes in port 5 of the internal. Here's my values for 
+the PVC register:
+
+ext 4 0x810001c0 ACC_FRM=all VLAN_ATTR=transparent EG_TAG=consistent 
+STAG_VPID=0x8100
+ext 6 0x00000920 ACC_FRM=all PORT_STAG VLAN_ATTR=user EG_TAG=consistent 
+PT_OPTION STAG_VPID=0x0
+int 5 0x810001e0 ACC_FRM=all PORT_STAG VLAN_ATTR=transparent 
+EG_TAG=consistent STAG_VPID=0x8100
+int 6 0x00000120 ACC_FRM=all PORT_STAG VLAN_ATTR=user EG_TAG=consistent 
+STAG_VPID=0x0
+
+When PT_OPTION is set on port 6 of the external, it sets the Passthrough 
+bit on the Special Tag before sending it to the internal switch. When 
+int 5 has PORT_STAG set, the Passthrough bit is required otherwise it 
+will drop STAG'd packets. However, when it's set the switch does a weird 
+stupid thing and it copies the port number from what was received from 
+the external switch - but it DOESN'T copy the passthrough bit. So you 
+end up with this:
+
+[ port 4 ][ port 4 +PT ][ packet header ]
+
+And the obvious problem is this is indistinguishable from a packet that 
+comes from port 4 of the internal switch and has an stag directly under 
+the eth header.
+
+---
+
+Another angle is to remove the PORT_STAG from internal port 5, and then 
+you get this:
+
+[ port 5 ][ port 4 +PT ][ packet header ]
+
+In that case you can also remove PT_OPTION from external port 6, but 
+sending ANY kind of VLAN packet from the outside gets it filtered and 
+RxFiltering gets incremented. No matter what I do, I can't figure out 
+how to stop VLAN packets from getting dropped except by putting 
+PORT_STAG on the receiving port (internal port 5). No configuration of 
+internal port6 prevents it, even if it's a dumb switch, is still drops them.
+
+
+Anyone have any ideas?
+
+
+Thanks,
+
+Caleb
+
+
+
+
+On 28/01/2026 14:26, Caleb James DeLisle wrote:
+> Update: It turns out the reset controller I was using only reset the 
+> on-die switch, Benjamin found the reset register for the external 
+> switch and now everything is behaving MUCH more like normal. I'd say 
+> at this point I'm no longer stuck.
+>
+> Thanks,
+>
+> Caleb
+>
+>
+> On 27/01/2026 18:26, Caleb James DeLisle wrote:
+>>>
+>>> Would there be any reason not to set BMCR_PDOWN in 
+>>> mt7530_phy_config_init() so we know they're in a consistent state?
+>>>
+>>> Also if you happen to have an MT7621 sitting there running, would 
+>>> you mind setting?BMCR_ANENABLE |?BMCR_ANRESTART with mdio on a 
+>>> running port to see if it's the same behavior? The port should 
+>>> immediately die and then go into a loop trying to connect every few 
+>>> seconds / minutes depending on what it's connected to.
+>>>
+>> Whoops, spoke too soon. dsa_register_switch() (indirectly) calls 
+>> phy_resume() so the phy is up while the port is down. However, adding 
+>> this to mt7530_port_enable() does make it work:
+>>
+>> ? ? if (priv->id == ID_EN751221_EXT && phy)
+>> ? ? ? ? genphy_soft_reset(phy);
+>>
+>> I note that if the port is brought up within seconds of having been 
+>> reset, then it seems to work (at least sporadically) despite the 
+>> BMCR_ANENABLE bug. I imagine this is something that can be tuned out, 
+>> but given it's happening in the bootloader, I don't have much 
+>> confidence that I'm going to find the knob to fix it. I've got a 
+>> problem with my vendor OS image, but when I get that fixed I'll check 
+>> that as well.
+>>
+>> In the mean time, if any likely culprits come to mind, do let me know.
+>>
+>> Thanks,
+>>
+>> Caleb
+>>
+>>
+>> _______________________________________________
+>> openwrt-devel mailing list
+>> openwrt-devel at lists.openwrt.org
+>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From linusw at kernel.org  Tue Feb 10 12:51:44 2026
+From: linusw at kernel.org (Linus Walleij)
+Date: Tue, 10 Feb 2026 21:51:44 +0100
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <6efa3511-4dc3-40fc-a6da-a25bd6ece0f0@hauke-m.de>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <CAD++jL=7wrU356e7hJ7LBLd-RgXwgdpPnh6KzYrvLzPo8+Wsww@mail.gmail.com> <6efa3511-4dc3-40fc-a6da-a25bd6ece0f0@hauke-m.de>
+Message-ID: <CAD++jLnLKcy2_7r=WRj3h5hfeh5+Jx4iQtxctxiO_vQwPsWuCg@mail.gmail.com>
+
+On Tue, Feb 10, 2026 at 1:42?AM Hauke Mehrtens <hauke at hauke-m.de> wrote:
+
+> Thanks for the list, you can just cherry pick them yourself and push
+> them to the branch. If you want some review and automated tests you can
+> also create a PR on github with them the CI will them build test the code.
+
+Fixed it:
+https://github.com/openwrt/openwrt/pull/21973
+
+I suppose it will fail some checks because of formalities, capital letter
+in the beginning of some commit descriptions from upstream for example
+but I hope it can pass the rest, let's see.
+
+Yours,
+Linus Walleij
+
+
+From cjd at cjdns.fr  Tue Feb 10 13:07:55 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Tue, 10 Feb 2026 22:07:55 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+References: <eea3e8b3-fcb2-4c26-aef2-888fc3a4b95a@cjdns.fr>
+ <6ad97bde-36a6-49b6-b790-5d21168ba5c7@cjdns.fr>
+ <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+Message-ID: <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+
+Welp, that didn't take long.
+
+It turns out when I remove PORT_STAG on the receiving side (internal 
+port 5), the switch mistakes the first 2 bytes of the stag for a length, 
+and if the packet is actually shorter than that length, it drops. So 
+0004 worked fine, but 0104 didn't until I sent a longer packet.
+
+Clearing L2LEN_CHK on the AGC register works around the issue and 
+packets are received in full with correctly stacked stags.
+
+If I can make the passthrough bit copy, or stop it from copying the port 
+number when I have?PORT_STAG set, that would be of course superior, but 
+if I have to use the hack to get the feature then I'll send the patchset 
+like that.
+
+Thanks,
+
+Caleb
+
+
+On 10/02/2026 20:25, Caleb James DeLisle wrote:
+> Hello guys,
+>
+> I have an update on this MT7530. As I mentioned in my initial email 
+> there are two switches that are stacked, so I'm needing to do quite a 
+> bit of patching to mt7530.c to create anything that is going to work.
+>
+> I'm trying to handle incoming traffic from the MCM ("external") switch 
+> to the on-die switch. It comes in port 4 of the external, where I have 
+> a cable attached, then goes to port 6 which the external is treating 
+> as a CPU port. Then it comes in port 5 of the internal. Here's my 
+> values for the PVC register:
+>
+> ext 4 0x810001c0 ACC_FRM=all VLAN_ATTR=transparent EG_TAG=consistent 
+> STAG_VPID=0x8100
+> ext 6 0x00000920 ACC_FRM=all PORT_STAG VLAN_ATTR=user 
+> EG_TAG=consistent PT_OPTION STAG_VPID=0x0
+> int 5 0x810001e0 ACC_FRM=all PORT_STAG VLAN_ATTR=transparent 
+> EG_TAG=consistent STAG_VPID=0x8100
+> int 6 0x00000120 ACC_FRM=all PORT_STAG VLAN_ATTR=user 
+> EG_TAG=consistent STAG_VPID=0x0
+>
+> When PT_OPTION is set on port 6 of the external, it sets the 
+> Passthrough bit on the Special Tag before sending it to the internal 
+> switch. When int 5 has PORT_STAG set, the Passthrough bit is required 
+> otherwise it will drop STAG'd packets. However, when it's set the 
+> switch does a weird stupid thing and it copies the port number from 
+> what was received from the external switch - but it DOESN'T copy the 
+> passthrough bit. So you end up with this:
+>
+> [ port 4 ][ port 4 +PT ][ packet header ]
+>
+> And the obvious problem is this is indistinguishable from a packet 
+> that comes from port 4 of the internal switch and has an stag directly 
+> under the eth header.
+>
+> ---
+>
+> Another angle is to remove the PORT_STAG from internal port 5, and 
+> then you get this:
+>
+> [ port 5 ][ port 4 +PT ][ packet header ]
+>
+> In that case you can also remove PT_OPTION from external port 6, but 
+> sending ANY kind of VLAN packet from the outside gets it filtered and 
+> RxFiltering gets incremented. No matter what I do, I can't figure out 
+> how to stop VLAN packets from getting dropped except by putting 
+> PORT_STAG on the receiving port (internal port 5). No configuration of 
+> internal port6 prevents it, even if it's a dumb switch, is still drops 
+> them.
+>
+>
+> Anyone have any ideas?
+>
+>
+> Thanks,
+>
+> Caleb
+>
+>
+>
+>
+> On 28/01/2026 14:26, Caleb James DeLisle wrote:
+>> Update: It turns out the reset controller I was using only reset the 
+>> on-die switch, Benjamin found the reset register for the external 
+>> switch and now everything is behaving MUCH more like normal. I'd say 
+>> at this point I'm no longer stuck.
+>>
+>> Thanks,
+>>
+>> Caleb
+>>
+>>
+>> On 27/01/2026 18:26, Caleb James DeLisle wrote:
+>>>>
+>>>> Would there be any reason not to set BMCR_PDOWN in 
+>>>> mt7530_phy_config_init() so we know they're in a consistent state?
+>>>>
+>>>> Also if you happen to have an MT7621 sitting there running, would 
+>>>> you mind setting?BMCR_ANENABLE |?BMCR_ANRESTART with mdio on a 
+>>>> running port to see if it's the same behavior? The port should 
+>>>> immediately die and then go into a loop trying to connect every few 
+>>>> seconds / minutes depending on what it's connected to.
+>>>>
+>>> Whoops, spoke too soon. dsa_register_switch() (indirectly) calls 
+>>> phy_resume() so the phy is up while the port is down. However, 
+>>> adding this to mt7530_port_enable() does make it work:
+>>>
+>>> ? ? if (priv->id == ID_EN751221_EXT && phy)
+>>> ? ? ? ? genphy_soft_reset(phy);
+>>>
+>>> I note that if the port is brought up within seconds of having been 
+>>> reset, then it seems to work (at least sporadically) despite the 
+>>> BMCR_ANENABLE bug. I imagine this is something that can be tuned 
+>>> out, but given it's happening in the bootloader, I don't have much 
+>>> confidence that I'm going to find the knob to fix it. I've got a 
+>>> problem with my vendor OS image, but when I get that fixed I'll 
+>>> check that as well.
+>>>
+>>> In the mean time, if any likely culprits come to mind, do let me know.
+>>>
+>>> Thanks,
+>>>
+>>> Caleb
+>>>
+>>>
+>>> _______________________________________________
+>>> openwrt-devel mailing list
+>>> openwrt-devel at lists.openwrt.org
+>>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From b.larsson at gmx.com  Tue Feb 10 14:12:29 2026
+From: b.larsson at gmx.com (Benjamin Larsson)
+Date: Tue, 10 Feb 2026 23:12:29 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+References: <eea3e8b3-fcb2-4c26-aef2-888fc3a4b95a@cjdns.fr>
+ <6ad97bde-36a6-49b6-b790-5d21168ba5c7@cjdns.fr>
+ <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+Message-ID: <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+
+If I understand correct, the ref SDK just sets up a transparent bridge 
+and lets the packets flow through? If that is correct is that an option 
+here?
+
+And IMO we should not stack stags. If it is possible to pass stags 
+through with the pass-through bit intact it should be possible to 
+address all ports on both switches with just one stag.
+
+I was hoping the PT_OPTION PVC bit would set the stag pass through bit 
+on incoming frames.
+
+MvH
+Benjamin Larsson
+
+On 10/02/2026 22:07, Caleb James DeLisle wrote:
+> Welp, that didn't take long.
+>
+> It turns out when I remove PORT_STAG on the receiving side (internal 
+> port 5), the switch mistakes the first 2 bytes of the stag for a 
+> length, and if the packet is actually shorter than that length, it 
+> drops. So 0004 worked fine, but 0104 didn't until I sent a longer packet.
+>
+> Clearing L2LEN_CHK on the AGC register works around the issue and 
+> packets are received in full with correctly stacked stags.
+>
+> If I can make the passthrough bit copy, or stop it from copying the 
+> port number when I have?PORT_STAG set, that would be of course 
+> superior, but if I have to use the hack to get the feature then I'll 
+> send the patchset like that.
+>
+> Thanks,
+>
+> Caleb
+>
+>
+> On 10/02/2026 20:25, Caleb James DeLisle wrote:
+>> Hello guys,
+>>
+>> I have an update on this MT7530. As I mentioned in my initial email 
+>> there are two switches that are stacked, so I'm needing to do quite a 
+>> bit of patching to mt7530.c to create anything that is going to work.
+>>
+>> I'm trying to handle incoming traffic from the MCM ("external") 
+>> switch to the on-die switch. It comes in port 4 of the external, 
+>> where I have a cable attached, then goes to port 6 which the external 
+>> is treating as a CPU port. Then it comes in port 5 of the internal. 
+>> Here's my values for the PVC register:
+>>
+>> ext 4 0x810001c0 ACC_FRM=all VLAN_ATTR=transparent EG_TAG=consistent 
+>> STAG_VPID=0x8100
+>> ext 6 0x00000920 ACC_FRM=all PORT_STAG VLAN_ATTR=user 
+>> EG_TAG=consistent PT_OPTION STAG_VPID=0x0
+>> int 5 0x810001e0 ACC_FRM=all PORT_STAG VLAN_ATTR=transparent 
+>> EG_TAG=consistent STAG_VPID=0x8100
+>> int 6 0x00000120 ACC_FRM=all PORT_STAG VLAN_ATTR=user 
+>> EG_TAG=consistent STAG_VPID=0x0
+>>
+>> When PT_OPTION is set on port 6 of the external, it sets the 
+>> Passthrough bit on the Special Tag before sending it to the internal 
+>> switch. When int 5 has PORT_STAG set, the Passthrough bit is required 
+>> otherwise it will drop STAG'd packets. However, when it's set the 
+>> switch does a weird stupid thing and it copies the port number from 
+>> what was received from the external switch - but it DOESN'T copy the 
+>> passthrough bit. So you end up with this:
+>>
+>> [ port 4 ][ port 4 +PT ][ packet header ]
+>>
+>> And the obvious problem is this is indistinguishable from a packet 
+>> that comes from port 4 of the internal switch and has an stag 
+>> directly under the eth header.
+>>
+>> ---
+>>
+>> Another angle is to remove the PORT_STAG from internal port 5, and 
+>> then you get this:
+>>
+>> [ port 5 ][ port 4 +PT ][ packet header ]
+>>
+>> In that case you can also remove PT_OPTION from external port 6, but 
+>> sending ANY kind of VLAN packet from the outside gets it filtered and 
+>> RxFiltering gets incremented. No matter what I do, I can't figure out 
+>> how to stop VLAN packets from getting dropped except by putting 
+>> PORT_STAG on the receiving port (internal port 5). No configuration 
+>> of internal port6 prevents it, even if it's a dumb switch, is still 
+>> drops them.
+>>
+>>
+>> Anyone have any ideas?
+>>
+>>
+>> Thanks,
+>>
+>> Caleb
+>>
+>>
+>>
+>>
+>> On 28/01/2026 14:26, Caleb James DeLisle wrote:
+>>> Update: It turns out the reset controller I was using only reset the 
+>>> on-die switch, Benjamin found the reset register for the external 
+>>> switch and now everything is behaving MUCH more like normal. I'd say 
+>>> at this point I'm no longer stuck.
+>>>
+>>> Thanks,
+>>>
+>>> Caleb
+>>>
+>>>
+>>> On 27/01/2026 18:26, Caleb James DeLisle wrote:
+>>>>>
+>>>>> Would there be any reason not to set BMCR_PDOWN in 
+>>>>> mt7530_phy_config_init() so we know they're in a consistent state?
+>>>>>
+>>>>> Also if you happen to have an MT7621 sitting there running, would 
+>>>>> you mind setting?BMCR_ANENABLE |?BMCR_ANRESTART with mdio on a 
+>>>>> running port to see if it's the same behavior? The port should 
+>>>>> immediately die and then go into a loop trying to connect every 
+>>>>> few seconds / minutes depending on what it's connected to.
+>>>>>
+>>>> Whoops, spoke too soon. dsa_register_switch() (indirectly) calls 
+>>>> phy_resume() so the phy is up while the port is down. However, 
+>>>> adding this to mt7530_port_enable() does make it work:
+>>>>
+>>>> ? ? if (priv->id == ID_EN751221_EXT && phy)
+>>>> ? ? ? ? genphy_soft_reset(phy);
+>>>>
+>>>> I note that if the port is brought up within seconds of having been 
+>>>> reset, then it seems to work (at least sporadically) despite the 
+>>>> BMCR_ANENABLE bug. I imagine this is something that can be tuned 
+>>>> out, but given it's happening in the bootloader, I don't have much 
+>>>> confidence that I'm going to find the knob to fix it. I've got a 
+>>>> problem with my vendor OS image, but when I get that fixed I'll 
+>>>> check that as well.
+>>>>
+>>>> In the mean time, if any likely culprits come to mind, do let me know.
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Caleb
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> openwrt-devel mailing list
+>>>> openwrt-devel at lists.openwrt.org
+>>>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+
+
+From daniel at makrotopia.org  Tue Feb 10 14:35:07 2026
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Tue, 10 Feb 2026 22:35:07 +0000
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+References: <eea3e8b3-fcb2-4c26-aef2-888fc3a4b95a@cjdns.fr>
+ <6ad97bde-36a6-49b6-b790-5d21168ba5c7@cjdns.fr>
+ <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+Message-ID: <aYuym8Q3utk2SBq5@makrotopia.org>
+
+Hi Caleb,
+
+
+On Tue, Feb 10, 2026 at 10:07:55PM +0100, Caleb James DeLisle wrote:
+> Welp, that didn't take long.
+> 
+> It turns out when I remove PORT_STAG on the receiving side (internal port
+> 5), the switch mistakes the first 2 bytes of the stag for a length, and if
+> the packet is actually shorter than that length, it drops. So 0004 worked
+> fine, but 0104 didn't until I sent a longer packet.
+> 
+> Clearing L2LEN_CHK on the AGC register works around the issue and packets
+> are received in full with correctly stacked stags.
+> 
+> If I can make the passthrough bit copy, or stop it from copying the port
+> number when I have?PORT_STAG set, that would be of course superior, but if I
+> have to use the hack to get the feature then I'll send the patchset like
+> that.
+
+This whole arrangement is kinda similar to good-old MT7620 which also
+had an on-die MT7530 with only FE ports and a single RGMII which can be
+used to connected an external MT7530. In this case it is common to use
+muxing to patch the external switch directly to the GMAC, as in that
+case usually all other ports of the internal MT7530 are anyway unused.
+
+The same should be possible on the EcoNet platform, but of course only
+makes sense if there are either two GMACs which are both connected to
+the in-die switch with one of on a port of the on-die MT7530 which can
+be muxed directly to the TRMGII connecting the MCM MT7530.
+
+This obviously has the disadvantage that traffic between the two switch
+instances will then have to go via the CPU, but if PPE offloading is
+similar to that in MediaTek SoCs it could be offloaded and at least not
+waste CPU cycles (but still compete for the limited bandwidth with
+traffic from/to WiFi or PON interface).
+
+The main question whether it makes sense to use muxing to directly patch
+the MCM MT7530 to a GMAC (if possible at all) is kinda how many TP PHY
+ports the whole package got and how they are commonly used.
+
+
+
+Cheers
+
+
+Daniel
+
+> 
+> Thanks,
+> 
+> Caleb
+> 
+> 
+> On 10/02/2026 20:25, Caleb James DeLisle wrote:
+> > Hello guys,
+> > 
+> > I have an update on this MT7530. As I mentioned in my initial email
+> > there are two switches that are stacked, so I'm needing to do quite a
+> > bit of patching to mt7530.c to create anything that is going to work.
+> > 
+> > I'm trying to handle incoming traffic from the MCM ("external") switch
+> > to the on-die switch. It comes in port 4 of the external, where I have a
+> > cable attached, then goes to port 6 which the external is treating as a
+> > CPU port. Then it comes in port 5 of the internal. Here's my values for
+> > the PVC register:
+> > 
+> > ext 4 0x810001c0 ACC_FRM=all VLAN_ATTR=transparent EG_TAG=consistent
+> > STAG_VPID=0x8100
+> > ext 6 0x00000920 ACC_FRM=all PORT_STAG VLAN_ATTR=user EG_TAG=consistent
+> > PT_OPTION STAG_VPID=0x0
+> > int 5 0x810001e0 ACC_FRM=all PORT_STAG VLAN_ATTR=transparent
+> > EG_TAG=consistent STAG_VPID=0x8100
+> > int 6 0x00000120 ACC_FRM=all PORT_STAG VLAN_ATTR=user EG_TAG=consistent
+> > STAG_VPID=0x0
+> > 
+> > When PT_OPTION is set on port 6 of the external, it sets the Passthrough
+> > bit on the Special Tag before sending it to the internal switch. When
+> > int 5 has PORT_STAG set, the Passthrough bit is required otherwise it
+> > will drop STAG'd packets. However, when it's set the switch does a weird
+> > stupid thing and it copies the port number from what was received from
+> > the external switch - but it DOESN'T copy the passthrough bit. So you
+> > end up with this:
+> > 
+> > [ port 4 ][ port 4 +PT ][ packet header ]
+> > 
+> > And the obvious problem is this is indistinguishable from a packet that
+> > comes from port 4 of the internal switch and has an stag directly under
+> > the eth header.
+> > 
+> > ---
+> > 
+> > Another angle is to remove the PORT_STAG from internal port 5, and then
+> > you get this:
+> > 
+> > [ port 5 ][ port 4 +PT ][ packet header ]
+> > 
+> > In that case you can also remove PT_OPTION from external port 6, but
+> > sending ANY kind of VLAN packet from the outside gets it filtered and
+> > RxFiltering gets incremented. No matter what I do, I can't figure out
+> > how to stop VLAN packets from getting dropped except by putting
+> > PORT_STAG on the receiving port (internal port 5). No configuration of
+> > internal port6 prevents it, even if it's a dumb switch, is still drops
+> > them.
+> > 
+> > 
+> > Anyone have any ideas?
+> > 
+> > 
+> > Thanks,
+> > 
+> > Caleb
+> > 
+> > 
+> > 
+> > 
+> > On 28/01/2026 14:26, Caleb James DeLisle wrote:
+> > > Update: It turns out the reset controller I was using only reset the
+> > > on-die switch, Benjamin found the reset register for the external
+> > > switch and now everything is behaving MUCH more like normal. I'd say
+> > > at this point I'm no longer stuck.
+> > > 
+> > > Thanks,
+> > > 
+> > > Caleb
+> > > 
+> > > 
+> > > On 27/01/2026 18:26, Caleb James DeLisle wrote:
+> > > > > 
+> > > > > Would there be any reason not to set BMCR_PDOWN in
+> > > > > mt7530_phy_config_init() so we know they're in a consistent
+> > > > > state?
+> > > > > 
+> > > > > Also if you happen to have an MT7621 sitting there running,
+> > > > > would you mind setting?BMCR_ANENABLE |?BMCR_ANRESTART with
+> > > > > mdio on a running port to see if it's the same behavior? The
+> > > > > port should immediately die and then go into a loop trying
+> > > > > to connect every few seconds / minutes depending on what
+> > > > > it's connected to.
+> > > > > 
+> > > > Whoops, spoke too soon. dsa_register_switch() (indirectly) calls
+> > > > phy_resume() so the phy is up while the port is down. However,
+> > > > adding this to mt7530_port_enable() does make it work:
+> > > > 
+> > > > ? ? if (priv->id == ID_EN751221_EXT && phy)
+> > > > ? ? ? ? genphy_soft_reset(phy);
+> > > > 
+> > > > I note that if the port is brought up within seconds of having
+> > > > been reset, then it seems to work (at least sporadically)
+> > > > despite the BMCR_ANENABLE bug. I imagine this is something that
+> > > > can be tuned out, but given it's happening in the bootloader, I
+> > > > don't have much confidence that I'm going to find the knob to
+> > > > fix it. I've got a problem with my vendor OS image, but when I
+> > > > get that fixed I'll check that as well.
+> > > > 
+> > > > In the mean time, if any likely culprits come to mind, do let me know.
+> > > > 
+> > > > Thanks,
+> > > > 
+> > > > Caleb
+> > > > 
+> > > > 
+> > > > _______________________________________________
+> > > > openwrt-devel mailing list
+> > > > openwrt-devel at lists.openwrt.org
+> > > > https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From linusw at kernel.org  Tue Feb 10 23:49:37 2026
+From: linusw at kernel.org (Linus Walleij)
+Date: Wed, 11 Feb 2026 08:49:37 +0100
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <CAD++jLnLKcy2_7r=WRj3h5hfeh5+Jx4iQtxctxiO_vQwPsWuCg@mail.gmail.com>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <CAD++jL=7wrU356e7hJ7LBLd-RgXwgdpPnh6KzYrvLzPo8+Wsww@mail.gmail.com>
+ <6efa3511-4dc3-40fc-a6da-a25bd6ece0f0@hauke-m.de> <CAD++jLnLKcy2_7r=WRj3h5hfeh5+Jx4iQtxctxiO_vQwPsWuCg@mail.gmail.com>
+Message-ID: <CAD++jL=qKuY1c62H3TzTYrxMR6NEe4VWUqh291MGwdYaE7iAxw@mail.gmail.com>
+
+On Tue, Feb 10, 2026 at 9:51?PM Linus Walleij <linusw at kernel.org> wrote:
+> On Tue, Feb 10, 2026 at 1:42?AM Hauke Mehrtens <hauke at hauke-m.de> wrote:
+>
+> > Thanks for the list, you can just cherry pick them yourself and push
+> > them to the branch. If you want some review and automated tests you can
+> > also create a PR on github with them the CI will them build test the code.
+>
+> Fixed it:
+> https://github.com/openwrt/openwrt/pull/21973
+>
+> I suppose it will fail some checks because of formalities, capital letter
+> in the beginning of some commit descriptions from upstream for example
+> but I hope it can pass the rest, let's see.
+
+Relevant tests passed and all looks good so pulled this down
+to 25.12.
+
+Yours,
+Linus Walleij
+
+
+From cjd at cjdns.fr  Wed Feb 11 01:13:04 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Wed, 11 Feb 2026 10:13:04 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <aYuym8Q3utk2SBq5@makrotopia.org>
+References: <eea3e8b3-fcb2-4c26-aef2-888fc3a4b95a@cjdns.fr>
+ <6ad97bde-36a6-49b6-b790-5d21168ba5c7@cjdns.fr>
+ <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <aYuym8Q3utk2SBq5@makrotopia.org>
+Message-ID: <2dd56e3f-12f6-4555-b57b-d0e1a247b8fc@cjdns.fr>
+
+Hello Daniel,
+
+
+On 10/02/2026 23:35, Daniel Golle wrote:
+> Hi Caleb,
+>
+>
+> On Tue, Feb 10, 2026 at 10:07:55PM +0100, Caleb James DeLisle wrote:
+>> Welp, that didn't take long.
+>>
+>> It turns out when I remove PORT_STAG on the receiving side (internal port
+>> 5), the switch mistakes the first 2 bytes of the stag for a length, and if
+>> the packet is actually shorter than that length, it drops. So 0004 worked
+>> fine, but 0104 didn't until I sent a longer packet.
+>>
+>> Clearing L2LEN_CHK on the AGC register works around the issue and packets
+>> are received in full with correctly stacked stags.
+>>
+>> If I can make the passthrough bit copy, or stop it from copying the port
+>> number when I have?PORT_STAG set, that would be of course superior, but if I
+>> have to use the hack to get the feature then I'll send the patchset like
+>> that.
+> This whole arrangement is kinda similar to good-old MT7620 which also
+> had an on-die MT7530 with only FE ports and a single RGMII which can be
+> used to connected an external MT7530. In this case it is common to use
+> muxing to patch the external switch directly to the GMAC, as in that
+> case usually all other ports of the internal MT7530 are anyway unused.
+
+In this case, all of the chips with G in the name (7513G, 5726G) have 
+the MCM switch hung off of port 5, and the others (7512, 7513, 7626C) 
+use the internal switch only. I have an example of each configuration here.
+
+> The same should be possible on the EcoNet platform, but of course only
+> makes sense if there are either two GMACs which are both connected to
+> the in-die switch with one of on a port of the on-die MT7530 which can
+> be muxed directly to the TRMGII connecting the MCM MT7530.
+Hmm, AFAICT gmac0 goes to the internal switch and gmac1 goes to the 
+fiber subsystem only. If there's a way to change that in pinmux, I'm not 
+aware of it. Clearly we could put the internal switch into "dumb mode" 
+and pretend it doesn't exist, but vendor code implies that port0 
+internal may be used on some boards - perhaps as a wan port for some DSL 
+modems.
+> This obviously has the disadvantage that traffic between the two switch
+> instances will then have to go via the CPU, but if PPE offloading is
+> similar to that in MediaTek SoCs it could be offloaded and at least not
+> waste CPU cycles (but still compete for the limited bandwidth with
+> traffic from/to WiFi or PON interface).
+>
+> The main question whether it makes sense to use muxing to directly patch
+> the MCM MT7530 to a GMAC (if possible at all) is kinda how many TP PHY
+> ports the whole package got and how they are commonly used.
+
+Barring an unused and undocumented pinmux register, I would say this is 
+not possible. Furthermore, I've seen marketing materials saying the G 
+chips have 5 ports + 2 RGMII MACs, so I guess that implies the pins of 
+one port of the internal switch are exposed.
+
+In any case, as I said in my follow-up email, I *seem* to have figured 
+it out - I haven't sent traffic yet but I think it will be possible. 
+Then the only issue will be that it's going to be an awkwardly large 
+patchset.
+
+Thanks,
+
+Caleb
+
+>
+>
+>
+> Cheers
+>
+>
+> Daniel
+>
+>> Thanks,
+>>
+>> Caleb
+>>
+>>
+>> On 10/02/2026 20:25, Caleb James DeLisle wrote:
+>>> Hello guys,
+>>>
+>>> I have an update on this MT7530. As I mentioned in my initial email
+>>> there are two switches that are stacked, so I'm needing to do quite a
+>>> bit of patching to mt7530.c to create anything that is going to work.
+>>>
+>>> I'm trying to handle incoming traffic from the MCM ("external") switch
+>>> to the on-die switch. It comes in port 4 of the external, where I have a
+>>> cable attached, then goes to port 6 which the external is treating as a
+>>> CPU port. Then it comes in port 5 of the internal. Here's my values for
+>>> the PVC register:
+>>>
+>>> ext 4 0x810001c0 ACC_FRM=all VLAN_ATTR=transparent EG_TAG=consistent
+>>> STAG_VPID=0x8100
+>>> ext 6 0x00000920 ACC_FRM=all PORT_STAG VLAN_ATTR=user EG_TAG=consistent
+>>> PT_OPTION STAG_VPID=0x0
+>>> int 5 0x810001e0 ACC_FRM=all PORT_STAG VLAN_ATTR=transparent
+>>> EG_TAG=consistent STAG_VPID=0x8100
+>>> int 6 0x00000120 ACC_FRM=all PORT_STAG VLAN_ATTR=user EG_TAG=consistent
+>>> STAG_VPID=0x0
+>>>
+>>> When PT_OPTION is set on port 6 of the external, it sets the Passthrough
+>>> bit on the Special Tag before sending it to the internal switch. When
+>>> int 5 has PORT_STAG set, the Passthrough bit is required otherwise it
+>>> will drop STAG'd packets. However, when it's set the switch does a weird
+>>> stupid thing and it copies the port number from what was received from
+>>> the external switch - but it DOESN'T copy the passthrough bit. So you
+>>> end up with this:
+>>>
+>>> [ port 4 ][ port 4 +PT ][ packet header ]
+>>>
+>>> And the obvious problem is this is indistinguishable from a packet that
+>>> comes from port 4 of the internal switch and has an stag directly under
+>>> the eth header.
+>>>
+>>> ---
+>>>
+>>> Another angle is to remove the PORT_STAG from internal port 5, and then
+>>> you get this:
+>>>
+>>> [ port 5 ][ port 4 +PT ][ packet header ]
+>>>
+>>> In that case you can also remove PT_OPTION from external port 6, but
+>>> sending ANY kind of VLAN packet from the outside gets it filtered and
+>>> RxFiltering gets incremented. No matter what I do, I can't figure out
+>>> how to stop VLAN packets from getting dropped except by putting
+>>> PORT_STAG on the receiving port (internal port 5). No configuration of
+>>> internal port6 prevents it, even if it's a dumb switch, is still drops
+>>> them.
+>>>
+>>>
+>>> Anyone have any ideas?
+>>>
+>>>
+>>> Thanks,
+>>>
+>>> Caleb
+>>>
+>>>
+>>>
+>>>
+>>> On 28/01/2026 14:26, Caleb James DeLisle wrote:
+>>>> Update: It turns out the reset controller I was using only reset the
+>>>> on-die switch, Benjamin found the reset register for the external
+>>>> switch and now everything is behaving MUCH more like normal. I'd say
+>>>> at this point I'm no longer stuck.
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Caleb
+>>>>
+>>>>
+>>>> On 27/01/2026 18:26, Caleb James DeLisle wrote:
+>>>>>> Would there be any reason not to set BMCR_PDOWN in
+>>>>>> mt7530_phy_config_init() so we know they're in a consistent
+>>>>>> state?
+>>>>>>
+>>>>>> Also if you happen to have an MT7621 sitting there running,
+>>>>>> would you mind setting?BMCR_ANENABLE |?BMCR_ANRESTART with
+>>>>>> mdio on a running port to see if it's the same behavior? The
+>>>>>> port should immediately die and then go into a loop trying
+>>>>>> to connect every few seconds / minutes depending on what
+>>>>>> it's connected to.
+>>>>>>
+>>>>> Whoops, spoke too soon. dsa_register_switch() (indirectly) calls
+>>>>> phy_resume() so the phy is up while the port is down. However,
+>>>>> adding this to mt7530_port_enable() does make it work:
+>>>>>
+>>>>>  ? ? if (priv->id == ID_EN751221_EXT && phy)
+>>>>>  ? ? ? ? genphy_soft_reset(phy);
+>>>>>
+>>>>> I note that if the port is brought up within seconds of having
+>>>>> been reset, then it seems to work (at least sporadically)
+>>>>> despite the BMCR_ANENABLE bug. I imagine this is something that
+>>>>> can be tuned out, but given it's happening in the bootloader, I
+>>>>> don't have much confidence that I'm going to find the knob to
+>>>>> fix it. I've got a problem with my vendor OS image, but when I
+>>>>> get that fixed I'll check that as well.
+>>>>>
+>>>>> In the mean time, if any likely culprits come to mind, do let me know.
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>> Caleb
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> openwrt-devel mailing list
+>>>>> openwrt-devel at lists.openwrt.org
+>>>>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From cjd at cjdns.fr  Wed Feb 11 02:13:26 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Wed, 11 Feb 2026 11:13:26 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+References: <eea3e8b3-fcb2-4c26-aef2-888fc3a4b95a@cjdns.fr>
+ <6ad97bde-36a6-49b6-b790-5d21168ba5c7@cjdns.fr>
+ <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+Message-ID: <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+
+
+On 10/02/2026 23:12, Benjamin Larsson wrote:
+> If I understand correct, the ref SDK just sets up a transparent bridge 
+> and lets the packets flow through? If that is correct is that an 
+> option here?
+When use_soc_lan is unset, this is what happens. When use_soc_lan is 
+set, it does a bunch of highly awkward stuff to add support for one 
+extra port on the internal switch. It's an option, probably to treat the 
+internal switch as part of the eth driver - however this will not work 
+on EN7526C which no external switch, internal is exposed.
+>
+> And IMO we should not stack stags. If it is possible to pass stags 
+> through with the pass-through bit intact it should be possible to 
+> address all ports on both switches with just one stag.
+>
+> I was hoping the PT_OPTION PVC bit would set the stag pass through bit 
+> on incoming frames.
+
+Stacking stags does potentially have a performance penalty in the tag 
+parser - I say "potentially" because it's already walking a list which 
+could be an array index, and even 2 array indexes is faster than what we 
+have now.
+
+But trying to use the PT bit as designed makes it impossible to 
+differentiate between a packet that came from port N of the external 
+switch and a packet that came from port N of the internal. Vendor code 
+doesn't support having the same port number active on both internal and 
+external, if you try it will quietly overwrite the switch_port_map entry 
+in init_ethernet_port_map(), so I surmise this is a real silicon bug, 
+not a misconfiguration on my end.
+
+But (so far), stacking tags seems to work, so I would much prefer it to 
+inter-switch rules, i.e. "you can't enable this port in the DT because 
+you have one with the same number on the other switch".
+
+BTW Vendor code (see: TCSUPPORT_MULTI_SWITCH_EXT) suggests there are 
+boards with multiple external switches. Probably a board integrator hung 
+another 7530 off of one of the RGMII interfaces. Per my reading, vendor 
+code falls back on VLANs, giving up on the stag entirely. I haven't 
+confirmed that transmit works yet, but assuming it does, stacked stags 
+should Just Work in this use case whereas the PT bit clearly would not.
+
+
+Thanks,
+
+Caleb
+
+
+>
+> MvH
+> Benjamin Larsson
+>
+> On 10/02/2026 22:07, Caleb James DeLisle wrote:
+>> Welp, that didn't take long.
+>>
+>> It turns out when I remove PORT_STAG on the receiving side (internal 
+>> port 5), the switch mistakes the first 2 bytes of the stag for a 
+>> length, and if the packet is actually shorter than that length, it 
+>> drops. So 0004 worked fine, but 0104 didn't until I sent a longer 
+>> packet.
+>>
+>> Clearing L2LEN_CHK on the AGC register works around the issue and 
+>> packets are received in full with correctly stacked stags.
+>>
+>> If I can make the passthrough bit copy, or stop it from copying the 
+>> port number when I have?PORT_STAG set, that would be of course 
+>> superior, but if I have to use the hack to get the feature then I'll 
+>> send the patchset like that.
+>>
+>> Thanks,
+>>
+>> Caleb
+>>
+>>
+>> On 10/02/2026 20:25, Caleb James DeLisle wrote:
+>>> Hello guys,
+>>>
+>>> I have an update on this MT7530. As I mentioned in my initial email 
+>>> there are two switches that are stacked, so I'm needing to do quite 
+>>> a bit of patching to mt7530.c to create anything that is going to work.
+>>>
+>>> I'm trying to handle incoming traffic from the MCM ("external") 
+>>> switch to the on-die switch. It comes in port 4 of the external, 
+>>> where I have a cable attached, then goes to port 6 which the 
+>>> external is treating as a CPU port. Then it comes in port 5 of the 
+>>> internal. Here's my values for the PVC register:
+>>>
+>>> ext 4 0x810001c0 ACC_FRM=all VLAN_ATTR=transparent EG_TAG=consistent 
+>>> STAG_VPID=0x8100
+>>> ext 6 0x00000920 ACC_FRM=all PORT_STAG VLAN_ATTR=user 
+>>> EG_TAG=consistent PT_OPTION STAG_VPID=0x0
+>>> int 5 0x810001e0 ACC_FRM=all PORT_STAG VLAN_ATTR=transparent 
+>>> EG_TAG=consistent STAG_VPID=0x8100
+>>> int 6 0x00000120 ACC_FRM=all PORT_STAG VLAN_ATTR=user 
+>>> EG_TAG=consistent STAG_VPID=0x0
+>>>
+>>> When PT_OPTION is set on port 6 of the external, it sets the 
+>>> Passthrough bit on the Special Tag before sending it to the internal 
+>>> switch. When int 5 has PORT_STAG set, the Passthrough bit is 
+>>> required otherwise it will drop STAG'd packets. However, when it's 
+>>> set the switch does a weird stupid thing and it copies the port 
+>>> number from what was received from the external switch - but it 
+>>> DOESN'T copy the passthrough bit. So you end up with this:
+>>>
+>>> [ port 4 ][ port 4 +PT ][ packet header ]
+>>>
+>>> And the obvious problem is this is indistinguishable from a packet 
+>>> that comes from port 4 of the internal switch and has an stag 
+>>> directly under the eth header.
+>>>
+>>> ---
+>>>
+>>> Another angle is to remove the PORT_STAG from internal port 5, and 
+>>> then you get this:
+>>>
+>>> [ port 5 ][ port 4 +PT ][ packet header ]
+>>>
+>>> In that case you can also remove PT_OPTION from external port 6, but 
+>>> sending ANY kind of VLAN packet from the outside gets it filtered 
+>>> and RxFiltering gets incremented. No matter what I do, I can't 
+>>> figure out how to stop VLAN packets from getting dropped except by 
+>>> putting PORT_STAG on the receiving port (internal port 5). No 
+>>> configuration of internal port6 prevents it, even if it's a dumb 
+>>> switch, is still drops them.
+>>>
+>>>
+>>> Anyone have any ideas?
+>>>
+>>>
+>>> Thanks,
+>>>
+>>> Caleb
+>>>
+>>>
+>>>
+>>>
+>>> On 28/01/2026 14:26, Caleb James DeLisle wrote:
+>>>> Update: It turns out the reset controller I was using only reset 
+>>>> the on-die switch, Benjamin found the reset register for the 
+>>>> external switch and now everything is behaving MUCH more like 
+>>>> normal. I'd say at this point I'm no longer stuck.
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Caleb
+>>>>
+>>>>
+>>>> On 27/01/2026 18:26, Caleb James DeLisle wrote:
+>>>>>>
+>>>>>> Would there be any reason not to set BMCR_PDOWN in 
+>>>>>> mt7530_phy_config_init() so we know they're in a consistent state?
+>>>>>>
+>>>>>> Also if you happen to have an MT7621 sitting there running, would 
+>>>>>> you mind setting?BMCR_ANENABLE |?BMCR_ANRESTART with mdio on a 
+>>>>>> running port to see if it's the same behavior? The port should 
+>>>>>> immediately die and then go into a loop trying to connect every 
+>>>>>> few seconds / minutes depending on what it's connected to.
+>>>>>>
+>>>>> Whoops, spoke too soon. dsa_register_switch() (indirectly) calls 
+>>>>> phy_resume() so the phy is up while the port is down. However, 
+>>>>> adding this to mt7530_port_enable() does make it work:
+>>>>>
+>>>>> ? ? if (priv->id == ID_EN751221_EXT && phy)
+>>>>> ? ? ? ? genphy_soft_reset(phy);
+>>>>>
+>>>>> I note that if the port is brought up within seconds of having 
+>>>>> been reset, then it seems to work (at least sporadically) despite 
+>>>>> the BMCR_ANENABLE bug. I imagine this is something that can be 
+>>>>> tuned out, but given it's happening in the bootloader, I don't 
+>>>>> have much confidence that I'm going to find the knob to fix it. 
+>>>>> I've got a problem with my vendor OS image, but when I get that 
+>>>>> fixed I'll check that as well.
+>>>>>
+>>>>> In the mean time, if any likely culprits come to mind, do let me 
+>>>>> know.
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>> Caleb
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> openwrt-devel mailing list
+>>>>> openwrt-devel at lists.openwrt.org
+>>>>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+>
+>
+
+
+From daniel at makrotopia.org  Wed Feb 11 02:26:39 2026
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Wed, 11 Feb 2026 10:26:39 +0000
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+References: <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+Message-ID: <aYxZXzjKN9aaYNaI@makrotopia.org>
+
+On Wed, Feb 11, 2026 at 11:13:26AM +0100, Caleb James DeLisle wrote:
+> 
+> On 10/02/2026 23:12, Benjamin Larsson wrote:
+> > If I understand correct, the ref SDK just sets up a transparent bridge
+> > and lets the packets flow through? If that is correct is that an option
+> > here?
+> When use_soc_lan is unset, this is what happens. When use_soc_lan is set, it
+> does a bunch of highly awkward stuff to add support for one extra port on
+> the internal switch. It's an option, probably to treat the internal switch
+> as part of the eth driver - however this will not work on EN7526C which no
+> external switch, internal is exposed.
+> > 
+> > And IMO we should not stack stags. If it is possible to pass stags
+> > through with the pass-through bit intact it should be possible to
+> > address all ports on both switches with just one stag.
+> > 
+> > I was hoping the PT_OPTION PVC bit would set the stag pass through bit
+> > on incoming frames.
+> 
+> Stacking stags does potentially have a performance penalty in the tag parser
+> - I say "potentially" because it's already walking a list which could be an
+> array index, and even 2 array indexes is faster than what we have now.
+> 
+> But trying to use the PT bit as designed makes it impossible to
+> differentiate between a packet that came from port N of the external switch
+> and a packet that came from port N of the internal. Vendor code doesn't
+> support having the same port number active on both internal and external, if
+> you try it will quietly overwrite the switch_port_map entry in
+> init_ethernet_port_map(), so I surmise this is a real silicon bug, not a
+> misconfiguration on my end.
+> 
+> But (so far), stacking tags seems to work, so I would much prefer it to
+> inter-switch rules, i.e. "you can't enable this port in the DT because you
+> have one with the same number on the other switch".
+> 
+
+So if the vendor SDK doesn't allow using the same port number on both,
+the on-die and the MCM switch, that means there won't be any boards
+around doing that, right? Nobody is designing new boards with this
+silicon at this point, all existing boards had to adhere to those rules.
+Hence I don't see why the extra overhead of stacked special tags would
+be worth it, especially also given that stacked special tags also won't
+work with the hardware offloading PPE/HWNAT, and likely also break other
+stuff such as TX checksum offloading.
+
+> BTW Vendor code (see: TCSUPPORT_MULTI_SWITCH_EXT) suggests there are boards
+> with multiple external switches. Probably a board integrator hung another
+> 7530 off of one of the RGMII interfaces. Per my reading, vendor code falls
+> back on VLANs, giving up on the stag entirely. I haven't confirmed that
+> transmit works yet, but assuming it does, stacked stags should Just Work in
+> this use case whereas the PT bit clearly would not.
+
+Have you seen any boards actually using an additional (ie. third) MT7530
+connected as external IC? If this feature is only a theoretical option
+which none of the board markers choose to implement I think it's worth
+ignoring it and not supporting it upstream, especially if the vendor SDK
+just uses the swconfig driver with VLANs rather than DSA.
+
+
+From cjd at cjdns.fr  Wed Feb 11 02:44:12 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Wed, 11 Feb 2026 11:44:12 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <aYxZXzjKN9aaYNaI@makrotopia.org>
+References: <EE086B58-108B-4E4C-8AC6-3EC3F9F98E4B@freifunk-aachen.de>
+ <802be2a8-068b-4c6c-9f9c-a60caa088d66@cjdns.fr>
+ <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+Message-ID: <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+
+
+On 11/02/2026 11:26, Daniel Golle wrote:
+> On Wed, Feb 11, 2026 at 11:13:26AM +0100, Caleb James DeLisle wrote:
+>> On 10/02/2026 23:12, Benjamin Larsson wrote:
+>>> If I understand correct, the ref SDK just sets up a transparent bridge
+>>> and lets the packets flow through? If that is correct is that an option
+>>> here?
+>> When use_soc_lan is unset, this is what happens. When use_soc_lan is set, it
+>> does a bunch of highly awkward stuff to add support for one extra port on
+>> the internal switch. It's an option, probably to treat the internal switch
+>> as part of the eth driver - however this will not work on EN7526C which no
+>> external switch, internal is exposed.
+>>> And IMO we should not stack stags. If it is possible to pass stags
+>>> through with the pass-through bit intact it should be possible to
+>>> address all ports on both switches with just one stag.
+>>>
+>>> I was hoping the PT_OPTION PVC bit would set the stag pass through bit
+>>> on incoming frames.
+>> Stacking stags does potentially have a performance penalty in the tag parser
+>> - I say "potentially" because it's already walking a list which could be an
+>> array index, and even 2 array indexes is faster than what we have now.
+>>
+>> But trying to use the PT bit as designed makes it impossible to
+>> differentiate between a packet that came from port N of the external switch
+>> and a packet that came from port N of the internal. Vendor code doesn't
+>> support having the same port number active on both internal and external, if
+>> you try it will quietly overwrite the switch_port_map entry in
+>> init_ethernet_port_map(), so I surmise this is a real silicon bug, not a
+>> misconfiguration on my end.
+>>
+>> But (so far), stacking tags seems to work, so I would much prefer it to
+>> inter-switch rules, i.e. "you can't enable this port in the DT because you
+>> have one with the same number on the other switch".
+>>
+> So if the vendor SDK doesn't allow using the same port number on both,
+> the on-die and the MCM switch, that means there won't be any boards
+> around doing that, right? Nobody is designing new boards with this
+> silicon at this point, all existing boards had to adhere to those rules.
+> Hence I don't see why the extra overhead of stacked special tags would
+> be worth it, especially also given that stacked special tags also won't
+> work with the hardware offloading PPE/HWNAT, and likely also break other
+> stuff such as TX checksum offloading.
+>
+>> BTW Vendor code (see: TCSUPPORT_MULTI_SWITCH_EXT) suggests there are boards
+>> with multiple external switches. Probably a board integrator hung another
+>> 7530 off of one of the RGMII interfaces. Per my reading, vendor code falls
+>> back on VLANs, giving up on the stag entirely. I haven't confirmed that
+>> transmit works yet, but assuming it does, stacked stags should Just Work in
+>> this use case whereas the PT bit clearly would not.
+> Have you seen any boards actually using an additional (ie. third) MT7530
+> connected as external IC? If this feature is only a theoretical option
+> which none of the board markers choose to implement I think it's worth
+> ignoring it and not supporting it upstream, especially if the vendor SDK
+> just uses the swconfig driver with VLANs rather than DSA.
+
+
+Okay, I'll put a "no port reuse" check in mt7530.c and in tag_mtk.c I'll 
+just the dsa_conduit_find_user() with a relaxed walker that ignores 
+switch ID, then make mtk_tag_xmit() set the PT bit if switch ID is 
+non-zero. Chaining will support 1 downstream switch on port 5, and any 
+port used on one switch cannot be used on the other.
+
+
+Thanks,
+
+Caleb
+
+
+
+
+From daniel at makrotopia.org  Wed Feb 11 03:02:44 2026
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Wed, 11 Feb 2026 11:02:44 +0000
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+References: <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+Message-ID: <aYxh1OiYZzSYxa5H@makrotopia.org>
+
+On Wed, Feb 11, 2026 at 11:44:12AM +0100, Caleb James DeLisle wrote:
+> 
+> On 11/02/2026 11:26, Daniel Golle wrote:
+> > On Wed, Feb 11, 2026 at 11:13:26AM +0100, Caleb James DeLisle wrote:
+> > > On 10/02/2026 23:12, Benjamin Larsson wrote:
+> > > > If I understand correct, the ref SDK just sets up a transparent bridge
+> > > > and lets the packets flow through? If that is correct is that an option
+> > > > here?
+> > > When use_soc_lan is unset, this is what happens. When use_soc_lan is set, it
+> > > does a bunch of highly awkward stuff to add support for one extra port on
+> > > the internal switch. It's an option, probably to treat the internal switch
+> > > as part of the eth driver - however this will not work on EN7526C which no
+> > > external switch, internal is exposed.
+> > > > And IMO we should not stack stags. If it is possible to pass stags
+> > > > through with the pass-through bit intact it should be possible to
+> > > > address all ports on both switches with just one stag.
+> > > > 
+> > > > I was hoping the PT_OPTION PVC bit would set the stag pass through bit
+> > > > on incoming frames.
+> > > Stacking stags does potentially have a performance penalty in the tag parser
+> > > - I say "potentially" because it's already walking a list which could be an
+> > > array index, and even 2 array indexes is faster than what we have now.
+> > > 
+> > > But trying to use the PT bit as designed makes it impossible to
+> > > differentiate between a packet that came from port N of the external switch
+> > > and a packet that came from port N of the internal. Vendor code doesn't
+> > > support having the same port number active on both internal and external, if
+> > > you try it will quietly overwrite the switch_port_map entry in
+> > > init_ethernet_port_map(), so I surmise this is a real silicon bug, not a
+> > > misconfiguration on my end.
+> > > 
+> > > But (so far), stacking tags seems to work, so I would much prefer it to
+> > > inter-switch rules, i.e. "you can't enable this port in the DT because you
+> > > have one with the same number on the other switch".
+> > > 
+> > So if the vendor SDK doesn't allow using the same port number on both,
+> > the on-die and the MCM switch, that means there won't be any boards
+> > around doing that, right? Nobody is designing new boards with this
+> > silicon at this point, all existing boards had to adhere to those rules.
+> > Hence I don't see why the extra overhead of stacked special tags would
+> > be worth it, especially also given that stacked special tags also won't
+> > work with the hardware offloading PPE/HWNAT, and likely also break other
+> > stuff such as TX checksum offloading.
+> > 
+> > > BTW Vendor code (see: TCSUPPORT_MULTI_SWITCH_EXT) suggests there are boards
+> > > with multiple external switches. Probably a board integrator hung another
+> > > 7530 off of one of the RGMII interfaces. Per my reading, vendor code falls
+> > > back on VLANs, giving up on the stag entirely. I haven't confirmed that
+> > > transmit works yet, but assuming it does, stacked stags should Just Work in
+> > > this use case whereas the PT bit clearly would not.
+> > Have you seen any boards actually using an additional (ie. third) MT7530
+> > connected as external IC? If this feature is only a theoretical option
+> > which none of the board markers choose to implement I think it's worth
+> > ignoring it and not supporting it upstream, especially if the vendor SDK
+> > just uses the swconfig driver with VLANs rather than DSA.
+> 
+> 
+> Okay, I'll put a "no port reuse" check in mt7530.c and in tag_mtk.c I'll
+> just the dsa_conduit_find_user() with a relaxed walker that ignores switch
+> ID, then make mtk_tag_xmit() set the PT bit if switch ID is non-zero.
+> Chaining will support 1 downstream switch on port 5, and any port used on
+> one switch cannot be used on the other.
+
+In case the MCM switch is being used to provide user ports, are any
+ports of the on-die switch other than the CPU port and the port
+connecting the MCM switch used as well?
+If using the MCM switch anyway effectively turns the on-die switch into
+a "2 port switch" only forwarding between those 2 ports, it would be
+worth investigating if MTRAP register can be used similar like on MT7530
+(on MT7531 it doesn't exist), see mt7530_setup_port5().
+
+
+From cjd at cjdns.fr  Wed Feb 11 05:00:30 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Wed, 11 Feb 2026 14:00:30 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <aYxh1OiYZzSYxa5H@makrotopia.org>
+References: <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+ <aYxh1OiYZzSYxa5H@makrotopia.org>
+Message-ID: <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+
+
+On 11/02/2026 12:02, Daniel Golle wrote:
+> On Wed, Feb 11, 2026 at 11:44:12AM +0100, Caleb James DeLisle wrote:
+>> On 11/02/2026 11:26, Daniel Golle wrote:
+>>> On Wed, Feb 11, 2026 at 11:13:26AM +0100, Caleb James DeLisle wrote:
+>>>> On 10/02/2026 23:12, Benjamin Larsson wrote:
+>>>>> If I understand correct, the ref SDK just sets up a transparent bridge
+>>>>> and lets the packets flow through? If that is correct is that an option
+>>>>> here?
+>>>> When use_soc_lan is unset, this is what happens. When use_soc_lan is set, it
+>>>> does a bunch of highly awkward stuff to add support for one extra port on
+>>>> the internal switch. It's an option, probably to treat the internal switch
+>>>> as part of the eth driver - however this will not work on EN7526C which no
+>>>> external switch, internal is exposed.
+>>>>> And IMO we should not stack stags. If it is possible to pass stags
+>>>>> through with the pass-through bit intact it should be possible to
+>>>>> address all ports on both switches with just one stag.
+>>>>>
+>>>>> I was hoping the PT_OPTION PVC bit would set the stag pass through bit
+>>>>> on incoming frames.
+>>>> Stacking stags does potentially have a performance penalty in the tag parser
+>>>> - I say "potentially" because it's already walking a list which could be an
+>>>> array index, and even 2 array indexes is faster than what we have now.
+>>>>
+>>>> But trying to use the PT bit as designed makes it impossible to
+>>>> differentiate between a packet that came from port N of the external switch
+>>>> and a packet that came from port N of the internal. Vendor code doesn't
+>>>> support having the same port number active on both internal and external, if
+>>>> you try it will quietly overwrite the switch_port_map entry in
+>>>> init_ethernet_port_map(), so I surmise this is a real silicon bug, not a
+>>>> misconfiguration on my end.
+>>>>
+>>>> But (so far), stacking tags seems to work, so I would much prefer it to
+>>>> inter-switch rules, i.e. "you can't enable this port in the DT because you
+>>>> have one with the same number on the other switch".
+>>>>
+>>> So if the vendor SDK doesn't allow using the same port number on both,
+>>> the on-die and the MCM switch, that means there won't be any boards
+>>> around doing that, right? Nobody is designing new boards with this
+>>> silicon at this point, all existing boards had to adhere to those rules.
+>>> Hence I don't see why the extra overhead of stacked special tags would
+>>> be worth it, especially also given that stacked special tags also won't
+>>> work with the hardware offloading PPE/HWNAT, and likely also break other
+>>> stuff such as TX checksum offloading.
+>>>
+>>>> BTW Vendor code (see: TCSUPPORT_MULTI_SWITCH_EXT) suggests there are boards
+>>>> with multiple external switches. Probably a board integrator hung another
+>>>> 7530 off of one of the RGMII interfaces. Per my reading, vendor code falls
+>>>> back on VLANs, giving up on the stag entirely. I haven't confirmed that
+>>>> transmit works yet, but assuming it does, stacked stags should Just Work in
+>>>> this use case whereas the PT bit clearly would not.
+>>> Have you seen any boards actually using an additional (ie. third) MT7530
+>>> connected as external IC? If this feature is only a theoretical option
+>>> which none of the board markers choose to implement I think it's worth
+>>> ignoring it and not supporting it upstream, especially if the vendor SDK
+>>> just uses the swconfig driver with VLANs rather than DSA.
+>>
+>> Okay, I'll put a "no port reuse" check in mt7530.c and in tag_mtk.c I'll
+>> just the dsa_conduit_find_user() with a relaxed walker that ignores switch
+>> ID, then make mtk_tag_xmit() set the PT bit if switch ID is non-zero.
+>> Chaining will support 1 downstream switch on port 5, and any port used on
+>> one switch cannot be used on the other.
+> In case the MCM switch is being used to provide user ports, are any
+> ports of the on-die switch other than the CPU port and the port
+> connecting the MCM switch used as well?
+Theoretically (vendor code), and I think the pins are exposed, but I 
+don't own any board that uses them.
+> If using the MCM switch anyway effectively turns the on-die switch into
+> a "2 port switch" only forwarding between those 2 ports, it would be
+> worth investigating if MTRAP register can be used similar like on MT7530
+> (on MT7531 it doesn't exist), see mt7530_setup_port5().
+
+Not sure what you're getting at re MTRAP, but if you're talking about 
+making the SoC switch into a bridge, that should be possible with an 
+ACL. However, SoC switch must still be supported because EN7526C has no 
+MCM (and that's a popular SoC, I have boards with it).
+
+Then question is: If we implement a pass-through switch, is that a 
+different driver? I guess it doesn't register as DSA. What is it in the 
+DT? Do we still reset it and tune TRGMII? Would need to copy: 
+mt7530_setup_port6, mt7530_setup_port5, all of the MDIO bus stuff 
+(mt7531_ind_c22_phy_read, mt7531_ind_c22_phy_write), and some of 
+mt7530_setup.
+
+I guess it could also be a special case of mt7530.c which doesn't 
+register as DSA, but that seems like it would make the code quite a bit 
+more weird and confusing.
+
+
+Here's the stacked stag implementation for reference, it currently works 
+though TRGMII is unstable: 
+https://github.com/cjdelisle/econet_eth/commit/285f02a16fed9b2bfadf9ba950998e3e305ffeef
+
+
+1. mt7530_post_register() avoids a deadlock: dsa_register_switch() -> 
+mt753x_setup() -> mt7530_setup_mdio() -> devm_of_mdiobus_register() -> 
+mt7530_probe() -> dsa_register_switch()
+
+2. mt753x_available_ports() = user ports and DSA link ports
+
+3. en751221_mac_port_get_caps() will be corrected
+
+4. tag-mtk.c is made recursive
+
+5. Tons of tuning which (I assume) is needed because these run at 
+362.5Mhz, and even now the TRGMII link is still not very stable
+
+6. Tons of debug logging which will obviously be removed before making a 
+patchset
+
+
+Changing to PT based chaining as I said earlier is not that big a deal. 
+Majority of the code isn't chaining related but rather tuning.
+
+
+Thanks,
+
+Caleb
+
+
+
+
+From b.larsson at gmx.com  Wed Feb 11 12:24:59 2026
+From: b.larsson at gmx.com (Benjamin Larsson)
+Date: Wed, 11 Feb 2026 21:24:59 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+References: <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+ <aYxh1OiYZzSYxa5H@makrotopia.org>
+ <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+Message-ID: <5060d09c-9339-437c-81ad-8602a7a78eb3@gmx.com>
+
+Hi.
+
+On 11/02/2026 14:00, Caleb James DeLisle wrote:
+>
+> Then question is: If we implement a pass-through switch, is that a 
+> different driver? I guess it doesn't register as DSA. What is it in 
+> the DT? Do we still reset it and tune TRGMII? Would need to copy: 
+> mt7530_setup_port6, mt7530_setup_port5, all of the MDIO bus stuff 
+> (mt7531_ind_c22_phy_read, mt7531_ind_c22_phy_write), and some of 
+> mt7530_setup.
+
+Not sure about the TRGMII part, there I would say copy the vendor driver 
+logic that has been stable enough for shipping devices. But a driver for 
+the MMIO switch is needed because of the mdio interface.
+
+Maybe different compatible strings for mcm-host mode that only setups up 
+the pass-through and mdio? Then the actually used MCM switch should look 
+like the mt7621 dts.
+
+MvH
+
+Benjamin Larsson
+
+
+
+
+From cjd at cjdns.fr  Wed Feb 11 17:07:28 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Thu, 12 Feb 2026 02:07:28 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <5060d09c-9339-437c-81ad-8602a7a78eb3@gmx.com>
+References: <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+ <aYxh1OiYZzSYxa5H@makrotopia.org>
+ <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+ <5060d09c-9339-437c-81ad-8602a7a78eb3@gmx.com>
+Message-ID: <defe5117-ccf6-4826-814f-bd237a4ca3b6@cjdns.fr>
+
+
+On 11/02/2026 21:24, Benjamin Larsson wrote:
+> Hi.
+>
+> On 11/02/2026 14:00, Caleb James DeLisle wrote:
+>>
+>> Then question is: If we implement a pass-through switch, is that a 
+>> different driver? I guess it doesn't register as DSA. What is it in 
+>> the DT? Do we still reset it and tune TRGMII? Would need to copy: 
+>> mt7530_setup_port6, mt7530_setup_port5, all of the MDIO bus stuff 
+>> (mt7531_ind_c22_phy_read, mt7531_ind_c22_phy_write), and some of 
+>> mt7530_setup.
+>
+> Not sure about the TRGMII part, there I would say copy the vendor 
+> driver logic that has been stable enough for shipping devices. But a 
+> driver for the MMIO switch is needed because of the mdio interface.
+
+
+Problem is, vendor code is (as usual) some of the most hideous crap 
+imaginable. But as far as phy tuning, I'm planning on at least punching 
+in all of the values and not skipping anything. However there's a lot of 
+code for finding those values and I think I'd rather just get them from 
+the vendor OS and write them directly.
+
+
+Question: I have a bunch of this crap:
+
+ ? ? phy_write_mmd(phy, MDIO_MMD_VEND2, 0x0417, 0x7775);
+ ? ? phy_write_mmd(phy, MDIO_MMD_VEND2, 0x027b, 0x1157);
+ ? ? phy_write_mmd(phy, MDIO_MMD_VEND2, 0x0044, 0x0040);
+ ? ? phy_write_mmd(phy, MDIO_MMD_VEND1, 0x0045, 0x0404);
+ ? ? phy_write_mmd(phy, MDIO_MMD_VEND1, 0x0046, 0x0404);
+
+ ? ? ... more magic values, all undocumented
+
+
+In vendor code, some of them are hardcoded, some select per-SoC, and 
+some are auto-detected.
+
+
+These phys identify as a standard 03a2:9412, so I can think of 3 
+possible ways to fix this:
+
+1. Keep the crap in mt7530.c where it is
+
+2. Make mtk-ge.c able to read parameters from the DT, and write 
+something like this:
+
+mediatek,phy-params?= <0x1f 0x0417 0x7775
+
+ ? ? ? ? ? ? ? ? ? ? ? ?0x1f 0x027b 0x1157
+
+ ? ? ? ? ? ? ? ? ? ? ? ?0x1f 0x0044 0x0040
+
+ ? ? ? ? ? ? ? ? ? ? ? ?0x1e 0x0045 0x0404
+
+ ? ? ? ? ? ? ? ? ? ? ? ?0x1e 0x0046 0x0404>;
+
+3. Create an DT entry for each one, like:
+
+mediatek,undocumented-1f-0417 =?0x7775;
+
+mediatek,undocumented-1f-027b?=?0x1157;
+
+and so on...
+
+
+1 is probably least likely to draw attention, but it may need an 
+occasional update to support a different SoC.
+
+2 is probably most likely to draw attention - I see almost nothing like 
+that in the kernel currently.
+
+3 creates a bunch of DT symbols which are afterwords more or less 
+impossible to ever delete
+
+Is there a #4 ?
+
+
+Daniel, your advice would be appreciated since your name is on the MTK 
+phy code so I gather you'll be reviewing.
+
+
+Thanks,
+
+Caleb
+
+
+
+>
+> Maybe different compatible strings for mcm-host mode that only setups 
+> up the pass-through and mdio? Then the actually used MCM switch should 
+> look like the mt7621 dts.
+>
+> MvH
+>
+> Benjamin Larsson
+>
+>
+
+
+From benjamin.larsson at genexis.eu  Thu Feb 12 04:28:06 2026
+From: benjamin.larsson at genexis.eu (Benjamin Larsson)
+Date: Thu, 12 Feb 2026 13:28:06 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <defe5117-ccf6-4826-814f-bd237a4ca3b6@cjdns.fr>
+References: <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+ <aYxh1OiYZzSYxa5H@makrotopia.org>
+ <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+ <5060d09c-9339-437c-81ad-8602a7a78eb3@gmx.com>
+ <defe5117-ccf6-4826-814f-bd237a4ca3b6@cjdns.fr>
+Message-ID: <1db436e1-9f71-4a0f-8606-4866f056014c@genexis.eu>
+
+On 2/12/26 02:07, Caleb James DeLisle wrote:
+>
+> Problem is, vendor code is (as usual) some of the most hideous crap 
+> imaginable. But as far as phy tuning, I'm planning on at least 
+> punching in all of the values and not skipping anything. However 
+> there's a lot of code for finding those values and I think I'd rather 
+> just get them from the vendor OS and write them directly.
+>
+Hi, this is a patch to a patch but the point is that the logic already 
+exists, and they are calibrated in runtime because they are not board 
+specific.
+
+https://github.com/Ansuel/openwrt/commit/6049d6501d00383f1c90b0ada0464eb6973fe884#diff-a43aa8f792576a1c708c1e97a7feac5c37b9b956e5fe11f143ea6cfb681a05a3
+
+We should build on the frame work that is used by AN7581/AN7583 because 
+the hardware share a common heritage.
+
+MvH
+
+Benjamin Larsson
+
+
+
+From openwrt-devel at iremonger.me.uk  Thu Feb 12 05:58:36 2026
+From: openwrt-devel at iremonger.me.uk (Simon Iremonger)
+Date: Thu, 12 Feb 2026 13:58:36 +0000
+Subject: mwan3 and IPv6 -> mwan3 use in 25.12.0
+In-Reply-To: <hhsnmr4gvkvry34fphzleqblfgmkxy2zxyz4vc4cbbchnagozj@zrkyxtm2po62>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+ <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+ <a28d60a0-b34a-4b7a-8c26-224ba2e9b74a@iremonger.me.uk>
+ <hhsnmr4gvkvry34fphzleqblfgmkxy2zxyz4vc4cbbchnagozj@zrkyxtm2po62>
+Message-ID: <e3881913-5662-401f-ade2-c9793385e637@iremonger.me.uk>
+
+On 17/11/2025 19:33, Jonas Lochmann wrote:
+> I consider IPv6 support independent of mwan3 refactoring. It works in
+> Regarding the IPv6 tracking, there is the issue with the source IP
+> selection.
+> Without knowing ddns-scripts, they could be affected by the same issues.
+> When asking a web service, then the kernel just picks the source IP
+> and usually does a good job when doing that.
+
+I can say that -- ddns-scripts in 25.12-SNAPSHOT r32607  (with a recent
+fix included already)  now works fine for IPv6 address detection on
+interface, network, and URL using checkipv6.dyndns.com  etc...
+It obviously has been improved since 24.10.5 where many of these did
+not work.
+
+
+HOWEVER; I basically am interested, what is the state of affairs of
+using mwan3 in 25.12.0 OpenWrt ?  [Seems to be "mwan3-2.12.0-r3"]
+
+Issues expected, incompatible with current fw4 etc?
+Anything that can be pulled/fixed for upcoming release?
+
+If this needs some testing I may be able to help.  I could
+certainly see if IPv6-tracking works where it didn't before.
+
+
+--Simon
+
+
+
+From openwrt at jonaslochmann.de  Thu Feb 12 10:33:10 2026
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Thu, 12 Feb 2026 19:33:10 +0100
+Subject: mwan3 and IPv6 -> mwan3 use in 25.12.0
+In-Reply-To: <e3881913-5662-401f-ade2-c9793385e637@iremonger.me.uk>
+References: <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+ <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+ <a28d60a0-b34a-4b7a-8c26-224ba2e9b74a@iremonger.me.uk>
+ <hhsnmr4gvkvry34fphzleqblfgmkxy2zxyz4vc4cbbchnagozj@zrkyxtm2po62>
+ <e3881913-5662-401f-ade2-c9793385e637@iremonger.me.uk>
+Message-ID: <oussbuw2omjlowknkhjq7wuaq4og6dz5lnr6siuoruaobrvi4w@fgcid2ik4tic>
+
+Am Thu, Feb 12, 2026 at 01:58:36PM +0000, schrieb Simon Iremonger:
+> On 17/11/2025 19:33, Jonas Lochmann wrote:
+> > I consider IPv6 support independent of mwan3 refactoring. It works in
+> > Regarding the IPv6 tracking, there is the issue with the source IP
+> > selection.
+> > Without knowing ddns-scripts, they could be affected by the same issues.
+> > When asking a web service, then the kernel just picks the source IP
+> > and usually does a good job when doing that.
+> 
+> I can say that -- ddns-scripts in 25.12-SNAPSHOT r32607  (with a recent
+> fix included already)  now works fine for IPv6 address detection on
+> interface, network, and URL using checkipv6.dyndns.com  etc...
+> It obviously has been improved since 24.10.5 where many of these did
+> not work.
+
+I disagree regarding the mode "network". It uses network_get_ipaddr6
+which is unstable - if it returns your public IP after boot, it can
+stop doing that after the first address change because odhcp6c always
+puts new IPs at the end of the list, netifd keeps it like that and
+the helper function returns the first IP.
+
+This is solved in my OpenWrt fork. Patches were submitted, but not
+reviewed or accepted yet. And the patches are not new. That's why
+I started my fork.
+
+> HOWEVER; I basically am interested, what is the state of affairs of
+> using mwan3 in 25.12.0 OpenWrt ?  [Seems to be "mwan3-2.12.0-r3"]
+> 
+> Issues expected, incompatible with current fw4 etc?
+> Anything that can be pulled/fixed for upcoming release?
+
+No issues with fw4. Depending on your needs, you could miss certain
+features in fw4 that are helpful in combination with mwan3.
+
+The issue with network_get_ipaddr6 returning the wrong address could
+occur.
+
+> If this needs some testing I may be able to help.  I could
+> certainly see if IPv6-tracking works where it didn't before.
+
+IPv6 tracking is the simple part and already worked when I started
+using mwan3.
+
+
+From cjd at cjdns.fr  Fri Feb 13 06:57:15 2026
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Fri, 13 Feb 2026 15:57:15 +0100
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <1db436e1-9f71-4a0f-8606-4866f056014c@genexis.eu>
+References: <aXiZHT5DY6HFWr8R@makrotopia.org>
+ <24c3fd9d-26dd-45d4-8e31-233ca34f3c81@cjdns.fr>
+ <9e68df18-16c7-489e-8066-47ea673a725a@cjdns.fr>
+ <3930df37-b27f-47e6-9556-503d503b6240@cjdns.fr>
+ <e5da90a4-61a9-49b6-af56-3ab7191b6fa2@cjdns.fr>
+ <0b60e44e-4e34-4cc8-a0da-91fa850cd4e7@cjdns.fr>
+ <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+ <aYxh1OiYZzSYxa5H@makrotopia.org>
+ <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+ <5060d09c-9339-437c-81ad-8602a7a78eb3@gmx.com>
+ <defe5117-ccf6-4826-814f-bd237a4ca3b6@cjdns.fr>
+ <1db436e1-9f71-4a0f-8606-4866f056014c@genexis.eu>
+Message-ID: <f88c13cd-7074-4bca-b667-fc32c9a25813@cjdns.fr>
+
+I just took a look at it and it seems like it might be the same - or at 
+least nearly the same. But this is a lot of code which is not upstream, 
+so that means my efforts can't be upstreamed until this is, so I can't 
+continue on ethernet because producing work that is not sent upstreamed 
+is not in my plan.
+
+So until this is sorted out, I'm going to have to do other stuff.
+
+Thanks,
+
+Caleb
+
+
+On 12/02/2026 13:28, Benjamin Larsson wrote:
+> On 2/12/26 02:07, Caleb James DeLisle wrote:
+>>
+>> Problem is, vendor code is (as usual) some of the most hideous crap 
+>> imaginable. But as far as phy tuning, I'm planning on at least 
+>> punching in all of the values and not skipping anything. However 
+>> there's a lot of code for finding those values and I think I'd rather 
+>> just get them from the vendor OS and write them directly.
+>>
+> Hi, this is a patch to a patch but the point is that the logic already 
+> exists, and they are calibrated in runtime because they are not board 
+> specific.
+>
+> https://github.com/Ansuel/openwrt/commit/6049d6501d00383f1c90b0ada0464eb6973fe884#diff-a43aa8f792576a1c708c1e97a7feac5c37b9b956e5fe11f143ea6cfb681a05a3 
+>
+>
+> We should build on the frame work that is used by AN7581/AN7583 
+> because the hardware share a common heritage.
+>
+> MvH
+>
+> Benjamin Larsson
+>
+>
+
+
+From dmitrmax at gmail.com  Sun Feb 15 04:42:28 2026
+From: dmitrmax at gmail.com (Maksim Dmitrichenko)
+Date: Sun, 15 Feb 2026 16:42:28 +0400
+Subject: Too much json code in rootfs
+Message-ID: <CAMRqRqwsA-ZqLORj+VNVp2Cua0yt+7BHiaABFqaQ5nuPgYVChw@mail.gmail.com>
+
+Tuning my firmware build for a very resource constrained router, I've
+noticed that there are several json-related shared libraries:
+1) libjson-c
+2) libblobmsg_json
+3) libjson_script
+4) libjansson
+and maybe even more.
+
+I understand that some of them are built on top of each other but
+libjson-c and libjansson seem to provide almost the same
+functionality. libjansson comes from libnftables and this dependency
+is pretty hard to break because libnftables heavily utilizes the
+json_pack feature of jansson which is absent in libjson-c.
+
+But it seems that libjson-c has nothing that can't be taken from
+jansson. libnftables dependency is quite fundamental and can't be
+avoided. But it seems that the other stuff can be switched to jansson.
+Are there any plans to do it?
+
+-- 
+With best regards
+  Maksim Dmitrichenko
+
+
+From noreply at github.com  Sun Feb 15 12:55:40 2026
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 15 Feb 2026 12:55:40 -0800
+Subject: [sdwalker/sdwalker.github.io] 9880f8: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/a53635-9880f8@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 9880f8f21b988022bdb394a8c7ee2a6015af944a
+      https://github.com/sdwalker/sdwalker.github.io/commit/9880f8f21b988022bdb394a8c7ee2a6015af944a
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2026-02-15 (Sun, 15 Feb 2026)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From hauke at hauke-m.de  Sun Feb 15 14:56:53 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sun, 15 Feb 2026 23:56:53 +0100
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+Message-ID: <2092641e-9d32-4c49-8dfd-1c0e71f24cd7@hauke-m.de>
+
+On 2/9/26 00:35, Hauke Mehrtens wrote:
+> Hi,
+> 
+> I plan to tag OpenWrt 25.12.0-rc5 next weekend and then the final 
+> version about 1 week later.
+> 
+> Between rc5 and the final version only small changes should get in to 
+> reduce the risk of adding new regressions.
+> 
+> @Felix: Could you please have a look at the changes you did in the main 
+> branch and cherry pick bugfixes needed for 25.12.
+> @Linus: Please have a look at the fixes you pushed to the main branch in 
+> the last few weeks and check which should get backported to 25.12.
+> 
+> Hauke
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+Hi,
+
+We found that fortify source is not applied to all applications, we 
+would like to have this fixed in 25.12 [0]. This is a change to the 
+toolchain and needs some testing. 25.12.0-rc5 is delayed because of this 
+by some days.
+
+Hauke
+
+[0]: https://github.com/openwrt/openwrt/pull/22042
+
+
+From ggoerisch at gmail.com  Sun Feb 15 22:11:23 2026
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Mon, 16 Feb 2026 07:11:23 +0100 (CET)
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <2092641e-9d32-4c49-8dfd-1c0e71f24cd7@hauke-m.de>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <2092641e-9d32-4c49-8dfd-1c0e71f24cd7@hauke-m.de>
+Message-ID: <2066169331.180202.1771222284241@app.mailbox.org>
+
+Dear all,
+
+Thank you for this heads up Hauke.
+
+> > I plan to tag OpenWrt 25.12.0-rc5 next weekend and then the final 
+> > version about 1 week later.
+> > 
+> > Between rc5 and the final version only small changes should get in to 
+> > reduce the risk of adding new regressions.
+> 
+> We found that fortify source is not applied to all applications, we 
+> would like to have this fixed in 25.12 [0]. This is a change to the 
+> toolchain and needs some testing. 25.12.0-rc5 is delayed because of this 
+> by some days.
+> 
+> [0]: https://github.com/openwrt/openwrt/pull/22042
+
+Beside that issue above, I have the fear, that the mediathek/filogic wifi bug [1] which especially
+is hitting users with the latest Pixel phone, will get more visible as soon as everyone updates.
+I'm trying to test as much as possible but haven't found any pointers.
+Latest tested version 25.12-SNAPSHOT r32626-f27d38666c (kernel 6.12.71)
+
+Therefore in my humble opinion this should be addressed before 25.12 is released.
+
+Thank you,
+Goetz
+
+[1] https://github.com/openwrt/openwrt/issues/21486
+
+
+From daniel at makrotopia.org  Wed Feb 18 10:47:31 2026
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Wed, 18 Feb 2026 18:47:31 +0000
+Subject: Debugging EcoNet's MT7530 PHYs
+In-Reply-To: <f88c13cd-7074-4bca-b667-fc32c9a25813@cjdns.fr>
+References: <b20eb6c5-4c97-4988-bf6f-6064a94b6f67@gmx.com>
+ <c7f6fb43-9a54-4509-bd2a-91b64a94a9c3@cjdns.fr>
+ <aYxZXzjKN9aaYNaI@makrotopia.org>
+ <6aea41ee-fb6b-43c5-9639-b4ce68a3daa5@cjdns.fr>
+ <aYxh1OiYZzSYxa5H@makrotopia.org>
+ <42952102-b47b-4aa2-9b06-e67a4bf3d9fc@cjdns.fr>
+ <5060d09c-9339-437c-81ad-8602a7a78eb3@gmx.com>
+ <defe5117-ccf6-4826-814f-bd237a4ca3b6@cjdns.fr>
+ <1db436e1-9f71-4a0f-8606-4866f056014c@genexis.eu>
+ <f88c13cd-7074-4bca-b667-fc32c9a25813@cjdns.fr>
+Message-ID: <aZYJQ20gi-G2UMML@makrotopia.org>
+
+On Fri, Feb 13, 2026 at 03:57:15PM +0100, Caleb James DeLisle wrote:
+> I just took a look at it and it seems like it might be the same - or at
+> least nearly the same. But this is a lot of code which is not upstream, so
+> that means my efforts can't be upstreamed until this is, so I can't continue
+> on ethernet because producing work that is not sent upstreamed is not in my
+> plan.
+> 
+> So until this is sorted out, I'm going to have to do other stuff.
+
+I suggest you could start with carrying Ansuel's patch upstream, it's
+not uncommon for people to submit work done by others as long as you
+fully understand what is being done, this is not a problem.
+
+In general, as most of the changes are related to the mt7530 it would
+anyway be the best to discuss everything on the netdev kernel
+mailinglist, OpenWrt is by far not the only user of that driver and
+development happens upstream.
+
+I've talked with Chester Ar?n? ?nal who is one of the key maintainers
+when it comes to mt7530, and he isn't reading the OpenWrt lists, for
+example, and only got aware of your upcoming contributions because I
+told him off-list.
+
+
+> 
+> Thanks,
+> 
+> Caleb
+> 
+> 
+> On 12/02/2026 13:28, Benjamin Larsson wrote:
+> > On 2/12/26 02:07, Caleb James DeLisle wrote:
+> > > 
+> > > Problem is, vendor code is (as usual) some of the most hideous crap
+> > > imaginable. But as far as phy tuning, I'm planning on at least
+> > > punching in all of the values and not skipping anything. However
+> > > there's a lot of code for finding those values and I think I'd
+> > > rather just get them from the vendor OS and write them directly.
+> > > 
+> > Hi, this is a patch to a patch but the point is that the logic already
+> > exists, and they are calibrated in runtime because they are not board
+> > specific.
+> > 
+> > https://github.com/Ansuel/openwrt/commit/6049d6501d00383f1c90b0ada0464eb6973fe884#diff-a43aa8f792576a1c708c1e97a7feac5c37b9b956e5fe11f143ea6cfb681a05a3
+> > 
+> > 
+> > We should build on the frame work that is used by AN7581/AN7583 because
+> > the hardware share a common heritage.
+> > 
+> > MvH
+> > 
+> > Benjamin Larsson
+> > 
+> > 
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From hauke at hauke-m.de  Thu Feb 19 16:59:37 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Fri, 20 Feb 2026 01:59:37 +0100
+Subject: OpenWrt 25.12.0-rc5 - Release Candidate
+Message-ID: <8a2d22f8-37b9-4bec-9b3a-90d3202530fa@hauke-m.de>
+
+Hi,
+
+The OpenWrt community is proud to announce the fifth release candidate 
+of the OpenWrt 25.12 stable series.
+
+Download firmware images using the OpenWrt Firmware Selector:
+   * https://firmware-selector.openwrt.org?version=25.12.0-rc5
+
+Download firmware images directly from our download servers:
+   * https://downloads.openwrt.org/releases/25.12.0-rc5/targets/
+
+Please test this version
+========================
+
+This is not the final version, this is a test version. Please report 
+problems and bugs in our [issue 
+tracker](https://github.com/openwrt/openwrt/issues).
+
+
+Highlights in OpenWrt 25.12
+===========================
+
+OpenWrt 25.12.0-rc5 incorporates over 4600 commits since branching the 
+previous OpenWrt 24.10 release and has been under development for over 
+one year.
+
+Only the main changes are listed below.  See 
+[changelog-25.12.0-rc5](https://openwrt.org/releases/25.12/changelog-25.12.0-rc5) 
+for the full changelog.
+
+
+General changes
+===============
+
+The hardware requirements did not change significantly, most devices 
+supported by OpenWrt 24.10 should also work with OpenWrt 25.12.
+
+
+Switch package manager from opkg to apk
+=======================================
+
+OpenWrt has transitioned from the traditional **opkg** package manager 
+to **apk** (Alpine Package Keeper).
+
+This change brings several advantages:
+   * apk is still maintained, the OpenWrt opkg fork was not maintained 
+any more.
+
+apk supports most features of opkg. Only very few package names changed. 
+The command line arguments of apk are different from the command line 
+arguments of opkg.
+
+For users migrating existing systems, an official [opkg to apk 
+cheatsheet](https://openwrt.org/docs/guide-user/additional-software/opkg-to-apk-cheatsheet) 
+is available to ease the transition and map common workflows.
+
+
+Integration of attended sysupgrade
+==================================
+
+The [attended 
+sysupgrade](https://openwrt.org/docs/guide-user/installation/attended.sysupgrade) 
+LuCI application is now installed by default.
+
+ASU allows devices to:
+   * Upgrade to new OpenWrt firmware versions
+   * Automatically rebuild firmware images with all currently installed 
+packages
+   * Preserve system configuration during upgrades
+
+This dramatically simplifies upgrades: with just a few clicks in LuCI 
+and a short wait, a custom firmware image is built and installed without 
+manual intervention.
+
+
+Shell history is preserved
+==========================
+
+Shell command history is now preserved across sessions by storing it in 
+a **RAM-backed filesystem**.
+
+Benefits:
+   * Command history is no longer lost between logins
+   * No unnecessary writes to flash storage by default
+
+For users who prefer persistent history storage, this behavior can be 
+changed by editing: `/etc/profile.d/busybox-history-file.sh`
+
+?? **Note:** Storing history on flash will increase write cycles and may 
+impact [flash 
+endurance](https://en.wikipedia.org/wiki/Flash_memory#Write_endurance) 
+over time.
+
+
+Integration of video feed
+==========================
+
+The [OpenWrt video feed](https://github.com/openwrt/video) with Qt5 and 
+UI applications is integrated by default.
+
+
+Wi-Fi scripts in ucode
+======================
+
+The wifi scripts were rewritten in ucode.
+
+
+Target changes
+==============
+
+   * Extend realtek target with support for more switch SoCs like 10G 
+Ethernet switches.
+   * Extend qualcommax target with support for ipq50xx and ipq60xx SoCs.
+   * Added siflower target for Siflower SF21A6826/SF21H8898 SoCs
+   * Added sunxi/arm926ejs subtarget for Allwinner F1C100/200s SoCs
+
+
+Many new devices added
+======================
+
+OpenWrt 25.12 supports over 2240 devices. Support for over 220 new 
+devices was added in addition to the device support by OpenWrt 24.10.
+
+
+Core components update
+===================
+
+Core components have the following versions in 25.12.0-rc5:
+
+   * Updated toolchain:
+     * musl libc 1.2.5
+     * glibc 2.41
+     * gcc 14.3.0
+     * binutils 2.44
+   * Updated Linux kernel
+     * 6.12.71 for all targets
+   * main packages:
+     * cfg80211/mac80211 from kernel 6.18.7
+     * hostapd master snapshot from August 2025
+     * dnsmasq 2.91
+     * dropbear 2025.89
+     * busybox 1.37.0
+
+In addition to the listed applications, many others were also updated.
+
+
+Upgrading to 25.12
+===================
+
+Upgrading from 24.10 to 25.12 should be transparent on most devices, as 
+most configuration data has either remained the same or will be 
+translated correctly on first boot by the package init scripts.
+
+  * Sysupgrade from 23.05 to 25.12 is not officially supported.
+
+  *  Cron log level was fixed in busybox. 
+`system. at system[0].cronloglevel` should be set to `7` for normal 
+logging. `7` is the default now. If this option is not set, the default 
+is used and no manual action is needed.
+
+  *  Bananapi BPI-R4: Interfaces `eth1` was renamed to `sfp-lan` or 
+`lan4` and the interface `eth2` was renamed to `sfp-wan` to match the 
+labels. You have to upgrade without saving the configuration.
+
+Scratch installs/upgrades
+=========================
+
+If you wish to start from scratch (always the safest, but also the most 
+work), simply download the pre-built image from the [downloads 
+site](https://downloads.openwrt.org/releases/25.12.0-rc5/targets/) or 
+from the [Firmware 
+Selector](https://openwrt.github.io/firmware-selector-openwrt-org?version=25.12.0-rc5) 
+to your device.  Make sure to create and save a backup, then install the 
+image using `sysupgrade -n /tmp/firmware.bin` or the LuCI Backup/Flash 
+Firmware, being sure to set "Keep settings and retain the current 
+configuration" to its off position.  Restore or reconstruct your 
+configuration using the contents of the backup as a template.
+
+Attended Sysupgrade options
+===========================
+
+Attended Sysupgrade (ASU) allows you to build a custom image that 
+retains all of your installed packages and their configuration 
+transparently.  You need to use one of the three ASU clients that 
+interface with the ASU server to produce this custom image:
+
+   - [Firmware 
+Selector](https://openwrt.github.io/firmware-selector-openwrt-org?version=25.12.0-rc5) 
+- an online builder that requires you to manually supply it with the 
+packages you wish to have installed.  This package list is sent to the 
+ASU server, and a new custom device image is created containing those 
+packages.  You may then download and install the image in LuCI 
+Backup/Flash Firmware, but for this you would enable "Keep settings..."
+   - [Luci Attended 
+Sysupgrade](https://openwrt.org/docs/guide-user/installation/attended.sysupgrade#from_luci_web_page) 
+- the web interface to the ASU server.  This tool allows you to choose a 
+new OpenWrt version, then collects the names of the packages on your 
+device and sends them up to the ASU server.  LuCI ASU then downloads the 
+created image directly to your device and allows you to install it, 
+without having to do any of the bookkeeping tasks involved with using 
+the Firmware Selector.
+   - 
+[owut](https://openwrt.org/docs/guide-user/installation/sysupgrade.owut) 
+- a command line package that does the same job as LuCI ASU, but 
+provides more diagnostics and better visibility into what's happening at 
+the various steps before and during the build process.
+
+Both the LuCI ASU app and `owut` are optional packages in 24.10, so if 
+you have not installed them, they won't be there by default.  Use either 
+the LuCI Package Manager to install them, or you can do it from the 
+command line with `opkg`:
+
+```
+$ opkg update
+$ opkg install luci-app-attendedsysupgrade
+$ opkg install owut
+```
+
+Note that you can install one or the other, or both together, they are 
+completely independent packages.
+
+Upgrades with Firmware Selector
+===============================
+
+The Firmware Selector does an excellent job of searching through the 
+thousands of available device configurations and getting you to the 
+right place.  But, some devices have several variants and possibly 
+different image formats, so if you're unsure about which one you need or 
+which device you're dealing with or anything else, go to the [|Firmware 
+Selector support 
+thread](https://forum.openwrt.org/t/the-openwrt-firmware-selector/81721) 
+and ask away.
+
+Upgrades with LuCI Attended Sysupgrade
+======================================
+
+The LuCI web interface should be fairly self explanatory.  Since you 
+have fairly limited options there that should be pretty obvious, but if 
+anything is unclear or you're unsure about something, go to the [LuCI 
+Attended Sysupgrade support 
+thread](https://forum.openwrt.org/t/luci-attended-sysupgrade-support-thread/230552) 
+and ask.
+
+Upgrades with owut
+==================
+
+If you choose to use `owut`, the fact that it's a command line program 
+means you'll need a little more explanation regarding best practices. 
+In any situation, it's always safe to do a `check` to see what's going on.
+
+```
+$ owut check --verbose --version-to 25.12
+... a lot of output ...
+```
+
+This check should show you all the details of what this upgrade entails 
+with regards to the packages available, and will point out any issues 
+with package versions and so on.
+
+Assuming the results of the `check` look good, you can simply do an 
+`upgrade` next.
+
+```
+$ owut upgrade --verbose --version-to 25.12
+... even more output ...
+```
+
+If you are unsure of anything you see in the `check`, during the 
+`upgrade`, or simply have questions, jump on over to the [owut support 
+thread](https://forum.openwrt.org/t/owut-openwrt-upgrade-tool/200035) on 
+the forum and ask.
+
+
+Known issues
+============
+
+   * Users of Zyxel EX5601-T0 devices need to check their WAN interfaces 
+as port was renamed from `eth1` to `wan`.
+
+-----------------
+
+Full release notes and upgrade instructions are available at
+  https://openwrt.org/releases/25.12/notes-25.12.0-rc5
+
+In particular, make sure to read the regressions and known issues before 
+upgrading:
+  https://openwrt.org/releases/25.12/notes-25.12.0-rc5#known_issues
+
+For a detailed list of all changes since 25.12.0-rc4, refer to
+  https://openwrt.org/releases/25.12/changelog-25.12.0-rc5
+
+To download the 25.12.0-rc5 images, navigate to:
+  https://downloads.openwrt.org/releases/25.12.0-rc5/targets/
+Use OpenWrt Firmware Selector to download:
+  https://firmware-selector.openwrt.org?version=25.12.0-rc5
+
+As always, a big thank you goes to all our active package maintainers, 
+testers, documenters and supporters.
+
+Have fun!
+
+The OpenWrt Community
+
+---
+
+To stay informed of new OpenWrt releases and security advisories, there
+are new channels available:
+
+   * a low-volume mailing list for important announcements:
+https://lists.openwrt.org/mailman/listinfo/openwrt-announce
+
+   * a dedicated "announcements" section in the forum:
+https://forum.openwrt.org/c/announcements/14
+
+   * other announcement channels (such as RSS feeds) might be added in the
+     future, they will be listed at https://openwrt.org/contact
+
+
+From openwrt at jonaslochmann.de  Fri Feb 20 23:04:52 2026
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sat, 21 Feb 2026 08:04:52 +0100
+Subject: OpenWrt 25.12 toolchain building issues with fortify
+In-Reply-To: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+Message-ID: <wan3mwkwkvh6c4org4ebcy2phivtju5wgqlleaknm5zdp2ohjg@4le5xbfxmegx>
+
+Am Mon, Feb 09, 2026 at 12:35:42AM +0100, schrieb Hauke Mehrtens:
+> Hi,
+> 
+> I plan to tag OpenWrt 25.12.0-rc5 next weekend and then the final version
+> about 1 week later.
+> 
+> Between rc5 and the final version only small changes should get in to reduce
+> the risk of adding new regressions.
+
+I see a big issue right now regarding the toolchain. I cannot build it
+with the default level for fortify source. Level 1 was already the
+default in rc1 and there it worked. However, in rc5, building the
+toolchain fails. This is well hidden by the fact that the toolchain is
+not rebuilt automatically in most cases, including the adjustment of the
+fortify parameter. So after disabling fortify, I needed to do another
+dirclean to actually get it working. The same effect can hide this
+problem.
+
+
+From noreply at github.com  Sun Feb 22 12:33:09 2026
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 22 Feb 2026 12:33:09 -0800
+Subject: [sdwalker/sdwalker.github.io] 77d9a4: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/9880f8-77d9a4@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 77d9a448b85dc8450dfb2292111af7310977c4c1
+      https://github.com/sdwalker/sdwalker.github.io/commit/77d9a448b85dc8450dfb2292111af7310977c4c1
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2026-02-22 (Sun, 22 Feb 2026)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From droidbittin at gmail.com  Sun Feb 22 12:45:44 2026
+From: droidbittin at gmail.com (Luna Jernberg)
+Date: Sun, 22 Feb 2026 21:45:44 +0100
+Subject: OpenWrt 25.12 release plan
+In-Reply-To: <2066169331.180202.1771222284241@app.mailbox.org>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <2092641e-9d32-4c49-8dfd-1c0e71f24cd7@hauke-m.de> <2066169331.180202.1771222284241@app.mailbox.org>
+Message-ID: <CADo9pHhhVdo3H0Hcbp1kYTgQ167Fph2OYtt2e7sEsZtni1wy5Q@mail.gmail.com>
+
+Guessing Final 25.12 is a bit delayed as rc5 came out this weekend instead?
+
+Den m?n 16 feb. 2026 kl 07:12 skrev Goetz Goerisch <ggoerisch at gmail.com>:
+>
+> Dear all,
+>
+> Thank you for this heads up Hauke.
+>
+> > > I plan to tag OpenWrt 25.12.0-rc5 next weekend and then the final
+> > > version about 1 week later.
+> > >
+> > > Between rc5 and the final version only small changes should get in to
+> > > reduce the risk of adding new regressions.
+> >
+> > We found that fortify source is not applied to all applications, we
+> > would like to have this fixed in 25.12 [0]. This is a change to the
+> > toolchain and needs some testing. 25.12.0-rc5 is delayed because of this
+> > by some days.
+> >
+> > [0]: https://github.com/openwrt/openwrt/pull/22042
+>
+> Beside that issue above, I have the fear, that the mediathek/filogic wifi bug [1] which especially
+> is hitting users with the latest Pixel phone, will get more visible as soon as everyone updates.
+> I'm trying to test as much as possible but haven't found any pointers.
+> Latest tested version 25.12-SNAPSHOT r32626-f27d38666c (kernel 6.12.71)
+>
+> Therefore in my humble opinion this should be addressed before 25.12 is released.
+>
+> Thank you,
+> Goetz
+>
+> [1] https://github.com/openwrt/openwrt/issues/21486
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From hauke at hauke-m.de  Mon Feb 23 17:01:47 2026
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Tue, 24 Feb 2026 02:01:47 +0100
+Subject: OpenWrt 25.12 toolchain building issues with fortify
+In-Reply-To: <wan3mwkwkvh6c4org4ebcy2phivtju5wgqlleaknm5zdp2ohjg@4le5xbfxmegx>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <wan3mwkwkvh6c4org4ebcy2phivtju5wgqlleaknm5zdp2ohjg@4le5xbfxmegx>
+Message-ID: <d6c937fe-edbb-4613-925e-3e62c1f63b11@hauke-m.de>
+
+On 2/21/26 08:04, Jonas Lochmann wrote:
+> Am Mon, Feb 09, 2026 at 12:35:42AM +0100, schrieb Hauke Mehrtens:
+>> Hi,
+>>
+>> I plan to tag OpenWrt 25.12.0-rc5 next weekend and then the final version
+>> about 1 week later.
+>>
+>> Between rc5 and the final version only small changes should get in to reduce
+>> the risk of adding new regressions.
+> 
+> I see a big issue right now regarding the toolchain. I cannot build it
+> with the default level for fortify source. Level 1 was already the
+> default in rc1 and there it worked. However, in rc5, building the
+> toolchain fails. This is well hidden by the fact that the toolchain is
+> not rebuilt automatically in most cases, including the adjustment of the
+> fortify parameter. So after disabling fortify, I needed to do another
+> dirclean to actually get it working. The same effect can hide this
+> problem.
+
+Hi,
+
+Please create an issue with the problem.
+
+You just provided some very wage, like something does not work.
+
+fortify-headers does not automatically rebuilds when something changes, 
+maybe you have to manually rebuild it like this:
+make toolchain/fortify-headers/{clean,compile}
+
+Hauke
+
+
+From baptiste at bitsofnetworks.org  Mon Feb 23 23:54:04 2026
+From: baptiste at bitsofnetworks.org (Baptiste Jonglez)
+Date: Tue, 24 Feb 2026 08:54:04 +0100
+Subject: Migrating git server to a new host and setup
+Message-ID: <aZ1ZHPkHw4Od13UO@fedic>
+
+Hi,
+
+Paul and me started working on improving reliability of the git server
+setup, by deploying a new server with:
+
+- newer OS (Debian 13 vs Debian 11)
+- standard Ansible setup
+- use cgit instead of gitweb as webinterface
+- disable costly web requests (blame, magic commit lookup)
+- allocate more hardware resources (pending)
+
+The new setup is accessible here: https://git.staging.openwrt.org
+
+We tried to keep compatibility with existing gitweb URLs through redirects
+(except the magic git.openwrt.org/<commit_hash> since it iterates on all
+repositories, which is quite costly).
+
+Please test and report any issues.
+
+We plan to migrate the main git.openwrt.org DNS to the new server this
+Wednesday evening (UTC).  If we notice major issues, we may postpone it.
+
+Baptiste
+
+
+From hacks at slashdirt.org  Tue Feb 24 00:56:24 2026
+From: hacks at slashdirt.org (Thibaut)
+Date: Tue, 24 Feb 2026 09:56:24 +0100
+Subject: Migrating git server to a new host and setup
+In-Reply-To: <aZ1ZHPkHw4Od13UO@fedic>
+References: <aZ1ZHPkHw4Od13UO@fedic>
+Message-ID: <15C08D99-9A03-450E-9BC8-760C0DD91EBD@slashdirt.org>
+
+Hi,
+
+> Le 24 f?vr. 2026 ? 08:54, Baptiste Jonglez <baptiste at bitsofnetworks.org> a ?crit :
+
+[...]
+
+> We tried to keep compatibility with existing gitweb URLs through redirects
+> (except the magic git.openwrt.org/<commit_hash> since it iterates on all
+> repositories, which is quite costly).
+
+Why not keep this only for the main repo then, instead of iterating?
+I suspect that?s 99% of use cases of this convenient feature.
+
+My 2c,
+T.
+
+From openwrt at jonaslochmann.de  Tue Feb 24 01:19:51 2026
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Tue, 24 Feb 2026 10:19:51 +0100
+Subject: fortify patch is missing adjusted PKG_RELEASE
+In-Reply-To: <d6c937fe-edbb-4613-925e-3e62c1f63b11@hauke-m.de>
+References: <9cb1c119-258b-49d1-ac7b-51aaaba21fb5@hauke-m.de>
+ <wan3mwkwkvh6c4org4ebcy2phivtju5wgqlleaknm5zdp2ohjg@4le5xbfxmegx>
+ <d6c937fe-edbb-4613-925e-3e62c1f63b11@hauke-m.de>
+Message-ID: <yia633quf2cflsfu2f5sttjivvoox2bmomshs7vfxgyuzmbfna@h5jn6vix6cyf>
+
+Am Tue, Feb 24, 2026 at 02:01:47AM +0100, schrieb Hauke Mehrtens:
+> You just provided some very wage, like something does not work.
+> 
+> fortify-headers does not automatically rebuilds when something changes,
+> maybe you have to manually rebuild it like this:
+> make toolchain/fortify-headers/{clean,compile}
+
+I found the issue. A new git checkout results in another version of the
+fortify header. The building issue was not at the toolchain, but at
+ucode. And someone (you) already fixed that [1]. However, PKG_RELEASE
+was not adjusted, as someone noted already [2]. So your patch is not
+applied at existing checkouts without extra steps.
+
+Now I am wondering why my dirclean did not resolve this. Is there the
+chance that it only cleans the currently selected architecture and
+not all architectures?
+
+[1] https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=b23726664090098acb9318caf41f7d6961cd1074
+[2] https://github.com/openwrt/openwrt/commit/b23726664090098acb9318caf41f7d6961cd1074#commitcomment-177838102
+
+
+From felix.baumann at freifunk-aachen.de  Tue Feb 24 01:34:16 2026
+From: felix.baumann at freifunk-aachen.de (Felix Baumann)
+Date: Tue, 24 Feb 2026 10:34:16 +0100
+Subject: Migrating git server to a new host and setup
+In-Reply-To: <aZ1ZHPkHw4Od13UO@fedic>
+References: <aZ1ZHPkHw4Od13UO@fedic>
+Message-ID: <D50F462A-0DEA-4CAF-AACB-2CD4C6E3E4BB@freifunk-aachen.de>
+
+Am 24. Februar 2026 08:54:04 MEZ schrieb Baptiste Jonglez <baptiste at bitsofnetworks.org>:
+>Hi,
+>
+>Paul and me started working on improving reliability of the git server
+>setup, by deploying a new server with:
+>
+>- newer OS (Debian 13 vs Debian 11)
+>- standard Ansible setup
+>- use cgit instead of gitweb as webinterface
+>- disable costly web requests (blame, magic commit lookup)
+>- allocate more hardware resources (pending)
+>
+>The new setup is accessible here: https://git.staging.openwrt.org
+>
+>We tried to keep compatibility with existing gitweb URLs through redirects
+>(except the magic git.openwrt.org/<commit_hash> since it iterates on all
+>repositories, which is quite costly).
+>
+>Please test and report any issues.
+>
+>We plan to migrate the main git.openwrt.org DNS to the new server this
+>Wednesday evening (UTC).  If we notice major issues, we may postpone it.
+>
+>Baptiste
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+Much appreciated.
+Thanks for working on this, Baptiste and Paul!
+
+Regards
+Felix Baumann
+
+
+From baptiste at bitsofnetworks.org  Tue Feb 24 15:07:04 2026
+From: baptiste at bitsofnetworks.org (Baptiste Jonglez)
+Date: Wed, 25 Feb 2026 00:07:04 +0100
+Subject: Migrating git server to a new host and setup
+In-Reply-To: <15C08D99-9A03-450E-9BC8-760C0DD91EBD@slashdirt.org>
+References: <aZ1ZHPkHw4Od13UO@fedic>
+ <15C08D99-9A03-450E-9BC8-760C0DD91EBD@slashdirt.org>
+Message-ID: <aZ4vGJQeW78ykWMi@fedic>
+
+On 24-02-26, Thibaut wrote:
+> Hi,
+> 
+> > Le 24 f?vr. 2026 ? 08:54, Baptiste Jonglez <baptiste at bitsofnetworks.org> a ?crit :
+> 
+> [...]
+> 
+> > We tried to keep compatibility with existing gitweb URLs through redirects
+> > (except the magic git.openwrt.org/<commit_hash> since it iterates on all
+> > repositories, which is quite costly).
+> 
+> Why not keep this only for the main repo then, instead of iterating?
+> I suspect that?s 99% of use cases of this convenient feature.
+
+Good idea, it's now implemented as a simple redirect in nginx.
+
+Example: https://git.staging.openwrt.org/f27f3e7f233
+
+Fun fact, I discovered the existing magic can also translate SVN-style revisions:
+
+  https://git.openwrt.org/r10000
+
+This will no longer work with the new setup, but I doubt it's still used
+nowadays...
+
+Baptiste
+
+
+From ggoerisch at gmail.com  Tue Feb 24 22:48:03 2026
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Wed, 25 Feb 2026 07:48:03 +0100 (CET)
+Subject: Migrating git server to a new host and setup
+In-Reply-To: <aZ4vGJQeW78ykWMi@fedic>
+References: <aZ1ZHPkHw4Od13UO@fedic>
+ <15C08D99-9A03-450E-9BC8-760C0DD91EBD@slashdirt.org>
+ <aZ4vGJQeW78ykWMi@fedic>
+Message-ID: <1890328102.624517.1772002083609@app.mailbox.org>
+
+Hi all,
+
+thank you for doing this!
+
+I tried using new location, but I cannot checkout the feeds.
+
+git reports when using as feeds ref:
+
+First time after switch:
+> Source of feed packages has changed, replacing copy
+> Updating feed 'packages' from 'https://git.staging.openwrt.org/feed/packages.git' ...
+> Cloning into './feeds/packages'...
+> warning: You appear to have cloned an empty repository.
+
+Subsequent tries:
+
+> Updating feed 'packages' from 'https://git.staging.openwrt.org/feed/packages.git' ...
+> Your configuration specifies to merge with the ref 'refs/heads/main'
+> from the remote, but no such ref was fetched.
+> failed.
+> Updating feed 'luci' from 'https://git.staging.openwrt.org/project/luci.git' ...
+
+
+Just doing a git clone https://git.staging.openwrt.org/feed/packages.git:
+
+> Cloning into 'packages'...
+> remote: Enumerating objects: 233026, done.
+> remote: Counting objects: 100% (233026/233026), done.
+> remote: Compressing objects: 100% (83920/83920), done.
+> remote: Total 233026 (delta 137373), reused 232395 (delta 136998), pack-reused 0 (from 0)
+> Receiving objects: 100% (233026/233026), 59.23 MiB | 33.05 MiB/s, done.
+> Resolving deltas: 100% (137373/137373), done.
+> warning: remote HEAD refers to nonexistent ref, unable to checkout
+
+Regards,
+Goetz
+
+
+From baptiste at bitsofnetworks.org  Wed Feb 25 15:10:34 2026
+From: baptiste at bitsofnetworks.org (Baptiste Jonglez)
+Date: Thu, 26 Feb 2026 00:10:34 +0100
+Subject: Migrating git server to a new host and setup
+In-Reply-To: <1890328102.624517.1772002083609@app.mailbox.org>
+References: <aZ1ZHPkHw4Od13UO@fedic>
+ <15C08D99-9A03-450E-9BC8-760C0DD91EBD@slashdirt.org>
+ <aZ4vGJQeW78ykWMi@fedic>
+ <1890328102.624517.1772002083609@app.mailbox.org>
+Message-ID: <aZ-BajEAg4t5Mrhg@fedic>
+
+Hi,
+
+On 25-02-26, Goetz Goerisch wrote:
+> Hi all,
+> 
+> thank you for doing this!
+> 
+> I tried using new location, but I cannot checkout the feeds.
+
+It was a main/master branch mixup, now fixed, thanks for the report.
+
+The new server is now running in production:
+
+  https://git.openwrt.org/
+
+SSH access should work as before, as well as push mirroring to github and
+codeberg.  Pull mirroring for feeds (from github) is still not entirely
+migrated but should hopefully continue to work from the old host.
+
+Please keep testing to make sure we didn't forget anything, we will
+maintain the existing host for a while (it is still reachable over SSH and
+HTTPS at git-01.infra.openwrt.org in case it's needed, but repos are no
+longer updated)
+
+Note that we don't provide support for git:// URLs anymore, because
+git-daemon is no longer packaged in Debian:
+
+    git (1:2.47.1-1)
+    * remove unsafe and under-maintained packages that install an unsecured git-daemon services (thx Chris Hofstaedtler; closes: #1078778, #1020284).
+
+We could still set it up, but only if there is strong motivation to
+support the bare git:// protocol in addition to https://.
+
+Baptiste
+
+
+From ggoerisch at gmail.com  Wed Feb 25 21:53:14 2026
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Thu, 26 Feb 2026 06:53:14 +0100 (CET)
+Subject: Migrating git server to a new host and setup
+In-Reply-To: <aZ-BajEAg4t5Mrhg@fedic>
+References: <aZ1ZHPkHw4Od13UO@fedic>
+ <15C08D99-9A03-450E-9BC8-760C0DD91EBD@slashdirt.org>
+ <aZ4vGJQeW78ykWMi@fedic>
+ <1890328102.624517.1772002083609@app.mailbox.org>
+ <aZ-BajEAg4t5Mrhg@fedic>
+Message-ID: <1195189112.320468.1772085194524@app.mailbox.org>
+
+Hi,
+
+> > I tried using new location, but I cannot checkout the feeds.
+> 
+> It was a main/master branch mixup, now fixed, thanks for the report.
+
+Thank you, I can confirm.
+
+> Please keep testing to make sure we didn't forget anything, we will
+> maintain the existing host for a while (it is still reachable over SSH and
+> HTTPS at git-01.infra.openwrt.org in case it's needed, but repos are no
+> longer updated)
+
+One usablility issue, source file text is currently shown black on dark blue (dark mode).
+This is unreadable. All other views are correct.
+See: https://git.openwrt.org/openwrt/openwrt/tree/README.md
+
+Thank you
+Goetz
+
+
+From tharvey at gateworks.com  Fri Feb 27 13:47:39 2026
+From: tharvey at gateworks.com (Tim Harvey)
+Date: Fri, 27 Feb 2026 13:47:39 -0800
+Subject: target specific KCONFIG fragments for kernel modules
+Message-ID: <CAJ+vNU3jqS_iAmGO7sUBxQNLtJsxtoHiUd0Lj8-9__PLK=1d=w@mail.gmail.com>
+
+Greetings,
+
+I've been trying to figure out a way to create target specific KCONFIG
+fragments in a KernelPackage and have not found anything that works.
+
+specifically I'm trying to enable HCIART_BCM for a specific target (as
+my PR has not been accepted due to imposing a small increase in static
+kernel size: https://github.com/openwrt/openwrt/pull/14517).
+
+Enabling the items in the target/subtarget config-default does not
+work as the KCONFIG's in selected packages are applied after that so
+I've been focusing on target specific changes in the KenrelPackage
+definition.
+
+I have not been able to get something like the following to work:
+define KernelPackage/hci-uart
+  SUBMENU:=$(BLUETOOTH_MENU)
+  TITLE:=Bluetooth HCI UART support
+  DEPENDS:=+kmod-bluetooth
+ifeq ($(CONFIG_TARGET_imx_cortexa53),y)
+  KCONFIG:= \
+        CONFIG_BT_HCIUART \
+        CONFIG_BT_HCIUART_BCM=y \
+        CONFIG_BT_HCIUART_SERDEV=y \
+        CONFIG_SERIAL_DEV_CTRL_TTYPORT=y \
+        CONFIG_SERIAL_DEV_BUS=y \
+        CONFIG_BT_HCIUART_INTEL=n \
+        CONFIG_BT_HCIUART_H4 \
+        CONFIG_BT_HCIUART_NOKIA=n
+else
+  KCONFIG:= \
+        CONFIG_BT_HCIUART \
+        CONFIG_BT_HCIUART_BCM=n \
+        CONFIG_BT_HCIUART_INTEL=n \
+        CONFIG_BT_HCIUART_H4 \
+        CONFIG_BT_HCIUART_NOKIA=n
+endif
+  FILES:= \
+        $(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
+        $(if $(CONFIG_BT_HCIUART_BCM),$(LINUX_DIR)/drivers/bluetooth/btbcm.ko)
+  AUTOLOAD:=$(call AutoProbe,hci_uart)
+endef
+
+Does anyone have any suggestions on how to accomplish this?
+
+Best Regards,
+
+Tim
+
+
+From tmn505 at gmail.com  Fri Feb 27 15:48:07 2026
+From: tmn505 at gmail.com (Tomasz Maciej Nowak)
+Date: Sat, 28 Feb 2026 00:48:07 +0100
+Subject: target specific KCONFIG fragments for kernel modules
+In-Reply-To: <CAJ+vNU3jqS_iAmGO7sUBxQNLtJsxtoHiUd0Lj8-9__PLK=1d=w@mail.gmail.com>
+References: <CAJ+vNU3jqS_iAmGO7sUBxQNLtJsxtoHiUd0Lj8-9__PLK=1d=w@mail.gmail.com>
+Message-ID: <daeb40bb-4833-4a54-ad72-00872f2d8988@gmail.com>
+
+W dniu 27.02.2026 o?22:47, Tim Harvey pisze:
+> Greetings,
+
+Hi
+
+> I've been trying to figure out a way to create target specific KCONFIG
+> fragments in a KernelPackage and have not found anything that works.
+> 
+> specifically I'm trying to enable HCIART_BCM for a specific target (as
+> my PR has not been accepted due to imposing a small increase in static
+> kernel size: https://github.com/openwrt/openwrt/pull/14517).
+> 
+> Enabling the items in the target/subtarget config-default does not
+> work as the KCONFIG's in selected packages are applied after that so
+> I've been focusing on target specific changes in the KenrelPackage
+> definition.
+> 
+> I have not been able to get something like the following to work:
+> define KernelPackage/hci-uart
+>   SUBMENU:=$(BLUETOOTH_MENU)
+>   TITLE:=Bluetooth HCI UART support
+>   DEPENDS:=+kmod-bluetooth
+> ifeq ($(CONFIG_TARGET_imx_cortexa53),y)
+>   KCONFIG:= \
+>         CONFIG_BT_HCIUART \
+>         CONFIG_BT_HCIUART_BCM=y \
+>         CONFIG_BT_HCIUART_SERDEV=y \
+>         CONFIG_SERIAL_DEV_CTRL_TTYPORT=y \
+>         CONFIG_SERIAL_DEV_BUS=y \
+>         CONFIG_BT_HCIUART_INTEL=n \
+>         CONFIG_BT_HCIUART_H4 \
+>         CONFIG_BT_HCIUART_NOKIA=n
+> else
+>   KCONFIG:= \
+>         CONFIG_BT_HCIUART \
+>         CONFIG_BT_HCIUART_BCM=n \
+>         CONFIG_BT_HCIUART_INTEL=n \
+>         CONFIG_BT_HCIUART_H4 \
+>         CONFIG_BT_HCIUART_NOKIA=n
+> endif
+>   FILES:= \
+>         $(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
+>         $(if $(CONFIG_BT_HCIUART_BCM),$(LINUX_DIR)/drivers/bluetooth/btbcm.ko)
+>   AUTOLOAD:=$(call AutoProbe,hci_uart)
+> endef
+> 
+> Does anyone have any suggestions on how to accomplish this?
+
+Put CONFIG_SERIAL_DEV_CTRL_TTYPORT and CONFIG_SERIAL_DEV_BUS in kernel config
+of target You are targeting and use conditional in FILES like in my patch[1].
+That way any target including those tow symbols will have btbcm.ko available.
+
+1. https://patchwork.ozlabs.org/project/openwrt/patch/20241029161046.110403-2-tmn505 at terefe.re/
+
+> Best Regards,
+> 
+> Tim
+Regards
+
+-- 
+TMN
+
+

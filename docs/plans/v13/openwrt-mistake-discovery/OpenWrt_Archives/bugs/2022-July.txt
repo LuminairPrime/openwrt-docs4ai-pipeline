@@ -1,0 +1,151 @@
+From openwrt-bugs at lists.openwrt.org  Tue Jul 19 03:57:44 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 19 Jul 2022 10:57:44 +0000
+Subject: lttng-modules-2.10.8/lttng-*.ko' is missing
+In-Reply-To: <09cdae65cd6a4351a820bc6a719bea63@quicinc.com>
+References: <09cdae65cd6a4351a820bc6a719bea63@quicinc.com>
+Message-ID: <mailman.1346.1658228269.4154159.openwrt-bugs@lists.openwrt.org>
+
+
+Hello dear coders :)
+
+I am trying to compile "lttng-modules" for OpenWRT
+I been consistently facing below error.
+ERROR: module '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/lttng-*.ko' is missing.
+Please kindly guide me to the right method if I am missing something.
+
+Thanks in advance.
+
+?
+user at ubuntu:/local/mnt/workspace/code/LE/openwrt/07042022/owrt$ make package/lttng-modules/compile V=s
+time: target/linux/prereq#0.04#0.00#0.19
+make[1]: Entering directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt'
+make[2]: Entering directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/feeds/packages/devel/lttng-modules'
+mkdir -p /local/mnt/workspace/code/LE/openwrt/07042022/owrt/dl
+SHELL= flock /local/mnt/workspace/code/LE/openwrt/07042022/owrt/tmp/.lttng-modules-2.10.8.tar.bz2.flock -c '???? /local/mnt/workspace/code/LE/openwrt/07042022/owrt/scripts/download.pl "/local/mnt/workspace/code/LE/openwrt/07042022/owrt/dl" "lttng-modules-2.10.8.tar.bz2" "fe1d269bca723e8948af871c322c37d3900e647cdc5eb3efbe821e434beee44c" "" https://lttng.org/files/lttng-modules/??? '
+rm -rf /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng.installed /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng
+mkdir -p /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng
+ERROR: module '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/lttng-*.ko' is missing.
+make[2]: *** [Makefile:47: /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng.installed] Error 1
+make[2]: Leaving directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/feeds/packages/devel/lttng-modules'
+time: package/feeds/packages/lttng-modules/compile#0.08#0.00#0.22
+??? ERROR: package/feeds/packages/lttng-modules failed to build.
+make[1]: *** [package/Makefile:116: package/feeds/packages/lttng-modules/compile] Error 1
+make[1]: Leaving directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt'
+make: *** [/local/mnt/workspace/code/LE/openwrt/07042022/owrt/include/toplevel.mk:230: package/lttng-modules/compile] Error 2
+user at ubuntu:/local/mnt/workspace/code/LE/openwrt/07042022/owrt$
+
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Jul 19 23:25:20 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Wed, 20 Jul 2022 06:25:20 +0000
+Subject: Enabling Hotplug
+In-Reply-To: <SN6PR02MB4494222BC575A29E18F498E5938F9@SN6PR02MB4494.namprd02.prod.outlook.com>
+References: <SN6PR02MB4494222BC575A29E18F498E5938F9@SN6PR02MB4494.namprd02.prod.outlook.com>
+Message-ID: <mailman.1859.1658298330.4154159.openwrt-bugs@lists.openwrt.org>
+
+Can anyone please guide?
+The OpenWRT version we are using is 21.02.1
+
+Thanks,
+Ravi
+-----Original Message-----
+From: openwrt-devel <openwrt-devel-bounces at lists.openwrt.org> On Behalf Of Ravi Paluri (QUIC)
+Sent: Tuesday, July 19, 2022 12:27 PM
+To: openwrt-devel at lists.openwrt.org
+Subject: Enabling Hotplug
+
+WARNING: This email originated from outside of Qualcomm. Please be wary of any links or attachments, and do not enable macros.
+
+Hi all,
+    We are trying to enable Hotplug functionality.
+We've our device node under "/dev/<device-node>", which gets created at boot-up.
+SUBSYSTEM of this <device-node> is "subsys". Hence, I created a folder named "subsys" under "/etc/hotplug.d/" and I added a script at this location as per detailed @ https://openwrt.org/docs/guide-user/base-system/hotplug#usagetroubleshooting
+
+I also modified "/etc/hotplug.json" file with below code but script under "/etc/hotplug.d/subsys" is not getting executed, possibly since we are not getting SUBSYSTEM trigger event?
+
+["if",
+         [ "and",
+                 [ "eq", "SUBSYSTEM", "subsys" ],
+                 [ "isdir", "/etc/hotplug.d/subsys" ]
+         ],
+         [ "exec", "/sbin/hotplug-call", "subsys" ]  ],
+
+We've no clue why this trigger event is not getting fired.
+Do we need to enable any kernel configuration flag? (We are using kernel 5.4 version.) or any package needs to selected under openwrt menu etc.
+Any pointers on how to enable hotplug will be very helpful.
+
+Thanks,
+Ravi
+
+
+_______________________________________________
+openwrt-devel mailing list
+openwrt-devel at lists.openwrt.org
+https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Jul 26 22:17:03 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Wed, 27 Jul 2022 05:17:03 +0000
+Subject: lttng-modules-2.10.8/lttng-*.ko' is missing
+In-Reply-To: <9dc0a9bff4134d1b958ca874d17a9053@quicinc.com>
+References: <09cdae65cd6a4351a820bc6a719bea63@quicinc.com>
+ <9dc0a9bff4134d1b958ca874d17a9053@quicinc.com>
+Message-ID: <mailman.3900.1658899031.4154159.openwrt-bugs@lists.openwrt.org>
+
+Hello Coders,
+
+I am trying to compile "lttng-modules" for OpenWRT I been consistently facing below error.
+ERROR: module '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/lttng-*.ko' is missing.
+Please kindly guide me to the right method if I am missing something.
+
+My target machine is based on ARM.
+My host machine is ubuntu 18.04.
+OpenWRT (Build system) version : 21.02.3
+lttng-modules : 2.10.8
+lttng-tools : 2.12.1
+lttng-ust : 2.12.0
+liburcu : 0.12.2
+
+
+Thanks in advance.
+
+
+ 
+-----Original Message-----
+From: quic_pkommu 
+Sent: Tuesday, July 19, 2022 4:28 PM
+To: 'openwrt-devel at lists.openwrt.org' <openwrt-devel at lists.openwrt.org>; 'openwrt-bugs at lists.openwrt.org' <openwrt-bugs at lists.openwrt.org>
+Subject: RE: lttng-modules-2.10.8/lttng-*.ko' is missing
+
+
+Hello dear coders :)
+
+I am trying to compile "lttng-modules" for OpenWRT I been consistently facing below error.
+ERROR: module '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/lttng-*.ko' is missing.
+Please kindly guide me to the right method if I am missing something.
+
+Thanks in advance.
+
+?
+user at ubuntu:/local/mnt/workspace/code/LE/openwrt/07042022/owrt$ make package/lttng-modules/compile V=s
+time: target/linux/prereq#0.04#0.00#0.19
+make[1]: Entering directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt'
+make[2]: Entering directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/feeds/packages/devel/lttng-modules'
+mkdir -p /local/mnt/workspace/code/LE/openwrt/07042022/owrt/dl
+SHELL= flock /local/mnt/workspace/code/LE/openwrt/07042022/owrt/tmp/.lttng-modules-2.10.8.tar.bz2.flock -c '???? /local/mnt/workspace/code/LE/openwrt/07042022/owrt/scripts/download.pl "/local/mnt/workspace/code/LE/openwrt/07042022/owrt/dl" "lttng-modules-2.10.8.tar.bz2" "fe1d269bca723e8948af871c322c37d3900e647cdc5eb3efbe821e434beee44c" "" https://lttng.org/files/lttng-modules/??? '
+rm -rf /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng.installed /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng
+mkdir -p /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng
+ERROR: module '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/lttng-*.ko' is missing.
+make[2]: *** [Makefile:47: /local/mnt/workspace/code/LE/openwrt/07042022/owrt/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/arm-chipset/lttng-modules-2.10.8/.pkgdir/kmod-lttng.installed] Error 1
+make[2]: Leaving directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt/feeds/packages/devel/lttng-modules'
+time: package/feeds/packages/lttng-modules/compile#0.08#0.00#0.22
+??? ERROR: package/feeds/packages/lttng-modules failed to build.
+make[1]: *** [package/Makefile:116: package/feeds/packages/lttng-modules/compile] Error 1
+make[1]: Leaving directory '/local/mnt/workspace/code/LE/openwrt/07042022/owrt'
+make: *** [/local/mnt/workspace/code/LE/openwrt/07042022/owrt/include/toplevel.mk:230: package/lttng-modules/compile] Error 2 user at ubuntu:/local/mnt/workspace/code/LE/openwrt/07042022/owrt$
+
+
+

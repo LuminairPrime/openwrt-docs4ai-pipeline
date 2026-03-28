@@ -1,0 +1,3069 @@
+From ms at dev.tdt.de  Thu Aug  1 00:26:35 2024
+From: ms at dev.tdt.de (Martin Schiller)
+Date: Thu, 01 Aug 2024 09:26:35 +0200
+Subject: BPI-R4: Copper SFP issues
+Message-ID: <4287498ac2e6c3b3a0a72213af2f1639@dev.tdt.de>
+
+Hi!
+
+I've got some issues bringing up copper SFPs in a BananaPi BPI-R4 runnig
+the latest OpenWrt master. Using the original Firmware pre-installed on
+the BPI-R4 makes the modules work as expected:
+
+I've tested with a HPE J8177C 1GBASE-T module as well as with a FS
+SFP-10G-T module.
+
+Any ideas what could be wrong here?
+
+Here are the debug log outputs:
+
+HPE J8177C 1GBASE-T with original BPI-R4 firmware:
+-----------------------------------------------------------------------------------------------------------------------
+[  364.132844] sfp sfp at 0: SM: enter empty:up:down event insert
+[  364.138423] sfp sfp at 0: SM: exit probe:up:down
+[  364.451649] sfp sfp at 0: SM: enter probe:up:down event timeout
+[  364.468195] sfp sfp at 0: module DELTA            LCP-1250RJ3SR-CV rev 
+0000 sn CN69HGQ0JR       dc 160919
+[  364.477669] sfp sfp at 0: sfp: support mode 00,00000000,00006070
+[  364.483408] sfp sfp at 0: tx disable 1 -> 0
+[  364.487340] sfp sfp at 0: SM: exit present:up:wait
+[  364.539645] sfp sfp at 0: SM: enter present:up:wait event timeout
+[  364.545547] sfp sfp at 0: probing phy device through the 
+[MDIO_I2C_MARVELL_C22] protocol
+[  364.559727] sfp sfp at 0: CL22 PHY device [0x0141:0x0cc2] found!
+[  364.565472] sfp sfp at 0: CL22 PHY driver [Marvell 88E1111] found!
+[  364.571385] sfp sfp at 0: phy: support mode 00,00000000,000062ff
+[  364.577131] mtk_soc_eth 15100000.ethernet eth2: requesting link mode 
+inband/sgmii with support 00,00000000,000062ea
+[  364.587554] mtk_soc_eth 15100000.ethernet eth2: switched to 
+inband/sgmii link mode
+[  364.660187] mtk_soc_eth 15100000.ethernet eth2: PHY [i2c:sfp at 0:16] 
+driver [Marvell 88E1111]
+[  364.669071] sfp sfp at 0: SM: exit present:up:link_up
+[  364.669241] mtk_soc_eth 15100000.ethernet eth2: resolve link status: 
+system iface=0, line iface=0
+[  364.682719] mtk_soc_eth 15100000.ethernet eth2: resolve link status: 
+system iface=0, line iface=0
+-----------------------------------------------------------------------------------------------------------------------
+
+
+HPE J8177C 1GBASE-T with latest master:
+-----------------------------------------------------------------------------------------------------------------------
+[   81.112792] sfp sfp1: mod-def0 0 -> 1
+[   81.116464] sfp sfp1: SM: enter empty:up:down event insert
+[   81.121951] sfp sfp1: SM: exit probe:up:down
+[   81.431914] sfp sfp1: SM: enter probe:up:down event timeout
+[   81.448776] sfp sfp1: module DELTA            LCP-1250RJ3SR-CV rev 
+0000 sn CN69HGQ0JR       dc 160919
+[   81.458173] sfp sfp1: tx disable 1 -> 0
+[   81.462023] sfp sfp1: SM: exit present:up:wait
+[   81.471923] sfp sfp1: los 0 -> 1
+[   81.475142] sfp sfp1: SM: enter present:up:wait event los_high
+[   81.480964] sfp sfp1: SM: exit present:up:wait
+[   81.521911] sfp sfp1: SM: enter present:up:wait event timeout
+[   81.554779] mtk_soc_eth 15100000.ethernet eth2: validation with 
+support 00,00000000,00000000,00000000 failed: -EINVAL
+[   81.565458] sfp sfp1: sfp_add_phy failed: -EINVAL
+[   81.570155] sfp sfp1: SM: exit present:up:fail
+-----------------------------------------------------------------------------------------------------------------------
+
+FS SFP-10G-T with original BPI-R4 firmware:
+-----------------------------------------------------------------------------------------------------------------------
+[   82.898139] sfp sfp at 0: SM: exit probe:up:down
+[   83.207138] sfp sfp at 0: SM: enter probe:up:down event timeout
+[   83.223695] sfp sfp at 0: module FS               SFP-10G-T        rev   
+    sn F2030582912      dc 200803
+[   83.233170] sfp sfp at 0: sfp: support mode 00,00000800,00006040
+[   83.238917] mtk_soc_eth 15100000.ethernet eth2: requesting link mode 
+inband/10gbase-kr with support 00,00000800,00006440
+[   83.260742] sfp sfp at 0: tx disable 1 -> 0
+[   83.264671] sfp sfp at 0: SM: exit present:up:wait
+[   83.319136] sfp sfp at 0: SM: enter present:up:wait event timeout
+[   83.324965] sfp sfp at 0: probing phy device through the [MDIO_I2C_NONE] 
+protocol
+[   83.332182] sfp sfp at 0: SM: exit present:up:link_up
+[   83.343148] mtk_soc_eth 15100000.ethernet eth2: resolve link status: 
+system iface=0
+[   83.363591] sfp sfp at 0: SM: enter present:up:link_up event los_high
+[   83.369771] sfp sfp at 0: SM: exit present:up:wait_los
+-----------------------------------------------------------------------------------------------------------------------
+
+FS SFP-10G-T with latest master:
+-----------------------------------------------------------------------------------------------------------------------
+[  448.977154] sfp sfp1: tx-fault 1 -> 0
+[  448.980834] sfp sfp1: SM: enter empty:up:down event tx_clear
+[  448.986494] sfp sfp1: SM: exit empty:up:down
+[  448.990769] sfp sfp1: mod-def0 0 -> 1
+[  448.994426] sfp sfp1: SM: enter empty:up:down event insert
+[  448.999901] sfp sfp1: SM: exit probe:up:down
+[  449.301913] sfp sfp1: SM: enter probe:up:down event timeout
+[  449.318529] sfp sfp1: module FS               SFP-10G-T        rev    
+   sn F2030582912      dc 200803
+[  449.327923] sfp sfp1: tx disable 1 -> 0
+[  449.331770] sfp sfp1: SM: exit present:up:wait
+[  449.362827] hwmon hwmon2: temp1_input not attached to any thermal 
+zone
+[  453.351915] sfp sfp1: SM: enter present:up:wait event timeout
+[  480.673948] sfp sfp1: SM: exit present:up:init_phy
+[  480.731913] sfp sfp1: SM: enter present:up:init_phy event timeout
+-----------------------------------------------------------------------------------------------------------------------
+
+Thanks,
+Martin
+
+
+From daniel at makrotopia.org  Thu Aug  1 01:22:42 2024
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Thu, 01 Aug 2024 08:22:42 +0000
+Subject: BPI-R4: Copper SFP issues
+In-Reply-To: <4287498ac2e6c3b3a0a72213af2f1639@dev.tdt.de>
+References: <4287498ac2e6c3b3a0a72213af2f1639@dev.tdt.de>
+Message-ID: <B34ED956-CF7A-4332-BF4A-82B0B4F1D748@makrotopia.org>
+
+
+
+On 1 August 2024 07:26:35 UTC, Martin Schiller <ms at dev.tdt.de> wrote:
+>Hi!
+>
+>I've got some issues bringing up copper SFPs in a BananaPi BPI-R4 runnig
+>the latest OpenWrt master. Using the original Firmware pre-installed on
+>the BPI-R4 makes the modules work as expected:
+>
+>I've tested with a HPE J8177C 1GBASE-T module as well as with a FS
+>SFP-10G-T module.
+>
+>Any ideas what could be wrong here?
+>
+>Here are the debug log outputs:
+
+>[   81.554779] mtk_soc_eth 15100000.ethernet eth2: validation with support 00,00000000,00000000,00000000 failed: -EINVAL
+>[   81.565458] sfp sfp1: sfp_add_phy failed: -EINVAL
+>[   81.570155] sfp sfp1: SM: exit present:up:fail
+
+Looks like you are simply missing kmod-phy-marvell as well as kmod-phy-marvell-10g. Do you have those driver module packages installed?
+
+
+From ms at dev.tdt.de  Thu Aug  1 04:02:35 2024
+From: ms at dev.tdt.de (Martin Schiller)
+Date: Thu, 01 Aug 2024 13:02:35 +0200
+Subject: BPI-R4: Copper SFP issues
+In-Reply-To: <B34ED956-CF7A-4332-BF4A-82B0B4F1D748@makrotopia.org>
+References: <4287498ac2e6c3b3a0a72213af2f1639@dev.tdt.de>
+ <B34ED956-CF7A-4332-BF4A-82B0B4F1D748@makrotopia.org>
+Message-ID: <c67ee93b94b3dbeaf243fdba7151afe9@dev.tdt.de>
+
+On 2024-08-01 10:22, Daniel Golle wrote:
+> On 1 August 2024 07:26:35 UTC, Martin Schiller <ms at dev.tdt.de> wrote:
+>> Hi!
+>> 
+>> I've got some issues bringing up copper SFPs in a BananaPi BPI-R4 
+>> runnig
+>> the latest OpenWrt master. Using the original Firmware pre-installed 
+>> on
+>> the BPI-R4 makes the modules work as expected:
+>> 
+>> I've tested with a HPE J8177C 1GBASE-T module as well as with a FS
+>> SFP-10G-T module.
+>> 
+>> Any ideas what could be wrong here?
+>> 
+>> Here are the debug log outputs:
+> 
+>> [   81.554779] mtk_soc_eth 15100000.ethernet eth2: validation with 
+>> support 00,00000000,00000000,00000000 failed: -EINVAL
+>> [   81.565458] sfp sfp1: sfp_add_phy failed: -EINVAL
+>> [   81.570155] sfp sfp1: SM: exit present:up:fail
+> 
+> Looks like you are simply missing kmod-phy-marvell as well as
+> kmod-phy-marvell-10g. Do you have those driver module packages
+> installed?
+
+Thank you very much for this hint. Adding the kmod-phy-marvell makes the
+1G-BASE-T module working.
+
+The FS SFP-10G-T is still not working, but I've found some fixes for
+this module in linux v6.9 and v6.10.
+
+I'll try to backport this changes.
+
+Thanks,
+Martin
+
+
+From robimarko at gmail.com  Thu Aug  1 08:32:23 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Thu, 1 Aug 2024 17:32:23 +0200
+Subject: [PATCH] mediatek: fix u-boot env layout NVMEM definitions
+In-Reply-To: <20240730084613.415150-1-mrkiko.rs@gmail.com>
+References: <20240730084613.415150-1-mrkiko.rs@gmail.com>
+Message-ID: <CAOX2RU6Ppqf-AbLHJ-KYHWo9Y5krPLrAG=fhCM+YYMrKzQJk0w@mail.gmail.com>
+
+On Tue, 30 Jul 2024 at 10:46, Enrico Mioso <mrkiko.rs at gmail.com> wrote:
+>
+> s/u-boot,env-layout/u-boot,env/g
+>
+> Signed-off-by: Enrico Mioso <mrkiko.rs at gmail.com>
+
+Thanks,
+Merged via: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=6bb334c5cf1c96a208c8dab93123476248b78254
+
+Regards,
+Robert
+
+> ---
+>  .../mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi   | 2 +-
+>  target/linux/mediatek/dts/mt7981b-glinet-gl-mt2500.dts        | 2 +-
+>  target/linux/mediatek/dts/mt7981b-unielec-u7981-01-emmc.dts   | 2 +-
+>  target/linux/mediatek/dts/mt7986a-glinet-gl-mt6000.dts        | 2 +-
+>  .../arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-emmc.dtso | 2 +-
+>  .../arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-sd.dtso   | 2 +-
+>  .../patches-6.6/911-dts-mt7622-bpi-r64-add-rootdisk.patch     | 4 ++--
+>  7 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/target/linux/mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi b/target/linux/mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi
+> index e9050e02e5..919fb23c53 100644
+> --- a/target/linux/mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi
+> +++ b/target/linux/mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi
+> @@ -148,7 +148,7 @@
+>                                         partname = "u-boot-env";
+>
+>                                         nvmem-layout {
+> -                                               compatible = "u-boot,env-layout";
+> +                                               compatible = "u-boot,env";
+>                                         };
+>                                 };
+>
+> diff --git a/target/linux/mediatek/dts/mt7981b-glinet-gl-mt2500.dts b/target/linux/mediatek/dts/mt7981b-glinet-gl-mt2500.dts
+> index 15818a90fc..0bd3ac0a29 100644
+> --- a/target/linux/mediatek/dts/mt7981b-glinet-gl-mt2500.dts
+> +++ b/target/linux/mediatek/dts/mt7981b-glinet-gl-mt2500.dts
+> @@ -164,7 +164,7 @@
+>                                 block-partition-u-boot-env {
+>                                         partname = "u-boot-env";
+>                                         nvmem-layout {
+> -                                               compatible = "u-boot,env-layout";
+> +                                               compatible = "u-boot,env";
+>                                         };
+>                                 };
+>                         };
+> diff --git a/target/linux/mediatek/dts/mt7981b-unielec-u7981-01-emmc.dts b/target/linux/mediatek/dts/mt7981b-unielec-u7981-01-emmc.dts
+> index abd4d4e59d..264c985612 100644
+> --- a/target/linux/mediatek/dts/mt7981b-unielec-u7981-01-emmc.dts
+> +++ b/target/linux/mediatek/dts/mt7981b-unielec-u7981-01-emmc.dts
+> @@ -32,7 +32,7 @@
+>                                         partname = "u-boot-env";
+>
+>                                         nvmem-layout {
+> -                                               compatible = "u-boot,env-layout";
+> +                                               compatible = "u-boot,env";
+>                                         };
+>                                 };
+>
+> diff --git a/target/linux/mediatek/dts/mt7986a-glinet-gl-mt6000.dts b/target/linux/mediatek/dts/mt7986a-glinet-gl-mt6000.dts
+> index fd0e1a6915..fe55f2ea3a 100644
+> --- a/target/linux/mediatek/dts/mt7986a-glinet-gl-mt6000.dts
+> +++ b/target/linux/mediatek/dts/mt7986a-glinet-gl-mt6000.dts
+> @@ -325,7 +325,7 @@
+>                                         partname = "u-boot-env";
+>
+>                                         nvmem-layout {
+> -                                               compatible = "u-boot,env-layout";
+> +                                               compatible = "u-boot,env";
+>                                         };
+>                                 };
+>
+> diff --git a/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-emmc.dtso b/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-emmc.dtso
+> index 4945185d69..cd266d6b0f 100644
+> --- a/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-emmc.dtso
+> +++ b/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-emmc.dtso
+> @@ -41,7 +41,7 @@
+>                                                 block-partition-env {
+>                                                         partname = "ubootenv";
+>                                                         nvmem-layout {
+> -                                                               compatible = "u-boot,env-layout";
+> +                                                               compatible = "u-boot,env";
+>                                                         };
+>                                                 };
+>                                                 emmc_rootfs: block-partition-production {
+> diff --git a/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-sd.dtso b/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-sd.dtso
+> index 1f5e1491a4..c2ab424e3e 100644
+> --- a/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-sd.dtso
+> +++ b/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-sd.dtso
+> @@ -39,7 +39,7 @@
+>                                                 block-partition-env {
+>                                                         partname = "ubootenv";
+>                                                         nvmem-layout {
+> -                                                               compatible = "u-boot,env-layout";
+> +                                                               compatible = "u-boot,env";
+>                                                         };
+>                                                 };
+>                                                 sd_rootfs: block-partition-production {
+> diff --git a/target/linux/mediatek/patches-6.6/911-dts-mt7622-bpi-r64-add-rootdisk.patch b/target/linux/mediatek/patches-6.6/911-dts-mt7622-bpi-r64-add-rootdisk.patch
+> index 4feb0e5d1a..a28d274493 100644
+> --- a/target/linux/mediatek/patches-6.6/911-dts-mt7622-bpi-r64-add-rootdisk.patch
+> +++ b/target/linux/mediatek/patches-6.6/911-dts-mt7622-bpi-r64-add-rootdisk.patch
+> @@ -25,7 +25,7 @@
+>  +                              block-partition-env {
+>  +                                      partname = "ubootenv";
+>  +                                      nvmem-layout {
+> -+                                              compatible = "u-boot,env-layout";
+> ++                                              compatible = "u-boot,env";
+>  +                                      };
+>  +                              };
+>  +                              emmc_rootfs: block-partition-production {
+> @@ -52,7 +52,7 @@
+>  +                              block-partition-env {
+>  +                                      partname = "ubootenv";
+>  +                                      nvmem-layout {
+> -+                                              compatible = "u-boot,env-layout";
+> ++                                              compatible = "u-boot,env";
+>  +                                      };
+>  +                              };
+>  +                              sd_rootfs: block-partition-production {
+> --
+> 2.45.2
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From zajec5 at gmail.com  Fri Aug  2 04:07:36 2024
+From: zajec5 at gmail.com (=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?=)
+Date: Fri,  2 Aug 2024 13:07:36 +0200
+Subject: [PATCH opkg-lede] libopkg: make "info" & "status" return error for no matching packages
+Message-ID: <20240802110736.14946-1-zajec5@gmail.com>
+
+From: Rafa? Mi?ecki <rafal at milecki.pl>
+
+This makes checking for packages easier.
+
+Example:
+$ opkg status blo0ckd; echo $?
+254
+
+Signed-off-by: Rafa? Mi?ecki <rafal at milecki.pl>
+---
+ libopkg/opkg_cmd.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/libopkg/opkg_cmd.c b/libopkg/opkg_cmd.c
+index 6547775..f82e10a 100644
+--- a/libopkg/opkg_cmd.c
++++ b/libopkg/opkg_cmd.c
+@@ -795,6 +795,7 @@ static int opkg_info_status_cmd(int argc, char **argv, int installed_only)
+ 	pkg_t *pkg;
+ 	char *pkg_name = NULL;
+ 	conffile_list_t *cl;
++	int err;
+ 
+ 	if (argc > 0) {
+ 		pkg_name = argv[0];
+@@ -806,11 +807,13 @@ static int opkg_info_status_cmd(int argc, char **argv, int installed_only)
+ 	else
+ 		pkg_hash_fetch_available(available);
+ 
++	err = -ENOENT;
+ 	for (i = 0; i < available->len; i++) {
+ 		pkg = available->pkgs[i];
+ 		if (pkg_name && fnmatch(pkg_name, pkg->name, conf->nocase)) {
+ 			continue;
+ 		}
++		err = 0;
+ 
+ 		pkg_formatted_info(stdout, pkg);
+ 
+@@ -831,7 +834,7 @@ static int opkg_info_status_cmd(int argc, char **argv, int installed_only)
+ 	}
+ 	pkg_vec_free(available);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ static int opkg_info_cmd(int argc, char **argv)
+-- 
+2.35.3
+
+
+
+From hauke at hauke-m.de  Sat Aug  3 05:15:23 2024
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sat, 3 Aug 2024 14:15:23 +0200
+Subject: realtek target needs help
+Message-ID: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+
+The realtek target supporting the Realtek switches is the only target in 
+OpenWrt main still on Linux kernel 5.15, all other targets are at least 
+on kernel 6.1, most of them are on Linux kernel 6.6.
+
+The next OpenWrt major release will use kernel 6.6 only, all targets not 
+migrated to kernel 6.6 will get removed from OpenWrt before branching. 
+Looking at the status of OpenWrt main branch we will probably branch in 
+the next 2 months.
+
+Here is the overview of the Linux kernel 6.6 migration status:
+https://github.com/openwrt/openwrt/issues/15192
+
+There is a pull request to drop the realtek target from OpenWrt main:
+https://github.com/openwrt/openwrt/pull/16052
+
+A migration of the realtek target to Linux kernel 6.1 was started here:
+https://github.com/openwrt/openwrt/pull/12726
+
+Hauke
+
+
+From mrkiko.rs at gmail.com  Sat Aug  3 11:45:12 2024
+From: mrkiko.rs at gmail.com (Enrico Mioso)
+Date: Sat,  3 Aug 2024 20:45:12 +0200
+Subject: [PATCH] mediatek: filogic: convert Mount Stuart series to use NVMEM-on-eMMC
+Message-ID: <20240803184515.23462-1-mrkiko.rs@gmail.com>
+
+Avoids the need of setting MAC addresses in user-space.
+
+Signed-off-by: Enrico Mioso <mrkiko.rs at gmail.com>
+---
+ .../dts/mt7988a-smartrg-mt-stuart.dtsi        | 30 +++++++++++++++++++
+ .../base-files/lib/preinit/10_fix_eth_mac.sh  |  4 +--
+ 2 files changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/target/linux/mediatek/dts/mt7988a-smartrg-mt-stuart.dtsi b/target/linux/mediatek/dts/mt7988a-smartrg-mt-stuart.dtsi
+index fac267abf4..d05271e8a2 100644
+--- a/target/linux/mediatek/dts/mt7988a-smartrg-mt-stuart.dtsi
++++ b/target/linux/mediatek/dts/mt7988a-smartrg-mt-stuart.dtsi
+@@ -251,12 +251,16 @@
+ 
+ &gmac0 {
+ 	status = "okay";
++	nvmem-cells = <&macaddr_mfginfo 0>;
++	nvmem-cell-names = "mac-address";
+ };
+ 
+ &gmac1 {
+ 	label = "wan";
+ 	status = "okay";
+ 	phy-mode = "usxgmii";
++	nvmem-cells = <&macaddr_mfginfo 0>;
++	nvmem-cell-names = "mac-address";
+ };
+ 
+ &gmac2 {
+@@ -265,6 +269,8 @@
+ 	phy-mode = "usxgmii";
+ 	phy-connection-type = "usxgmii";
+ 	phy = <&phy8>;
++	nvmem-cells = <&macaddr_mfginfo 1>;
++	nvmem-cell-names = "mac-address";
+ };
+ 
+ &gsw_phy0 {
+@@ -500,6 +506,14 @@
+ 			compatible = "block-device";
+ 
+ 			partitions {
++				block-partition-u-boot-env {
++					partname = "u-boot-env";
++
++					nvmem-layout {
++						compatible = "u-boot,env";
++					};
++				};
++
+ 				block-partition-factory {
+ 					partname = "factory";
+ 
+@@ -513,6 +527,22 @@
+ 						};
+ 					};
+ 				};
++
++				block-partition-mfginfo {
++					partname = "mfginfo";
++
++					nvmem-layout {
++						compatible = "fixed-layout";
++						#address-cells = <1>;
++						#size-cells = <1>;
++
++						macaddr_mfginfo: macaddr at 1D {
++							compatible = "mac-base";
++							reg = <0x1d 0x11>;
++							#nvmem-cell-cells = <1>;
++						};
++					};
++				};
+ 			};
+ 		};
+ 	};
+diff --git a/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh b/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh
+index fefca2327b..09e738883c 100644
+--- a/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh
++++ b/target/linux/mediatek/filogic/base-files/lib/preinit/10_fix_eth_mac.sh
+@@ -23,9 +23,7 @@ preinit_set_mac_address() {
+ 		ip link set dev eth1 address "$(macaddr_add $addr 1)"
+ 		;;
+ 	smartrg,sdg-8612|\
+-	smartrg,sdg-8614|\
+-	smartrg,sdg-8733|\
+-	smartrg,sdg-8734)
++	smartrg,sdg-8614)
+ 		addr=$(mmc_get_mac_ascii mfginfo MFG_MAC)
+ 		lan_addr=$(macaddr_add $addr 1)
+ 		ip link set dev wan address "$addr"
+-- 
+2.46.0
+
+
+
+From noreply at github.com  Sun Aug  4 13:55:27 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 04 Aug 2024 13:55:27 -0700
+Subject: [sdwalker/sdwalker.github.io] bfd655: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/0c18fb-bfd655@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: bfd6556e4dbbdb8503dfb11600f5dacb71340767
+      https://github.com/sdwalker/sdwalker.github.io/commit/bfd6556e4dbbdb8503dfb11600f5dacb71340767
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-08-04 (Sun, 04 Aug 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From marcin.wojciechowski at originatepro.pl  Tue Aug  6 01:01:07 2024
+From: marcin.wojciechowski at originatepro.pl (Marcin Wojciechowski)
+Date: Tue,  6 Aug 2024 08:01:07 GMT
+Subject: =?UTF-8?Q?Zam=C3=B3wienie_?=
+Message-ID: <20240806084500-0.1.d9.1reqr.0.13oyf5f71y@OriginatePro.pl>
+
+Witam,
+
+Czy potrzebuj? Pa?stwo aktualnie nowych klient?w B2B?
+
+Od 10 lat pomagamy pozyskiwa? nowych partner?w biznesowych w Polsce oraz za granic?.
+
+Ponad 3000 zrealizowanych projekt?w zar?wno dla najwi?kszych globalnych korporacji, polskich sp??ek gie?dowych czy te? niewielkich dzia?alno?ci gospodarczych sprawia, ?e jeste?my jednym z lider?w bran?y.
+
+Z wieloma firmami wsp??pracujemy nieprzerwanie od wielu lat, generuj?c stopy zwrot?w si?gaj?ce tysi?cy punkt?w procentowych, pomagaj?c jednocze?nie w spos?b powtarzalny oraz policzalny poszerza? portfele klient?w biznesowych.
+
+Je?li maj? Pa?stwo przestrze? na obs?ug? nowych klient?w, zapraszam do kontaktu zwrotnego.  
+
+
+Pozdrawiam
+Marcin Wojciechowski
+
+
+From tim at seoss.co.uk  Tue Aug  6 10:12:08 2024
+From: tim at seoss.co.uk (Tim Small)
+Date: Tue, 6 Aug 2024 18:12:08 +0100
+Subject: realtek target needs help
+In-Reply-To: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+Message-ID: <a28b719f-4084-4f27-9e7a-21e25e38606e@seoss.co.uk>
+
+In the past, I've done some very minor work to add support for some 
+Realtek switch variants (not merged as-yet).
+
+If anyone would like to get involved with this, it might be worth 
+looking for a used HP 1920-24G switch.  This has good support in OpenWrt 
+23.05, reasonable storage, lowish power usage (for a 24 port gigabit 
+switch with an additional 4 SFP ports), is fanless, includes an external 
+serial console port (RS232 with "Cisco" type pinout on an 8P8C 
+connector), and the hardware also includes a lifetime warranty.  When 
+looking for online auctions etc. the following are useful search terms 
+(the switch was sold under both the HP and HPE brands):
+
+HP 1920-24G
+HPE 1920-24G
+JG924A
+
+... check for "JG924A" printed on the front panel to ensure it's the 
+correct model.
+
+Used prices in the UK are under GBP 30 including shipping (that's circa 
+Euro 35 or USD 38).
+
+Third party Cisco pinout RS232 to USB serial console adapters are under 
+GBP 10 if you don't already have suitable hardware.
+
+I'm away from the location where I have my hardware for the next 3 weeks 
+or so, so won't be able to help out with anything for a while unfortunately.
+
+Cheers,
+
+Tim.
+
+On 03/08/2024 13:15, Hauke Mehrtens wrote:
+> The realtek target supporting the Realtek switches is the only target in 
+> OpenWrt main still on Linux kernel 5.15, all other targets are at least 
+> on kernel 6.1, most of them are on Linux kernel 6.6.
+> 
+> The next OpenWrt major release will use kernel 6.6 only, all targets not 
+> migrated to kernel 6.6 will get removed from OpenWrt before branching. 
+> Looking at the status of OpenWrt main branch we will probably branch in 
+> the next 2 months.
+> 
+> Here is the overview of the Linux kernel 6.6 migration status:
+> https://github.com/openwrt/openwrt/issues/15192
+> 
+> There is a pull request to drop the realtek target from OpenWrt main:
+> https://github.com/openwrt/openwrt/pull/16052
+> 
+> A migration of the realtek target to Linux kernel 6.1 was started here:
+> https://github.com/openwrt/openwrt/pull/12726
+> 
+> Hauke
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+-- 
+South East Open Source Solutions Limited
+Registered in England and Wales with company number 06134732.
+Registered Office: 2 Powell Gardens, Redhill, Surrey, RH1 1TQ
+VAT number: 900 6633 53  http://seoss.co.uk/ +44-(0)1273-808309
+
+
+From robimarko at gmail.com  Tue Aug  6 12:47:37 2024
+From: robimarko at gmail.com (Robert Marko)
+Date: Tue, 6 Aug 2024 21:47:37 +0200
+Subject: [PATCH V2 0/3] Enhance GL-MV1000 support
+In-Reply-To: <ZqdK9bmGMtsW-EvY@rivendell>
+References: <20240702160924.732179-1-mrkiko.rs@gmail.com> <ZqdK9bmGMtsW-EvY@rivendell>
+Message-ID: <CAOX2RU4CC5894cYSE66tSnpU6Td5KOrBZLvCu2040WyNnonQww@mail.gmail.com>
+
+Merged, thanks.
+
+Regards,
+Robert
+
+On Mon, 29 Jul 2024 at 09:56, Enrico Mioso <mrkiko.rs at gmail.com> wrote:
+>
+> Hello all,
+>
+> as you might already have guessed, this is just a friendly ping.
+>
+> Thanks,
+> Enrico
+>
+> On Tue, Jul 02, 2024 at 06:09:06PM +0200, Enrico Mioso wrote:
+> > This series contains some already submitted patches to enhance GL.iNet
+> > GL-MV1000 support, enabling easier boot media selection (SD card vs internal
+> > MMC) without forcing boot to stock firmware or connecting to UART.
+> >
+> > Changes since V1:
+> > - better approach (different kernel config option) to enable 4K writes
+> >
+> > Signed-off-by: Enrico Mioso <mrkiko.rs at gmail.com>
+> >
+> > Enrico Mioso (3):
+> >   mvebu: GL-MV1000: add custom boot script
+> >   mvebu: enable CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y config option
+> >   mvebu: GL-MV1000: let u-boot-env be writable again
+> >
+> >  target/linux/mvebu/config-6.6                 |  1 +
+> >  .../dts/marvell/armada-3720-gl-mv1000.dts     |  1 -
+> >  target/linux/mvebu/image/cortexa53.mk         |  1 +
+> >  target/linux/mvebu/image/gl-mv1000.bootscript | 28 +++++++++++++++++++
+> >  4 files changed, 30 insertions(+), 1 deletion(-)
+> >  create mode 100644 target/linux/mvebu/image/gl-mv1000.bootscript
+> >
+> > --
+> > 2.45.2
+> >
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From luizluca at gmail.com  Wed Aug  7 21:39:48 2024
+From: luizluca at gmail.com (Luiz Angelo Daros de Luca)
+Date: Thu, 8 Aug 2024 01:39:48 -0300
+Subject: realtek target needs help
+In-Reply-To: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+Message-ID: <CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+
+> The realtek target supporting the Realtek switches is the only target in
+> OpenWrt main still on Linux kernel 5.15, all other targets are at least
+> on kernel 6.1, most of them are on Linux kernel 6.6.
+>
+> The next OpenWrt major release will use kernel 6.6 only, all targets not
+> migrated to kernel 6.6 will get removed from OpenWrt before branching.
+> Looking at the status of OpenWrt main branch we will probably branch in
+> the next 2 months.
+>
+> Here is the overview of the Linux kernel 6.6 migration status:
+> https://github.com/openwrt/openwrt/issues/15192
+>
+> There is a pull request to drop the realtek target from OpenWrt main:
+> https://github.com/openwrt/openwrt/pull/16052
+>
+> A migration of the realtek target to Linux kernel 6.1 was started here:
+> https://github.com/openwrt/openwrt/pull/12726
+
+I noticed that #15192 metions
+https://github.com/howels/openwrt/commits/realtek-6.6-test/ as the
+development branch. Is anyone coordinating that front? Is there a TODO
+list? I have some devices to play with (dgs-1210-28p and dgs-1210-52p)
+and I can give a hand on specific topics but I do not have too much
+time to lead it. There are some commits in that dev branch that are
+actually disabling things. I might be able to work on fixing those
+things or check what is useful from the 6.1 PR. However, I don't want
+to step over someone's WIP and waste time in useless rework.
+
+Regards,
+
+Luiz
+
+
+From kamil.tralewski at originateinc.pl  Fri Aug  9 00:35:38 2024
+From: kamil.tralewski at originateinc.pl (Kamil Tralewski)
+Date: Fri,  9 Aug 2024 07:35:38 GMT
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+Message-ID: <20240809074501-0.1.eh.1iano.0.aisb2iio63@OriginateInc.pl>
+
+Dzie? dobry,
+
+zapozna?em si? z Pa?stwa ofert? i z przyjemno?ci? przyznaj?, ?e przyci?ga uwag? i zach?ca do dalszych rozm?w. 
+
+Pomy?la?em, ?e mo?e m?g?bym mie? sw?j wk?ad w Pa?stwa rozw?j i pom?c dotrze? z t? ofert? do wi?kszego grona odbiorc?w. Pozycjonuj? strony www, dzi?ki czemu generuj? ?wietny ruch w sieci.
+
+Mo?emy porozmawia? w najbli?szym czasie?
+
+
+Pozdrawiam
+Kamil Tralewski
+
+
+From dannil at protonmail.com  Sat Aug 10 11:39:49 2024
+From: dannil at protonmail.com (dannil at protonmail.com)
+Date: Sat, 10 Aug 2024 18:39:49 +0000
+Subject: Buildbots missing for ipq60xx?
+Message-ID: <zKc2_w6Pv2vkz47rTDY1M1NoPtfhSUXbuYpo1GYLae2Cb7fVE4nhqMniqtAAtxoxvowDATCNdJDSpoICBJoshWYDk7XIjtAOjN3UhSbR2pQ=@protonmail.com>
+
+I was taking a look at the ipq60xx target, and noticed that none of it's devices are available on the firmware selector. I saw on https://buildbot.openwrt.org/images/#/builders that the target doesn't have a builder, is this the reason why the devices are missing? With the upcoming branching of 24.x, it would be good to have that configured so it at least gets built as part of the next release.
+
+/ Daniel
+
+
+From s.l-h at gmx.de  Sat Aug 10 12:22:47 2024
+From: s.l-h at gmx.de (Stefan Lippers-Hollmann)
+Date: Sat, 10 Aug 2024 21:22:47 +0200
+Subject: Buildbots missing for ipq60xx?
+In-Reply-To: <mailman.81775.1723315198.1280.openwrt-devel@lists.openwrt.org>
+References: <mailman.81775.1723315198.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <20240810212247.32a886ab@mir>
+
+Hi
+
+On 2024-08-10, Daniel Nilsson via openwrt-devel wrote:
+> I was taking a look at the ipq60xx target, and noticed that none of 
+> it's devices are available on the firmware selector. I saw on 
+> https://buildbot.openwrt.org/images/#/builders that the target doesn't 
+> have a builder, is this the reason why the devices are missing? 
+
+qualcommax/ipq60xx is explicitly marked as source-only and intentionally
+not built on the buildbots, yet:
+
+https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/qualcommax/ipq60xx/target.mk
+
+AFAIK the major reason for that is the current state of the wireless
+firmware for ath11k not playing nice with the (typically older) BDF
+definitions for its devices.
+
+> With the upcoming branching of 24.x, it would be good to have that 
+> configured so it at least gets built as part of the next release.
+
+It won't be part of the next release, until this is resolved and the 
+source-only flag gets removed - pending a new (and official, not via 
+third parties) wireless firmware release from QCA.
+
+Regards
+	Stefan Lippers-Hollmann
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: Digitale Signatur von OpenPGP
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20240810/87335bea/attachment.sig>
+
+From dannil at protonmail.com  Sun Aug 11 08:49:31 2024
+From: dannil at protonmail.com (Daniel Nilsson)
+Date: Sun, 11 Aug 2024 15:49:31 +0000
+Subject: Buildbots missing for ipq60xx?
+In-Reply-To: <20240810212247.32a886ab@mir>
+References: <mailman.81775.1723315198.1280.openwrt-devel@lists.openwrt.org> <20240810212247.32a886ab@mir>
+Message-ID: <pPutoioxWue5qdz9ZovtVC5YCak-S4T1oSWCQMZjpXNgSFDRoaaCqnEicDjrqp-heDVTAJ0Ko7iJl5hgJj-8-cIyoww21Drvds8kmJ3YCeQ=@protonmail.com>
+
+Ah that makes sense, thanks for the insights and a fast reply!
+
+/ Daniel
+
+On Saturday, August 10th, 2024 at 21:22, Stefan Lippers-Hollmann <s.l-h at gmx.de> wrote:
+>
+>
+> Hi
+>
+> On 2024-08-10, Daniel Nilsson via openwrt-devel wrote:
+>
+> > I was taking a look at the ipq60xx target, and noticed that none of
+> > it's devices are available on the firmware selector. I saw on
+> > https://buildbot.openwrt.org/images/#/builders that the target doesn't
+> > have a builder, is this the reason why the devices are missing?
+>
+>
+> qualcommax/ipq60xx is explicitly marked as source-only and intentionally
+> not built on the buildbots, yet:
+>
+> https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/qualcommax/ipq60xx/target.mk
+>
+> AFAIK the major reason for that is the current state of the wireless
+> firmware for ath11k not playing nice with the (typically older) BDF
+> definitions for its devices.
+>
+> > With the upcoming branching of 24.x, it would be good to have that
+> > configured so it at least gets built as part of the next release.
+>
+>
+> It won't be part of the next release, until this is resolved and the
+> source-only flag gets removed - pending a new (and official, not via
+> third parties) wireless firmware release from QCA.
+>
+> Regards
+> Stefan Lippers-Hollmann
+
+
+From mail at aparcar.org  Sun Aug 11 11:34:09 2024
+From: mail at aparcar.org (Paul Spooren)
+Date: Sun, 11 Aug 2024 20:34:09 +0200
+Subject: State of APK package manger integration
+In-Reply-To: <051F0283-AF31-4522-B4A9-1F56086E5A4C@aparcar.org>
+References: <051F0283-AF31-4522-B4A9-1F56086E5A4C@aparcar.org>
+Message-ID: <72830615-1E34-4AB7-A408-7542A66B8F66@aparcar.org>
+
+Hi all,
+
+Some time has passed and there are further news for the APK migration:
+
+Timo and Ansuel worked out a way to allow index trust[1]. If a package index is signed by a trusted key, all containing packages are automatically trusted. It is still possible distribute and sign single packages.
+
+With this in place, the last missing bit was to teach our Buildbot infrastructure to sign indexes with the Buildmaster key[2]. For context, the OpenWrt project does not store private signing keys on Buildworkers but only on the Buildmaster. Indexes are transferred to the Buildmaster and signed there, later uploaded to the download server.
+
+This, too, works now and can be tested for a limited number of targets/archs (if your favorite is missing, please ping me)[3].
+
+The firmware contains a APK public key (in /etc/apk/keys) for testing[4] and the download server is modified[5]. The key is not official and will be replaced once things go further upstream.
+
+If you run one of those images, please give APK a spin and see how it?s doing. A simple example would b to run the following:
+
+    apk add luci # install LuCI
+    apk audit # see what file changed since rootfs creation
+
+Looking at the failing packages[6], some maintainers have not yet switches to an APK conform version schema. I?ll try to ping those or create PRs myself.
+
+I?m optimistic?ish that things will work out just great. Please give it a test and let me know how it goes.
+
+Best,
+Paul
+
+[1]: https://gitlab.alpinelinux.org/alpine/apk-tools/-/commit/54caa31be633efc5f655700b77af290124f71689
+[2]: https://github.com/openwrt/buildbot/commit/a94d4e15fdc1e9715d7d0cfdcc62227186d0fc45
+[3]: https://buildbot.aparcar.org/targets/
+[4]: https://github.com/aparcar/openwrt/commit/de9b171c5a98c9e23e3da8b787ddc5ba7dd0ac53
+[5]: https://github.com/aparcar/openwrt/commit/2c98eb52e365be6e59b470b4c0001cf29e8a6fb3
+[6]: https://buildbot.aparcar.org/faillogs/x86_64/
+
+
+> On 13. Jun 2024, at 13:29, Paul Spooren <mail at aparcar.org> wrote:
+> 
+> Dear all,
+> 
+> With great contributions from Timo, Ansuel, Jonas, Daniel, Petr, John, and many others, APK is evolving smoothly, and the integration is progressing well!
+> 
+> We have established a staging buildbot environment[1] that compiles firmware images and certain packages. To replicate this setup locally, simply enable ?Use APK instead of OPKG to build distribution? (`USE_APK`) in the ?Global build settings?.
+> 
+> Once the firmware is compiled, it is uploaded to the staging downloads page[2]. Currently, we have limited the targets created to a subset that we have found useful for testing purposes.The firmware images boot up successfully and allow for the installation of external feeds[3]!
+> 
+> Be aware, there is still some work required on the package feeds to accommodate the new version requirements. If you are maintaining something, please take a look (e.g. [4]).
+> 
+> We are facing an architectural challenge that needs to be addressed. In the past, both OPKG and APKv2 would only sign the package indexes and automatically trust the included packages. With APKv3 (the version we are using), each individual package is signed. We are exploring ways to securely integrate this into the existing setup, where build workers do not have a private key but upload the package index to a dedicated server for signing. We will keep you updated on our progress.
+> 
+> I will provide more updates as we make further advancements. Please stay tuned for more information.
+> 
+> Sunshine,
+> Paul
+> 
+> PS: since we do parallel experiments with the Buildbot itself some packages are missing, please be aware that your milage may vary when testing package installation
+> 
+> [1]: https://buildbot.staging.openwrt.org <https://buildbot.staging.openwrt.org/>
+> [2]: https://downloads.staging.openwrt.org/snapshots/targets/
+> [2]: apk add --allow-untrusted kmod-usb-serial-cp210x
+> [4]: https://github.com/openwrt/packages/issues/23706
+> 
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: Message signed with OpenPGP
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20240811/f21e5177/attachment.sig>
+
+From noreply at github.com  Sun Aug 11 14:42:59 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 11 Aug 2024 14:42:59 -0700
+Subject: [sdwalker/sdwalker.github.io] 8065ad: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/bfd655-8065ad@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 8065ad83c5a41f3f7b2b91497f9b0f2def0a0750
+      https://github.com/sdwalker/sdwalker.github.io/commit/8065ad83c5a41f3f7b2b91497f9b0f2def0a0750
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-08-11 (Sun, 11 Aug 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From abuse at basmevissen.nl  Mon Aug 12 03:21:24 2024
+From: abuse at basmevissen.nl (Bas Mevissen)
+Date: Mon, 12 Aug 2024 12:21:24 +0200
+Subject: realtek target needs help
+In-Reply-To: <CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+ <CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+Message-ID: <c2d20cbd-cfc3-4aa0-9158-0ee11b4f0d8b@basmevissen.nl>
+
+
+
+On 08/08/2024 06:39, Luiz Angelo Daros de Luca wrote:
+>> The realtek target supporting the Realtek switches is the only target in
+>> OpenWrt main still on Linux kernel 5.15, all other targets are at least
+>> on kernel 6.1, most of them are on Linux kernel 6.6.
+>>
+>> The next OpenWrt major release will use kernel 6.6 only, all targets not
+>> migrated to kernel 6.6 will get removed from OpenWrt before branching.
+>> Looking at the status of OpenWrt main branch we will probably branch in
+>> the next 2 months.
+>>
+>> Here is the overview of the Linux kernel 6.6 migration status:
+>> https://github.com/openwrt/openwrt/issues/15192
+>>
+>> There is a pull request to drop the realtek target from OpenWrt main:
+>> https://github.com/openwrt/openwrt/pull/16052
+>>
+>> A migration of the realtek target to Linux kernel 6.1 was started here:
+>> https://github.com/openwrt/openwrt/pull/12726
+> 
+> I noticed that #15192 metions
+> https://github.com/howels/openwrt/commits/realtek-6.6-test/ as the
+> development branch. Is anyone coordinating that front? Is there a TODO
+> list? I have some devices to play with (dgs-1210-28p and dgs-1210-52p)
+> and I can give a hand on specific topics but I do not have too much
+> time to lead it. There are some commits in that dev branch that are
+> actually disabling things. I might be able to work on fixing those
+> things or check what is useful from the 6.1 PR. However, I don't want
+> to step over someone's WIP and waste time in useless rework.
+> 
+
+I acquired an HP 1920-24G and gave this branch a spin. Unfortunately, it 
+does not boot with this branch. Booting 23.05.4 and current main branch 
+are fine.
+
+> System application is starting...[    0.000000] Linux version 6.6.41 (bas at lenovo) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.0 4
+> [    0.000000] RTL838X model is 83826800
+> [    0.000000] SoC Type: RTL8382
+> [    0.000000] printk: bootconsole [early0] enabled
+> [    0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+> [    0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+> [    0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+> [    0.000000] printk: bootconsole [ns16550a0] enabled
+> [    0.000000] Initrd not found or empty - disabling initrd
+> [    0.000000] Using appended Device Tree.
+> [    0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+> [    0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+> [    0.000000] Zone ranges:
+> [    0.000000]   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+
+So there is work to do. Not sure where to start as this is very early in 
+the kernel boot...
+
+For reference, this is part of the boot from 
+https://firmware-selector.openwrt.org/?version=SNAPSHOT&target=realtek%2Frtl838x&id=hpe_1920-24g
+
+> System application is starting...[    0.000000] Linux version 5.15.161 (builder at buildhost) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.4
+> [    0.000000] RTL838X model is 83826800
+> [    0.000000] SoC Type: RTL8382
+> [    0.000000] printk: bootconsole [early0] enabled
+> [    0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+> [    0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+> [    0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+> [    0.000000] printk: bootconsole [ns16550a0] enabled
+> [    0.000000] Initrd not found or empty - disabling initrd
+> [    0.000000] Using appended Device Tree.
+> [    0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+> [    0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+> [    0.000000] Zone ranges:
+> [    0.000000]   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+> [    0.000000] pcpu-alloc: [0] 0 
+> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 32480
+> [    0.000000] Kernel command line: earlycon
+> [    0.000000] Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+> [    0.000000] Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> [    0.000000] Memory: 110240K/131072K available (6243K kernel code, 615K rwdata, 1380K rodata, 11016K init, 219K bss, 20832K reserved, 0K)
+> [    0.000000] SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> [    0.000000] NR_IRQS: 256
+> [    0.000000] rtl83xx-clk: initialized, CPU 500 MHz, MEM 300 MHz (8 Bit DDR3), LXB 200 MHz
+> [    0.000000] clocksource: realtek_otto_timer: mask: 0xfffffff max_cycles: 0xfffffff, max_idle_ns: 38225208801 ns
+> [    0.000005] sched_clock: 28 bits at 3125kHz, resolution 320ns, wraps every 42949672800ns
+> [    0.027242] Calibrating delay loop... 498.89 BogoMIPS (lpj=2494464)
+> [    0.167689] pid_max: default: 32768 minimum: 301
+> [    0.185406] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+> [    0.209782] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+> [    0.261395] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+> [    0.294122] futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+> [    0.317208] pinctrl core: initialized pinctrl subsystem
+> [    0.338365] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+> [    0.400984] rtl83xx-clk clock-controller: rate setting enabled, CPU 300-625 MHz, MEM 300-300 MHz, LXB 200-200 MHz, OVERCLOCK AT OWN RISK
+> [    0.447603] clocksource: Switched to clocksource realtek_otto_timer
+> [    0.472639] NET: Registered PF_INET protocol family
+> [    0.489515] IP idents hash table entries: 2048 (order: 2, 16384 bytes, linear)
+> [    0.515879] tcp_listen_portaddr_hash hash table entries: 1024 (order: 0, 4096 bytes, linear)
+> [    0.544082] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+> [    0.569908] TCP established hash table entries: 1024 (order: 0, 4096 bytes, linear)
+> [    0.595459] TCP bind hash table entries: 1024 (order: 0, 4096 bytes, linear)
+> [    0.618994] TCP: Hash tables configured (established 1024 bind 1024)
+> [    0.640779] UDP hash table entries: 256 (order: 0, 4096 bytes, linear)
+> [    0.662640] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes, linear)
+> [    0.686786] NET: Registered PF_UNIX/PF_LOCAL protocol family
+> [    0.918317] workingset: timestamp_bits=14 max_order=15 bucket_order=1
+> [    0.955984] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+> [    0.975500] jffs2: version 2.2 (NAND) (SUMMARY) (ZLIB) (LZMA) (RTIME) (CMODE_PRIORITY) (c) 2001-2006 Red Hat, Inc.
+> [    1.101729] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 252)
+> [    1.161168] pinctrl-single 1b001000.pinmux: 32 pins, size 4
+> [    1.180836] pinctrl-single 1b00a000.pinmux: 32 pins, size 4
+> [    1.202170] Probing RTL8231 GPIOs
+> [    1.213291] rtl8231_init called, MDIO bus ID: 0
+> [    1.231051] Serial: 8250/16550 driver, 16 ports, IRQ sharing enabled
+> [    1.260429] printk: console [ttyS0] disabled
+> [    1.274857] 18002000.uart: ttyS0 at MMIO 0x18002000 (irq = 31, base_baud = 12500000) is a 16550A
+> [    1.304170] printk: console [ttyS0] enabled
+> [    1.304170] printk: console [ttyS0] enabled
+> [    1.331969] printk: bootconsole [early0] disabled
+> [    1.331969] printk: bootconsole [early0] disabled
+> [    1.363204] printk: bootconsole [ns16550a0] disabled
+> [    1.363204] printk: bootconsole [ns16550a0] disabled
+> [    1.714325] brd: module loaded
+> [    1.736624] spi-nor spi0.0: mx25l25635e (32768 Kbytes)
+> [    1.753946] 8 fixed-partitions partitions found on MTD device spi0.0
+> [    1.775182] OF: Bad cell count for /soc/spi at 1200/flash at 0/partitions
+> [    1.796134] OF: Bad cell count for /soc/spi at 1200/flash at 0/partitions
+> [    1.817737] Creating 8 MTD partitions on "spi0.0":
+> [    1.833758] 0x000000000000-0x000000050000 : "bootware_basic"
+> [    1.860824] 0x000000060000-0x000000090000 : "bootware_data"
+> [    1.882762] 0x000000090000-0x0000000d0000 : "bootware_extend"
+> [    1.910596] 0x000000100000-0x000000150000 : "bootware_basic_backup"
+> [    1.934768] 0x000000160000-0x000000190000 : "bootware_data_backup"
+> [    1.963901] 0x000000190000-0x0000001d0000 : "bootware_extend_backup"
+> [    1.988884] 0x000000300000-0x000001ff0000 : "firmware"
+> [    2.015301] 0x000001ff0000-0x000002000000 : "factory"
+> [    2.058314] Probing RTL838X eth device pdev: 820ad200, dev: 820ad210
+> [    2.130005] Found SoC ID: 8382: RTL8382, family 8380
+> [    2.146826] rtl8380_init_mac
+> [    2.156517] Using MAC 0000820ad2100000
+> [    2.319389] Realtek RTL8218B (internal) mdio-bus:08: Detected internal RTL8218B
+> [    2.343778] Firmware loaded. Size 1184, magic: 83808380
+> [    5.556027] Realtek RTL8214FC mdio-bus:18: Detected external RTL8214FC
+> [    5.577828] Firmware loaded. Size 1676, magic: 83808380
+> [    7.045826] Phy on MAC 0: 1cc981
+> [    7.067674] Realtek RTL8218B (external) mdio-bus:00: Detected external RTL8218B
+> [    7.092048] Firmware loaded. Size 1168, magic: 83808380
+> [    7.257965] Realtek RTL8218B (external) mdio-bus:00: Detected chip revision 0002
+> [    8.780420] i2c_dev: i2c /dev entries driver
+> [    8.804131] NET: Registered PF_INET6 protocol family
+> [    8.852177] Segment Routing with IPv6
+> [    8.864681] In-situ OAM (IOAM) with IPv6
+> [    8.878051] NET: Registered PF_PACKET protocol family
+> [    8.895072] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you n.
+> [    8.939512] 8021q: 802.1Q VLAN Support v1.8
+> [    8.956605] i2c-gpio i2c-gpio-0: Slow GPIO pins might wreak havoc into I2C/SMBus bus timing
+> [    8.985190] i2c-gpio i2c-gpio-0: using lines 464 (SDA) and 465 (SCL)
+> [    9.007100] i2c-gpio i2c-gpio-1: Slow GPIO pins might wreak havoc into I2C/SMBus bus timing
+> [    9.035416] i2c-gpio i2c-gpio-1: using lines 474 (SDA) and 475 (SCL)
+> [    9.057303] i2c-gpio i2c-gpio-2: Slow GPIO pins might wreak havoc into I2C/SMBus bus timing
+> [    9.085743] i2c-gpio i2c-gpio-2: using lines 478 (SDA) and 479 (SCL)
+> [    9.107741] i2c-gpio i2c-gpio-3: Slow GPIO pins might wreak havoc into I2C/SMBus bus timing
+> [    9.136025] i2c-gpio i2c-gpio-3: using lines 482 (SDA) and 483 (SCL)
+> [    9.159567] sfp sfp-0: Host maximum power 1.0W
+> [    9.174502] sfp sfp-0: No tx_disable pin: SFP modules will always be emitting.
+> [    9.200696] sfp sfp-1: Host maximum power 1.0W
+> [    9.215628] sfp sfp-1: No tx_disable pin: SFP modules will always be emitting.
+> [    9.241916] sfp sfp-2: Host maximum power 1.0W
+> [    9.256829] sfp sfp-2: No tx_disable pin: SFP modules will always be emitting.
+> [    9.283033] sfp sfp-3: Host maximum power 1.0W
+> [    9.297955] sfp sfp-3: No tx_disable pin: SFP modules will always be emitting.
+> [    9.405206] Phy on MAC 0: 1cc981
+> [    9.427029] Realtek RTL8218B (external) rtl838x slave mii-0:00: Detected external RTL8218B
+> [    9.454597] Firmware loaded. Size 1168, magic: 83808380
+> [    9.617961] Realtek RTL8218B (external) rtl838x slave mii-0:00: Detected chip revision 0002
+> [   11.193167] Realtek RTL8218B (internal) rtl838x slave mii-0:08: Detected internal RTL8218B
+> [   11.220738] Firmware loaded. Size 1184, magic: 83808380
+> [   14.434437] Realtek RTL8214FC rtl838x slave mii-0:18: Detected external RTL8214FC
+> [   14.459393] Firmware loaded. Size 1676, magic: 83808380
+> [   16.083383] In rtl83xx_vlan_setup
+> [   16.094501] UNKNOWN_MC_PMASK: 000000001fffffff
+> [   16.109320] VLAN profile 0: L2 learning: 1, UNKN L2MC FLD PMSK 511,          UNKN IPMC FLD PMSK 511, UNKN IPv6MC FLD PMSK: 511
+> [   17.177642] rtl83xx_enable_phy_polling:          fffffff
+> [   18.298553] rtl83xx-switch switch at 1b000000: configuring for fixed/internal link mode
+> [   18.325275] rtl83xx-switch switch at 1b000000: Link is Up - 1Gbps/Full - flow control off
+> [   18.352544] rtl83xx-switch switch at 1b000000 lan1 (uninitialized): PHY [mdio-bus:00] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.395476] rtl83xx-switch switch at 1b000000 lan2 (uninitialized): PHY [mdio-bus:01] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.441688] rtl83xx-switch switch at 1b000000 lan3 (uninitialized): PHY [mdio-bus:02] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.484589] rtl83xx-switch switch at 1b000000 lan4 (uninitialized): PHY [mdio-bus:03] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.531125] rtl83xx-switch switch at 1b000000 lan5 (uninitialized): PHY [mdio-bus:04] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.574038] rtl83xx-switch switch at 1b000000 lan6 (uninitialized): PHY [mdio-bus:05] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.620311] rtl83xx-switch switch at 1b000000 lan7 (uninitialized): PHY [mdio-bus:06] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.663472] rtl83xx-switch switch at 1b000000 lan8 (uninitialized): PHY [mdio-bus:07] driver [Realtek RTL8218B (external)] (irq=POLL)
+> [   18.709909] rtl83xx-switch switch at 1b000000 lan9 (uninitialized): PHY [mdio-bus:08] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   18.752672] rtl83xx-switch switch at 1b000000 lan10 (uninitialized): PHY [mdio-bus:09] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   18.799315] rtl83xx-switch switch at 1b000000 lan11 (uninitialized): PHY [mdio-bus:0a] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   18.842668] rtl83xx-switch switch at 1b000000 lan12 (uninitialized): PHY [mdio-bus:0b] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   18.889330] rtl83xx-switch switch at 1b000000 lan13 (uninitialized): PHY [mdio-bus:0c] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   18.932674] rtl83xx-switch switch at 1b000000 lan14 (uninitialized): PHY [mdio-bus:0d] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   18.979333] rtl83xx-switch switch at 1b000000 lan15 (uninitialized): PHY [mdio-bus:0e] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   19.022323] rtl83xx-switch switch at 1b000000 lan16 (uninitialized): PHY [mdio-bus:0f] driver [Realtek RTL8218B (internal)] (irq=POLL)
+> [   19.069302] rtl83xx-switch switch at 1b000000 lan17 (uninitialized): PHY [mdio-bus:10] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.111088] rtl83xx-switch switch at 1b000000 lan18 (uninitialized): PHY [mdio-bus:11] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.151179] rtl83xx-switch switch at 1b000000 lan19 (uninitialized): PHY [mdio-bus:12] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.194795] rtl83xx-switch switch at 1b000000 lan20 (uninitialized): PHY [mdio-bus:13] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.234644] rtl83xx-switch switch at 1b000000 lan21 (uninitialized): PHY [mdio-bus:14] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.278315] rtl83xx-switch switch at 1b000000 lan22 (uninitialized): PHY [mdio-bus:15] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.318746] rtl83xx-switch switch at 1b000000 lan23 (uninitialized): PHY [mdio-bus:16] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.361978] rtl83xx-switch switch at 1b000000 lan24 (uninitialized): PHY [mdio-bus:17] driver [REALTEK RTL8218D] (irq=POLL)
+> [   19.424357] rtl8214fc_power_set: Powering off COPPER (port 24)
+> [   19.474762] rtl8214fc_power_set: Powering on FIBRE (port 24)
+> [   19.514637] rtl83xx-switch switch at 1b000000 lan25 (uninitialized): PHY [mdio-bus:18] driver [Realtek RTL8214FC] (irq=POLL)
+> [   19.577277] rtl8214fc_power_set: Powering off COPPER (port 25)
+> [   19.628139] rtl8214fc_power_set: Powering on FIBRE (port 25)
+> [   19.668156] rtl83xx-switch switch at 1b000000 lan26 (uninitialized): PHY [mdio-bus:19] driver [Realtek RTL8214FC] (irq=POLL)
+> [   19.730403] rtl8214fc_power_set: Powering off COPPER (port 26)
+> [   19.781615] rtl8214fc_power_set: Powering on FIBRE (port 26)
+> [   19.821819] rtl83xx-switch switch at 1b000000 lan27 (uninitialized): PHY [mdio-bus:1a] driver [Realtek RTL8214FC] (irq=POLL)
+> [   19.884395] rtl8214fc_power_set: Powering off COPPER (port 27)
+> [   19.936105] rtl8214fc_power_set: Powering on FIBRE (port 27)
+> [   19.976501] rtl83xx-switch switch at 1b000000 lan28 (uninitialized): PHY [mdio-bus:1b] driver [Realtek RTL8214FC] (irq=POLL)
+> [   20.015305] DSA: tree 0 setup
+> [   20.025404] LINK state irq: 20
+> [   20.035807] In rtl83xx_setup_qos
+> [   20.046624] Setting up RTL838X QoS
+> [   20.057987] RTL838X_PRI_SEL_TBL_CTRL(i): 00033112
+> [   20.073655] Current Intprio2queue setting: 00000000
+> [   20.089905] QM_PKT2CPU_INTPRI_MAP: 00fac688
+> [   20.104060] rtl838x_dbgfs_init called
+> [   20.117540] rtl83xx_fib_event_work_do: FIB4 default rule failed
+> [   20.139416] rtl83xx_fib_event_work_do: FIB4 default rule failed
+> [   20.170024] clk: Disabling unused clocks
+> [   20.307306] Freeing unused kernel image (initmem) memory: 11016K
+> [   20.327384] This architecture does not have kernel memory protection.
+> [   20.348849] Run /init as init process
+> [   20.361084]   with arguments:
+> [   20.370988]     /init
+> [   20.378625]   with environment:
+> [   20.389125]     HOME=/
+
+> Regards,
+> 
+> Luiz
+> 
+
+Regards,
+
+Bas.
+
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From newtwen at gmail.com  Mon Aug 12 07:00:48 2024
+From: newtwen at gmail.com (Paul D)
+Date: Mon, 12 Aug 2024 16:00:48 +0200
+Subject: realtek target needs help
+In-Reply-To: <c2d20cbd-cfc3-4aa0-9158-0ee11b4f0d8b@basmevissen.nl>
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+ <CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+ <c2d20cbd-cfc3-4aa0-9158-0ee11b4f0d8b@basmevissen.nl>
+Message-ID: <4f93eceb-6373-4427-ac96-286e8a7d3559@gmail.com>
+
+On 2024-08-12 12:21, Bas Mevissen wrote:
+> 
+
+All things being equal, is it worth a try with a different GCC version? Where GCC 13.3.4 boots, and 13.3.0... doesn't?
+
+
+
+> 
+> I acquired an HP 1920-24G and gave this branch a spin. Unfortunately, it does not boot with this branch. Booting 23.05.4 and current main branch are fine.
+> 
+>> System application is starting...[??? 0.000000] Linux version 6.6.41 (bas at lenovo) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.0 4
+>> [??? 0.000000] RTL838X model is 83826800
+>> [??? 0.000000] SoC Type: RTL8382
+>> [??? 0.000000] printk: bootconsole [early0] enabled
+>> [??? 0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+>> [??? 0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+>> [??? 0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+>> [??? 0.000000] printk: bootconsole [ns16550a0] enabled
+>> [??? 0.000000] Initrd not found or empty - disabling initrd
+>> [??? 0.000000] Using appended Device Tree.
+>> [??? 0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+>> [??? 0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+>> [??? 0.000000] Zone ranges:
+>> [??? 0.000000]?? Normal?? [mem 0x0000000000000000-0x0000000007ffffff]
+>> [??? 0.000000] Movable zone start for each node
+>> [??? 0.000000] Early memory node ranges
+>> [??? 0.000000]?? node?? 0: [mem 0x0000000000000000-0x0000000007ffffff]
+>> [??? 0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+> 
+> So there is work to do. Not sure where to start as this is very early in the kernel boot...
+> 
+> For reference, this is part of the boot from https://firmware-selector.openwrt.org/?version=SNAPSHOT&target=realtek%2Frtl838x&id=hpe_1920-24g
+> 
+>> System application is starting...[??? 0.000000] Linux version 5.15.161 (builder at buildhost) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.4
+>> [??? 0.000000] RTL838X model is 83826800
+>> [??? 0.000000] SoC Type: RTL8382
+>> [??? 0.000000] printk: bootconsole [early0] enabled
+>> [??? 0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+>> [??? 0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+>> [??? 0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+>> [??? 0.000000] printk: bootconsole [ns16550a0] enabled
+>> [??? 0.000000] Initrd not found or empty - disabling initrd
+>> [??? 0.000000] Using appended Device Tree.
+>> [??? 0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+>> [??? 0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+>> [??? 0.000000] Zone ranges:
+>> [??? 0.000000]?? Normal?? [mem 0x0000000000000000-0x0000000007ffffff]
+>> [??? 0.000000] Movable zone start for each node
+>> [??? 0.000000] Early memory node ranges
+>> [??? 0.000000]?? node?? 0: [mem 0x0000000000000000-0x0000000007ffffff]
+>> [??? 0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+
+
+From fe at dev.tdt.de  Mon Aug 12 23:04:55 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Tue, 13 Aug 2024 08:04:55 +0200
+Subject: [PATCH 1/2] netfilter: add nf_conntrack_netbios_ns to kmod-nf-nathelper-extra
+Message-ID: <20240813060456.12507-1-fe@dev.tdt.de>
+
+NetBIOS name service requests are sent as broadcast messages from an
+unprivileged port and responded to with unicast messages to the
+same port. This make them hard to firewall properly because connection
+tracking doesn't deal with broadcasts.
+
+So let?s enable this in the kernel and add them to 'kmod-nf-nathelper-extra'.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ include/netfilter.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/netfilter.mk b/include/netfilter.mk
+index 7d1f03891b..5bc336eb44 100644
+--- a/include/netfilter.mk
++++ b/include/netfilter.mk
+@@ -207,6 +207,7 @@ $(eval $(call nf_add,NF_NATHELPER,CONFIG_NF_NAT_FTP, $(P_XT)nf_nat_ftp))
+ # nathelper-extra
+ 
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_BROADCAST, $(P_XT)nf_conntrack_broadcast))
++$(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_NETBIOS_NS, $(P_XT)nf_conntrack_netbios_ns))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_AMANDA, $(P_XT)nf_conntrack_amanda))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_NAT_AMANDA, $(P_XT)nf_nat_amanda))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_H323, $(P_XT)nf_conntrack_h323))
+-- 
+2.39.2
+
+
+
+From fe at dev.tdt.de  Mon Aug 12 23:04:56 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Tue, 13 Aug 2024 08:04:56 +0200
+Subject: [PATCH 2/2] netfilter: add nf_conntrack_sane to kmod-nf-nathelpers-extra
+In-Reply-To: <20240813060456.12507-1-fe@dev.tdt.de>
+References: <20240813060456.12507-1-fe@dev.tdt.de>
+Message-ID: <20240813060456.12507-2-fe@dev.tdt.de>
+
+'SANE' is a protocol for remote access to scanners as implemented by the
+'saned' daemon. Like FTP, it uses separate control and data connections.
+
+So let?s enable this in the kernel and add them to 'kmod-nf-nathelper-extra'.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ include/netfilter.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/netfilter.mk b/include/netfilter.mk
+index 5bc336eb44..1b7224bc8c 100644
+--- a/include/netfilter.mk
++++ b/include/netfilter.mk
+@@ -208,6 +208,7 @@ $(eval $(call nf_add,NF_NATHELPER,CONFIG_NF_NAT_FTP, $(P_XT)nf_nat_ftp))
+ 
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_BROADCAST, $(P_XT)nf_conntrack_broadcast))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_NETBIOS_NS, $(P_XT)nf_conntrack_netbios_ns))
++$(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_SANE, $(P_XT)nf_conntrack_sane))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_AMANDA, $(P_XT)nf_conntrack_amanda))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_NAT_AMANDA, $(P_XT)nf_nat_amanda))
+ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_CONNTRACK_H323, $(P_XT)nf_conntrack_h323))
+-- 
+2.39.2
+
+
+
+From abuse at basmevissen.nl  Tue Aug 13 07:52:25 2024
+From: abuse at basmevissen.nl (Bas Mevissen)
+Date: Tue, 13 Aug 2024 16:52:25 +0200
+Subject: realtek target needs help
+In-Reply-To: <4f93eceb-6373-4427-ac96-286e8a7d3559@gmail.com>
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+ <CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+ <c2d20cbd-cfc3-4aa0-9158-0ee11b4f0d8b@basmevissen.nl>
+ <4f93eceb-6373-4427-ac96-286e8a7d3559@gmail.com>
+Message-ID: <25996650-41dc-4576-bdcd-6ad1658dd2dc@basmevissen.nl>
+
+
+
+On 12/08/2024 16:00, Paul D wrote:
+> On 2024-08-12 12:21, Bas Mevissen wrote:
+>>
+> 
+> All things being equal, is it worth a try with a different GCC version? Where GCC 13.3.4 boots, and 13.3.0... doesn't?
+> 
+> 
+
+I checked that image from the firmware-selector again. That GCC version 
+was just a screen artifact somehow. All use GCC 13.3.0. There isn't even 
+an GCC 13.3.4 release.
+
+
+BR,
+
+Bas.
+
+
+From ksperling at apple.com  Tue Aug 13 22:26:13 2024
+From: ksperling at apple.com (Karsten Sperling)
+Date: Wed, 14 Aug 2024 17:26:13 +1200
+Subject: [PATCH] libubus: Make UBUS_* macros work cleanly in C++
+Message-ID: <3AE8192F-8470-4E0E-8447-2DBBF9213520@apple.com>
+
+Note: I?ve also submitted this patch as a GitHub PR (https://github.com/openwrt/ubus/pull/3) but I?m not sure anyone actually looks there for contributions, so I?m submitting it as a patch here as well.
+
+-- >8 --
+C++ is picky about initializer order, and (depending on flags) missing fields.
+This fix makes UBUS_METHOD_* and UBUS_OBJECT_TYPE initialize all fields of the
+respective structs in the correct order, making those macros usable from C++.
+
+Also replace BIT(x) with an explicit expression since BIT() may not be defined.
+
+Signed-off-by: Karsten Sperling <ksperling at apple.com>
+---
+CMakeLists.txt           |  9 +++++----
+libubus.h                | 41 +++++++++++++++++++++-------------------
+tests/CMakeLists.txt     | 11 +++++++++++
+tests/test-cplusplus.cpp | 34 +++++++++++++++++++++++++++++++++
+4 files changed, 72 insertions(+), 23 deletions(-)
+create mode 100644 tests/test-cplusplus.cpp
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8ae853b..03c3012 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.13)
+
+PROJECT(ubus C)
+
+-ADD_DEFINITIONS(-Wall -Werror)
++ADD_COMPILE_OPTIONS(-Wall -Werror)
+IF(CMAKE_C_COMPILER_VERSION VERSION_GREATER 6)
+-	ADD_DEFINITIONS(-Wextra -Werror=implicit-function-declaration)
+-	ADD_DEFINITIONS(-Wformat -Werror=format-security -Werror=format-nonliteral)
++  ADD_COMPILE_OPTIONS(-Wextra -Wformat -Werror=format-security -Werror=format-nonliteral)
++  ADD_COMPILE_OPTIONS($<$<COMPILE_LANGUAGE:C>:-Werror=implicit-function-declaration>)
+ENDIF()
+-ADD_DEFINITIONS(-Os -std=gnu99 -g3 -Wmissing-declarations -Wno-unused-parameter)
++ADD_COMPILE_OPTIONS(-Os -g3 -Wmissing-declarations -Wno-unused-parameter)
++ADD_COMPILE_OPTIONS($<$<COMPILE_LANGUAGE:C>:-std=gnu99>)
+
+OPTION(BUILD_LUA "build Lua plugin" ON)
+OPTION(BUILD_EXAMPLES "build examples" ON)
+diff --git a/libubus.h b/libubus.h
+index b74a823..fcf62c8 100644
+--- a/libubus.h
++++ b/libubus.h
+@@ -69,41 +69,44 @@ typedef bool (*ubus_new_object_handler_t)(struct ubus_context *ctx, struct ubus_
+	{						\
+		.name = _name,				\
+		.id = 0,				\
+-		.n_methods = ARRAY_SIZE(_methods),	\
+-		.methods = _methods			\
++		.methods = _methods,			\
++		.n_methods = ARRAY_SIZE(_methods)	\
+	}
+
+-#define __UBUS_METHOD_NOARG(_name, _handler, _tags)	\
+-	.name = _name,					\
+-	.handler = _handler,				\
++#define __UBUS_METHOD_BASE(_name, _handler, _mask, _tags)	\
++	.name = _name,						\
++	.handler = _handler,					\
++	.mask = _mask,						\
+	.tags = _tags
+
+-#define __UBUS_METHOD(_name, _handler, _policy, _tags)	\
+-	__UBUS_METHOD_NOARG(_name, _handler, _tags),	\
+-	.policy = _policy,				\
++#define __UBUS_METHOD_NOARG(_name, _handler, _mask, _tags)	\
++	__UBUS_METHOD_BASE(_name, _handler, _mask, _tags),	\
++	.policy = NULL,						\
++	.n_policy = 0
++
++#define __UBUS_METHOD(_name, _handler, _mask, _policy, _tags)	\
++	__UBUS_METHOD_BASE(_name, _handler, _mask, _tags),	\
++	.policy = _policy,					\
+	.n_policy = ARRAY_SIZE(_policy)
+
+#define UBUS_METHOD(_name, _handler, _policy)		\
+-	{ __UBUS_METHOD(_name, _handler, _policy, 0) }
++	{ __UBUS_METHOD(_name, _handler, 0, _policy, 0) }
+
+#define UBUS_METHOD_TAG(_name, _handler, _policy, _tags)\
+-	{ __UBUS_METHOD(_name, _handler, _policy, _tags) }
++	{ __UBUS_METHOD(_name, _handler, 0, _policy, _tags) }
+
+#define UBUS_METHOD_MASK(_name, _handler, _policy, _mask) \
+-	{						\
+-		__UBUS_METHOD(_name, _handler, _policy, 0),\
+-		.mask = _mask				\
+-	}
++	{ __UBUS_METHOD(_name, _handler, _mask, _policy, 0) }
+
+#define UBUS_METHOD_NOARG(_name, _handler)		\
+-	{ __UBUS_METHOD_NOARG(_name, _handler, 0) }
++	{ __UBUS_METHOD_NOARG(_name, _handler, 0, 0) }
+
+#define UBUS_METHOD_TAG_NOARG(_name, _handler, _tags)	\
+-	{ __UBUS_METHOD_NOARG(_name, _handler, _tags) }
++	{ __UBUS_METHOD_NOARG(_name, _handler, 0, _tags) }
+
+-#define UBUS_TAG_STATUS		BIT(0)
+-#define UBUS_TAG_ADMIN		BIT(1)
+-#define UBUS_TAG_PRIVATE	BIT(2)
++#define UBUS_TAG_STATUS		(1ul << 0)
++#define UBUS_TAG_ADMIN		(1ul << 1)
++#define UBUS_TAG_PRIVATE	(1ul << 2)
+
+struct ubus_method {
+	const char *name;
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 0cb3342..5549a40 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -6,6 +6,12 @@ MACRO(ADD_UNIT_TEST name)
+  TARGET_INCLUDE_DIRECTORIES(${name} PRIVATE ${PROJECT_SOURCE_DIR})
+ENDMACRO(ADD_UNIT_TEST)
+
++MACRO(ADD_UNIT_TEST_CPP name)
++  ADD_EXECUTABLE(${name} ${name}.cpp)
++  TARGET_LINK_LIBRARIES(${name} ubox blobmsg_json json_script ${json})
++  TARGET_INCLUDE_DIRECTORIES(${name} PRIVATE ${PROJECT_SOURCE_DIR})
++ENDMACRO(ADD_UNIT_TEST_CPP)
++
+FILE(GLOB test_cases "test-*.c")
+FOREACH(test_case ${test_cases})
+  GET_FILENAME_COMPONENT(test_case ${test_case} NAME_WE)
+@@ -13,6 +19,11 @@ FOREACH(test_case ${test_cases})
+  ADD_UNIT_TEST_SAN(${test_case})
+ENDFOREACH(test_case)
+
++ENABLE_LANGUAGE(CXX)
++ADD_COMPILE_OPTIONS($<$<COMPILE_LANGUAGE:CXX>:-std=gnu++11>)
++ADD_UNIT_TEST_CPP(test-cplusplus)
++ADD_TEST(NAME cplusplus COMMAND test-cplusplus)
++
+IF(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+  ADD_SUBDIRECTORY(fuzz)
+ENDIF()
+diff --git a/tests/test-cplusplus.cpp b/tests/test-cplusplus.cpp
+new file mode 100644
+index 0000000..89c5ffb
+--- /dev/null
++++ b/tests/test-cplusplus.cpp
+@@ -0,0 +1,34 @@
++#include "libubus.h"
++
++// Ensure UBUS_* macros can be used from C++
++
++static int handler(ubus_context *, ubus_object *, ubus_request_data *, const char *, blob_attr *)
++{
++	return 0;
++}
++
++enum {
++	HELLO_ID,
++	HELLO_MSG,
++};
++
++constexpr blobmsg_policy hello_policy[] = {
++	[HELLO_ID] = { .name = "id", .type = BLOBMSG_TYPE_INT32 },
++	[HELLO_MSG] = { .name = "msg", .type = BLOBMSG_TYPE_STRING },
++};
++
++constexpr ubus_method test_methods[] = {
++	UBUS_METHOD("hello1", handler, hello_policy),
++	UBUS_METHOD_TAG("hello2", handler, hello_policy, UBUS_TAG_ADMIN | UBUS_TAG_PRIVATE),
++	UBUS_METHOD_MASK("hello3", handler, hello_policy, 0),
++	UBUS_METHOD_NOARG("hello4", handler),
++	UBUS_METHOD_TAG_NOARG("hello5", handler, UBUS_TAG_STATUS),
++};
++
++constexpr ubus_object_type test_object_type = UBUS_OBJECT_TYPE("test", test_methods);
++
++int main()
++{
++	(void) test_object_type;
++	return 0;
++}
+-- 
+2.39.2
+
+
+
+From ksperling at apple.com  Tue Aug 13 22:26:13 2024
+From: ksperling at apple.com (Karsten Sperling)
+Date: Wed, 14 Aug 2024 17:26:13 +1200
+Subject: [PATCH] libubus: Make UBUS_* macros work cleanly in C++
+Message-ID: <3AE8192F-8470-4E0E-8447-2DBBF9213520@apple.com>
+
+Note: I?ve also submitted this patch as a GitHub PR (https://github.com/openwrt/ubus/pull/3) but I?m not sure anyone actually looks there for contributions, so I?m submitting it as a patch here as well.
+
+-- >8 --
+C++ is picky about initializer order, and (depending on flags) missing fields.
+This fix makes UBUS_METHOD_* and UBUS_OBJECT_TYPE initialize all fields of the
+respective structs in the correct order, making those macros usable from C++.
+
+Also replace BIT(x) with an explicit expression since BIT() may not be defined.
+
+Signed-off-by: Karsten Sperling <ksperling at apple.com>
+---
+CMakeLists.txt           |  9 +++++----
+libubus.h                | 41 +++++++++++++++++++++-------------------
+tests/CMakeLists.txt     | 11 +++++++++++
+tests/test-cplusplus.cpp | 34 +++++++++++++++++++++++++++++++++
+4 files changed, 72 insertions(+), 23 deletions(-)
+create mode 100644 tests/test-cplusplus.cpp
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8ae853b..03c3012 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.13)
+
+PROJECT(ubus C)
+
+-ADD_DEFINITIONS(-Wall -Werror)
++ADD_COMPILE_OPTIONS(-Wall -Werror)
+IF(CMAKE_C_COMPILER_VERSION VERSION_GREATER 6)
+-	ADD_DEFINITIONS(-Wextra -Werror=implicit-function-declaration)
+-	ADD_DEFINITIONS(-Wformat -Werror=format-security -Werror=format-nonliteral)
++  ADD_COMPILE_OPTIONS(-Wextra -Wformat -Werror=format-security -Werror=format-nonliteral)
++  ADD_COMPILE_OPTIONS($<$<COMPILE_LANGUAGE:C>:-Werror=implicit-function-declaration>)
+ENDIF()
+-ADD_DEFINITIONS(-Os -std=gnu99 -g3 -Wmissing-declarations -Wno-unused-parameter)
++ADD_COMPILE_OPTIONS(-Os -g3 -Wmissing-declarations -Wno-unused-parameter)
++ADD_COMPILE_OPTIONS($<$<COMPILE_LANGUAGE:C>:-std=gnu99>)
+
+OPTION(BUILD_LUA "build Lua plugin" ON)
+OPTION(BUILD_EXAMPLES "build examples" ON)
+diff --git a/libubus.h b/libubus.h
+index b74a823..fcf62c8 100644
+--- a/libubus.h
++++ b/libubus.h
+@@ -69,41 +69,44 @@ typedef bool (*ubus_new_object_handler_t)(struct ubus_context *ctx, struct ubus_
+	{						\
+		.name = _name,				\
+		.id = 0,				\
+-		.n_methods = ARRAY_SIZE(_methods),	\
+-		.methods = _methods			\
++		.methods = _methods,			\
++		.n_methods = ARRAY_SIZE(_methods)	\
+	}
+
+-#define __UBUS_METHOD_NOARG(_name, _handler, _tags)	\
+-	.name = _name,					\
+-	.handler = _handler,				\
++#define __UBUS_METHOD_BASE(_name, _handler, _mask, _tags)	\
++	.name = _name,						\
++	.handler = _handler,					\
++	.mask = _mask,						\
+	.tags = _tags
+
+-#define __UBUS_METHOD(_name, _handler, _policy, _tags)	\
+-	__UBUS_METHOD_NOARG(_name, _handler, _tags),	\
+-	.policy = _policy,				\
++#define __UBUS_METHOD_NOARG(_name, _handler, _mask, _tags)	\
++	__UBUS_METHOD_BASE(_name, _handler, _mask, _tags),	\
++	.policy = NULL,						\
++	.n_policy = 0
++
++#define __UBUS_METHOD(_name, _handler, _mask, _policy, _tags)	\
++	__UBUS_METHOD_BASE(_name, _handler, _mask, _tags),	\
++	.policy = _policy,					\
+	.n_policy = ARRAY_SIZE(_policy)
+
+#define UBUS_METHOD(_name, _handler, _policy)		\
+-	{ __UBUS_METHOD(_name, _handler, _policy, 0) }
++	{ __UBUS_METHOD(_name, _handler, 0, _policy, 0) }
+
+#define UBUS_METHOD_TAG(_name, _handler, _policy, _tags)\
+-	{ __UBUS_METHOD(_name, _handler, _policy, _tags) }
++	{ __UBUS_METHOD(_name, _handler, 0, _policy, _tags) }
+
+#define UBUS_METHOD_MASK(_name, _handler, _policy, _mask) \
+-	{						\
+-		__UBUS_METHOD(_name, _handler, _policy, 0),\
+-		.mask = _mask				\
+-	}
++	{ __UBUS_METHOD(_name, _handler, _mask, _policy, 0) }
+
+#define UBUS_METHOD_NOARG(_name, _handler)		\
+-	{ __UBUS_METHOD_NOARG(_name, _handler, 0) }
++	{ __UBUS_METHOD_NOARG(_name, _handler, 0, 0) }
+
+#define UBUS_METHOD_TAG_NOARG(_name, _handler, _tags)	\
+-	{ __UBUS_METHOD_NOARG(_name, _handler, _tags) }
++	{ __UBUS_METHOD_NOARG(_name, _handler, 0, _tags) }
+
+-#define UBUS_TAG_STATUS		BIT(0)
+-#define UBUS_TAG_ADMIN		BIT(1)
+-#define UBUS_TAG_PRIVATE	BIT(2)
++#define UBUS_TAG_STATUS		(1ul << 0)
++#define UBUS_TAG_ADMIN		(1ul << 1)
++#define UBUS_TAG_PRIVATE	(1ul << 2)
+
+struct ubus_method {
+	const char *name;
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 0cb3342..5549a40 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -6,6 +6,12 @@ MACRO(ADD_UNIT_TEST name)
+  TARGET_INCLUDE_DIRECTORIES(${name} PRIVATE ${PROJECT_SOURCE_DIR})
+ENDMACRO(ADD_UNIT_TEST)
+
++MACRO(ADD_UNIT_TEST_CPP name)
++  ADD_EXECUTABLE(${name} ${name}.cpp)
++  TARGET_LINK_LIBRARIES(${name} ubox blobmsg_json json_script ${json})
++  TARGET_INCLUDE_DIRECTORIES(${name} PRIVATE ${PROJECT_SOURCE_DIR})
++ENDMACRO(ADD_UNIT_TEST_CPP)
++
+FILE(GLOB test_cases "test-*.c")
+FOREACH(test_case ${test_cases})
+  GET_FILENAME_COMPONENT(test_case ${test_case} NAME_WE)
+@@ -13,6 +19,11 @@ FOREACH(test_case ${test_cases})
+  ADD_UNIT_TEST_SAN(${test_case})
+ENDFOREACH(test_case)
+
++ENABLE_LANGUAGE(CXX)
++ADD_COMPILE_OPTIONS($<$<COMPILE_LANGUAGE:CXX>:-std=gnu++11>)
++ADD_UNIT_TEST_CPP(test-cplusplus)
++ADD_TEST(NAME cplusplus COMMAND test-cplusplus)
++
+IF(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+  ADD_SUBDIRECTORY(fuzz)
+ENDIF()
+diff --git a/tests/test-cplusplus.cpp b/tests/test-cplusplus.cpp
+new file mode 100644
+index 0000000..89c5ffb
+--- /dev/null
++++ b/tests/test-cplusplus.cpp
+@@ -0,0 +1,34 @@
++#include "libubus.h"
++
++// Ensure UBUS_* macros can be used from C++
++
++static int handler(ubus_context *, ubus_object *, ubus_request_data *, const char *, blob_attr *)
++{
++	return 0;
++}
++
++enum {
++	HELLO_ID,
++	HELLO_MSG,
++};
++
++constexpr blobmsg_policy hello_policy[] = {
++	[HELLO_ID] = { .name = "id", .type = BLOBMSG_TYPE_INT32 },
++	[HELLO_MSG] = { .name = "msg", .type = BLOBMSG_TYPE_STRING },
++};
++
++constexpr ubus_method test_methods[] = {
++	UBUS_METHOD("hello1", handler, hello_policy),
++	UBUS_METHOD_TAG("hello2", handler, hello_policy, UBUS_TAG_ADMIN | UBUS_TAG_PRIVATE),
++	UBUS_METHOD_MASK("hello3", handler, hello_policy, 0),
++	UBUS_METHOD_NOARG("hello4", handler),
++	UBUS_METHOD_TAG_NOARG("hello5", handler, UBUS_TAG_STATUS),
++};
++
++constexpr ubus_object_type test_object_type = UBUS_OBJECT_TYPE("test", test_methods);
++
++int main()
++{
++	(void) test_object_type;
++	return 0;
++}
+-- 
+2.39.2
+
+
+
+From linus.walleij at linaro.org  Wed Aug 14 01:26:23 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Wed, 14 Aug 2024 10:26:23 +0200
+Subject: [PATCH 0/3] bmips: Inteno XG6846 fixes
+Message-ID: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+
+Some small fixes to the XG6846 device tree.
+
+A new series instead of the old fixes I sent a bit back:
+noltari folded in a LED fix fro the old series and now
+there are two new patches.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+Linus Walleij (3):
+      bmips: inteno-xg6846: Activate USB port
+      bmips: inteno-xg6846: Add EEPROM node
+      bmips: inteno-xg6846: Add DSA LED definitions
+
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 126 +++++++++++++++++++++++
+ 1 file changed, 126 insertions(+)
+---
+base-commit: 0b7d99147b721c9bc95e9a0caacd300227d10375
+change-id: 20240814-xg6846-usb-22404258909f
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij at linaro.org>
+
+
+
+From linus.walleij at linaro.org  Wed Aug 14 01:26:24 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Wed, 14 Aug 2024 10:26:24 +0200
+Subject: [PATCH 1/3] bmips: inteno-xg6846: Activate USB port
+In-Reply-To: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+References: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+Message-ID: <20240814-xg6846-usb-v1-1-d9ec74c861a8@linaro.org>
+
+Some versions of the Inteno XG6846 has a USB port mounted.
+For these machines the corresponing USB port nodes need to
+be enabled.
+
+Suggested-by: Henrik Ginstmark <henrik at ginstmark.se>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+index 8f5b30d213f2..3e75a38d07fc 100644
+--- a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
++++ b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+@@ -286,6 +286,18 @@
+ 	status = "okay";
+ };
+ 
++&ehci {
++	status = "okay";
++};
++
++&ohci {
++	status = "okay";
++};
++
++&usbh {
++	status = "okay";
++};
++
+ &pinctrl {
+ 	pinctrl_leds: leds {
+ 		function = "led";
+
+-- 
+2.45.2
+
+
+
+From linus.walleij at linaro.org  Wed Aug 14 01:26:25 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Wed, 14 Aug 2024 10:26:25 +0200
+Subject: [PATCH 2/3] bmips: inteno-xg6846: Add EEPROM node
+In-Reply-To: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+References: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+Message-ID: <20240814-xg6846-usb-v1-2-d9ec74c861a8@linaro.org>
+
+For some troublesome devices it is necessary to obtain direct access
+to the SFP module EEPROM so define it in the device tree.
+
+Suggested-by: Paul Donald <newtwen at gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+index 3e75a38d07fc..3cd5fb0607ec 100644
+--- a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
++++ b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+@@ -40,6 +40,12 @@
+ 		scl-gpios = <&gpio 19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++
++		sfp_eeprom: eeprom at 50 {
++			compatible = "atmel,24c02";
++			reg = <0x50>;
++			read-only;
++		};
+ 	};
+ 
+ 	/* This I2C bus is used for the external CATV connector (usually unused) */
+
+-- 
+2.45.2
+
+
+
+From linus.walleij at linaro.org  Wed Aug 14 01:26:26 2024
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Wed, 14 Aug 2024 10:26:26 +0200
+Subject: [PATCH 3/3] bmips: inteno-xg6846: Add DSA LED definitions
+In-Reply-To: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+References: <20240814-xg6846-usb-v1-0-d9ec74c861a8@linaro.org>
+Message-ID: <20240814-xg6846-usb-v1-3-d9ec74c861a8@linaro.org>
+
+This adds the LED definitons for the XG6846 DSA port LEDs.
+These are standard properties compatible with the existing
+Marvell 88e6xxx DT bindings and fully standardized so this
+is fine to add. They will be used by the in-flight Marvell
+88e6xxx LEDs support patch.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/bmips/dts/bcm6328-inteno-xg6846.dts | 108 +++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
+
+diff --git a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+index 3cd5fb0607ec..161077b3c244 100644
+--- a/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
++++ b/target/linux/bmips/dts/bcm6328-inteno-xg6846.dts
+@@ -195,6 +195,24 @@
+ 				label = "lan1";
+ 
+ 				phy-handle = <&lan1phy>;
++
++				leds {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					led at 0 {
++						reg = <0>;
++						color = <LED_COLOR_ID_GREEN>;
++						function = LED_FUNCTION_LAN;
++						default-state = "keep";
++					};
++					led at 1 {
++						reg = <1>;
++						color = <LED_COLOR_ID_AMBER>;
++						function = LED_FUNCTION_LAN;
++						default-state = "off";
++					};
++				};
+ 			};
+ 
+ 			port at 1 {
+@@ -202,6 +220,24 @@
+ 				label = "lan2";
+ 
+ 				phy-handle = <&lan2phy>;
++
++				leds {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					led at 0 {
++						reg = <0>;
++						color = <LED_COLOR_ID_GREEN>;
++						function = LED_FUNCTION_LAN;
++						default-state = "keep";
++					};
++					led at 1 {
++						reg = <1>;
++						color = <LED_COLOR_ID_AMBER>;
++						function = LED_FUNCTION_LAN;
++						default-state = "off";
++					};
++				};
+ 			};
+ 
+ 			port at 2 {
+@@ -209,6 +245,24 @@
+ 				label = "lan3";
+ 
+ 				phy-handle = <&lan3phy>;
++
++				leds {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					led at 0 {
++						reg = <0>;
++						color = <LED_COLOR_ID_GREEN>;
++						function = LED_FUNCTION_LAN;
++						default-state = "keep";
++					};
++					led at 1 {
++						reg = <1>;
++						color = <LED_COLOR_ID_AMBER>;
++						function = LED_FUNCTION_LAN;
++						default-state = "off";
++					};
++				};
+ 			};
+ 
+ 			port at 3 {
+@@ -216,6 +270,24 @@
+ 				label = "lan4";
+ 
+ 				phy-handle = <&lan4phy>;
++
++				leds {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					led at 0 {
++						reg = <0>;
++						color = <LED_COLOR_ID_GREEN>;
++						function = LED_FUNCTION_LAN;
++						default-state = "keep";
++					};
++					led at 1 {
++						reg = <1>;
++						color = <LED_COLOR_ID_AMBER>;
++						function = LED_FUNCTION_LAN;
++						default-state = "off";
++					};
++				};
+ 			};
+ 
+ 			port at 4 {
+@@ -223,6 +295,24 @@
+ 				label = "ext1";
+ 
+ 				phy-handle = <&ext1phy>;
++
++				leds {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					led at 0 {
++						reg = <0>;
++						color = <LED_COLOR_ID_GREEN>;
++						function = LED_FUNCTION_WAN;
++						default-state = "keep";
++					};
++					led at 1 {
++						reg = <1>;
++						color = <LED_COLOR_ID_AMBER>;
++						function = LED_FUNCTION_WAN;
++						default-state = "off";
++					};
++				};
+ 			};
+ 
+ 			port at 5 {
+@@ -236,6 +326,24 @@
+ 					speed = <1000>;
+ 					full-duplex;
+ 				};
++
++				leds {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					led at 0 {
++						reg = <0>;
++						color = <LED_COLOR_ID_GREEN>;
++						function = LED_FUNCTION_WAN;
++						default-state = "keep";
++					};
++					led at 1 {
++						reg = <1>;
++						color = <LED_COLOR_ID_AMBER>;
++						function = LED_FUNCTION_WAN;
++						default-state = "off";
++					};
++				};
+ 			};
+ 
+ 			port at 6 {
+
+-- 
+2.45.2
+
+
+
+From bjorn at mork.no  Wed Aug 14 03:26:44 2024
+From: bjorn at mork.no (=?utf-8?Q?Bj=C3=B8rn_Mork?=)
+Date: Wed, 14 Aug 2024 12:26:44 +0200
+Subject: realtek target needs help
+In-Reply-To: <mailman.82488.1723458177.1280.openwrt-devel@lists.openwrt.org>
+	(Bas Mevissen via openwrt-devel's message of "Mon, 12 Aug 2024
+	12:21:24 +0200")
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+	<CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+	<mailman.82488.1723458177.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <87cymb5riz.fsf@miraculix.mork.no>
+
+Bas Mevissen via openwrt-devel <openwrt-devel at lists.openwrt.org> writes:
+
+> I acquired an HP 1920-24G and gave this branch a spin. Unfortunately,
+> it does not boot with this branch. Booting 23.05.4 and current main
+> branch are fine.
+>
+>> System application is starting...[    0.000000] Linux version 6.6.41 (bas at lenovo) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.0 4
+>> [    0.000000] RTL838X model is 83826800
+>> [    0.000000] SoC Type: RTL8382
+>> [    0.000000] printk: bootconsole [early0] enabled
+>> [    0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+>> [    0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+>> [    0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+>> [    0.000000] printk: bootconsole [ns16550a0] enabled
+>> [    0.000000] Initrd not found or empty - disabling initrd
+>> [    0.000000] Using appended Device Tree.
+>> [    0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+>> [    0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+>> [    0.000000] Zone ranges:
+>> [    0.000000]   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+>> [    0.000000] Movable zone start for each node
+>> [    0.000000] Early memory node ranges
+>> [    0.000000]   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+>> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+>
+> So there is work to do. Not sure where to start as this is very early
+> in the kernel boot...
+
+This is even earlier than expected so I'm unsure if there's another
+problem here,. But I noticed that your normal boot log looks like the
+console server is eating a few chars here and there:
+
+> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+> [    0.000000] pcpu-alloc: [0] 0 [    0.000000] Built 1 zonelists,
+> mobility grouping on.  Total pages: 32480
+> [    0.000000] Kernel command line: earlycon
+> [    0.000000] Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+
+So I'm crossing my fingers that this is what's happening to the
+remaining part of the hanging boot too :-)
+
+Please test https://github.com/bmork/openwrt/commits/realtek-6.6-test/
+if you can.  It is mostly @howels test branch with a couple of
+additional workarounds which made my GS108Tv3 work.
+
+The complete boot log from my initial attempt with @howels branch is
+found here:
+https://github.com/bmork/openwrt/commit/f858f8e78963693097256ca7498f46d35217db6a
+
+The problem was the irq-realtek-rtl driver, and simply disabling our
+VPE/SMP hack made it work again.  This should be fine on RTL838X.
+
+But we do need someone with an RTL839X to test this, and maybe port the
+hack? Or preferable find some solution which can be pushed upstream...
+
+
+Bj?rn
+
+
+
+From fe at dev.tdt.de  Wed Aug 14 05:08:19 2024
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Wed, 14 Aug 2024 14:08:19 +0200
+Subject: Is a dependency to kmod-ipt-* for kmod-ipt-nathelper-rtsp needed
+Message-ID: <17efd0b457da96330f0b4b6c4999db3f@dev.tdt.de>
+
+Hello Jo,
+
+I have noticed that the package 'kmod-ipt-nathelper-rtsp' [1] has
+a dependency to 'kmod-ipt-conntrack-extra' and 'kmod-ipt-nat'.
+So if I only want the kernel modules 'nf_conntrack_rtsp' and
+'nf_nat_rtsp' for nftables that are in 'kmod-ipt-nathelper-rtsp',
+then always the depended kernel packages that deal with
+iptables are also installied.
+
+Since we use 'nftables' via 'firewall4' for some time, I
+would say that we don't need that dependencies.
+
+I would like to install the rtsp nat and rtsp conntrack
+kernel modules without having these dependencies to iptables.
+ From my point of view, the dependencies are not necessary.
+Also, the package should not be called 'kmod-ipt-nathelper-rtsp'
+but 'kmod-nf-nathelper-rtsp' because this has nothing todo with
+iptables. I would be interested in your opinion on this.
+
+I came across this while looking through the sources of 'firewall4' [2].
+
+--
+Florian
+
+[1] 
+https://github.com/openwrt/packages/blob/master/net/xtables-addons/Makefile#L201
+[2] 
+https://github.com/openwrt/firewall4/blob/master/root/usr/share/firewall4/helpers#L89
+
+
+From abuse at basmevissen.nl  Thu Aug 15 05:30:49 2024
+From: abuse at basmevissen.nl (Bas Mevissen)
+Date: Thu, 15 Aug 2024 14:30:49 +0200
+Subject: realtek target needs help
+In-Reply-To: <87cymb5riz.fsf@miraculix.mork.no>
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+ <CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+ <mailman.82488.1723458177.1280.openwrt-devel@lists.openwrt.org>
+ <87cymb5riz.fsf@miraculix.mork.no>
+Message-ID: <37d95439-6d92-49e7-963d-302110ff1060@basmevissen.nl>
+
+
+
+On 14/08/2024 12:26, Bj?rn Mork wrote:
+> Bas Mevissen via openwrt-devel <openwrt-devel at lists.openwrt.org> writes:
+> 
+>> I acquired an HP 1920-24G and gave this branch a spin. Unfortunately,
+>> it does not boot with this branch. Booting 23.05.4 and current main
+>> branch are fine.
+>>
+>>> System application is starting...[    0.000000] Linux version 6.6.41 (bas at lenovo) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.0 4
+>>> [    0.000000] RTL838X model is 83826800
+>>> [    0.000000] SoC Type: RTL8382
+>>> [    0.000000] printk: bootconsole [early0] enabled
+>>> [    0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+>>> [    0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+>>> [    0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+>>> [    0.000000] printk: bootconsole [ns16550a0] enabled
+>>> [    0.000000] Initrd not found or empty - disabling initrd
+>>> [    0.000000] Using appended Device Tree.
+>>> [    0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+>>> [    0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+>>> [    0.000000] Zone ranges:
+>>> [    0.000000]   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+>>> [    0.000000] Movable zone start for each node
+>>> [    0.000000] Early memory node ranges
+>>> [    0.000000]   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+>>> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+>>
+>> So there is work to do. Not sure where to start as this is very early
+>> in the kernel boot...
+> 
+> This is even earlier than expected so I'm unsure if there's another
+> problem here,. But I noticed that your normal boot log looks like the
+> console server is eating a few chars here and there:
+> 
+
+Yes, I only use a lazy 3-wire serial line and a somewhat flaky RS232 to 
+USB converter. Will be fine for console output and manual input.
+
+>> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+>> [    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+>> [    0.000000] pcpu-alloc: [0] 0 [    0.000000] Built 1 zonelists,
+>> mobility grouping on.  Total pages: 32480
+>> [    0.000000] Kernel command line: earlycon
+>> [    0.000000] Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+> 
+> So I'm crossing my fingers that this is what's happening to the
+> remaining part of the hanging boot too :-)
+> 
+> Please test https://github.com/bmork/openwrt/commits/realtek-6.6-test/
+> if you can.  It is mostly @howels test branch with a couple of
+> additional workarounds which made my GS108Tv3 work.
+> 
+
+Same result:
+
+> ....................................................................Done!
+> System application is starting...[    0.000000] Linux version 6.6.41 (bas at lenovo) (mips-openwrt-linux-musl-gcc (OpenWrt GCC 13.3.0 r
+> 27000-48454ae4da) 13.3.0, GNU ld (GNU Binutils) 2.42) #0 Thu Aug  8 06:54:39 2024
+> [    0.000000] RTL838X model is 83826800
+> [    0.000000] SoC Type: RTL8382
+> [    0.000000] printk: bootconsole [early0] enabled
+> [    0.000000] CPU0 revision is: 00019070 (MIPS 4KEc)
+> [    0.000000] MIPS: machine is HPE 1920-24G (JG924A)
+> [    0.000000] earlycon: ns16550a0 at MMIO 0x18002000 (options '38400n8')
+> [    0.000000] printk: bootconsole [ns16550a0] enabled
+> [    0.000000] Initrd not found or empty - disabling initrd
+> [    0.000000] Using appended Device Tree.
+> [    0.000000] Primary instruction cache 16kB, VIPT, 4-way, linesize 16 bytes.
+> [    0.000000] Primary data cache 16kB, 2-way, VIPT, cache aliases, linesize 16 bytes
+> [    0.000000] Zone ranges:
+> [    0.000000]   Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+
+(pasted as quotation to avoid line breakage)
+
+
+> The complete boot log from my initial attempt with @howels branch is
+> found here:
+> https://github.com/bmork/openwrt/commit/f858f8e78963693097256ca7498f46d35217db6a
+> 
+> The problem was the irq-realtek-rtl driver, and simply disabling our
+> VPE/SMP hack made it work again.  This should be fine on RTL838X.
+> 
+> But we do need someone with an RTL839X to test this, and maybe port the
+> hack? Or preferable find some solution which can be pushed upstream...
+> 
+
+I'm willing to test. So please tell me how I can help.
+
+Bas.
+
+> 
+> Bj?rn
+> 
+> 
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From bjorn at mork.no  Thu Aug 15 06:42:11 2024
+From: bjorn at mork.no (=?utf-8?Q?Bj=C3=B8rn_Mork?=)
+Date: Thu, 15 Aug 2024 15:42:11 +0200
+Subject: realtek target needs help
+In-Reply-To: <37d95439-6d92-49e7-963d-302110ff1060@basmevissen.nl> (Bas
+	Mevissen's message of "Thu, 15 Aug 2024 14:30:49 +0200")
+References: <6d53aa2e-68f8-4697-9f78-6fe38e25d642@hauke-m.de>
+	<CAJq09z7iv+4Vj2JYV6udByB6CA8joWvwTJ1A7yLjUECxL+kcnw@mail.gmail.com>
+	<mailman.82488.1723458177.1280.openwrt-devel@lists.openwrt.org>
+	<87cymb5riz.fsf@miraculix.mork.no>
+	<37d95439-6d92-49e7-963d-302110ff1060@basmevissen.nl>
+Message-ID: <87sev552do.fsf@miraculix.mork.no>
+
+Bas Mevissen <abuse at basmevissen.nl> writes:
+
+>> The complete boot log from my initial attempt with @howels branch is
+>> found here:
+>> https://github.com/bmork/openwrt/commit/f858f8e78963693097256ca7498f46d35217db6a
+>> The problem was the irq-realtek-rtl driver, and simply disabling our
+>> VPE/SMP hack made it work again.  This should be fine on RTL838X.
+>> But we do need someone with an RTL839X to test this, and maybe port
+>> the
+>> hack? Or preferable find some solution which can be pushed upstream...
+>> 
+>
+> I'm willing to test. So please tell me how I can help.
+
+I'm an amateur at this.  What I did was grep for the output before and
+after lockup (based on successful v5.15 booting), and then sprinkle
+debugging printk's all over the place.  Makes it possible to pinpoint
+the exact location at least.
+
+
+
+Bj?rn
+
+
+
+From noreply at github.com  Sun Aug 18 17:08:22 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 18 Aug 2024 17:08:22 -0700
+Subject: [sdwalker/sdwalker.github.io] 7cb2c1: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/8065ad-7cb2c1@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 7cb2c1dd55bc6ccc5fa598228569d191ed9ad7da
+      https://github.com/sdwalker/sdwalker.github.io/commit/7cb2c1dd55bc6ccc5fa598228569d191ed9ad7da
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-08-18 (Sun, 18 Aug 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From janusz.dziedzic at gmail.com  Tue Aug 20 06:23:46 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Tue, 20 Aug 2024 15:23:46 +0200
+Subject: BPI-R4-NIC-BE14
+Message-ID: <CAFED-jncvux80+N=anttb=UuVZqmvB6UaPQRX+tVVj_LkRVqXA@mail.gmail.com>
+
+Hello,
+
+Any hints about BE14 NIC - what should I enable in config. Does it work?
+Have latest main and seems no pci output with BE14 inside BPI-R4.
+
+
+BR
+Janusz
+
+
+From janusz.dziedzic at gmail.com  Tue Aug 20 06:50:08 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Tue, 20 Aug 2024 15:50:08 +0200
+Subject: BPI-R4-NIC-BE14
+In-Reply-To: <CAFED-jncvux80+N=anttb=UuVZqmvB6UaPQRX+tVVj_LkRVqXA@mail.gmail.com>
+References: <CAFED-jncvux80+N=anttb=UuVZqmvB6UaPQRX+tVVj_LkRVqXA@mail.gmail.com>
+Message-ID: <CAFED-j=LeFTuZG0AYMhMXkakD2Q64hRhAMnRmfDRGhr0S1o7Hw@mail.gmail.com>
+
+wt., 20 sie 2024 o 15:23 Janusz Dziedzic <janusz.dziedzic at gmail.com> napisa?(a):
+>
+> Hello,
+>
+> Any hints about BE14 NIC - what should I enable in config. Does it work?
+> Have latest main and seems no pci output with BE14 inside BPI-R4.
+>
+Sorry for the noise.
+SW4 - on - after that module power on:
+
+root at OpenWrt:~# lspci
+0000:00:00.0 PCI bridge: MEDIATEK Corp. Device 7988 (rev 01)
+0000:01:00.0 Network controller: MEDIATEK Corp. Device 7990
+0001:00:00.0 PCI bridge: MEDIATEK Corp. Device 7988 (rev 01)
+0001:01:00.0 Network controller: MEDIATEK Corp. Device 7991
+root at OpenWrt:~#
+root at OpenWrt:~# ls /sys/class/ieee80211/
+phy0  phy1
+root at OpenWrt:~#
+
+
+From janusz.dziedzic at gmail.com  Wed Aug 21 01:21:57 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Wed, 21 Aug 2024 10:21:57 +0200
+Subject: BPI-R4-NIC-BE14
+In-Reply-To: <CAFED-j=LeFTuZG0AYMhMXkakD2Q64hRhAMnRmfDRGhr0S1o7Hw@mail.gmail.com>
+References: <CAFED-jncvux80+N=anttb=UuVZqmvB6UaPQRX+tVVj_LkRVqXA@mail.gmail.com>
+ <CAFED-j=LeFTuZG0AYMhMXkakD2Q64hRhAMnRmfDRGhr0S1o7Hw@mail.gmail.com>
+Message-ID: <CAFED-jm+MOnK6RxRkkC0b6KAeR3BUje4qzCM0=x6doz7tX=wMg@mail.gmail.com>
+
+wt., 20 sie 2024 o 15:50 Janusz Dziedzic <janusz.dziedzic at gmail.com> napisa?(a):
+>
+> wt., 20 sie 2024 o 15:23 Janusz Dziedzic <janusz.dziedzic at gmail.com> napisa?(a):
+> >
+> > Hello,
+> >
+> > Any hints about BE14 NIC - what should I enable in config. Does it work?
+> > Have latest main and seems no pci output with BE14 inside BPI-R4.
+> >
+> Sorry for the noise.
+> SW4 - on - after that module power on:
+>
+> root at OpenWrt:~# lspci
+> 0000:00:00.0 PCI bridge: MEDIATEK Corp. Device 7988 (rev 01)
+> 0000:01:00.0 Network controller: MEDIATEK Corp. Device 7990
+> 0001:00:00.0 PCI bridge: MEDIATEK Corp. Device 7988 (rev 01)
+> 0001:01:00.0 Network controller: MEDIATEK Corp. Device 7991
+> root at OpenWrt:~#
+> root at OpenWrt:~# ls /sys/class/ieee80211/
+> phy0  phy1
+> root at OpenWrt:~#
+
+Any hint why I don't see 5GHz?
+phy0 - report 2GHz
+phy1 - report 6GHz
+
+should one of them support both? Or should be another phyX? Or have
+wrong firmware?
+
+BR
+Janusz
+
+
+From maxwell.atlee at crafticoz.com  Fri Aug 23 00:30:48 2024
+From: maxwell.atlee at crafticoz.com (Maxwell Atlee)
+Date: Fri, 23 Aug 2024 07:30:48 GMT
+Subject: Fruits and vegetables freeze-dried
+Message-ID: <20240823084500-0.1.4k.hxgp.0.po6ljrnnlh@crafticoz.com>
+
+Hello!
+
+I would like to draw your attention to a unique offer exclusively for the food sector.
+We specialize in providing freeze-dried fruits and vegetables that open up new horizons for creating innovative products.
+
+We offer a variety of fractions - from whole fruits and vegetables to pieces and powders. This variety allows for the creation of unique compositions, both in terms of flavor and appearance. Moreover, our products are 100% natural, organic, and allergen-free, perfectly aligning with current market trends.
+
+We assist in developing new products such as smoothie dices or keto smoothies, which perfectly meet the current needs and preferences of consumers.
+
+Are you interested in a detailed offer?
+
+
+Best regards
+Maxwell Atlee
+
+
+From paweldembicki at gmail.com  Fri Aug 23 03:15:03 2024
+From: paweldembicki at gmail.com (=?UTF-8?Q?Pawe=C5=82_Dembicki?=)
+Date: Fri, 23 Aug 2024 12:15:03 +0200
+Subject: mpc85xx/p1010 buildboot issue
+Message-ID: <CAJN1KkwGnvCCHZuzbEVZ6r++N1AM-OFdX0FxvdmQ51wT3Grk=Q@mail.gmail.com>
+
+Hi everybody,
+
+Buildbot had some issue with mpc85xx/p1010 subtarget:
+https://buildbot.openwrt.org/images/#/builders/231
+
+It looks like only `osuosl-vm5-dock-02` can build this subtarget.
+Could someone look at this issue?
+
+Best regards,
+Pawel Dembicki
+
+
+From ynezz at true.cz  Fri Aug 23 06:15:46 2024
+From: ynezz at true.cz (Petr =?utf-8?Q?=C5=A0tetiar?=)
+Date: Fri, 23 Aug 2024 15:15:46 +0200
+Subject: mpc85xx/p1010 buildboot issue
+In-Reply-To: <CAJN1KkwGnvCCHZuzbEVZ6r++N1AM-OFdX0FxvdmQ51wT3Grk=Q@mail.gmail.com>
+References: <CAJN1KkwGnvCCHZuzbEVZ6r++N1AM-OFdX0FxvdmQ51wT3Grk=Q@mail.gmail.com>
+Message-ID: <20240823131546.GA73720@meh.true.cz>
+
+Pawe? Dembicki <paweldembicki at gmail.com> [2024-08-23 12:15:03]:
+
+ [ adding Christian and Luiz to the CC: loop ]
+
+Hi,
+
+> Buildbot had some issue with mpc85xx/p1010 subtarget:
+> https://buildbot.openwrt.org/images/#/builders/231
+> 
+> It looks like only `osuosl-vm5-dock-02` can build this subtarget.
+> Could someone look at this issue?
+
+seems to be some race condition in the build system being exposed on a boxes with a specific I/O performance?
+
+  [ ! -d "/builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da" ] || rm -rf /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da
+  /builder/shared-workdir/build/staging_dir/host/bin/mksquashfs4 /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/target-dir-68b329da /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/root.squashfs+pkg=68b329da -nopad -noappend -root-owned -comp xz -Xpreset 9 -Xe -Xlc 0 -Xlp 2 -Xpb 2 -Xbcj powerpc -b 256k -p '/dev d 755 0 0' -p '/dev/console c 600 0 0 5 1' -no-xattrs
+  mkdir /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da
+  [ ! -d "/builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da" ] || rm -rf /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da
+  Parallel mksquashfs: Using 6 processors
+  Creating 4.0 filesystem on /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/root.squashfs+pkg=68b329da, block size 262144.
+  
+  Pseudo file "dev" exists in source filesystem "/builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/target-dir-68b329da/dev".
+  Ignoring, exclude it (-e/-ef) to override.
+  [|                                                               ]   0/818   0%cp -fpR /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47/.config /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da
+  mkdir /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da
+  rm -f /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da/.config.prev
+  mkdir: cannot create directory '/builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da': File exists
+  make[4]: *** [Makefile:24: /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/simpleImage.ws-ap3715i-initramfs.68b329da] Error 1
+  make[4]: *** Waiting for unfinished jobs....
+  mv /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da/.config /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da/.config.old
+  mv: failed to access '/builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/linux-6.6.47.68b329da/.config.old': Not a directory
+  make[4]: *** [Makefile:27: /builder/shared-workdir/build/build_dir/target-powerpc_8548_musl/linux-mpc85xx_p1010/simpleImage.br200-wp-initramfs.68b329da] Error 1
+
+
+which leads me to the commit 97fd059e7e6a ("image: respect TARGET_PER_DEVICE_ROOTFS for initramfs") and I would be tempted to fix it via:
+
+  --- a/include/kernel-defaults.mk
+  +++ b/include/kernel-defaults.mk
+  @@ -158,7 +158,7 @@ endef
+ 
+  define Kernel/PrepareConfigPerRootfs
+  	[ ! -d "$(1)" ] || rm -rf $(1)
+ -	mkdir $(1)
+ +	mkdir -p $(1)
+  
+  	$(CP) $(LINUX_DIR)/.config $(1)
+  endef
+
+but reading the reasoning in the commit:
+
+  "To handle this, we prepare a config for each rootfs and we generate the
+   images under lock to prevent problem with parallel execution."
+
+it might not be actually desired, that devices are racing between each other
+and doing that "rm -rf $(1)" ? So maybe some additional locking or even better
+per device/rootfs directory would make more sense?
+
+
+Cheers,
+
+Petr
+
+
+From rosenp at gmail.com  Sat Aug 24 20:03:37 2024
+From: rosenp at gmail.com (Rosen Penev)
+Date: Sat, 24 Aug 2024 20:03:37 -0700
+Subject: State of APK package manger integration
+In-Reply-To: <72830615-1E34-4AB7-A408-7542A66B8F66@aparcar.org>
+References: <051F0283-AF31-4522-B4A9-1F56086E5A4C@aparcar.org> <72830615-1E34-4AB7-A408-7542A66B8F66@aparcar.org>
+Message-ID: <CAKxU2N_G4YVGh9=eTJVKQAgHn-FU+ACmMjD4VN44OZ44UE0Xaw@mail.gmail.com>
+
+On Sun, Aug 11, 2024 at 11:36?AM Paul Spooren <mail at aparcar.org> wrote:
+>
+> Hi all,
+>
+> Some time has passed and there are further news for the APK migration:
+>
+> Timo and Ansuel worked out a way to allow index trust[1]. If a package index is signed by a trusted key, all containing packages are automatically trusted. It is still possible distribute and sign single packages.
+>
+> With this in place, the last missing bit was to teach our Buildbot infrastructure to sign indexes with the Buildmaster key[2]. For context, the OpenWrt project does not store private signing keys on Buildworkers but only on the Buildmaster. Indexes are transferred to the Buildmaster and signed there, later uploaded to the download server.
+>
+> This, too, works now and can be tested for a limited number of targets/archs (if your favorite is missing, please ping me)[3].
+>
+> The firmware contains a APK public key (in /etc/apk/keys) for testing[4] and the download server is modified[5]. The key is not official and will be replaced once things go further upstream.
+>
+> If you run one of those images, please give APK a spin and see how it?s doing. A simple example would b to run the following:
+>
+>     apk add luci # install LuCI
+>     apk audit # see what file changed since rootfs creation
+>
+> Looking at the failing packages[6], some maintainers have not yet switches to an APK conform version schema. I?ll try to ping those or create PRs myself.
+>
+> I?m optimistic?ish that things will work out just great. Please give it a test and let me know how it goes.
+ca-bundle and ca-certificates can't coexist it seems.
+>
+> Best,
+> Paul
+>
+> [1]: https://gitlab.alpinelinux.org/alpine/apk-tools/-/commit/54caa31be633efc5f655700b77af290124f71689
+> [2]: https://github.com/openwrt/buildbot/commit/a94d4e15fdc1e9715d7d0cfdcc62227186d0fc45
+> [3]: https://buildbot.aparcar.org/targets/
+> [4]: https://github.com/aparcar/openwrt/commit/de9b171c5a98c9e23e3da8b787ddc5ba7dd0ac53
+> [5]: https://github.com/aparcar/openwrt/commit/2c98eb52e365be6e59b470b4c0001cf29e8a6fb3
+> [6]: https://buildbot.aparcar.org/faillogs/x86_64/
+>
+>
+> > On 13. Jun 2024, at 13:29, Paul Spooren <mail at aparcar.org> wrote:
+> >
+> > Dear all,
+> >
+> > With great contributions from Timo, Ansuel, Jonas, Daniel, Petr, John, and many others, APK is evolving smoothly, and the integration is progressing well!
+> >
+> > We have established a staging buildbot environment[1] that compiles firmware images and certain packages. To replicate this setup locally, simply enable ?Use APK instead of OPKG to build distribution? (`USE_APK`) in the ?Global build settings?.
+> >
+> > Once the firmware is compiled, it is uploaded to the staging downloads page[2]. Currently, we have limited the targets created to a subset that we have found useful for testing purposes.The firmware images boot up successfully and allow for the installation of external feeds[3]!
+> >
+> > Be aware, there is still some work required on the package feeds to accommodate the new version requirements. If you are maintaining something, please take a look (e.g. [4]).
+> >
+> > We are facing an architectural challenge that needs to be addressed. In the past, both OPKG and APKv2 would only sign the package indexes and automatically trust the included packages. With APKv3 (the version we are using), each individual package is signed. We are exploring ways to securely integrate this into the existing setup, where build workers do not have a private key but upload the package index to a dedicated server for signing. We will keep you updated on our progress.
+> >
+> > I will provide more updates as we make further advancements. Please stay tuned for more information.
+> >
+> > Sunshine,
+> > Paul
+> >
+> > PS: since we do parallel experiments with the Buildbot itself some packages are missing, please be aware that your milage may vary when testing package installation
+> >
+> > [1]: https://buildbot.staging.openwrt.org <https://buildbot.staging.openwrt.org/>
+> > [2]: https://downloads.staging.openwrt.org/snapshots/targets/
+> > [2]: apk add --allow-untrusted kmod-usb-serial-cp210x
+> > [4]: https://github.com/openwrt/packages/issues/23706
+> >
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From noreply at github.com  Sun Aug 25 13:34:46 2024
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 25 Aug 2024 13:34:46 -0700
+Subject: [sdwalker/sdwalker.github.io] 696eea: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/7cb2c1-696eea@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 696eeaf884f9dffb5c92bf2aea90fb412ccd514b
+      https://github.com/sdwalker/sdwalker.github.io/commit/696eeaf884f9dffb5c92bf2aea90fb412ccd514b
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2024-08-25 (Sun, 25 Aug 2024)
+
+  Changed paths:
+    M uscan/index-22.03.html
+    M uscan/index-23.05.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From ehem+openwrt at m5p.com  Tue Aug 27 10:31:14 2024
+From: ehem+openwrt at m5p.com (Elliott Mitchell)
+Date: Tue, 27 Aug 2024 10:31:14 -0700
+Subject: Can't build 6.6 kernel for x86_64
+In-Reply-To: <mailman.63516.1720752652.1280.openwrt-devel@lists.openwrt.org>
+References: <3E159B78-084F-4088-B0CA-777B9F147D30@redfish-solutions.com>
+ <mailman.63516.1720752652.1280.openwrt-devel@lists.openwrt.org>
+Message-ID: <Zs4NYu0JpMHmT13Q@mattapan.m5p.com>
+
+On Thu, Jul 11, 2024 at 08:51:24PM -0600, Philip Prindeville via openwrt-devel wrote:
+
+> Date: Thu, 11 Jul 2024 20:51:24 -0600
+> From: Philip Prindeville <philipp_subx at redfish-solutions.com>
+> 
+> Was able to get a build with:
+> 
+> --- a/kernel-config
+> +++ b/kernel-config
+> @@ -35,6 +35,8 @@ CONFIG_CHR_DEV_SG=m
+>  CONFIG_CLZ_TAB=y
+>  CONFIG_COREDUMP=y
+>  CONFIG_CRASH_DUMP=y
+> +CONFIG_CRASH_HOTPLUG=y
+> +CONFIG_CRASH_MAX_MEMORY_RANGES=8192
+>  CONFIG_CRYPTO_ABLK_HELPER=y
+>  CONFIG_CRYPTO_AKCIPHER=y
+>  CONFIG_CRYPTO_AKCIPHER2=y
+> @@ -67,6 +69,8 @@ CONFIG_CRYPTO_HW=y
+>  CONFIG_CRYPTO_JITTERENTROPY=y
+>  CONFIG_CRYPTO_KPP=y
+>  CONFIG_CRYPTO_KPP2=y
+> +# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+> +# CONFIG_CRYPTO_MANAGER_EXTRA_TESTS is not set
+>  CONFIG_CRYPTO_MD5=m
+>  CONFIG_CRYPTO_NULL=y
+>  CONFIG_CRYPTO_POLY1305=y
+
+What is/are the justification(s) for the current approach to kernel
+configuration handling?
+
+Every time I take a look I cannot help noticing it requires a *lot* of
+manual intervention.  Worse, since most configuration options need to be
+set, it is hard to distinguish options which are set due to features
+being desired versus those needed to simply get the kernel to build.
+
+This means many extra options may have leaked in which are no longer
+desireable.  This means kernel updates have to change many options and
+it can be quite non-obvious when unwanted options sneak in.
+
+
+I think it might be better to instead do something along the lines of:
+
+cp target/linux/generic/config-${version} linux-${version}/arch/${ARCH}/configs/generic.config
+cp target/linux/${BOARD}/config-${version} linux-${version}/arch/${ARCH}/configs/${BOARD}.config
+cp target/linux/${BOARD}/${TARGET}/config-${version} linux-${version}/arch/${ARCH}/configs/${BOARD}_${TARGET}.config
+#
+make ARCH=${ARCH} defconfig
+make ARCH=${ARCH} generic.config
+make ARCH=${ARCH} ${BOARD}.config
+make ARCH=${ARCH} ${BOARD}_${TARGET}.config
+
+Mainly since the time when OpenWRT's kernel configuration system was
+created, the Linux kernel configuration system has grown comparable
+functionality.  This would make OpenWRT's build rather more robust, plus
+emphasize options which were deliberately chosen.
+
+
+-- 
+(\___(\___(\______          --=> 8-) EHM <=--          ______/)___/)___/)
+ \BS (    |         ehem+sigmsg at m5p.com  PGP 87145445         |    )   /
+  \_CS\   |  _____  -O #include <stddisclaimer.h> O-   _____  |   /  _/
+8A19\___\_|_/58D2 7E3D DDF4 7BA6 <-PGP-> 41D1 B375 37D0 8714\_|_/___/5445
+
+
+
+
+From nbd at nbd.name  Tue Aug 27 12:08:48 2024
+From: nbd at nbd.name (Felix Fietkau)
+Date: Tue, 27 Aug 2024 21:08:48 +0200
+Subject: Can't build 6.6 kernel for x86_64
+In-Reply-To: <Zs4NYu0JpMHmT13Q@mattapan.m5p.com>
+References: <3E159B78-084F-4088-B0CA-777B9F147D30@redfish-solutions.com>
+ <mailman.63516.1720752652.1280.openwrt-devel@lists.openwrt.org>
+ <Zs4NYu0JpMHmT13Q@mattapan.m5p.com>
+Message-ID: <052f9bd9-2a2c-4dd4-8b57-0a5c6f7bded5@nbd.name>
+
+On 27.08.24 19:31, Elliott Mitchell wrote:
+> On Thu, Jul 11, 2024 at 08:51:24PM -0600, Philip Prindeville via openwrt-devel wrote:
+> 
+>> Date: Thu, 11 Jul 2024 20:51:24 -0600
+>> From: Philip Prindeville <philipp_subx at redfish-solutions.com>
+>> 
+>> Was able to get a build with:
+>> 
+>> --- a/kernel-config
+>> +++ b/kernel-config
+>> @@ -35,6 +35,8 @@ CONFIG_CHR_DEV_SG=m
+>>  CONFIG_CLZ_TAB=y
+>>  CONFIG_COREDUMP=y
+>>  CONFIG_CRASH_DUMP=y
+>> +CONFIG_CRASH_HOTPLUG=y
+>> +CONFIG_CRASH_MAX_MEMORY_RANGES=8192
+>>  CONFIG_CRYPTO_ABLK_HELPER=y
+>>  CONFIG_CRYPTO_AKCIPHER=y
+>>  CONFIG_CRYPTO_AKCIPHER2=y
+>> @@ -67,6 +69,8 @@ CONFIG_CRYPTO_HW=y
+>>  CONFIG_CRYPTO_JITTERENTROPY=y
+>>  CONFIG_CRYPTO_KPP=y
+>>  CONFIG_CRYPTO_KPP2=y
+>> +# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+>> +# CONFIG_CRYPTO_MANAGER_EXTRA_TESTS is not set
+>>  CONFIG_CRYPTO_MD5=m
+>>  CONFIG_CRYPTO_NULL=y
+>>  CONFIG_CRYPTO_POLY1305=y
+> 
+> What is/are the justification(s) for the current approach to kernel
+> configuration handling?
+> 
+> Every time I take a look I cannot help noticing it requires a *lot* of
+> manual intervention.  Worse, since most configuration options need to be
+> set, it is hard to distinguish options which are set due to features
+> being desired versus those needed to simply get the kernel to build.
+> 
+> This means many extra options may have leaked in which are no longer
+> desireable.  This means kernel updates have to change many options and
+> it can be quite non-obvious when unwanted options sneak in.
+> 
+> 
+> I think it might be better to instead do something along the lines of:
+> 
+> cp target/linux/generic/config-${version} linux-${version}/arch/${ARCH}/configs/generic.config
+> cp target/linux/${BOARD}/config-${version} linux-${version}/arch/${ARCH}/configs/${BOARD}.config
+> cp target/linux/${BOARD}/${TARGET}/config-${version} linux-${version}/arch/${ARCH}/configs/${BOARD}_${TARGET}.config
+> #
+> make ARCH=${ARCH} defconfig
+> make ARCH=${ARCH} generic.config
+> make ARCH=${ARCH} ${BOARD}.config
+> make ARCH=${ARCH} ${BOARD}_${TARGET}.config
+> 
+> Mainly since the time when OpenWRT's kernel configuration system was
+> created, the Linux kernel configuration system has grown comparable
+> functionality.  This would make OpenWRT's build rather more robust, plus
+> emphasize options which were deliberately chosen.
+
+I designed the current kernel configuration handling based on the 
+following requirement list (likely incomplete):
+
+- making it as easy as possible to handle dynamic kernel config changes 
+for packaging kmod packages
+- not enabling kernel modules which are not packaged
+- keeping most common kernel config symbols in a generic file which is 
+shared across targets and can be used to change options for all targets
+- being able to edit the target/subtarget kernel config with 
+menuconfig/oldconfig while storing only deltas relative to the generic 
+config
+
+What you're proposing seems simple on the surface, but in my opinion 
+ignores important parts of the kernel config maintenance, especially:
+- package based kernel module selection
+- make kernel_menuconfig/oldconfig
+
+- Felix
+
+
+From ehem+openwrt at m5p.com  Tue Aug 27 19:04:25 2024
+From: ehem+openwrt at m5p.com (Elliott Mitchell)
+Date: Tue, 27 Aug 2024 19:04:25 -0700
+Subject: Can't build 6.6 kernel for x86_64
+In-Reply-To: <052f9bd9-2a2c-4dd4-8b57-0a5c6f7bded5@nbd.name>
+References: <3E159B78-084F-4088-B0CA-777B9F147D30@redfish-solutions.com>
+ <mailman.63516.1720752652.1280.openwrt-devel@lists.openwrt.org>
+ <Zs4NYu0JpMHmT13Q@mattapan.m5p.com>
+ <052f9bd9-2a2c-4dd4-8b57-0a5c6f7bded5@nbd.name>
+Message-ID: <Zs6Fqbpn_1up942t@mattapan.m5p.com>
+
+On Tue, Aug 27, 2024 at 09:08:48PM +0200, Felix Fietkau wrote:
+> On 27.08.24 19:31, Elliott Mitchell wrote:
+> > On Thu, Jul 11, 2024 at 08:51:24PM -0600, Philip Prindeville via openwrt-devel wrote:
+> > 
+> > > Date: Thu, 11 Jul 2024 20:51:24 -0600
+> > > From: Philip Prindeville <philipp_subx at redfish-solutions.com>
+> > > 
+> > > Was able to get a build with:
+> > > 
+> > > --- a/kernel-config
+> > > +++ b/kernel-config
+> > > @@ -35,6 +35,8 @@ CONFIG_CHR_DEV_SG=m
+> > >  CONFIG_CLZ_TAB=y
+> > >  CONFIG_COREDUMP=y
+> > >  CONFIG_CRASH_DUMP=y
+> > > +CONFIG_CRASH_HOTPLUG=y
+> > > +CONFIG_CRASH_MAX_MEMORY_RANGES=8192
+> > >  CONFIG_CRYPTO_ABLK_HELPER=y
+> > >  CONFIG_CRYPTO_AKCIPHER=y
+> > >  CONFIG_CRYPTO_AKCIPHER2=y
+> > > @@ -67,6 +69,8 @@ CONFIG_CRYPTO_HW=y
+> > >  CONFIG_CRYPTO_JITTERENTROPY=y
+> > >  CONFIG_CRYPTO_KPP=y
+> > >  CONFIG_CRYPTO_KPP2=y
+> > > +# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+> > > +# CONFIG_CRYPTO_MANAGER_EXTRA_TESTS is not set
+> > >  CONFIG_CRYPTO_MD5=m
+> > >  CONFIG_CRYPTO_NULL=y
+> > >  CONFIG_CRYPTO_POLY1305=y
+> > 
+> > What is/are the justification(s) for the current approach to kernel
+> > configuration handling?
+> > 
+> > Every time I take a look I cannot help noticing it requires a *lot* of
+> > manual intervention.  Worse, since most configuration options need to be
+> > set, it is hard to distinguish options which are set due to features
+> > being desired versus those needed to simply get the kernel to build.
+> > 
+> > This means many extra options may have leaked in which are no longer
+> > desireable.  This means kernel updates have to change many options and
+> > it can be quite non-obvious when unwanted options sneak in.
+> > 
+> > 
+> > I think it might be better to instead do something along the lines of:
+> > 
+> > cp target/linux/generic/config-${version} linux-${version}/arch/${ARCH}/configs/generic.config
+> > cp target/linux/${BOARD}/config-${version} linux-${version}/arch/${ARCH}/configs/${BOARD}.config
+> > cp target/linux/${BOARD}/${TARGET}/config-${version} linux-${version}/arch/${ARCH}/configs/${BOARD}_${TARGET}.config
+> > #
+> > make ARCH=${ARCH} defconfig
+> > make ARCH=${ARCH} generic.config
+> > make ARCH=${ARCH} ${BOARD}.config
+> > make ARCH=${ARCH} ${BOARD}_${TARGET}.config
+> > 
+> > Mainly since the time when OpenWRT's kernel configuration system was
+> > created, the Linux kernel configuration system has grown comparable
+> > functionality.  This would make OpenWRT's build rather more robust, plus
+> > emphasize options which were deliberately chosen.
+> 
+> I designed the current kernel configuration handling based on the following
+> requirement list (likely incomplete):
+> 
+> - making it as easy as possible to handle dynamic kernel config changes for
+> packaging kmod packages
+> - not enabling kernel modules which are not packaged
+> - keeping most common kernel config symbols in a generic file which is
+> shared across targets and can be used to change options for all targets
+> - being able to edit the target/subtarget kernel config with
+> menuconfig/oldconfig while storing only deltas relative to the generic
+> config
+> 
+> What you're proposing seems simple on the surface, but in my opinion ignores
+> important parts of the kernel config maintenance, especially:
+> - package based kernel module selection
+
+How?  The approach I'm suggesting appears almost completely orthogonal to
+this issue.  I could see the above process making verifying package
+builds harder, but doesn't seem to actually break this.
+
+In fact the difference between in-tree module builds versus out-of-tree
+module builds is *very* small.  I was very close to being able to build
+every package outside the kernel build.  I ran into some difficulty of
+the two build types weren't *quite* identical, but hopefully that will be
+addressed in the future.
+
+The kernel maintainer I interacted with favored a distinct approach from
+what I had, but did seem to acknowledge the processes *should* be
+identical.  If that works, then I may have a rather superior approach for
+module building for 6.11.
+
+> - make kernel_menuconfig/oldconfig
+
+Why is this so valuable?  Certainly the kernel configuration program is
+handy for doing fully-manual kernel configuration.  Yet for OpenWRT I
+would expect it to be rather more valuable to keep kernel options one
+cares about (CONFIG_NETFILTER=y) from ones which are merely needed to
+generate valid kernel configurations (CONFIG_NF_LOG_IPV6=n).
+
+I've run across a number of kernel configuration options which were set
+inappropriately (CONFIG_SCx200=y on *all* x86 platforms, not just geode),
+so this certainly hasn't kept everything clean.
+
+
+-- 
+(\___(\___(\______          --=> 8-) EHM <=--          ______/)___/)___/)
+ \BS (    |         ehem+sigmsg at m5p.com  PGP 87145445         |    )   /
+  \_CS\   |  _____  -O #include <stddisclaimer.h> O-   _____  |   /  _/
+8A19\___\_|_/58D2 7E3D DDF4 7BA6 <-PGP-> 41D1 B375 37D0 8714\_|_/___/5445
+
+
+
+
+From jan.polasek at envisioncraftsman.com  Wed Aug 28 00:40:07 2024
+From: jan.polasek at envisioncraftsman.com (=?UTF-8?Q? Jan_Pol=C3=A1=C5=A1ek ?=)
+Date: Wed, 28 Aug 2024 07:40:07 GMT
+Subject: Quick Question About Collaboration
+Message-ID: <20240828084500-0.1.4o.x1lp.0.8o6n6dzk6n@envisioncraftsman.com>
+
+Hello!
+
+I am very impressed with the products and services you offer.
+
+I thought we could help you reach a larger audience with your offerings. Would you be interested in collaborating with us in an affiliate marketing campaign?
+
+For example, our program for a company in the e-commerce sector resulted in an increase in revenue from 8% to an impressive 19% (on average per quarter).
+
+We achieve up to 13% turnover in GA4, while standard affiliate networks generate only 3-6%.
+
+Would you have time for a short conversation in the next few days?
+
+
+Best regards
+Jan Pol??ek
+
+
+From jonathan.capeluto at neteris.com  Thu Aug 29 15:11:55 2024
+From: jonathan.capeluto at neteris.com (Roy Kessier)
+Date: 29 Aug 2024 15:11:55 -0700
+Subject: =?UTF-8?B?SW50ZXJuYXRpb25hbGUgV8OkaHJ1bmdzZm9uZHMgKElXRik=?=
+Message-ID: <20240829151155.7A61F7829ECD0AAF@neteris.com>
+
+Sehr geehrter Empf?nger:
+
+Die Europ?ische Investitionsbank in Luxemburg und der 
+Internationale W?hrungsfonds (IWF) haben uns beauftragt, die 
+Ursache f?r die Verz?gerung bei der Auszahlung ihrer gesetzlich 
+genehmigten Mittel zu untersuchen.
+
+Unsere Untersuchung ergab, dass seine Zahlung aufgrund korrupter 
+Bankangestellte verz?gert wurde, die versuchten, sein Geld auf 
+seine Privatkonten bei ABANCA umzuleiten. Um diese Art von 
+betr?gerischen Aktivit?ten zu verhindern, haben wir eine 
+Vereinbarung mit der Europ?ischen Investitionsbank und dem IWF 
+zur Verwaltung und ?berwachung Ihrer Zahlung. F?r Ihre Zahlung 
+haben wir daher von MFY eine unwiderrufliche Zahlungsgarantie 
+erhalten.
+
+Wir freuen uns, Ihnen mitteilen zu k?nnen, dass die Europ?ische 
+Investitionsbank beschlossen hat, Ihnen den Betrag von 
+3.500.000,00 EUR zur?ckzuerstatten und ihn per Bank?berweisung 
+direkt auf Ihr Bankkonto zu ?berweisen.
+
+Um einen reibungslosen und problemlosen Zahlungsvorgang zu 
+gew?hrleisten, kontaktieren Sie bitte unseren Vertreter, Herrn 
+Roy Kessier, unter der folgenden E-Mail-Adresse:
+E-Mail: info at elibertytrust.us
+
+Bitte teilen Sie uns auch Ihre WhatsApp-Nummer mit, um die 
+Kommunikation zu erleichtern.
+
+Vielen Dank f?r Ihre Aufmerksamkeit in dieser Angelegenheit.
+
+Aufrichtig,
+Herr Roy Kessier
+info at elibertytrust.us
+
+
+From janusz.dziedzic at gmail.com  Sat Aug 31 02:12:25 2024
+From: janusz.dziedzic at gmail.com (Janusz Dziedzic)
+Date: Sat, 31 Aug 2024 11:12:25 +0200
+Subject: BPI-R4-NIC-BE14
+In-Reply-To: <CAFED-jm+MOnK6RxRkkC0b6KAeR3BUje4qzCM0=x6doz7tX=wMg@mail.gmail.com>
+References: <CAFED-jncvux80+N=anttb=UuVZqmvB6UaPQRX+tVVj_LkRVqXA@mail.gmail.com>
+ <CAFED-j=LeFTuZG0AYMhMXkakD2Q64hRhAMnRmfDRGhr0S1o7Hw@mail.gmail.com> <CAFED-jm+MOnK6RxRkkC0b6KAeR3BUje4qzCM0=x6doz7tX=wMg@mail.gmail.com>
+Message-ID: <CAFED-jnQYFLYRh217QpFoVvYkBjo3Sv+3yau4gq9JHLEEn093w@mail.gmail.com>
+
+?r., 21 sie 2024 o 10:21 Janusz Dziedzic <janusz.dziedzic at gmail.com> napisa?(a):
+>
+> wt., 20 sie 2024 o 15:50 Janusz Dziedzic <janusz.dziedzic at gmail.com> napisa?(a):
+> >
+> > wt., 20 sie 2024 o 15:23 Janusz Dziedzic <janusz.dziedzic at gmail.com> napisa?(a):
+> > >
+> > > Hello,
+> > >
+> > > Any hints about BE14 NIC - what should I enable in config. Does it work?
+> > > Have latest main and seems no pci output with BE14 inside BPI-R4.
+> > >
+> > Sorry for the noise.
+> > SW4 - on - after that module power on:
+> >
+> > root at OpenWrt:~# lspci
+> > 0000:00:00.0 PCI bridge: MEDIATEK Corp. Device 7988 (rev 01)
+> > 0000:01:00.0 Network controller: MEDIATEK Corp. Device 7990
+> > 0001:00:00.0 PCI bridge: MEDIATEK Corp. Device 7988 (rev 01)
+> > 0001:01:00.0 Network controller: MEDIATEK Corp. Device 7991
+> > root at OpenWrt:~#
+> > root at OpenWrt:~# ls /sys/class/ieee80211/
+> > phy0  phy1
+> > root at OpenWrt:~#
+>
+> Any hint why I don't see 5GHz?
+> phy0 - report 2GHz
+> phy1 - report 6GHz
+>
+> should one of them support both? Or should be another phyX? Or have
+> wrong firmware?
+>
+Just in case someone read this :)
+
+- patch [PATCH] wifi: mt76: mt7996: support mt7996 2+3+3 variant - required
+- firmware 2-3-3
+
+After that see 3 phys (all bands)
+
+root at bpi-r4-9611025bdb3d:~# ls /lib/firmware/mediatek/mt7996/
+mt7996_dsp.bin            mt7996_eeprom_233.bin
+mt7996_rom_patch_233.bin  mt7996_wa_233.bin         mt7996_wm_233.bin
+mt7996_eeprom.bin         mt7996_rom_patch.bin      mt7996_wa.bin
+       mt7996_wm.bin
+root at bpi-r4-9611025bdb3d:~#
+root at bpi-r4-9611025bdb3d:~# ls /sys/class/ieee80211/
+phy0  phy1  phy2
+root at bpi-r4-9611025bdb3d:~#
+root at bpi-r4-9611025bdb3d:~#
+root at bpi-r4-9611025bdb3d:~#
+
+

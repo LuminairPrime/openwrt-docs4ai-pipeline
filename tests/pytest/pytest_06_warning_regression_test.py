@@ -11,29 +11,38 @@ from tests.support.pytest_pipeline_support import (
 def test_workflow_uses_node24_native_action_majors() -> None:
     workflow_text = load_workflow_text()
 
-    expected_versions = [
-        "actions/checkout@v5",
-        "actions/setup-python@v6",
-        "actions/cache@v5",
-        "actions/upload-artifact@v6",
-        "actions/download-artifact@v7",
-        "actions/create-github-app-token@v2",
+    expected_refs = [
+        "actions/checkout@main",
+        "actions/setup-python@main",
+        "actions/cache@main",
+        "actions/upload-artifact@main",
+        "actions/download-artifact@main",
+        "actions/create-github-app-token@main",
     ]
-    removed_versions = [
+    removed_pinned_versions = [
         "actions/checkout@v4",
+        "actions/checkout@v5",
+        "actions/checkout@v6",
         "actions/setup-python@v5",
+        "actions/setup-python@v6",
         "actions/cache@v4",
+        "actions/cache@v5",
         "actions/upload-artifact@v4",
+        "actions/upload-artifact@v6",
+        "actions/upload-artifact@v7",
         "actions/download-artifact@v4",
+        "actions/download-artifact@v7",
         "actions/upload-pages-artifact@v3",
         "actions/upload-pages-artifact@v4",
         "actions/configure-pages@v5",
         "actions/deploy-pages@v4",
+        "actions/create-github-app-token@v2",
+        "actions/create-github-app-token@v3",
     ]
 
-    for action_ref in expected_versions:
+    for action_ref in expected_refs:
         assert action_ref in workflow_text
-    for action_ref in removed_versions:
+    for action_ref in removed_pinned_versions:
         assert action_ref not in workflow_text
 
     assert "Publish GitHub Pages branch mirror" in workflow_text

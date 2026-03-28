@@ -1,0 +1,3416 @@
+From openwrt-bugs at lists.openwrt.org  Tue Feb  1 02:12:19 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 01 Feb 2022 10:12:19 +0000
+Subject: [FS#4247] ZyXEL P-2812HNU-F1, Arcadyan VGV7510KW22 (o2 Box 6431)
+ rt2x00lib kernel panic
+In-Reply-To: <FS4247@bugs.openwrt.org>
+References: <FS4247@bugs.openwrt.org>
+Message-ID: <mailman.35223.1643710349.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Till Mainka (Norster) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - ZyXEL P-2812HNU-F1, Arcadyan VGV7510KW22 (o2 Box 6431) rt2x00lib kernel panic
+Task Type - Bug Report
+Category - Kernel
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details - I'm running latest vanilla 21.02.1 with two vlans and freeradius3 installed, using dynamic vlans as in
+https://openwrt.org/docs/guide-user/network/wifi/wireless.security.8021x
+
+RT3062F crashes randomly with or without load. This does not occour on 19.07.8 with same configuration running stable for more than a week.
+I tried this on an Arcadyan VGV7510KW22 o2 6431 with same outcome. FritzBox 3370 with same configuration runs stable with latest 21.02.1 but uses ath9k drivers.
+
+removed: wpad-basic-wolfssl
+
+installed: wpad-wolfssl, freeradius3-default
+
+kernel partition on ZyXEL got right size:
+NAND read: device 0 offset 0x60000, size 0x300000
+
+Steps to reproduce: Boot device, wait for dsl sync, pppoe authentication done. rt2x00lib will cause kernel panic within 10 Minutes.
+
+Linux version 5.4.154 (builder at buildhost) (gcc version 8.4.0 (OpenWrt GCC 8.4.0 r16325-88151b8303)) #0 SMP Sun Oct 24 09:01:35 2021
+
+[...]
+[   29.304173] pci 0000:00:0e.0: [1814:3062] type 00 class 0x028000
+[   29.309011] pci 0000:00:0e.0: reg 0x10: [mem 0xffff0000-0xffffffff]
+[   29.318717] pci 0000:00:0e.0: BAR 0: assigned [mem 0x18000000-0x1800ffff]
+[   29.324483] rt2800pci 0000:00:0e.0: enabling device (0000 -> 0002)
+[   29.330662] ieee80211 phy0: rt2x00lib_request_eeprom_file: Info - Loading EEPROM data from 'RT3062.eeprom'.
+[   29.346988] ieee80211 phy0: rt2x00_set_rt: Info - RT chipset 3572, rev 0223 detected
+[   29.353524] ieee80211 phy0: rt2x00_set_rf: Info - RF chipset 0008 detected
+[   31.486892] lantiq,xrx200-net 1e108000.eth eth0: port 0 got link
+[   31.491611] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[   31.514710] br-vlan1: port 1(eth0.1) entered blocking state
+[   31.518918] br-vlan1: port 1(eth0.1) entered forwarding state
+[   31.525457] br-vlan2: port 1(eth0.2) entered blocking state
+[   31.530245] br-vlan2: port 1(eth0.2) entered forwarding state
+[   31.610217] IPv6: ADDRCONF(NETDEV_CHANGE): br-vlan1: link becomes ready
+[   31.616175] IPv6: ADDRCONF(NETDEV_CHANGE): br-vlan2: link becomes ready
+[   34.948854] ieee80211 phy0: rt2x00lib_request_firmware: Info - Loading firmware file 'rt2860.bin'
+[   35.166269] ieee80211 phy0: rt2x00lib_request_firmware: Info - Firmware detected - version: 0.40
+[   44.292342] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+[   55.393854] br-vlan1: port 2(wlan0.1) entered blocking state
+[   55.398521] br-vlan1: port 2(wlan0.1) entered disabled state
+[   55.404700] device wlan0.1 entered promiscuous mode
+[   55.409273] br-vlan1: port 2(wlan0.1) entered blocking state
+[   55.414427] br-vlan1: port 2(wlan0.1) entered forwarding state
+[   63.733155] Lantiq PTM driver, version 1.0.27, (c) 2001-2013 Lantiq Deutschland GmbH
+[   63.733155]     PTM (E1) firmware version 2.16.0
+[   63.744347] ifxmips_ptm: PTM init succeed
+[   63.758602] device dsl0 entered promiscuous mode
+[  203.489819] enter showtime
+[  203.491337] IPv6: ADDRCONF(NETDEV_CHANGE): dsl0: link becomes ready
+[  203.500004] IPv6: ADDRCONF(NETDEV_CHANGE): dsl0.7: link becomes ready
+[  203.512652] enter showtime
+[  209.524227] pppoe-wan: renamed from ppp0
+[  845.767489] CPU 0 Unable to handle kernel paging request at virtual address 00000009, epc == 87354668, ra == 87354400
+[  845.776712] Oops[#1]:
+[  845.778920] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.154 #0
+[  845.784924] $ 0   : 00000000 00000001 00000000 0000a006
+[  845.790140] $ 4   : 87574858 00000005 00008000 00000018
+[  845.795363] $ 8   : 00005000 87574858 0000d000 00007cb9
+[  845.800585] $12   : 001c2e1d 89000000 00000402 00000000
+[  845.805808] $16   : 87c0bd64 86ba6540 86929ec0 00000000
+[  845.811030] $20   : 87ec1744 8692907c 87c0be04 87c0be80
+[  845.816253] $24   : 00000000 800237c8                  
+[  845.821475] $28   : 80724000 87c0bd20 00000001 87354400
+[  845.826698] Hi    : 00000000
+[  845.829570] Lo    : 0000007a
+[  845.832463] epc   : 87354668 0x87354668 [rt2x00lib at 1ee4e735+0x9250]
+[  845.838725] ra    : 87354400 0x87354400 [rt2x00lib at 1ee4e735+0x9250]
+[  845.844976] Status: 1100ff03	KERNEL EXL IE 
+[  845.849156] Cause : 00800008 (ExcCode 02)
+[  845.853158] BadVA : 00000009
+[  845.856033] PrId  : 00019555 (MIPS 34Kc)
+[  845.859942] Modules linked in: ltq_ptm_vr9 rt2800pci rt2800mmio rt2800lib iptable_nat xt_state xt_nat xt_conntrack xt_REDIRECT xt_MASQUERADE xt_FLOWOFFLOAD xt_CT rt2x00pci rt2x00mmio rt2x00lib pppoe nf_nat nf_flow_table_hw nf_flow_table nf_conntrack mac80211 ipt_REJECT cfg80211 xt_time xt_tcpudp xt_multiport xt_mark xt_mac xt_limit xt_comment xt_TCPMSS xt_LOG pppox ppp_async nf_reject_ipv4 nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_filter ip_tables crc_ccitt compat drv_dsl_cpe_api ledtrig_usbport drv_mei_cpe nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 pppoatm ppp_generic slhc br2684 atm eeprom_93cx6 drv_ifxos dwc2 gpio_button_hotplug
+[  845.923432] Process swapper/0 (pid: 0, threadinfo=5fb5db9d, task=22928b21, tls=00000000)
+[  845.931498] Stack : 87c0be70 00000000 87c0bdec 868f5f00 872b3854 00000000 86ba6540 86928c20
+[  845.939848]         00000000 87355718 86928c20 8682e8e8 87c0be04 80730000 00000fff 00000000
+[  845.948203]         00000000 000000a8 00bd0018 00000000 00000000 00000000 00000023 00000003
+[  845.956559]         ffff0000 00000000 00000000 00000000 00000000 86ba6540 86929ec0 872b3854
+[  845.964915]         86928c20 00000000 8692907c 873525b8 80785278 86830180 00000000 00000020
+[  845.973271]         ...
+[  845.975705] Call Trace:
+[  845.975766] [] 0x87355718 [rt2x00lib at 1ee4e735+0x9250]
+[  845.984088] [] 0x8682e8e8 [mac80211 at 67a6148f+0x7dad0]
+[  845.990023] [] 0x873525b8 [rt2x00lib at 1ee4e735+0x9250]
+[  845.995922] [] 0x86830180 [mac80211 at 67a6148f+0x7dad0]
+[  846.001853] [] 0x868315e4 [mac80211 at 67a6148f+0x7dad0]
+[  846.007772] [] 0x86831760 [mac80211 at 67a6148f+0x7dad0]
+[  846.013698] [] 0x868395c8 [mac80211 at 67a6148f+0x7dad0]
+[  846.019603] [] 0x87350bf8 [rt2x00lib at 1ee4e735+0x9250]
+[  846.025541] [] 0x8683b288 [mac80211 at 67a6148f+0x7dad0]
+[  846.031439] [] 0x80034c28
+[  846.034905] [] 0x8061bdbc
+[  846.038384] [] 0x80082f14
+[  846.041870] [] 0x800351ac
+[  846.045349] [] 0x803297dc
+[  846.048831] [] 0x8000aa08
+[  846.052305] 
+[  846.053780] Code: 30420008  14400092  00002825  a6030008  92220022  30420004  1040ff99  34630008 
+[  846.063531] 
+[  846.065117] ---[ end trace 20c3271ad5bbf2db ]---
+[  846.069716] Kernel panic - not syncing: Fatal exception in interrupt
+[  846.075998] ------------[ cut here ]------------
+[  846.080619] WARNING: CPU: 0 PID: 0 at kernel/smp.c:433 0x800b3810
+[  846.086692] Modules linked in: ltq_ptm_vr9 rt2800pci rt2800mmio rt2800lib iptable_nat xt_state xt_nat xt_conntrack xt_REDIRECT xt_MASQUERADE xt_FLOWOFFLOAD xt_CT rt2x00pci rt2x00mmio rt2x00lib pppoe nf_nat nf_flow_table_hw nf_flow_table nf_conntrack mac80211 ipt_REJECT cfg80211 xt_time xt_tcpudp xt_multiport xt_mark xt_mac xt_limit xt_comment xt_TCPMSS xt_LOG pppox ppp_async nf_reject_ipv4 nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_filter ip_tables crc_ccitt compat drv_dsl_cpe_api ledtrig_usbport drv_mei_cpe nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 pppoatm ppp_generic slhc br2684 atm eeprom_93cx6 drv_ifxos dwc2 gpio_button_hotplug
+[  846.150165] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.4.154 #0
+[  846.157539] Stack : 00000122 00000123 00000000 80081d1c 00000000 00000000 00000000 00000000
+[  846.165890]         00000000 00000000 00000000 00000000 00000000 00000001 87c0ba20 e4aeda87
+[  846.174255]         87c0bab8 00000000 00000000 00000123 00000038 80615d04 20352e34 2e313534
+[  846.182602]         00000123 5b800000 00000000 00024a95 00000000 87c0ba00 00000000 800b3810
+[  846.190957]         00000009 00000000 800142c4 00000000 00000003 00000010 00000000 80890000
+[  846.199314]         ...
+[  846.201751] Call Trace:
+[  846.201769] [] 0x80081d1c
+[  846.207680] [] 0x80615d04
+[  846.211160] [] 0x800b3810
+[  846.214640] [] 0x800142c4
+[  846.218123] [] 0x8000ef60
+[  846.221604] [] 0x8000ef68
+[  846.225085] [] 0x80760000
+[  846.228566] [] 0x805fb8fc
+[  846.232065] [] 0x8007e7c4
+[  846.235526] [] 0x80030b7c
+[  846.239013] [] 0x800b3810
+[  846.242493] [] 0x80030c24
+[  846.245976] [] 0x80611240
+[  846.249457] [] 0x800b3810
+[  846.252942] [] 0x800b384c
+[  846.256421] [] 0x80030690
+[  846.259899] [] 0x8000f238
+[  846.263415] [] 0x8001a814
+[  846.266880] [] 0x87354668 [rt2x00lib at 1ee4e735+0x9250]
+[  846.272795] [] 0x87354400 [rt2x00lib at 1ee4e735+0x9250]
+[  846.278715] [] 0x800201a8
+[  846.282200] [] 0x86807888 [mac80211 at 67a6148f+0x7dad0]
+[  846.288119] [] 0x800237c8
+[  846.291578] [] 0x801641f4
+[  846.295077] [] 0x87354400 [rt2x00lib at 1ee4e735+0x9250]
+[  846.300997] [] 0x87354668 [rt2x00lib at 1ee4e735+0x9250]
+[  846.306930] [] 0x87355718 [rt2x00lib at 1ee4e735+0x9250]
+[  846.312838] [] 0x8682e8e8 [mac80211 at 67a6148f+0x7dad0]
+[  846.318774] [] 0x873525b8 [rt2x00lib at 1ee4e735+0x9250]
+[  846.324672] [] 0x86830180 [mac80211 at 67a6148f+0x7dad0]
+[  846.330602] [] 0x868315e4 [mac80211 at 67a6148f+0x7dad0]
+[  846.336522] [] 0x86831760 [mac80211 at 67a6148f+0x7dad0]
+[  846.342448] [] 0x868395c8 [mac80211 at 67a6148f+0x7dad0]
+[  846.348353] [] 0x87350bf8 [rt2x00lib at 1ee4e735+0x9250]
+[  846.354309] [] 0x8683b288 [mac80211 at 67a6148f+0x7dad0]
+[  846.360189] [] 0x80034c28
+[  846.363650] [] 0x8061bdbc
+[  846.367134] [] 0x80082f14
+[  846.370620] [] 0x800351ac
+[  846.374113] [] 0x803297dc
+[  846.377582] [] 0x8000aa08
+[  846.381055] 
+[  846.382535] ---[ end trace 20c3271ad5bbf2dc ]---
+[  846.387151] ------------[ cut here ]------------
+[  846.391772] WARNING: CPU: 0 PID: 0 at kernel/smp.c:300 0x800b2ff0
+[  846.397853] Modules linked in: ltq_ptm_vr9 rt2800pci rt2800mmio rt2800lib iptable_nat xt_state xt_nat xt_conntrack xt_REDIRECT xt_MASQUERADE xt_FLOWOFFLOAD xt_CT rt2x00pci rt2x00mmio rt2x00lib pppoe nf_nat nf_flow_table_hw nf_flow_table nf_conntrack mac80211 ipt_REJECT cfg80211 xt_time xt_tcpudp xt_multiport xt_mark xt_mac xt_limit xt_comment xt_TCPMSS xt_LOG pppox ppp_async nf_reject_ipv4 nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_filter ip_tables crc_ccitt compat drv_dsl_cpe_api ledtrig_usbport drv_mei_cpe nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 pppoatm ppp_generic slhc br2684 atm eeprom_93cx6 drv_ifxos dwc2 gpio_button_hotplug
+[  846.461337] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D W         5.4.154 #0
+[  846.468706] Stack : 00000158 00000159 00000001 80081d1c 00000000 00000000 00000000 00000000
+[  846.477058]         00000000 00000000 00000000 00000000 00000000 00000001 87c0ba20 e4aeda87
+[  846.485414]         87c0bab8 00000000 00000000 00000159 00000038 80615d04 20352e34 2e313534
+[  846.493770]         00000159 ce000000 00000000 00070a19 00000000 87c0ba00 00000000 800b2ff0
+[  846.502126]         00000009 00000000 87c0be04 00000001 00000003 00000010 00000000 80890000
+[  846.510482]         ...
+[  846.512919] Call Trace:
+[  846.512935] [] 0x80081d1c
+[  846.518850] [] 0x80615d04
+[  846.522329] [] 0x800b2ff0
+[  846.525810] [] 0x8000ef60
+[  846.529307] [] 0x8000ef68
+[  846.532772] [] 0x80760000
+[  846.536252] [] 0x805fb8fc
+[  846.539729] [] 0x8007e7c4
+[  846.543218] [] 0x80030b7c
+[  846.546699] [] 0x800b2ff0
+[  846.550180] [] 0x80030c24
+[  846.553662] [] 0x80611240
+[  846.557143] [] 0x800142c4
+[  846.560624] [] 0x800b2ff0
+[  846.564109] [] 0x800b384c
+[  846.567582] [] 0x80030690
+[  846.571073] [] 0x8000f238
+[  846.574578] [] 0x8001a814
+[  846.578048] [] 0x87354668 [rt2x00lib at 1ee4e735+0x9250]
+[  846.583965] [] 0x87354400 [rt2x00lib at 1ee4e735+0x9250]
+[  846.589883] [] 0x800201a8
+[  846.593368] [] 0x86807888 [mac80211 at 67a6148f+0x7dad0]
+[  846.599287] [] 0x800237c8
+[  846.602752] [] 0x801641f4
+[  846.606246] [] 0x87354400 [rt2x00lib at 1ee4e735+0x9250]
+[  846.612165] [] 0x87354668 [rt2x00lib at 1ee4e735+0x9250]
+[  846.618098] [] 0x87355718 [rt2x00lib at 1ee4e735+0x9250]
+[  846.624026] [] 0x8682e8e8 [mac80211 at 67a6148f+0x7dad0]
+[  846.629941] [] 0x873525b8 [rt2x00lib at 1ee4e735+0x9250]
+[  846.635840] [] 0x86830180 [mac80211 at 67a6148f+0x7dad0]
+[  846.641771] [] 0x868315e4 [mac80211 at 67a6148f+0x7dad0]
+[  846.647714] [] 0x86831760 [mac80211 at 67a6148f+0x7dad0]
+[  846.653617] [] 0x868395c8 [mac80211 at 67a6148f+0x7dad0]
+[  846.659521] [] 0x87350bf8 [rt2x00lib at 1ee4e735+0x9250]
+[  846.665459] [] 0x8683b288 [mac80211 at 67a6148f+0x7dad0]
+[  846.671356] [] 0x80034c28
+[  846.674824] [] 0x8061bdbc
+[  846.678302] [] 0x80082f14
+[  846.681789] [] 0x800351ac
+[  846.685266] [] 0x803297dc
+[  846.688750] [] 0x8000aa08
+[  846.692223] 
+[  846.693703] ---[ end trace 20c3271ad5bbf2dd ]---
+[  846.698343] Rebooting in 3 seconds..   
+
+ 
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4247
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  1 02:17:33 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 01 Feb 2022 10:17:33 +0000
+Subject: [FS#3989] MT76x2E randomly restarts on Xiaomi Mi Router 4A Gigabit
+ Edition
+In-Reply-To: <FS3989@bugs.openwrt.org>
+References: <FS3989@bugs.openwrt.org>
+Message-ID: <mailman.35224.1643710657.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3989 - MT76x2E randomly restarts on Xiaomi Mi Router 4A Gigabit Edition
+User who did this - Igor Drach (laigor)
+
+----------
+[Mon Jan 31 17:53:19 2022] ieee80211 phy1: Hardware restart was requested
+[Mon Jan 31 17:53:24 2022] mt76x2e 0000:01:00.0: MCU message 1f (seq 12) timed out
+[Mon Jan 31 17:53:24 2022] mt76x2e 0000:01:00.0: Firmware Version: 0.0.00
+[Mon Jan 31 17:53:24 2022] mt76x2e 0000:01:00.0: Build: 1
+[Mon Jan 31 17:53:24 2022] mt76x2e 0000:01:00.0: Build Time: 201507311614____
+[Mon Jan 31 17:53:24 2022] mt76x2e 0000:01:00.0: Firmware running!
+[Mon Jan 31 17:53:24 2022] ieee80211 phy1: Hardware restart was requested
+[Mon Jan 31 17:53:30 2022] mt76x2e 0000:01:00.0: MCU message 1f (seq 14) timed out
+[Mon Jan 31 17:53:30 2022] mt76x2e 0000:01:00.0: Firmware Version: 0.0.00
+[Mon Jan 31 17:53:30 2022] mt76x2e 0000:01:00.0: Build: 1
+[Mon Jan 31 17:53:30 2022] mt76x2e 0000:01:00.0: Build Time: 201507311614____
+[Mon Jan 31 17:53:30 2022] mt76x2e 0000:01:00.0: Firmware running!
+[Mon Jan 31 17:53:30 2022] ieee80211 phy1: Hardware restart was requested
+[Mon Jan 31 17:53:31 2022] mt76x2e 0000:01:00.0: MCU message 02 (seq 2) timed out
+[Mon Jan 31 17:53:32 2022] mt76x2e 0000:01:00.0: MCU message 1f (seq 3) timed out
+[Mon Jan 31 17:53:32 2022] mt76x2e 0000:01:00.0: Firmware Version: 0.0.00
+[Mon Jan 31 17:53:32 2022] mt76x2e 0000:01:00.0: Build: 1
+[Mon Jan 31 17:53:32 2022] mt76x2e 0000:01:00.0: Build Time: 201507311614____
+[Mon Jan 31 17:53:32 2022] mt76x2e 0000:01:00.0: Firmware running!
+[Mon Jan 31 17:53:32 2022] ieee80211 phy1: Hardware restart was requested
+[Mon Jan 31 17:53:37 2022] mt76x2e 0000:01:00.0: MCU message 1f (seq 4) timed out
+[Mon Jan 31 17:53:37 2022] mt76x2e 0000:01:00.0: Firmware Version: 0.0.00
+[Mon Jan 31 17:53:37 2022] mt76x2e 0000:01:00.0: Build: 1
+[Mon Jan 31 17:53:37 2022] mt76x2e 0000:01:00.0: Build Time: 201507311614____
+[Mon Jan 31 17:53:37 2022] mt76x2e 0000:01:00.0: Firmware running!
+[Mon Jan 31 17:53:37 2022] ieee80211 phy1: Hardware restart was requested
+.........
+[Mon Jan 31 17:55:10 2022] skbuff: skb_under_panic: text:285d9eda len:66 put:2 head:2904025b data:834a74a9 tail:0x85079c40 end:0x85079f00 dev:wlan1
+[Mon Jan 31 17:55:10 2022] Kernel bug detected[#1]:
+[Mon Jan 31 17:55:10 2022] CPU: 2 PID: 872 Comm: mt76-tx phy1 Tainted: G        W         5.4.171 #0
+[Mon Jan 31 17:55:10 2022] $ 0   : 00000000 00000001 00000078 00000000
+[Mon Jan 31 17:55:10 2022] $ 4   : 8101c34c 8101c34c 81021070 00000000
+[Mon Jan 31 17:55:10 2022] $ 8   : 316e616c 00000414 66393730 64203030
+
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3989#comment10497
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  1 06:06:41 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 01 Feb 2022 14:06:41 +0000
+Subject: [FS#3471] Mikrotik RB911-5Hn propper nand detection failed
+In-Reply-To: <FS3471@bugs.openwrt.org>
+References: <FS3471@bugs.openwrt.org>
+Message-ID: <mailman.35261.1643724416.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3471 - Mikrotik RB911-5Hn propper nand detection failed
+User who did this - Luflosi (Luflosi)
+
+----------
+Sorry for reviving this old bug report but Alexandros C. Couloumbis wrote:
+//Finally, I do have an rb411, an rb433 & an rb711 that are still not supported under the ath79. if you are up-to giving them some shots, let me know & I will open new tickets accordingly.//
+
+I'm trying to port the rb711 (and also the gigabit version) to ath79 but haven't managed to do so because the bootloader doesn't seem to accept my images. My ar71xx image worked on the first try. See https://forum.openwrt.org/t/adding-support-for-mikrotik-routerboard-711g-5hnd/94162 for a full explanation.
+If you have any suggestions what else I could try, that would be very helpful. Thank you.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3471#comment10498
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  1 08:51:01 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 01 Feb 2022 16:51:01 +0000
+Subject: [FS#4237] beagle bone black boot failed
+In-Reply-To: <FS4237@bugs.openwrt.org>
+References: <FS4237@bugs.openwrt.org>
+Message-ID: <mailman.35306.1643734273.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4237 - beagle bone black boot failed
+User who did this - Luke (blauggh)
+
+----------
+I have duplicated the same failure trying to use 21.02.1 on my Beagle Bone Black. I tried both the squashfs and ext4 images, and both failed the same way.
+
+19.07.8 (at least the squashfs image; I didn't evaluate ext4) boots normally.
+
+I also tried the squashfs snapshot build (as of today, Feb 1 2022), which also boots normally.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4237#comment10499
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  1 14:39:03 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 01 Feb 2022 22:39:03 +0000
+Subject: [FS#4248] Repetitve crash in backports-5.10.68-1/net/mac80211/rate.c
+In-Reply-To: <FS4248@bugs.openwrt.org>
+References: <FS4248@bugs.openwrt.org>
+Message-ID: <mailman.35392.1643755158.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - szdaniel79 (szdaniel79) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - Repetitve crash in backports-5.10.68-1/net/mac80211/rate.c
+Task Type - Bug Report
+Category - Kernel
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Low
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details - Dear Team,
+
+After a while I see the following crash reports in the kernel log, that is repeated more and more often. I just copied here that I found, please tell me which further information do you require for analysis.
+
+I can supply the following information:
+  * Device problem occurs on: TP-Link Archer C7 v2
+  * Software versions: Firmware Version: OpenWrt 21.02.1 r16325-88151b8303 / LuCI openwrt-21.02 branch git-21.357.58218-b3cd473
+  * Steps to reproduce: normal operation
+
+**Kernel log:**
+
+[815415.061974] ------------[ cut here ]------------
+[815415.066817] WARNING: CPU: 0 PID: 0 at backports-5.10.68-1/net/mac80211/rate.c:677 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.077946] Modules linked in: ath9k ath9k_common pppoe ppp_async iptable_nat ath9k_hw ath10k_pci ath10k_core ath xt_state xt_nat xt_conntrack xt_REDIRECT xt_MASQUERADE xt_FLOWOFFLOAD xt_CT pppox ppp_generic nf_nat nf_flow_table_hw nf_flow_table nf_conntrack mac80211 ipt_REJECT cfg80211 xt_time xt_tcpudp xt_multiport xt_mark xt_mac xt_limit xt_comment xt_TCPMSS xt_LOG slhc nf_reject_ipv4 nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_filter ip_tables hwmon crc_ccitt compat ledtrig_usbport nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 fsl_mph_dr_of ehci_platform ehci_fsl ehci_hcd gpio_button_hotplug usbcore nls_base usb_common
+[815415.141103] CPU: 0 PID: 0 Comm: swapper Tainted: G        W         5.4.154 #0
+[815415.148523] Stack : 87780000 800b98ec 80660000 805fa498 00000000 00000000 00000000 00000000
+[815415.157095]         00000000 00000000 00000000 00000000 00000000 00000001 87c0bc30 82c38394
+[815415.165667]         87c0bcc8 00000000 00000000 0000026f 00000038 8057ac04 20202020 20205720
+[815415.174237]         0000026f dd700e94 00000000 20202020 00000000 87c0bc10 00000000 8771e700
+[815415.182809]         00000009 87776760 870701a0 80630000 00000002 8032041c 00000000 80790000
+[815415.191380]         ...
+[815415.193950] Call Trace:
+[815415.193964] [] 0x87780000 [ath10k_core at e02e0346+0x6bb00]
+[815415.202893] [] 0x800b98ec
+[815415.206520] [] 0x80660000
+[815415.210148] [] 0x8057ac04
+[815415.213788] [] 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.219892] [] 0x8032041c
+[815415.223527] [] 0x87780000 [ath10k_core at e02e0346+0x6bb00]
+[815415.229884] [] 0x80069364
+[815415.233510] [] 0x8006936c
+[815415.237133] [] 0x800824f4
+[815415.240767] [] 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.246859] [] 0x8008259c
+[815415.250490] [] 0x877035fc [mac80211 at e147d01c+0x7cdb0]
+[815415.256593] [] 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.262700] [] 0x8772e728 [mac80211 at e147d01c+0x7cdb0]
+[815415.268798] [] 0x803c5564
+[815415.272428] [] 0x800c3f10
+[815415.276058] [] 0x803c5f34
+[815415.279691] [] 0x873a991c [ath9k at 7596b381+0x19450]
+[815415.285530] [] 0x873acc84 [ath9k at 7596b381+0x19450]
+[815415.291378] [] 0x873a4664 [ath9k at 7596b381+0x19450]
+[815415.297218] [] 0x87730d9c [mac80211 at e147d01c+0x7cdb0]
+[815415.303324] [] 0x87730ef0 [mac80211 at e147d01c+0x7cdb0]
+[815415.309435] [] 0x87738bf0 [mac80211 at e147d01c+0x7cdb0]
+[815415.315543] [] 0x8773a838 [mac80211 at e147d01c+0x7cdb0]
+[815415.321646] [] 0x873a4eb8 [ath9k at 7596b381+0x19450]
+[815415.327477] [] 0x80660000
+[815415.331111] [] 0x80660000
+[815415.334735] [] 0x80085380
+[815415.338361] [] 0x800ba7e4
+[815415.341987] [] 0x80580170
+[815415.345612] [] 0x800bf374
+[815415.349240] [] 0x802bfc1c
+[815415.352871] [] 0x80064f78
+[815415.356489] 
+[815415.358090] ---[ end trace fe5188fc02723560 ]---
+
+[815415.401367] ------------[ cut here ]------------
+[815415.406224] WARNING: CPU: 0 PID: 7 at backports-5.10.68-1/net/mac80211/rate.c:677 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.417348] Modules linked in: ath9k ath9k_common pppoe ppp_async iptable_nat ath9k_hw ath10k_pci ath10k_core ath xt_state xt_nat xt_conntrack xt_REDIRECT xt_MASQUERADE xt_FLOWOFFLOAD xt_CT pppox ppp_generic nf_nat nf_flow_table_hw nf_flow_table nf_conntrack mac80211 ipt_REJECT cfg80211 xt_time xt_tcpudp xt_multiport xt_mark xt_mac xt_limit xt_comment xt_TCPMSS xt_LOG slhc nf_reject_ipv4 nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_filter ip_tables hwmon crc_ccitt compat ledtrig_usbport nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 fsl_mph_dr_of ehci_platform ehci_fsl ehci_hcd gpio_button_hotplug usbcore nls_base usb_common
+[815415.480504] CPU: 0 PID: 7 Comm: ksoftirqd/0 Tainted: G        W         5.4.154 #0
+[815415.488271] Stack : 87780000 800b98ec 80660000 805fa498 00000000 00000000 00000000 00000000
+[815415.496839]         00000000 00000000 00000000 00000000 00000000 00000001 87c47b20 41b066b9
+[815415.505409]         87c47bb8 00000000 00000000 0000029e 00000038 8057ac04 00000010 20202020
+[815415.513981]         0000029e dfd54e12 00000000 20202020 00000000 87c47b00 00000000 8771e700
+[815415.522552]         00000009 87776760 870701a0 80630000 00000010 8032041c 00000000 80790000
+[815415.531123]         ...
+[815415.533693] Call Trace:
+[815415.533707] [] 0x87780000 [ath10k_core at e02e0346+0x6bb00]
+[815415.542630] [] 0x800b98ec
+[815415.546264] [] 0x80660000
+[815415.549900] [] 0x8057ac04
+[815415.553540] [] 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.559655] [] 0x8032041c
+[815415.563289] [] 0x87780000 [ath10k_core at e02e0346+0x6bb00]
+[815415.569645] [] 0x80069364
+[815415.573280] [] 0x8006936c
+[815415.576912] [] 0x800824f4
+[815415.580545] [] 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.586638] [] 0x8008259c
+[815415.590277] [] 0x877035fc [mac80211 at e147d01c+0x7cdb0]
+[815415.596380] [] 0x8771e700 [mac80211 at e147d01c+0x7cdb0]
+[815415.602479] [] 0x80660000
+[815415.606118] [] 0x800c3f10
+[815415.609754] [] 0x873a991c [ath9k at 7596b381+0x19450]
+[815415.615602] [] 0x873acc84 [ath9k at 7596b381+0x19450]
+[815415.621435] [] 0x804943c8
+[815415.625079] [] 0x873a4664 [ath9k at 7596b381+0x19450]
+[815415.630915] [] 0x877a9ffc [ath10k_core at e02e0346+0x6bb00]
+[815415.637286] [] 0x87730d9c [mac80211 at e147d01c+0x7cdb0]
+[815415.643393] [] 0x87730ef0 [mac80211 at e147d01c+0x7cdb0]
+[815415.649502] [] 0x87738bf0 [mac80211 at e147d01c+0x7cdb0]
+[815415.655610] [] 0x8773a838 [mac80211 at e147d01c+0x7cdb0]
+[815415.661713] [] 0x803e1450
+[815415.665345] [] 0x800aaa14
+[815415.668990] [] 0x80660000
+[815415.672624] [] 0x80660000
+[815415.676248] [] 0x80085380
+[815415.679884] [] 0x80580170
+[815415.683523] [] 0x800a2d20
+[815415.687151] [] 0x800854e4
+[815415.690785] [] 0x8057c050
+[815415.694419] [] 0x800a2e64
+[815415.698054] [] 0x8009e7ec
+[815415.701688] [] 0x8057c2c0
+[815415.705324] [] 0x8009eb88
+[815415.708956] [] 0x8009ea50
+[815415.712584] [] 0x8009ea50
+[815415.716210] [] 0x80064bf8
+[815415.719847] 
+[815415.721452] ---[ end trace fe5188fc02723561 ]---
+
+   
+
+ 
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4248
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  1 21:26:13 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Wed, 02 Feb 2022 05:26:13 +0000
+Subject: [FS#4077] ERROR level instead of INFO level in syslog messages from
+ BusyBox components (crond)
+In-Reply-To: <FS4077@bugs.openwrt.org>
+References: <FS4077@bugs.openwrt.org>
+Message-ID: <mailman.35494.1643779589.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4077 - ERROR level instead of INFO level in syslog messages from BusyBox components (crond)
+User who did this - Chris (chder)
+
+----------
+I noticed this as well when it confused me into thinking the cron was somehow failing to run.
+
+I have openwrt forwarding to a syslog server and the logs viewer over there is showing "Severity: Error"
+
+Taking a peek at logread on the router itself I get:
+
+
+Tue Feb  1 21:45:00 2022 cron.err crond[1636]: USER root pid 22437 cmd flock -n /var/lock/persist.lock /etc/package-list/persist.sh
+Tue Feb  1 21:50:00 2022 cron.err crond[1636]: USER root pid 22515 cmd flock -n /var/lock/persist.lock /etc/package-list/persist.sh
+Tue Feb  1 21:55:00 2022 cron.err crond[1636]: USER root pid 22586 cmd flock -n /var/lock/persist.lock /etc/package-list/persist.sh
+Tue Feb  1 22:00:00 2022 cron.err crond[1636]: USER root pid 22664 cmd flock -n /var/lock/persist.lock /etc/package-list/persist.sh
+
+
+According to ps crond is running with:
+
+/usr/sbin/crond -f -c /etc/crontabs -l 8
+
+
+
+root at ROUTER:~# crond --help
++ crond --help
+BusyBox v1.33.2 (2022-01-23 10:30:30 UTC) multi-call binary.
+
+Usage: crond [-fbS] [-l N] [-L LOGFILE] [-c DIR]
+
+        -f      Foreground
+        -b      Background (default)
+        -S      Log to syslog (default)
+        -l N    Set log level. Most verbose 0, default 8
+        -L FILE Log to FILE
+        -c DIR  Cron dir. Default:/etc/crontabs
+
+
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4077#comment10500
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Wed Feb  2 06:13:19 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Wed, 02 Feb 2022 14:13:19 +0000
+Subject: [FS#4249] image builder show collected errors
+In-Reply-To: <FS4249@bugs.openwrt.org>
+References: <FS4249@bugs.openwrt.org>
+Message-ID: <mailman.35605.1643811204.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Andy Gao (andygaof) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - image builder show collected errors
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - Trunk
+Due in Version - Undecided
+Due Date - Undecided
+Details - Supply the following if possible:
+ - Device problem occurs on
+
+image builder 
+
+ - Software versions of OpenWrt/LEDE release, packages, etc.
+
+openwrt-imagebuilder-rockchip-armv8.Linux-x86_64.tar.xz Wed Feb 2 14:22:36 2022
+
+ - Steps to reproduce
+
+with Arch Linux
+
+tar -xvf openwrt-imagebuilder-rockchip-armv8.Linux-x86_64.tar.xz
+cd openwrt-imagebuilder-rockchip-armv8.Linux-x86_64
+make image PROFILE="friendlyarm_nanopi-r4s"
+
+try three times, it always show below message.seems this version of image builder is base on kernel 5.10.92, but below packags need 5.10.96
+
+Configuring urngd.
+Collected errors:
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-nf-reject6
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-lib-crc32c
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-nft-offload
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-nf-nat6
+ * satisfy_dependencies_for: Cannot satisfy the following dependencies for firewall4:
+ * 	kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+ * opkg_install_cmd: Cannot install package firewall4.
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-gpio-button-hotplug
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-libphy
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-fixed-phy
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-r8169
+ * satisfy_dependencies_for: Cannot satisfy the following dependencies for kmod-r8169:
+ * 	kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+ * opkg_install_cmd: Cannot install package kmod-r8169.
+ * pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-lib-crc-ccitt
+ * satisfy_dependencies_for: Cannot satisfy the following dependencies for ppp:
+ * 	kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+ * opkg_install_cmd: Cannot install package ppp.
+ * satisfy_dependencies_for: Cannot satisfy the following dependencies for ppp-mod-pppoe:
+ * 	kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+ * opkg_install_cmd: Cannot install package ppp-mod-pppoe.
+make[2]: *** [Makefile:168: package_install] Error 255
+make[1]: *** [Makefile:123: _call_image] Error 2
+make: *** [Makefile:241: image] Error 2
+
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4249
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Wed Feb  2 09:25:06 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Wed, 02 Feb 2022 17:25:06 +0000
+Subject: [FS#4250] ltq_etop 1e180000.etop eth0: tx ring full
+In-Reply-To: <FS4250@bugs.openwrt.org>
+References: <FS4250@bugs.openwrt.org>
+Message-ID: <mailman.35690.1643822717.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Reinhard Max (rmax) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - ltq_etop 1e180000.etop eth0: tx ring full
+Task Type - Bug Report
+Category - Kernel
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Low
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details - Device: Buffalo WBMR-HP-G300H
+Firmware: OpenWrt 21.02.0, r16279-5cc0535800
+
+Every once in a while the kernel spits out messages like this:
+
+  [121661.431352] ltq_etop 1e180000.etop eth0: tx ring full
+  [121661.458229] ltq_etop 1e180000.etop eth0: tx ring full
+  [121667.756097] ltq_etop 1e180000.etop eth0: tx ring full
+  [131036.649561] ltq_etop 1e180000.etop eth0: tx ring full
+  [131036.683894] ltq_etop 1e180000.etop eth0: tx ring full
+  [131036.703154] ltq_etop 1e180000.etop eth0: tx ring full
+
+Currenly I have more than 1100 of these messages in the log over an uptime of less than 2 days.
+
+Someone else reported this against 18.06 on the same device already, but it got closed when that version went EOL:
+https://bugs.openwrt.org/index.php?do=details&task_id=1968
+
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4250
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Wed Feb  2 16:38:49 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 00:38:49 +0000
+Subject: [FS#4246] x86: AMD embedded SFP+ amd_xgbe no link
+In-Reply-To: <FS4246@bugs.openwrt.org>
+References: <FS4246@bugs.openwrt.org>
+Message-ID: <mailman.35846.1643848739.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4246 - x86: AMD embedded SFP+ amd_xgbe no link
+User who did this - jochen (pmisch)
+
+----------
+I recompiled my own image and now it seems to work after fiddling around a bit with ethtool. This can be closed, sorry for bothering.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4246#comment10501
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Wed Feb  2 18:28:39 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 02:28:39 +0000
+Subject: [FS#4251] Its not possible to update firmware because the size is
+ greater than flash size
+In-Reply-To: <FS4251@bugs.openwrt.org>
+References: <FS4251@bugs.openwrt.org>
+Message-ID: <mailman.35869.1643855329.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - landsmanv (landsmanv) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - Its not possible to update firmware because the size is greater than flash size
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Very Low
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details -  - RT-N13u
+ - openwrt-21.02.1
+ - https://downloads.openwrt.org/releases/21.02.1/targets/ramips/rt305x/openwrt-21.02.1-ramips-rt305x-asus_rt-n13u-squashfs-sysupgrade.bin
+ - It's not possible to update firmware because the size is greater than flash size
+ - 19.07.8 works, but newer not
+   
+
+ 
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4251
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Wed Feb  2 20:47:12 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 04:47:12 +0000
+Subject: [FS#4252] image builder show collected errors
+In-Reply-To: <FS4252@bugs.openwrt.org>
+References: <FS4252@bugs.openwrt.org>
+Message-ID: <mailman.35885.1643863638.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Andy Gao (andygaof) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - image builder show collected errors
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - High
+Priority - Very Low
+Reported Version - Trunk
+Due in Version - Undecided
+Due Date - Undecided
+Details - it's the same issue of FS#4249, Just re-prioritize. 
+
+Supply the following if possible:
+- Device problem occurs on
+
+image builder
+
+- Software versions of OpenWrt/LEDE release, packages, etc.
+
+openwrt-imagebuilder-rockchip-armv8.Linux-x86_64.tar.xz Wed Feb 2 14:22:36 2022
+
+- Steps to reproduce
+
+with Arch Linux
+
+tar -xvf openwrt-imagebuilder-rockchip-armv8.Linux-x86_64.tar.xz
+cd openwrt-imagebuilder-rockchip-armv8.Linux-x86_64
+make image PROFILE="friendlyarm_nanopi-r4s"
+
+try three times, it always show below message.seems this version of image builder is base on kernel 5.10.92, but below packags need 5.10.96
+
+Configuring urngd.
+Collected errors:
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-nf-reject6
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-lib-crc32c
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-nft-offload
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-nf-nat6
+* satisfy_dependencies_for: Cannot satisfy the following dependencies for firewall4:
+* kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+* opkg_install_cmd: Cannot install package firewall4.
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-gpio-button-hotplug
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-libphy
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-fixed-phy
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-r8169
+* satisfy_dependencies_for: Cannot satisfy the following dependencies for kmod-r8169:
+* kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+* opkg_install_cmd: Cannot install package kmod-r8169.
+* pkg_hash_check_unresolved: cannot find dependency kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687) for kmod-lib-crc-ccitt
+* satisfy_dependencies_for: Cannot satisfy the following dependencies for ppp:
+* kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+* opkg_install_cmd: Cannot install package ppp.
+* satisfy_dependencies_for: Cannot satisfy the following dependencies for ppp-mod-pppoe:
+* kernel (= 5.10.96-1-07d10da2ae97351f8e93da080d950687)
+* opkg_install_cmd: Cannot install package ppp-mod-pppoe.
+make[2]: * [Makefile:168: package_install] Error 255
+make[1]: * [Makefile:123: _call_image] Error 2
+make: *** [Makefile:241: image] Error 2
+   
+
+ 
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4252
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Wed Feb  2 23:12:04 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 07:12:04 +0000
+Subject: [FS#2492] When building an image from an imagebuilder the build fails
+ for missing '''mips-openwrt-linux-musl'
+In-Reply-To: <FS2492@bugs.openwrt.org>
+References: <FS2492@bugs.openwrt.org>
+Message-ID: <mailman.35894.1643872328.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#2492 - When building an image from an imagebuilder the build fails for missing '''mips-openwrt-linux-musl'
+User who did this - Daniel Harding (living180)
+
+----------
+I ran into this also, but some testing seems to indicate that it is due to
+
+CONFIG_USE_MKLIBS=y
+
+in the .config file.  Removing that and rebuilding the imagebuilder fixed the issue for me.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=2492#comment10502
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Thu Feb  3 03:49:19 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 11:49:19 +0000
+Subject: [FS#3779] Possible less space on Netgear D7800 on 21.02
+In-Reply-To: <FS3779@bugs.openwrt.org>
+References: <FS3779@bugs.openwrt.org>
+Message-ID: <mailman.35959.1643888964.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3779 - Possible less space on Netgear D7800 on 21.02
+User who did this - Mike Lothain (FireBurn)
+
+----------
+https://github.com/openwrt/openwrt/pull/4183
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3779#comment10503
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Thu Feb  3 04:34:05 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 12:34:05 +0000
+Subject: [FS#4220] MTU > 1500 settings are missing for WAN and LANx mt7621
+In-Reply-To: <FS4220@bugs.openwrt.org>
+References: <FS4220@bugs.openwrt.org>
+Message-ID: <mailman.35984.1643891656.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4220 - MTU > 1500 settings are missing for WAN and LANx mt7621
+User who did this - Aleksander Bajkowski (abajk)
+
+----------
+@nicefile Changing the MTU value is supported since 5.11. Try to backport this  [[https://github.com/torvalds/linux/commit/9470174e7581e75a8ebd78964997314dfc2e706c#diff-35d2b0dd263dfe166663a9af8babdaebc5c43f0698cf6c73eb531079e0fbf4da|commit]].
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4220#comment10504
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Thu Feb  3 05:25:30 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 13:25:30 +0000
+Subject: [FS#714] ARP/Broadcast does not reach other clients in the same WLAN
+In-Reply-To: <FS714@bugs.openwrt.org>
+References: <FS714@bugs.openwrt.org>
+Message-ID: <mailman.35995.1643894736.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#714 - ARP/Broadcast does not reach other clients in the same WLAN
+User who did this - Nemo (captn3m0)
+
+----------
+Facing this on ASUS Rt-AC58U running OpenWrt 21.02.1 r16325-88151b8303.
+
+I can ping my Printer (connected to radio0, 2.4Ghz) from the router itself, but  can't ping it from a device connected to (radio1, 5GHz)
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=714#comment10505
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Thu Feb  3 07:53:39 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 15:53:39 +0000
+Subject: [FS#4253] mdns not received by wireless clients when using dynamic
+ vlans (802.1x)
+In-Reply-To: <FS4253@bugs.openwrt.org>
+References: <FS4253@bugs.openwrt.org>
+Message-ID: <mailman.36053.1643903623.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Francesco Servida (fservida) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - mdns not received by wireless clients when using dynamic vlans (802.1x)
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - All
+Due in Version - Undecided
+Due Date - Undecided
+Details - When using wireless networks with radius assigned dynamic vlans the mdns messages are not received by wireless clients.
+mdns messages are correctly sniffed on the wlan vlan, but they seem to never reach the devices.
+
+Using radius with vlan assignement in the "option network" works without problems.
+
+Happy to provide logs or captures as needed.
+
+Previous reports: 
+  * https://bugs.openwrt.org/index.php?do=details&task_id=3266&string=dynamic+vlan+mdns&search_name=&type%5B0%5D=&sev%5B0%5D=&pri%5B0%5D=&due%5B0%5D=&reported%5B0%5D=&cat%5B0%5D=&status%5B0%5D=open&percent%5B0%5D=&opened=&dev=&closed=&duedatefrom=&duedateto=&changedfrom=&changedto=&openedfrom=&openedto=&closedfrom=&closedto=
+  * https://forum.openwrt.org/t/802-1x-with-dynamic-vlans-5ghz-and-mdns-strange-behaviour/50180/2
+  * https://www.reddit.com/r/homelab/comments/pqnh2y/mdns_8021x_dynamic_vlans_openwrt_a_mr33_a_tale_of/
+   
+
+ 
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4253
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Thu Feb  3 07:59:02 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 03 Feb 2022 15:59:02 +0000
+Subject: [FS#3325] MT7628an: lose radio whilst downloading jarge data
+In-Reply-To: <FS3325@bugs.openwrt.org>
+References: <FS3325@bugs.openwrt.org>
+Message-ID: <mailman.36056.1643903945.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3325 - MT7628an: lose radio whilst downloading jarge data
+User who did this - DragonBluep (DragonBluep)
+
+----------
+Can you try this fix? I got some positive feedback. 
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3325#comment10506
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Thu Feb  3 23:24:23 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Fri, 04 Feb 2022 07:24:23 +0000
+Subject: [FS#4254] ath10k firmware load error for qca9888
+In-Reply-To: <FS4254@bugs.openwrt.org>
+References: <FS4254@bugs.openwrt.org>
+Message-ID: <mailman.36274.1643959475.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - janpieter sollie (jpsollie1) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - ath10k firmware load error for qca9888
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - Trunk
+Due in Version - Undecided
+Due Date - Undecided
+Details - Device problem occurs on:
+BananaPI R64 (MT7622) with QCA9888 pcie card
+
+Software versions of OpenWrt/LEDE release, packages, etc.
+Master branch, kmod-ath10k + vanilla firmware / kmod-ath10k-ct + ct firmware
+
+Steps to reproduce:
+install kmod-ath10k
+install board / chip firmware
+reboot
+
+error reported by dmesg:
+
+[   13.090191] ath10k_pci 0000:01:00.0: assign IRQ: got 147
+[   13.095519] ath10k 5.15 driver, optimized for CT firmware, probing pci device: 0x56.
+[   13.104003] pci 0000:00:00.0: enabling bus mastering
+[   13.108989] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
+[   13.115357] ath10k_pci 0000:01:00.0: enabling bus mastering
+[   13.121569] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+[   19.195765] ath10k_pci 0000:01:00.0: qca9888 hw2.0 target 0x01000000 chip_id 0x00000000 sub 0000:0000
+[   19.205105] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 0
+[   19.213696] ath10k_pci 0000:01:00.0: firmware ver 10.4b-ct-9888-fH-13-5ae337bb1 api 5 features mfp,peer-flow-ctrl,txstatus-noack,wmi-10.x-CT,ratemask-CT,regdump-CT,txrate-CT,flush-all-CT,pingpong-CT,ch-regs-CT,nop-CT,htt-mgt-CT,set-special-CT,tx-rc-CT,cust-stats-CT,txrate2-CT,beacon-cb-CT,wmi-block-ack-CT,wmi-bcn-rc-CT crc32 9a038867
+[   21.260278] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,bmi-chip-id=0,bmi-board-id=30 from ath10k/QCA9888/hw2.0/board-2.bin
+[   21.281106] ath10k_pci 0000:01:00.0: failed to fetch board-2.bin or board.bin from ath10k/QCA9888/hw2.0
+[   21.290557] ath10k_pci 0000:01:00.0: failed to fetch board file: -12
+[   21.297037] ath10k_pci 0000:01:00.0: could not probe fw (-12)
+
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4254
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Fri Feb  4 06:07:59 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Fri, 04 Feb 2022 14:07:59 +0000
+Subject: [FS#4255] 2.4GHz radio crash - TL-WR1043ND v2
+In-Reply-To: <FS4255@bugs.openwrt.org>
+References: <FS4255@bugs.openwrt.org>
+Message-ID: <mailman.36340.1643983691.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Fabio Cecamore (fabio89) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - 2.4GHz radio crash - TL-WR1043ND v2
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details -  Hello,
+the 2.4GHz radio of my router crashes often under high wifi traffic load.
+The wifi network is still online but the clients are unable to connect to the network.
+The only way to temporarily fix is to put down and up again the wifi interface.
+
+This is the kernel log: https://justpaste.it/57llo
+
+The device is TL-WR1043ND v2 with last stable release OpenWrt 21.02.0 r16279-5cc0535800.
+Cheers
+Fabio
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4255
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Fri Feb  4 08:29:45 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Fri, 04 Feb 2022 16:29:45 +0000
+Subject: [FS#4159] hostapd-common update breaks WiFi completely when using the
+ config file for the previous version
+In-Reply-To: <FS4159@bugs.openwrt.org>
+References: <FS4159@bugs.openwrt.org>
+Message-ID: <mailman.36382.1643992191.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4159 - hostapd-common update breaks WiFi completely when using the config file for the previous version
+User who did this - KsmoinO (KsmoinO)
+
+----------
+Trying to debug my radius issue I realize that I was using wpad-wolfssl
+I tried to switch to wpad and wpad-openssl but both completely breaks wifi, devices still not active with "2 errors found in configuration file '/var/run/hostapd-phyX.conf'" messages in logs
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4159#comment10507
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Fri Feb  4 19:48:50 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Sat, 05 Feb 2022 03:48:50 +0000
+Subject: [FS#3855] Totolink X5000R - MAC of phy1 is not unique
+In-Reply-To: <FS3855@bugs.openwrt.org>
+References: <FS3855@bugs.openwrt.org>
+Message-ID: <mailman.36438.1644032934.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3855 - Totolink X5000R - MAC of phy1 is not unique
+User who did this - B1773rn4n (B1773rn4n)
+
+----------
+I can confirm. I own a x5000r and have the same MAC
+
+root at OpenWrt:~# cat /sys/class/ieee80211/phy1/macaddress
+00:0c:43:4a:21:4e
+
+Version: OpenWrt 21.02.1
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3855#comment10508
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sat Feb  5 02:28:47 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Sat, 05 Feb 2022 10:28:47 +0000
+Subject: [FS#3762] WAN performance regression on MT7621 21.02-rc1 vs 19.07.7
+In-Reply-To: <FS3762@bugs.openwrt.org>
+References: <FS3762@bugs.openwrt.org>
+Message-ID: <mailman.36450.1644056941.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3762 - WAN performance regression on MT7621 21.02-rc1 vs 19.07.7
+User who did this - Friendly fellow (DasTestament)
+
+----------
+That's hurts to hear :-( Feels like I will stick with 19.08.7 for a unforeseeable long time ...
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3762#comment10509
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sat Feb  5 04:11:22 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Sat, 05 Feb 2022 12:11:22 +0000
+Subject: [FS#4256] CMake fails to build (gcc complains about missing -fPIE
+ flag)
+In-Reply-To: <FS4256@bugs.openwrt.org>
+References: <FS4256@bugs.openwrt.org>
+Message-ID: <mailman.36455.1644063088.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - jpellegrini (jpellegrini) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - CMake fails to build (gcc complains about missing -fPIE flag)
+Task Type - Build Failure
+Category - Toolchain
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Low
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details - Hello!
+
+I've been compiling OpenWRT from sources for several years (I maintain a bunch of unofficial packages), and recently tools/cmake won't build from sources anymore, complaining that objects should be recompiled with -fPIE
+
+This is a fresh checkout of the git repository; I only selected the openwrt-21.02 branch then ran make menuconfig, chose "Archer C7 v4" and then ran make tools/install.
+
+It also happens in the master branch.
+
+This is GCC 11 on a Debian system.
+
+
+g++ -L/home/jeronimo/pkg/openwrt/staging_dir/host/lib  -O2 -I/home/jeronimo/pkg/openwrt/staging_dir/host/include        -DCMAKE_BOOTSTRAP    -DCMake_HAVE_CXX_MAKE_UNIQUE=1 -DCMake_HAVE_CXX_FILESYSTEM=1   -I/home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Bootstrap.cmk   -I/home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Source   -I/home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Source/LexerParser   -I/home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Utilities/std   -I/home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Utilities  cmAddCustomCommandCommand.o cmAddCustomTargetCommand.o cmAddDefinitionsCommand.o cmAddDependenciesCommand.o cmAddExecutableCommand.o cmAddLibraryCommand.o cmAddSubDirectoryCommand.o cmAddTestCommand.o cmArgumentParser.o cmBinUtilsLinker.o cmBinUtilsLinuxELFGetRuntimeDependenciesTool.o cmBinUtilsLinuxELFLinker.o cmBinUtilsLinuxELFObjdumpGetRuntimeDependenciesTool.o cmBinUtilsMacOSMachOGetRuntimeDependenciesTool.o cmBinUtilsMacOSMachOLinker.o cmBinUtilsMacOSMachOOToolGetRuntimeDependenciesTool.o cmBinUtilsWindowsPEGetRuntimeDependenciesTool.o cmBinUtilsWindowsPEDumpbinGetRuntimeDependenciesTool.o cmBinUtilsWindowsPELinker.o cmBinUtilsWindowsPEObjdumpGetRuntimeDependenciesTool.o cmBreakCommand.o cmBuildCommand.o cmCMakeMinimumRequired.o cmCMakePath.o cmCMakePolicyCommand.o cmCPackPropertiesGenerator.o cmCacheManager.o cmCheckCustomOutputs.o cmCommand.o cmCommandArgumentParserHelper.o cmCommands.o cmCommonTargetGenerator.o cmComputeComponentGraph.o cmComputeLinkDepends.o cmComputeLinkInformation.o cmComputeTargetDepends.o cmConsoleBuf.o cmConditionEvaluator.o cmConfigureFileCommand.o cmContinueCommand.o cmCoreTryCompile.o cmCreateTestSourceList.o cmCustomCommand.o cmCustomCommandGenerator.o cmCustomCommandLines.o cmDefinePropertyCommand.o cmDefinitions.o cmDocumentationFormatter.o cmEnableLanguageCommand.o cmEnableTestingCommand.o cmExecProgramCommand.o cmExecuteProcessCommand.o cmExpandedCommandArgument.o cmExportBuildFileGenerator.o cmExportFileGenerator.o cmExportInstallFileGenerator.o cmExportSet.o cmExportTryCompileFileGenerator.o cmExprParserHelper.o cmExternalMakefileProjectGenerator.o cmFileCommand.o cmFileCopier.o cmFileInstaller.o cmFileTime.o cmFileTimeCache.o cmFileTimes.o cmFindBase.o cmFindCommon.o cmFindFileCommand.o cmFindLibraryCommand.o cmFindPackageCommand.o cmFindPathCommand.o cmFindProgramCommand.o cmForEachCommand.o cmFunctionBlocker.o cmFunctionCommand.o cmFSPermissions.o cmGeneratedFileStream.o cmGeneratorExpression.o cmGeneratorExpressionContext.o cmGeneratorExpressionDAGChecker.o cmGeneratorExpressionEvaluationFile.o cmGeneratorExpressionEvaluator.o cmGeneratorExpressionLexer.o cmGeneratorExpressionNode.o cmGeneratorExpressionParser.o cmGeneratorTarget.o cmGetCMakePropertyCommand.o cmGetDirectoryPropertyCommand.o cmGetFilenameComponentCommand.o cmGetPipes.o cmGetPropertyCommand.o cmGetSourceFilePropertyCommand.o cmGetTargetPropertyCommand.o cmGetTestPropertyCommand.o cmGlobalCommonGenerator.o cmGlobalGenerator.o cmGlobVerificationManager.o cmHexFileConverter.o cmIfCommand.o cmIncludeCommand.o cmIncludeGuardCommand.o cmIncludeDirectoryCommand.o cmIncludeRegularExpressionCommand.o cmInstallCommand.o cmInstallCommandArguments.o cmInstallDirectoryGenerator.o cmInstallExportGenerator.o cmInstallFilesCommand.o cmInstallFilesGenerator.o cmInstallGenerator.o cmInstallScriptGenerator.o cmInstallSubdirectoryGenerator.o cmInstallTargetGenerator.o cmInstallTargetsCommand.o cmInstalledFile.o cmLDConfigLDConfigTool.o cmLDConfigTool.o cmLinkDirectoriesCommand.o cmLinkItem.o cmLinkItemGraphVisitor.o cmLinkLineComputer.o cmLinkLineDeviceComputer.o cmListCommand.o cmListFileCache.o cmLocalCommonGenerator.o cmLocalGenerator.o cmMSVC60LinkLineComputer.o cmMacroCommand.o cmMakeDirectoryCommand.o cmMakefile.o cmMarkAsAdvancedCommand.o cmMathCommand.o cmMessageCommand.o cmMessenger.o cmNewLineStyle.o cmOSXBundleGenerator.o cmOptionCommand.o cmOrderDirectories.o cmOutputConverter.o cmParseArgumentsCommand.o cmPathLabel.o cmPolicies.o cmProcessOutput.o cmProjectCommand.o cmPropertyDefinition.o cmPropertyMap.o cmReturnCommand.o cmRulePlaceholderExpander.o cmRuntimeDependencyArchive.o cmScriptGenerator.o cmSearchPath.o cmSeparateArgumentsCommand.o cmSetCommand.o cmSetDirectoryPropertiesCommand.o cmSetPropertyCommand.o cmSetSourceFilesPropertiesCommand.o cmSetTargetPropertiesCommand.o cmSetTestsPropertiesCommand.o cmSiteNameCommand.o cmSourceFile.o cmSourceFileLocation.o cmStandardLevelResolver.o cmState.o cmStateDirectory.o cmStateSnapshot.o cmString.o cmStringAlgorithms.o cmStringReplaceHelper.o cmStringCommand.o cmSubcommandTable.o cmSubdirCommand.o cmSystemTools.o cmTarget.o cmTargetCompileDefinitionsCommand.o cmTargetCompileFeaturesCommand.o cmTargetCompileOptionsCommand.o cmTargetIncludeDirectoriesCommand.o cmTargetLinkLibrariesCommand.o cmTargetLinkOptionsCommand.o cmTargetPrecompileHeadersCommand.o cmTargetPropCommandBase.o cmTargetPropertyComputer.o cmTargetSourcesCommand.o cmTest.o cmTestGenerator.o cmTimestamp.o cmTryCompileCommand.o cmTryRunCommand.o cmUnsetCommand.o cmUVHandlePtr.o cmUVProcessChain.o cmVersion.o cmWhileCommand.o cmWorkingDirectory.o cmake.o cmakemain.o cmcmd.o cmDepends.o cmDependsC.o cmGlobalUnixMakefileGenerator3.o cmLocalUnixMakefileGenerator3.o cmMakefileExecutableTargetGenerator.o cmMakefileLibraryTargetGenerator.o cmMakefileTargetGenerator.o cmMakefileUtilityTargetGenerator.o fs_path.o string_view.o cmCommandArgumentLexer.o cmCommandArgumentParser.o cmExprLexer.o cmExprParser.o cmListFileLexer.o Directory.o EncodingCXX.o FStream.o Glob.o RegularExpression.o SystemTools.o EncodingC.o ProcessUNIX.o String.o System.o Terminal.o uv-src-strscpy.c.o uv-src-timer.c.o uv-src-uv-common.c.o uv-src-unix-cmake-bootstrap.c.o uv-src-unix-core.c.o uv-src-unix-fs.c.o uv-src-unix-loop.c.o uv-src-unix-loop-watcher.c.o uv-src-unix-no-fsevents.c.o uv-src-unix-pipe.c.o uv-src-unix-poll.c.o uv-src-unix-posix-hrtime.c.o uv-src-unix-posix-poll.c.o uv-src-unix-process.c.o uv-src-unix-signal.c.o uv-src-unix-stream.c.o  -ldl -lrt -o cmake
+/usr/bin/ld: cmListFileLexer.o: relocation R_X86_64_32S against `.rodata' can not be used when making a PIE object; recompile with -fPIE
+/usr/bin/ld: failed to set dynamic section sizes: bad value
+collect2: error: ld returned 1 exit status
+gmake[3]: *** [Makefile:2: cmake] Error 1
+gmake[3]: Leaving directory '/home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Bootstrap.cmk'
+---------------------------------------------
+Error when bootstrapping CMake:
+Problem while running gmake
+---------------------------------------------
+Log of errors: /home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/Bootstrap.cmk/cmake_bootstrap.log
+---------------------------------------------
+make[2]: *** [Makefile:39: /home/jeronimo/pkg/openwrt/build_dir/host/cmake-3.19.1/.configured] Error 9
+make[2]: Leaving directory '/home/jeronimo/pkg/openwrt/tools/cmake'
+time: tools/cmake/compile#387.90#29.18#418.78
+    ERROR: tools/cmake failed to build.
+make[1]: *** [tools/Makefile:159: tools/cmake/compile] Error 1
+make[1]: Leaving directory '/home/jeronimo/pkg/openwrt'
+make: *** [/home/jeronimo/pkg/openwrt/include/toplevel.mk:230: tools/compile] Error 2
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4256
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sat Feb  5 12:47:25 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Sat, 05 Feb 2022 20:47:25 +0000
+Subject: [FS#3499] [netifd] no way to monitor the real state of a connection
+ via protocol handlers
+In-Reply-To: <FS3499@bugs.openwrt.org>
+References: <FS3499@bugs.openwrt.org>
+Message-ID: <mailman.36591.1644094055.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3499 - [netifd] no way to monitor the real state of a connection via protocol handlers
+User who did this - Aleksander Morgado (aleksander0m)
+
+----------
+I haven't seen your reply until now; sorry!
+
+We recently discussed about how to best handle this in the MM mailing list, and a solution like the one you suggest, using `proto_init_update $ifname 0; proto_send_update`, makes sense.
+
+The way forward I'm suggesting is to allow ModemManager to run "post-event" dispatcher scripts; e.g. we could allow the user to have custom scripts that are run by the MM daemon when a given connection is connected or disconnected. Then, the openwrt packaging could provide a script to call on network-triggered disconnections, which would do the `proto_init_update $ifname 0; proto_send_update` call to notify netifd that the connection is really down.
+
+See https://lists.freedesktop.org/archives/modemmanager-devel/2022-January/009075.html
+
+What do you think of this? It would not require a separate daemon to monitor the connection, it would all be managed by MM and the openwrt-installed dispatcher script.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3499#comment10510
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sun Feb  6 09:17:31 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Sun, 06 Feb 2022 17:17:31 +0000
+Subject: [FS#3839] Xiaomi 4A Gigabit link speed auto negotiation
+In-Reply-To: <FS3839@bugs.openwrt.org>
+References: <FS3839@bugs.openwrt.org>
+Message-ID: <mailman.36622.1644167863.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3839 - Xiaomi 4A Gigabit link speed auto negotiation
+User who did this - serj-47 (serj-47)
+
+----------
+
+I checked on my xiaomi 4a with firmware 21.02.1 stable and on a snapshot from 02/03/2022. And still the same problem.
+With a two-pair cable from the ISP, the router reports a 1Gbit connection on the wan interface.
+
+[180840.516823] mt7530 mdio-bus:1f wan: Link is Up - 1Gbps/Full - flow control off
+
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3839#comment10511
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sun Feb  6 09:28:31 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Sun, 06 Feb 2022 17:28:31 +0000
+Subject: [FS#4159] hostapd-common update breaks WiFi completely when using the
+ config file for the previous version
+In-Reply-To: <FS4159@bugs.openwrt.org>
+References: <FS4159@bugs.openwrt.org>
+Message-ID: <mailman.36623.1644168519.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4159 - hostapd-common update breaks WiFi completely when using the config file for the previous version
+User who did this - PG (eldiablo13fr)
+
+----------
+same issue with updated version of hostapd-common **2020-06-08-5a8b3662-38 **, this version kills WIFI on my two R8000 netgear and also my TP-Link Archer C7 v5.
+
+But all works with the previous version ** hostapd-common2020-06-08-5a8b3662-35**
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4159#comment10512
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sun Feb  6 17:32:49 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 01:32:49 +0000
+Subject: [FS#4257] fstools: mount_root done not working corectly
+In-Reply-To: <FS4257@bugs.openwrt.org>
+References: <FS4257@bugs.openwrt.org>
+Message-ID: <mailman.36689.1644197573.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Daniel Santos (dansan) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - fstools: mount_root done not working corectly
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details - Supply the following if possible:
+ - Device problem occurs on
+GSE MCG-101 (mt7620a board)
+
+ - Software versions of OpenWrt/LEDE release, packages, etc.
+v21.02
+
+ - Steps to reproduce
+Install a package with valid init.d script to rootfs with init script not enabled (via DISABLED_SERVICE variable or my CONFIG_NO_ENABLE_SERVICE patch which I haven't yet submitted).
+Attempt to enable the service via /etc/uci-defaults script via
+
+   
+I have a service that I enable in /etc/uci-defaults as long as prior initialization succeeds because I don't want it to try to start if there's a problem with prerequisites.  I can see the it was executed because I'm logging this script and I've set -e:
+
++ /etc/rc.common /etc/init.d/sbd enable
+
+Unfortunately, the service didn't start and instead I found a symlink at /tmp/root/upper/etc/rc.d/S57sbd, but not at /overlay/upper/etc/rc.d/S57sbd after init had completed and the jffs2 system was mounted.  So something is going wrong, I presume in projects/fstools/mount_root.c jffs2_switch().
+
+
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4257
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sun Feb  6 18:06:54 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 02:06:54 +0000
+Subject: [FS#4159] hostapd-common update breaks WiFi completely when using the
+ config file for the previous version
+In-Reply-To: <FS4159@bugs.openwrt.org>
+References: <FS4159@bugs.openwrt.org>
+Message-ID: <mailman.36694.1644199628.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4159 - hostapd-common update breaks WiFi completely when using the config file for the previous version
+User who did this - Harry Martin (systemdlete)
+
+----------
+Maybe this bug is not exactly the same as mine, but it is almost certainly related.  Once I install hostapd-common, the interface disappears.
+
+This defect is "low priority" -- isn't wireless functionality kind of central to OpenWRT?
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4159#comment10513
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Sun Feb  6 23:56:33 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 07:56:33 +0000
+Subject: [FS#4159] hostapd-common update breaks WiFi completely when using the
+ config file for the previous version
+In-Reply-To: <FS4159@bugs.openwrt.org>
+References: <FS4159@bugs.openwrt.org>
+Message-ID: <mailman.36728.1644220628.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4159 - hostapd-common update breaks WiFi completely when using the config file for the previous version
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Again, you must update *all* hostapd components, not just hostapd-common
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4159#comment10514
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 00:44:51 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 08:44:51 +0000
+Subject: [FS#4149] binutils: unable to build toolchain with v2.37
+In-Reply-To: <FS4149@bugs.openwrt.org>
+References: <FS4149@bugs.openwrt.org>
+Message-ID: <mailman.36742.1644223506.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4149 - binutils: unable to build toolchain with v2.37
+User who did this - John (darksky4)
+
+----------
+This has been fixed, safe to close.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4149#comment10515
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 00:48:59 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 08:48:59 +0000
+Subject: [FS#4258] firewall4 does not honor rule denying access to WAN zone
+In-Reply-To: <FS4258@bugs.openwrt.org>
+References: <FS4258@bugs.openwrt.org>
+Message-ID: <mailman.36743.1644223742.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - John (darksky4) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - firewall4 does not honor rule denying access to WAN zone
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - Trunk
+Due in Version - Undecided
+Due Date - Undecided
+Details - I built an image from master just now and created this firewall rule to deny WAN access to a particular client. The rule is active yet I can still get out to the WAN from that client. Under a pure fw3 image built from a few days ago, the rule worked as expected.
+
+config rule
+  option src 'lan'
+  option target 'REJECT'
+  option name 'Deny WAN access'
+  option dest 'wan'
+  list proto 'all'
+  list src_ip '10.9.8.100'
+  list src_ip '10.9.8.112'
+
+Supply the following if possible:
+ - Device problem occurs on = bcm2711/rpi4b
+ - Software versions of OpenWrt = latest from master (3343ca7e68) 
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4258
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 01:31:59 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 09:31:59 +0000
+Subject: [FS#4258] firewall4 does not honor rule denying access to WAN zone
+In-Reply-To: <FS4258@bugs.openwrt.org>
+References: <FS4258@bugs.openwrt.org>
+Message-ID: <mailman.36758.1644226323.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4258 - firewall4 does not honor rule denying access to WAN zone
+User who did this - Etienne CHAMPETIER (champtar)
+
+----------
+Can you show the output of 'nft list ruleset', also your full firewall config, maybe another rules breaks fw4
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4258#comment10516
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 01:46:36 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 09:46:36 +0000
+Subject: [FS#4159] hostapd-common update breaks WiFi completely when using the
+ config file for the previous version
+In-Reply-To: <FS4159@bugs.openwrt.org>
+References: <FS4159@bugs.openwrt.org>
+Message-ID: <mailman.36763.1644227203.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4159 - hostapd-common update breaks WiFi completely when using the config file for the previous version
+User who did this - Harry Martin (systemdlete)
+
+----------
+What makes you think I hadn't?   I did update all the components.   It made no difference--it still did not work.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4159#comment10517
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 01:48:57 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 09:48:57 +0000
+Subject: [FS#4242] errors about udhcpc v1.34.1 
+In-Reply-To: <FS4242@bugs.openwrt.org>
+References: <FS4242@bugs.openwrt.org>
+Message-ID: <mailman.36764.1644227344.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has been changed.  The changes are listed below.  For full information about what has changed, visit the URL and click the History tab.
+
+FS#4242 - errors about udhcpc v1.34.1 
+User who did this: Yousong Zhou (yousong)
+Task details edited:
+-------
+udhcpc in busybox v1.34.1
+I need to start two udhcpc with different interface, eth0, eth0.700
+Some times I found the ip show is same:
+
+
+eth0      Link encap:Ethernet  HWaddr 00:11:22:33:44:90
+          inet addr:192.168.2.11  Bcast:192.168.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::211:22ff:fe33:4490/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:29617 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:29546 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:2795324 (2.6 MiB)  TX bytes:2756288 (2.6 MiB)
+          Interrupt:45
+eth0.700  Link encap:Ethernet  HWaddr 00:11:22:33:44:90
+          inet addr:192.168.2.11  Bcast:192.168.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::211:22ff:fe33:4490/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:1493 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:2865 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:105529 (103.0 KiB)  TX bytes:235432 (229.9 KiB)
+
+
+in fact they should not use same ip, 
+because the server is configured as 192.169.3.1 for eth0,with range:192.168.3.20,192.168.3.30 for eth0
+and another interface server configured as 192.168.2.1 with range:192.168.2.10-192.168.2.30  for eth0.700
+
+from the log, it shows:
+
+
+2022-01-27T07:05:11.38086 udhcpc: started, v1.34.1
+2022-01-27T07:05:11.38087 udhcpc: started, v1.34.1
+2022-01-27T07:05:11.49480 udhcpc: broadcasting discover
+2022-01-27T07:05:11.50489 udhcpc: broadcasting discover
+2022-01-27T07:05:14.58804 udhcpc: broadcasting discover
+2022-01-27T07:05:14.58807 udhcpc: broadcasting discover
+====2022-01-27T07:05:14.68504 udhcpc: broadcasting select for 192.168.2.11, server 192.168.2.1
+2022-01-27T07:05:14.68507 udhcpc: broadcasting select for 192.168.3.21, server 192.168.3.1
+2022-01-27T07:05:14.82465 udhcpc: lease of 192.168.2.11 obtained from 192.168.2.1, lease time 588
+2022-01-27T07:05:14.82505 udhcpc: lease of 192.168.2.11 obtained from 192.168.3.1, lease time 588====
+2022-01-27T07:05:14.83214 udhcpc: ip addr add 192.168.2.11/255.255.255.0 broadcast + dev eth0.700
+2022-01-27T07:05:14.83229 udhcpc: ip addr add 192.168.2.11/255.255.255.0 broadcast + dev eth0
+2022-01-27T07:10:08.68581 udhcpc: sending renew to server 192.168.3.1
+2022-01-27T07:10:08.90760 udhcpc: sending renew to server 192.168.2.1
+2022-01-27T07:10:08.96883 udhcpc: lease of 192.168.2.11 obtained from 192.168.2.1, lease time 600
+2022-01-27T07:10:08.97304 udhcpc: ip addr add 192.168.2.11/255.255.255.0 broadcast + dev eth0.700
+
+
+it can prove the server allocate a right address for each interface, but I don't know why it bind the same address as eth0.700
+==========seems like has memory cover issue in udhcpc.==========
+==========The issue occurred in a very few probability.========== 
+
+The start command is :
+
+
+/sbin/udhcpc -A 0 -f -S -x 0x7d:00000de9270106443845464344020c50454d323031303034343930030f354752656365697665722d48472d31 -V ,01.00.00.2180,,460008944136270,898600910920f9073973,oam 10.48.35.88,oam 2409:891f:9306:45f0:211:22ff:fe33:4492,payload 10.96.166.115,payload 2409:891e:9326:b7b5:0211:22ff:fe33:4493 -x hostname:5GFMR21 -i eth0
+/sbin/udhcpc -A 0 -f -S -x 0x7d:00000de9270106443845464344020c50454d323031303034343930030f354752656365697665722d48472d31 -V ,01.00.00.2180,,460008944136270,898600910920f9073973,oam 10.48.35.88,oam 2409:891f:9306:45f0:211:22ff:fe33:4492,payload 10.96.166.115,payload 2409:891e:9326:b7b5:0211:22ff:fe33:4493 -x hostname:5GFMR21 -i eth0.700
+
+-------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4242
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 02:30:18 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 10:30:18 +0000
+Subject: [FS#4258] firewall4 does not honor rule denying access to WAN zone
+In-Reply-To: <FS4258@bugs.openwrt.org>
+References: <FS4258@bugs.openwrt.org>
+Message-ID: <mailman.36789.1644229830.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4258 - firewall4 does not honor rule denying access to WAN zone
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Fixed with https://git.openwrt.org/?p=project/firewall4.git;a=commitdiff;h=b54f462272c3a68a1a733a9037dc7c109c54499d - will push an update soon.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4258#comment10518
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 02:46:19 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 10:46:19 +0000
+Subject: [FS#4258] firewall4 does not honor rule denying access to WAN zone
+In-Reply-To: <FS4258@bugs.openwrt.org>
+References: <FS4258@bugs.openwrt.org>
+Message-ID: <mailman.36799.1644230783.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task is now closed:
+
+FS#4258 - firewall4 does not honor rule denying access to WAN zone
+User who did this - Jo-Philipp Wich (jow-)
+
+Reason for closing: Fixed
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4258
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 02:46:15 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 10:46:15 +0000
+Subject: [FS#4258] firewall4 does not honor rule denying access to WAN zone
+In-Reply-To: <FS4258@bugs.openwrt.org>
+References: <FS4258@bugs.openwrt.org>
+Message-ID: <mailman.36800.1644230786.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4258 - firewall4 does not honor rule denying access to WAN zone
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Updated with https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=2dd6777f15defc6fe343e8485d3e22325570fb2b
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4258#comment10519
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 03:55:22 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 11:55:22 +0000
+Subject: [FS#4229] MT7621 Wireless default error
+In-Reply-To: <FS4229@bugs.openwrt.org>
+References: <FS4229@bugs.openwrt.org>
+Message-ID: <mailman.36809.1644234927.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4229 - MT7621 Wireless default error
+User who did this - jackadam (jackadam)
+
+----------
+anyone help?
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4229#comment10520
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 04:49:55 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 12:49:55 +0000
+Subject: [FS#3989] MT76x2E randomly restarts on Xiaomi Mi Router 4A Gigabit
+ Edition
+In-Reply-To: <FS3989@bugs.openwrt.org>
+References: <FS3989@bugs.openwrt.org>
+Message-ID: <mailman.36814.1644238203.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#3989 - MT76x2E randomly restarts on Xiaomi Mi Router 4A Gigabit Edition
+User who did this - Igor Drach (laigor)
+
+----------
+I compile 21.02 with fresh mt76 dated 2022-01-31 and the problem is gone. 
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=3989#comment10521
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 05:11:03 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 13:11:03 +0000
+Subject: [FS#4149] binutils: unable to build toolchain with v2.37
+In-Reply-To: <FS4149@bugs.openwrt.org>
+References: <FS4149@bugs.openwrt.org>
+Message-ID: <mailman.36817.1644239474.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task is now closed:
+
+FS#4149 - binutils: unable to build toolchain with v2.37
+User who did this - Hans Dedecker (dedeckeh)
+
+Reason for closing: Fixed
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4149
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 06:09:20 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 14:09:20 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36832.1644242966.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Nftables/firewall4 issues fixed with 
+
+
+  * [[https://github.com/openwrt/openwrt/commit/2dd6777f15defc6fe343e8485d3e22325570fb2b|2dd6777f firewall4: update to latest Git HEAD]]
+  * [[https://github.com/openwrt/openwrt/commit/3b1692c463fae107177fcee51874696f6323d0d2|3b1692c4 netifd: update to latest Git HEAD]]
+  * [[https://git.openwrt.org/?p=project/firewall4.git;a=commitdiff;h=52831a00bec8e3676e2747029c0349f6be9c2593;hp=7cb10c809314261c20ddca069eacd469adf44be3|52831a00 fw4: improve flowtable handling]]
+  * [[https://git.openwrt.org/?p=project/netifd.git;a=commitdiff;h=fd4c9e17c8f22b866c1bf386c580074e3e678910|fd4c9e17 system-linux: expose hw-tc-offload ethtool feature in device status dump]]
+
+On my ER-X hw flow offloading is properly utilized:
+
+
+root at er-x:~# grep HW_OFFLOAD /proc/net/nf_conntrack | sed -e 's#dst=[^[:space:]]*#dst=...#g'
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=48642 dport=993 packets=3 bytes=207 src=212.204.60.9 dst=... sport=993 dport=48642 packets=87 bytes=8526 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=48634 dport=993 packets=14 bytes=1191 src=212.204.60.9 dst=... sport=993 dport=48634 packets=97 bytes=9701 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.211 dst=... sport=56921 dport=80 packets=2 bytes=144 src=18.159.56.174 dst=... sport=80 dport=56921 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=45320 dport=443 packets=1 bytes=60 src=162.125.19.131 dst=... sport=443 dport=45320 packets=6 bytes=973 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.246 dst=... sport=57477 dport=5223 packets=1 bytes=64 src=17.57.146.173 dst=... sport=5223 dport=57477 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=49386 dport=443 packets=1 bytes=60 src=139.59.210.197 dst=... sport=443 dport=49386 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.153 dst=... sport=50663 dport=5223 packets=1 bytes=64 src=17.57.146.68 dst=... sport=5223 dport=50663 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=33622 dport=443 packets=1 bytes=60 src=130.211.10.112 dst=... sport=443 dport=33622 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=52920 dport=993 packets=15 bytes=1278 src=85.13.138.36 dst=... sport=993 dport=52920 packets=101 bytes=9814 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 udp      17 src=10.11.12.246 dst=... sport=123 dport=123 packets=1 bytes=76 src=17.253.54.253 dst=... sport=123 dport=123 packets=1 bytes=76 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=35796 dport=443 packets=1 bytes=60 src=104.16.181.15 dst=... sport=443 dport=35796 packets=16 bytes=2037 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=47338 dport=443 packets=131 bytes=19204 src=52.149.21.60 dst=... sport=443 dport=47338 packets=53 bytes=23989 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=48644 dport=993 packets=8 bytes=634 src=212.204.60.9 dst=... sport=993 dport=48644 packets=61 bytes=5935 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=48636 dport=993 packets=34 bytes=3006 src=212.204.60.9 dst=... sport=993 dport=48636 packets=96 bytes=9593 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=48638 dport=993 packets=5 bytes=408 src=212.204.60.9 dst=... sport=993 dport=48638 packets=96 bytes=9358 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=34664 dport=443 packets=1 bytes=60 src=140.82.113.25 dst=... sport=443 dport=34664 packets=5 bytes=598 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=47352 dport=443 packets=65 bytes=8140 src=52.149.21.60 dst=... sport=443 dport=47352 packets=48 bytes=19987 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=52922 dport=993 packets=1 bytes=60 src=85.13.138.36 dst=... sport=993 dport=52922 packets=9 bytes=844 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=35746 dport=443 packets=1 bytes=60 src=104.16.181.15 dst=... sport=443 dport=35746 packets=185 bytes=23581 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=43772 dport=443 packets=3 bytes=242 src=34.98.75.36 dst=... sport=443 dport=43772 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=41642 dport=443 packets=2 bytes=152 src=157.240.240.60 dst=... sport=443 dport=41642 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 tcp      6 src=10.11.12.7 dst=... sport=46492 dport=443 packets=4 bytes=651 src=162.125.19.130 dst=... sport=443 dport=46492 packets=1 bytes=60 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 udp      17 src=10.11.12.246 dst=... sport=123 dport=123 packets=1 bytes=76 src=17.253.54.125 dst=... sport=123 dport=123 packets=1 bytes=76 [HW_OFFLOAD] mark=0 zone=0 use=3
+ipv4     2 udp      17 src=10.11.12.246 dst=... sport=123 dport=123 packets=1 bytes=76 src=17.253.52.125 dst=... sport=123 dport=123 packets=1 bytes=76 [HW_OFFLOAD] mark=0 zone=0 use=3
+root at er-x:~# 
+
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10522
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 06:10:23 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 14:10:23 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36835.1644243028.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task is now closed:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - Jo-Philipp Wich (jow-)
+
+Reason for closing: Fixed
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 06:12:53 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 7 Feb 2022 16:12:53 +0200
+Subject: TP-Link Archer C6 v3 Linkspeed negotiation woes
+Message-ID: <mailman.36861.1644245196.1923571.openwrt-bugs@lists.openwrt.org>
+
+Hi All,
+
+Please feel free to send me to /dev/null if this has been reported, I 
+could not find any reports on the bug tracker.
+
+I have an issue on my tp-link archer C6 v3 running OpenWrt SNAPSHOT, 
+r18711-4367d4f869,
+
+I get my internet from a wisp, meaning my uplink is connected to my 
+OpenWrt through a POE, the issue I am experiencing is when I attempt to 
+autonegotiate a link to the CPE the link fails to establish.
+
+My running theory is because both devices advertises 1000BaseT/Full the 
+link tries to establish at 1Gbps however due to the POE being a 100Mbps 
+device only, 1Gbps fails to establish and auto-negotiate does not 
+attempt the lower negotiations.
+
+I have tried to force the link to lower speeds, but unfortunately the 
+only speeds I could semi-reliably get to work was 10baseT/Full. I say 
+semi-reliably because after I started fiddling again it broke in such a 
+way that a restart of the router was required.
+
+As part of my troubleshooting I deployed an intermediate device between 
+the CPE and the router that is only capable of 100baseT, which 
+negotiated without any issues to both the CPE and the router. Replacing 
+the intermediate device with a 1000baseT device also results in a 
+successful negotiation to both ends (100M to the CPE, 1Gbps to the router)
+
+Due to the router driving my internet and me working from home, I will 
+only be able to test settings after hours so reply information could be 
+delayed by up to 12 hours.
+
+Kind regards
+Ian Coetzee
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature
+Type: application/pgp-signature
+Size: 236 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.openwrt.org/pipermail/openwrt-bugs/attachments/20220207/0314e3e5/attachment.sig>
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 08:37:09 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 16:37:09 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36924.1644251846.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - tiagogaspar8 (tiagogaspar8)
+
+----------
+This issue isn't fixed. When I enable HW_OFFLOAD in WRT3200ACM, firewall4 doesn't start.
+I know this is a device that doesn't support it, but many users might not and lead them to break the firewall without even having a clue.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10523
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 09:41:07 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 17:41:07 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36927.1644255679.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Please provide the exact output of:
+```
+opkg list-installed firewall4
+opkg list-installed netifd
+uci show firewall
+fw4 flush
+fw4 start
+fw print
+```
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10524
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 09:56:12 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 17:56:12 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36928.1644256577.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - tiagogaspar8 (tiagogaspar8)
+
+----------
+Here it is  (with hw offloading enabled):
+root at router1:~# opkg list-installed firewall4
+firewall4 - 2022-02-07-b54f4622-1
+root at router1:~# opkg list-installed netifd
+netifd - 2022-02-04-fd4c9e17-1
+root at router1:~# uci show firewall
+firewall. at defaults[0]=defaults
+firewall. at defaults[0].input='ACCEPT'
+firewall. at defaults[0].output='ACCEPT'
+firewall. at defaults[0].forward='REJECT'
+firewall. at defaults[0].synflood_protect='1'
+firewall. at defaults[0].flow_offloading='1'
+firewall. at defaults[0].flow_offloading_hw='1'
+firewall. at zone[0]=zone
+firewall. at zone[0].name='lan'
+firewall. at zone[0].network='lan'
+firewall. at zone[0].input='ACCEPT'
+firewall. at zone[0].output='ACCEPT'
+firewall. at zone[0].forward='ACCEPT'
+firewall. at zone[1]=zone
+firewall. at zone[1].name='wan'
+firewall. at zone[1].network='wan' 'wan6'
+firewall. at zone[1].input='REJECT'
+firewall. at zone[1].output='ACCEPT'
+firewall. at zone[1].forward='REJECT'
+firewall. at zone[1].masq='1'
+firewall. at zone[1].mtu_fix='1'
+firewall. at forwarding[0]=forwarding
+firewall. at forwarding[0].src='lan'
+firewall. at forwarding[0].dest='wan'
+firewall. at rule[0]=rule
+firewall. at rule[0].name='Allow-DHCP-Renew'
+firewall. at rule[0].src='wan'
+firewall. at rule[0].proto='udp'
+firewall. at rule[0].dest_port='68'
+firewall. at rule[0].target='ACCEPT'
+firewall. at rule[0].family='ipv4'
+firewall. at rule[1]=rule
+firewall. at rule[1].name='Allow-Ping'
+firewall. at rule[1].src='wan'
+firewall. at rule[1].proto='icmp'
+firewall. at rule[1].icmp_type='echo-request'
+firewall. at rule[1].family='ipv4'
+firewall. at rule[1].target='ACCEPT'
+firewall. at rule[2]=rule
+firewall. at rule[2].name='Allow-IGMP'
+firewall. at rule[2].src='wan'
+firewall. at rule[2].proto='igmp'
+firewall. at rule[2].family='ipv4'
+firewall. at rule[2].target='ACCEPT'
+firewall. at rule[3]=rule
+firewall. at rule[3].name='Allow-DHCPv6'
+firewall. at rule[3].src='wan'
+firewall. at rule[3].proto='udp'
+firewall. at rule[3].src_ip='fc00::/6'
+firewall. at rule[3].dest_ip='fc00::/6'
+firewall. at rule[3].dest_port='546'
+firewall. at rule[3].family='ipv6'
+firewall. at rule[3].target='ACCEPT'
+firewall. at rule[4]=rule
+firewall. at rule[4].name='Allow-MLD'
+firewall. at rule[4].src='wan'
+firewall. at rule[4].proto='icmp'
+firewall. at rule[4].src_ip='fe80::/10'
+firewall. at rule[4].icmp_type='130/0' '131/0' '132/0' '143/0'
+firewall. at rule[4].family='ipv6'
+firewall. at rule[4].target='ACCEPT'
+firewall. at rule[5]=rule
+firewall. at rule[5].name='Allow-ICMPv6-Input'
+firewall. at rule[5].src='wan'
+firewall. at rule[5].proto='icmp'
+firewall. at rule[5].icmp_type='echo-request' 'echo-reply' 'destination-unreachable' 'packet-too-big' 'time-exceeded' 'bad-header' 'unknown-header-type' 'router-solicitation' 'neighbour-solicitation' 'router-advertisement' 'neighbour-advertisement'
+firewall. at rule[5].limit='1000/sec'
+firewall. at rule[5].family='ipv6'
+firewall. at rule[5].target='ACCEPT'
+firewall. at rule[6]=rule
+firewall. at rule[6].name='Allow-ICMPv6-Forward'
+firewall. at rule[6].src='wan'
+firewall. at rule[6].dest='*'
+firewall. at rule[6].proto='icmp'
+firewall. at rule[6].icmp_type='echo-request' 'echo-reply' 'destination-unreachable' 'packet-too-big' 'time-exceeded' 'bad-header' 'unknown-header-type'
+firewall. at rule[6].limit='1000/sec'
+firewall. at rule[6].family='ipv6'
+firewall. at rule[6].target='ACCEPT'
+firewall. at rule[7]=rule
+firewall. at rule[7].name='Allow-IPSec-ESP'
+firewall. at rule[7].src='wan'
+firewall. at rule[7].dest='lan'
+firewall. at rule[7].proto='esp'
+firewall. at rule[7].target='ACCEPT'
+firewall. at rule[8]=rule
+firewall. at rule[8].name='Allow-ISAKMP'
+firewall. at rule[8].src='wan'
+firewall. at rule[8].dest='lan'
+firewall. at rule[8].dest_port='500'
+firewall. at rule[8].proto='udp'
+firewall. at rule[8].target='ACCEPT'
+firewall. at rule[9]=rule
+firewall. at rule[9].name='Support-UDP-Traceroute'
+firewall. at rule[9].src='wan'
+firewall. at rule[9].dest_port='33434:33689'
+firewall. at rule[9].proto='udp'
+firewall. at rule[9].family='ipv4'
+firewall. at rule[9].target='REJECT'
+firewall. at rule[9].enabled='false'
+firewall. at include[0]=include
+firewall. at include[0].path='/etc/firewall.user'
+firewall.miniupnpd=include
+firewall.miniupnpd.type='script'
+firewall.miniupnpd.path='/usr/share/miniupnpd/firewall.include'
+firewall.miniupnpd.family='any'
+firewall.miniupnpd.reload='1'
+root at router1:~# fw4 flush
+root at router1:~# fw4 start
+Section @rule[9] (Support-UDP-Traceroute) is disabled, ignoring section
+/proc/self/fd/0:9:12-13: Error: Could not process rule: Not supported
+
+/proc/self/fd/0:54:29-44: Error: Could not process rule: No such file or directory
+
+root at router1:~# fw4 print
+Section @rule[9] (Support-UDP-Traceroute) is disabled, ignoring section
+table inet fw4
+flush table inet fw4
+
+table inet fw4 {
+        #
+        # Flowtable
+        #
+
+        flowtable ft {
+                hook ingress priority 0;
+                devices = { "lan4", "lan2", "lan3", "lan1", "wan" };
+                flags offload;
+        }
+
+        #
+        # Set definitions
+        #
+
+
+        #
+        # Defines
+        #
+
+        define lan_devices = { "br-lan" }
+        define lan_subnets = { 192.168.1.0/24, 2001:8a0:6ecf:f700::/60, fd16:bed2:31b3::/60 }
+        define wan_devices = { "wan" }
+        define wan_subnets = { 176.78.6.0/24 }
+
+        #
+        # User includes
+        #
+
+        include "/etc/nftables.d/*.nft"
+
+
+        #
+        # Filter rules
+        #
+
+        chain input {
+                type filter hook input priority filter; policy accept;
+
+                iifname "lo" accept comment "!fw4: Accept traffic from loopback"
+
+                ct state established,related accept comment "!fw4: Allow inbound established and related flows"
+                tcp flags & (fin | syn | rst | ack) == syn jump syn_flood comment "!fw4: Rate limit TCP syn packets"
+                iifname "br-lan" jump input_lan comment "!fw4: Handle lan IPv4/IPv6 input traffic"
+                iifname "wan" jump input_wan comment "!fw4: Handle wan IPv4/IPv6 input traffic"
+        }
+
+        chain forward {
+                type filter hook forward priority filter; policy drop;
+
+                meta l4proto { tcp, udp } flow offload @ft;
+                ct state established,related accept comment "!fw4: Allow forwarded established and related flows"
+                iifname "br-lan" jump forward_lan comment "!fw4: Handle lan IPv4/IPv6 forward traffic"
+                iifname "wan" jump forward_wan comment "!fw4: Handle wan IPv4/IPv6 forward traffic"
+                jump handle_reject
+        }
+
+        chain output {
+                type filter hook output priority filter; policy accept;
+
+                oifname "lo" accept comment "!fw4: Accept traffic towards loopback"
+
+                ct state established,related accept comment "!fw4: Allow outbound established and related flows"
+                oifname "br-lan" jump output_lan comment "!fw4: Handle lan IPv4/IPv6 output traffic"
+                oifname "wan" jump output_wan comment "!fw4: Handle wan IPv4/IPv6 output traffic"
+        }
+
+        chain handle_reject {
+                meta l4proto tcp reject with tcp reset comment "!fw4: Reject TCP traffic"
+                reject with icmpx type port-unreachable comment "!fw4: Reject any other traffic"
+        }
+
+        chain syn_flood {
+                limit rate 25/second burst 50 packets return comment "!fw4: Accept SYN packets below rate-limit"
+                drop comment "!fw4: Drop excess packets"
+        }
+
+        chain input_lan {
+                jump accept_from_lan
+        }
+
+        chain output_lan {
+                jump accept_to_lan
+        }
+
+        chain forward_lan {
+                jump accept_to_wan comment "!fw4: Accept lan to wan forwarding"
+                jump accept_to_lan
+        }
+
+        chain accept_from_lan {
+                iifname "br-lan" counter accept comment "!fw4: accept lan IPv4/IPv6 traffic"
+        }
+
+        chain accept_to_lan {
+                oifname "br-lan" counter accept comment "!fw4: accept lan IPv4/IPv6 traffic"
+        }
+
+        chain input_wan {
+                meta nfproto ipv4 meta l4proto igmp counter accept comment "!fw4: ubus:omcproxy[instance1] rule 0"
+                ip6 saddr fe80::/10 icmpv6 type . icmpv6 code { 130 . 0, 131 . 0, 132 . 0, 143 . 0 } counter accept comment "!fw4: ubus:omcproxy[instance1] rule 1"
+                meta nfproto ipv4 udp dport 68 counter accept comment "!fw4: Allow-DHCP-Renew"
+                meta nfproto ipv4 icmp type 8 counter accept comment "!fw4: Allow-Ping"
+                meta nfproto ipv4 meta l4proto igmp counter accept comment "!fw4: Allow-IGMP"
+                ip6 saddr fc00::/6 ip6 daddr fc00::/6 udp dport 546 counter accept comment "!fw4: Allow-DHCPv6"
+                ip6 saddr fe80::/10 icmpv6 type . icmpv6 code { 130 . 0, 131 . 0, 132 . 0, 143 . 0 } counter accept comment "!fw4: Allow-MLD"
+                meta nfproto ipv6 icmpv6 type { 128, 129, 1, 3, 133, 134 } limit rate 1000/second counter accept comment "!fw4: Allow-ICMPv6-Input"
+                meta nfproto ipv6 icmpv6 type . icmpv6 code { 2 . 0, 4 . 0, 4 . 1, 135 . 0, 136 . 0 } limit rate 1000/second counter accept comment "!fw4: Allow-ICMPv6-Input"
+                jump reject_from_wan
+        }
+
+        chain output_wan {
+                jump accept_to_wan
+        }
+
+        chain forward_wan {
+                meta l4proto udp ip daddr 224.0.0.0/4 counter jump accept_to_lan comment "!fw4: ubus:omcproxy[instance1] rule 2"
+                meta l4proto udp ip6 daddr ff00::/8 counter jump accept_to_lan comment "!fw4: ubus:omcproxy[instance1] rule 3"
+                meta nfproto ipv6 icmpv6 type { 128, 129, 1, 3 } limit rate 1000/second counter accept comment "!fw4: Allow-ICMPv6-Forward"
+                meta nfproto ipv6 icmpv6 type . icmpv6 code { 2 . 0, 4 . 0, 4 . 1 } limit rate 1000/second counter accept comment "!fw4: Allow-ICMPv6-Forward"
+                meta l4proto esp counter jump accept_to_lan comment "!fw4: Allow-IPSec-ESP"
+                udp dport 500 counter jump accept_to_lan comment "!fw4: Allow-ISAKMP"
+                jump reject_to_wan
+        }
+
+        chain accept_to_wan {
+                oifname "wan" counter accept comment "!fw4: accept wan IPv4/IPv6 traffic"
+        }
+
+        chain reject_from_wan {
+                iifname "wan" counter jump handle_reject comment "!fw4: reject wan IPv4/IPv6 traffic"
+        }
+
+        chain reject_to_wan {
+                oifname "wan" counter jump handle_reject comment "!fw4: reject wan IPv4/IPv6 traffic"
+        }
+
+
+        #
+        # NAT rules
+        #
+
+        chain dstnat {
+                type nat hook prerouting priority dstnat; policy accept;
+        }
+
+        chain srcnat {
+                type nat hook postrouting priority srcnat; policy accept;
+                oifname "wan" jump srcnat_wan comment "!fw4: Handle wan IPv4/IPv6 srcnat traffic"
+        }
+
+        chain srcnat_wan {
+                meta nfproto ipv4 masquerade comment "!fw4: Masquerade IPv4 wan traffic"
+        }
+
+
+        #
+        # Raw rules (notrack & helper)
+        #
+
+        chain raw_prerouting {
+                type filter hook prerouting priority raw; policy accept;
+                iifname "br-lan" jump helper_lan comment "!fw4: lan IPv4/IPv6 CT helper assignment"
+        }
+
+        chain raw_output {
+                type filter hook output priority raw; policy accept;
+        }
+
+        chain helper_lan {
+        }
+
+
+        #
+        # Mangle rules
+        #
+
+        chain mangle_prerouting {
+                type filter hook prerouting priority mangle; policy accept;
+        }
+
+        chain mangle_postrouting {
+                type filter hook postrouting priority mangle; policy accept;
+        }
+
+        chain mangle_input {
+                type filter hook input priority mangle; policy accept;
+        }
+
+        chain mangle_output {
+                type filter hook output priority mangle; policy accept;
+        }
+
+        chain mangle_forward {
+                type filter hook forward priority mangle; policy accept;
+                iifname "wan" tcp flags syn tcp option maxseg size set rt mtu comment "!fw4: Zone wan IPv4/IPv6 ingress MTU fixing"
+                oifname "wan" tcp flags syn tcp option maxseg size set rt mtu comment "!fw4: Zone wan IPv4/IPv6 egress MTU fixing"
+        }
+}
+root at router1:~# 
+
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10525
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 10:04:57 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 18:04:57 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36931.1644257102.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Thanks, that is a different failure mode than which was addressed by the commits. What is reported by lsmod | grep flow ?
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10526
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 10:20:51 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 18:20:51 +0000
+Subject: [FS#4259] Cannot reach public-facing service in LAN from LAN; only
+ reachable from WAN
+In-Reply-To: <FS4259@bugs.openwrt.org>
+References: <FS4259@bugs.openwrt.org>
+Message-ID: <mailman.36938.1644258055.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Douglas Silva (harpia) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - Cannot reach public-facing service in LAN from LAN; only reachable from WAN
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Medium
+Priority - Very Low
+Reported Version - Trunk
+Due in Version - Undecided
+Due Date - Undecided
+Details - ====CONTEXT====
+I run a publicly accessible web server at home, behind an OpenWrt router. The router has firewall rules allowing incoming connections to ports 80 and 443 (forwarding rules for ipv4; port access rules for ipv6).
+
+====THE PROBLEM====
+A recent snapshot upgrade made the web server unreachable from LAN using ipv4, while still being reachable from WAN. Ipv6 is unaffected and works as expected from both LAN and WAN.
+
+====REPRODUCING====
+1. Setup a web server inside your LAN network and confirm that it can be reached from outside. I use my phone's 4G connection for that.
+
+2. Download https://downloads.openwrt.org/snapshots/targets/ramips/mt7621/openwrt-ramips-mt7621-tplink_archer-c6-v3-squashfs-sysupgrade.bin and move it to "/tmp" on the router that is already running OpenWrt.
+
+3. Run "sysupgrade openwrt-ramips-mt7621-tplink_archer-c6-v3-squashfs-sysupgrade.bin" and wait for the device to reboot.
+
+4. SSH into it as root, set a root password, apply any needed UCI configuration* and reboot.
+
+5. See if you can reach the web server from inside the LAN using its public ipv4 address.
+
+* I use a shell script to automatically configure everything using UCI commands. It defines DHCP hosts, firewall rules, PPPoE authentication, etc.
+
+====DETAILS====
+Device: TP-Link Archer C6 V3 (ramips/mt7621)
+OpenWrt version: SNAPSHOT (r18754-f6a01d7f5c)
+- Last working snapshot I used was from December 2021, but I don't have its snapshot number.
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4259
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 10:23:40 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 18:23:40 +0000
+Subject: [FS#4259] Cannot reach public-facing service in LAN from LAN; only
+ reachable from WAN
+In-Reply-To: <FS4259@bugs.openwrt.org>
+References: <FS4259@bugs.openwrt.org>
+Message-ID: <mailman.36939.1644258224.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4259 - Cannot reach public-facing service in LAN from LAN; only reachable from WAN
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Should be fixed by https://github.com/openwrt/openwrt/commit/2dd6777f15defc6fe343e8485d3e22325570fb2b
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4259#comment10527
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 10:23:44 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 18:23:44 +0000
+Subject: [FS#4259] Cannot reach public-facing service in LAN from LAN; only
+ reachable from WAN
+In-Reply-To: <FS4259@bugs.openwrt.org>
+References: <FS4259@bugs.openwrt.org>
+Message-ID: <mailman.36940.1644258233.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task is now closed:
+
+FS#4259 - Cannot reach public-facing service in LAN from LAN; only reachable from WAN
+User who did this - Jo-Philipp Wich (jow-)
+
+Reason for closing: Fixed
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4259
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 10:28:07 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 18:28:07 +0000
+Subject: [FS#4259] Cannot reach public-facing service in LAN from LAN; only
+ reachable from WAN
+In-Reply-To: <FS4259@bugs.openwrt.org>
+References: <FS4259@bugs.openwrt.org>
+Message-ID: <mailman.36941.1644258491.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4259 - Cannot reach public-facing service in LAN from LAN; only reachable from WAN
+User who did this - Douglas Silva (harpia)
+
+----------
+I forgot to add a step after number 3 in "REPRODUCING":
+
+3.1. After the reboot, perform a factory reset by holding the reset button in the back of the router. A clean start.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4259#comment10528
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 10:38:57 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 18:38:57 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36942.1644259149.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - tiagogaspar8 (tiagogaspar8)
+
+----------
+Here you go:
+
+root at router1:~# lsmod | grep flow
+cls_flow               20480  0 
+nf_conntrack           81920  8 nft_redir,nft_nat,nft_masq,nft_flow_offload,nft_ct,nf_conntrack_netlink,nf_nat,nf_flow_table
+nf_flow_table          32768  4 nf_flow_table_ipv6,nf_flow_table_ipv4,nf_flow_table_inet,nft_flow_offload
+nf_flow_table_inet     16384  1 
+nf_flow_table_ipv4     16384  0 
+nf_flow_table_ipv6     16384  0 
+nf_tables             155648232 nft_fib_inet,nf_flow_table_ipv6,nf_flow_table_ipv4,nf_flow_table_inet,nft_reject_ipv6,nft_reject_ipv4,nft_reject_inet,nft_reject,nft_redir,nft_quota,nft_objref,nft_numgen,nft_nat,nft_masq,nft_log,nft_limit,nft_hash,nft_flow_offload,nft_fib_ipv6,nft_fib_ipv4,nft_fib,nft_ct,nft_counter,nft_chain_nat
+nft_flow_offload       16384  1
+
+
+root at router1:~# ubus call network.device status
+{
+        "br-lan": {
+                "external": false,
+                "present": true,
+                "type": "bridge",
+                "up": true,
+                "carrier": true,
+                "auth_status": false,
+                "link-advertising": [
+
+                ],
+                "link-partner-advertising": [
+
+                ],
+                "link-supported": [
+
+                ],
+                "speed": "1000F",
+                "autoneg": false,
+                "hw-tc-offload": false,
+                "devtype": "bridge",
+                "bridge-members": [
+                        "lan1",
+                        "lan2",
+                        "lan3",
+                        "lan4",
+                        "wlan1"
+                ],
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "24:f5:a2:2d:e6:08",
+                "txqueuelen": 1000,
+                "ipv6": true,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 55135,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 131989142,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 243693,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 120329,
+                        "rx_errors": 0,
+                        "tx_bytes": 70163385,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "eth0": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": true,
+                "auth_status": false,
+                "link-advertising": [
+                        "1000baseT-F"
+                ],
+                "link-partner-advertising": [
+                        "1000baseT-F"
+                ],
+                "link-supported": [
+                        "1000baseT-F"
+                ],
+                "speed": "1000F",
+                "autoneg": true,
+                "hw-tc-offload": false,
+                "devtype": "ethernet",
+                "mtu": 1508,
+                "mtu6": 1508,
+                "macaddr": "24:f5:a2:2d:e6:08",
+                "txqueuelen": 1024,
+                "ipv6": true,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 210802462,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 390420,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 332558,
+                        "rx_errors": 0,
+                        "tx_bytes": 154397558,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "lan1": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": false,
+                "auth_status": false,
+                "link-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "link-partner-advertising": [
+
+                ],
+                "link-supported": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "speed": "-1F",
+                "autoneg": true,
+                "hw-tc-offload": true,
+                "devtype": "dsa",
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "24:f5:a2:2d:e6:08",
+                "txqueuelen": 1000,
+                "ipv6": false,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 0,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 0,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 0,
+                        "rx_errors": 0,
+                        "tx_bytes": 0,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "lan2": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": true,
+                "auth_status": false,
+                "link-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "link-partner-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "link-supported": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "speed": "1000F",
+                "autoneg": true,
+                "hw-tc-offload": true,
+                "devtype": "dsa",
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "24:f5:a2:2d:e6:08",
+                "txqueuelen": 1000,
+                "ipv6": false,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 132160234,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 246460,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 1,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 122528,
+                        "rx_errors": 0,
+                        "tx_bytes": 70325728,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "lan3": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": false,
+                "auth_status": false,
+                "link-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "link-partner-advertising": [
+
+                ],
+                "link-supported": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "speed": "-1F",
+                "autoneg": true,
+                "hw-tc-offload": true,
+                "devtype": "dsa",
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "24:f5:a2:2d:e6:08",
+                "txqueuelen": 1000,
+                "ipv6": false,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 0,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 0,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 0,
+                        "rx_errors": 0,
+                        "tx_bytes": 0,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "lan4": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": false,
+                "auth_status": false,
+                "link-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "link-partner-advertising": [
+
+                ],
+                "link-supported": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "speed": "-1F",
+                "autoneg": true,
+                "hw-tc-offload": true,
+                "devtype": "dsa",
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "24:f5:a2:2d:e6:08",
+                "txqueuelen": 1000,
+                "ipv6": false,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 0,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 0,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 0,
+                        "rx_errors": 0,
+                        "tx_bytes": 0,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "lo": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": true,
+                "auth_status": false,
+                "hw-tc-offload": false,
+                "devtype": "loopback",
+                "mtu": 65536,
+                "mtu6": 65536,
+                "macaddr": "00:00:00:00:00:00",
+                "txqueuelen": 1000,
+                "ipv6": true,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": false,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 22820,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 234,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 234,
+                        "rx_errors": 0,
+                        "tx_bytes": 22820,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "wan": {
+                "external": false,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": true,
+                "auth_status": false,
+                "link-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "link-partner-advertising": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-H",
+                        "1000baseT-F"
+                ],
+                "link-supported": [
+                        "10baseT-H",
+                        "10baseT-F",
+                        "100baseT-H",
+                        "100baseT-F",
+                        "1000baseT-F"
+                ],
+                "speed": "1000F",
+                "autoneg": true,
+                "hw-tc-offload": true,
+                "devtype": "dsa",
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "26:f5:a2:2d:e6:08",
+                "txqueuelen": 1000,
+                "ipv6": true,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 70052988,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 143960,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 834,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 210020,
+                        "rx_errors": 0,
+                        "tx_bytes": 81410362,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        },
+        "wlan1": {
+                "external": true,
+                "present": true,
+                "type": "Network device",
+                "up": true,
+                "carrier": true,
+                "auth_status": false,
+                "hw-tc-offload": false,
+                "devtype": "wlan",
+                "mtu": 1500,
+                "mtu6": 1500,
+                "macaddr": "24:f5:a2:2d:e6:0a",
+                "txqueuelen": 1000,
+                "ipv6": false,
+                "ip6segmentrouting": false,
+                "promisc": false,
+                "rpfilter": 0,
+                "acceptlocal": false,
+                "igmpversion": 0,
+                "mldversion": 0,
+                "neigh4reachabletime": 30000,
+                "neigh6reachabletime": 30000,
+                "neigh4gcstaletime": 60,
+                "neigh6gcstaletime": 60,
+                "neigh4locktime": 100,
+                "dadtransmits": 1,
+                "multicast": true,
+                "sendredirects": true,
+                "drop_v4_unicast_in_l2_multicast": false,
+                "drop_v6_unicast_in_l2_multicast": false,
+                "drop_gratuitous_arp": false,
+                "drop_unsolicited_na": false,
+                "arp_accept": false,
+                "statistics": {
+                        "collisions": 0,
+                        "rx_frame_errors": 0,
+                        "tx_compressed": 0,
+                        "multicast": 0,
+                        "rx_length_errors": 0,
+                        "tx_dropped": 0,
+                        "rx_bytes": 0,
+                        "rx_missed_errors": 0,
+                        "tx_errors": 0,
+                        "rx_compressed": 0,
+                        "rx_over_errors": 0,
+                        "tx_fifo_errors": 0,
+                        "rx_crc_errors": 0,
+                        "rx_packets": 0,
+                        "tx_heartbeat_errors": 0,
+                        "rx_dropped": 0,
+                        "tx_aborted_errors": 0,
+                        "tx_packets": 52574,
+                        "rx_errors": 0,
+                        "tx_bytes": 57121012,
+                        "tx_window_errors": 0,
+                        "rx_fifo_errors": 0,
+                        "tx_carrier_errors": 0
+                }
+        }
+}
+root at router1:~# 
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10529
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 14:40:06 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Mon, 07 Feb 2022 22:40:06 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.36960.1644273627.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - Jo-Philipp Wich (jow-)
+
+----------
+Another fix pushed with https://git.openwrt.org/?p=project/firewall4.git;a=commitdiff;h=a0518b6d0273ad3267e65953e52989a1589fefab;hp=ac99eba7d39c2ba8fa0c5335ea1e8943d8885c24 - it solves the problem on a WRT3200ACM for me.
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10530
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Mon Feb  7 22:11:41 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 08 Feb 2022 06:11:41 +0000
+Subject: [FS#4260] [ath79] USB not work on GL-INET 6416A
+In-Reply-To: <FS4260@bugs.openwrt.org>
+References: <FS4260@bugs.openwrt.org>
+Message-ID: <mailman.37027.1644300706.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Sing Yu (pexcn) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - [ath79] USB not work on GL-INET 6416A
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - ?
+Priority - ??
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details - Hi:
+
+I am using GL-INET 6416A, based on ath79 (ar9331), the usb driver seems not working on it.
+When I install kmod-usb-chipidea2 and reboot, it still doesn't work.
+
+
+$ lsusb
+unable to initialize libusb: -99
+
+
+But when I use the firmware of the wr703n (https://github.com/coolsnowwolf/lede) usb works fine.
+
+Maybe it has something to do with these reasons?
+https://github.com/openwrt-dev/openwrt/commit/ab5b359876e8ee68500e104606d291e119116c6a
+https://forum.openwrt.org/t/gl-inet-6416-no-usb-with-21-02-0-rc1/95206/8
+
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4260
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  8 01:50:04 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 08 Feb 2022 09:50:04 +0000
+Subject: [FS#4261] [odhcp6c] Add an option to discard stateless advertisements
+In-Reply-To: <FS4261@bugs.openwrt.org>
+References: <FS4261@bugs.openwrt.org>
+Message-ID: <mailman.37116.1644313814.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - viktor-iarmola (viktor-iarmola) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary - [odhcp6c] Add an option to discard stateless advertisements
+Task Type - Bug Report
+Category - Base system
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Low
+Priority - Very Low
+Reported Version - Trunk
+Due in Version - Undecided
+Due Date - Undecided
+Details - When odhcp6c runs in `unknown` mode (`-N try` as default and `-P x` without `-F`) it tries to determine its actual mode from received advertisements. 
+
+Normally, when there are both stateful (with IA_NA or IA_PD) and stateless (without both IA_NA and IA_PD) advertisements in the network - it works fine because odhcp6c prefers stateful ones and prioritizes them higher. However, some setups in the wild interfere with this scenario via either of:
+  * stateful and stateless advertisements come with the same server DUID - in that case if stateless advertisement comes last we will go into stateless mode despite there being stateful advertisements available;
+  * stateful advertisements are "late" and `odhcp6c` only receives stateless ones during its first solicit session.
+
+Both of these cases could seemingly be avoided by `-N force` and/or `-F` options, which will force `odhcp6c` to run in "stateful" mode and ignore advertisements not carrying specific option. However, it is currently impossible to express the intention of wishing to accept only advertisements carrying //either// IA_NA or IA_PD or both of them - and ignoring advertisement without both IA_NA and IA_PD.
+
+To solve this a pull request was created to support a new option for `odhcp6c` - `-D` to discard stateless advertisements. 
+Please take a look at the github PR with some extra details: https://github.com/openwrt/odhcp6c/pull/69
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4261
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  8 02:38:25 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 08 Feb 2022 10:38:25 +0000
+Subject: [FS#4239] flow_offloading_hw doesn't work with nftables (mt7621)
+In-Reply-To: <FS4239@bugs.openwrt.org>
+References: <FS4239@bugs.openwrt.org>
+Message-ID: <mailman.37134.1644316711.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+The following task has a new comment added:
+
+FS#4239 - flow_offloading_hw doesn't work with nftables (mt7621)
+User who did this - tiagogaspar8 (tiagogaspar8)
+
+----------
+I have just tested it, now the firewall starts and shows a warning that hardware offload is not available.
+
+Thanks for this!
+----------
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4239#comment10531
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+
+From openwrt-bugs at lists.openwrt.org  Tue Feb  8 07:49:41 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Tue, 08 Feb 2022 15:49:41 +0000
+Subject: [FS#4262]  ImageBuilder: fix local packages/ folder
+In-Reply-To: <FS4262@bugs.openwrt.org>
+References: <FS4262@bugs.openwrt.org>
+Message-ID: <mailman.37278.1644335386.1923571.openwrt-bugs@lists.openwrt.org>
+
+THIS IS AN AUTOMATED MESSAGE, DO NOT REPLY.
+
+A new Flyspray task has been opened.  Details are below. 
+
+User who did this - Donk (DonkZZZ) 
+
+Attached to Project - OpenWrt/LEDE Project
+Summary -  ImageBuilder: fix local packages/ folder
+Task Type - Bug Report
+Category - Toolchain
+Status - Unconfirmed
+Assigned To - 
+Operating System - All
+Severity - Basse
+Priority - Tr?s Basse
+Reported Version - openwrt-21.02
+Due in Version - Undecided
+Due Date - Undecided
+Details -  - Device: Netgear WNDR3700v1 (ath79)
+ - Version: OpenWrt 21.02
+
+In OpenWrt 21.02, local packages are not include in custom firmware because the line "src imagebuilder file:packages" has been removed from the file "repositories.conf".
+
+[[https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=15e55a2190ba087679b24b8844a51a6e4d512cf3|This commit]] fixes the bug in master, can you backport it in v21.02?
+
+Thank you.
+
+
+More information can be found at the following URL:
+https://bugs.openwrt.org/index.php?do=details&task_id=4262
+
+You are receiving this message because you have requested it from the Flyspray bugtracking system.  If you did not expect this message or don't want to receive mails in future, you can change your notification settings at the URL shown above.
+
+

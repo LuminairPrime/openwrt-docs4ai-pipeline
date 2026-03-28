@@ -1,0 +1,3530 @@
+From ck at dev.tdt.de  Tue Sep  2 12:56:24 2025
+From: ck at dev.tdt.de (Christian Korber)
+Date: Tue,  2 Sep 2025 21:56:24 +0200
+Subject: [PATCH] ufp: add ubus_rpc_session to call arguments
+Message-ID: <20250902195624.337358-1-ck@dev.tdt.de>
+
+To display vendor information via ubus call in uhttpd,
+it is necessary to add `ubus_rpc_session` as argument
+to fingerprint.
+
+Fixes:#27124
+
+Signed-off-by: Christian Korber <ck at dev.tdt.de>
+---
+ .../ufp/patches/0001-add-ubus-rpc-session-to-ufp.patch | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+ create mode 100644 utils/ufp/patches/0001-add-ubus-rpc-session-to-ufp.patch
+
+diff --git a/utils/ufp/patches/0001-add-ubus-rpc-session-to-ufp.patch b/utils/ufp/patches/0001-add-ubus-rpc-session-to-ufp.patch
+new file mode 100644
+index 000000000..3a6381094
+--- /dev/null
++++ b/utils/ufp/patches/0001-add-ubus-rpc-session-to-ufp.patch
+@@ -0,0 +1,10 @@
++--- a/ufpd
+++++ b/ufpd
++@@ -363,6 +363,7 @@ global.ubus_object = {
++ 	fingerprint: {
++ 		args: {
++ 			macaddr: "",
+++			ubus_rpc_session: "",
++ 			weight: false,
++ 			local: false
++ 		},
+-- 
+2.39.5
+
+
+
+From wojciech.kaminski at vizero.pl  Tue Sep  2 00:46:08 2025
+From: wojciech.kaminski at vizero.pl (=?UTF-8?Q? Wojciech_Kami=C5=84ski ?=)
+Date: Tue,  2 Sep 2025 07:46:08 GMT
+Subject: =?UTF-8?Q?Odroczenie_zap=C5=82aty?=
+Message-ID: <20250902064500-0.1.4s.d4c4.0.bbjv2n311x@vizero.pl>
+
+Drogi Przedsi?biorco!
+
+Chcesz kupowa? towary i p?aci? nawet 90 dni p??niej? 
+
+Nasza us?uga jest prosta: ustalasz warunki z dostawc? ? my finansujemy transakcj?, a towar trafia prosto do Twojej firmy. P?acisz tylko mar?? od zakup?w, wtedy kiedy korzystasz z us?ugi. Bez sta?ej wsp??pracy, ukrytych koszt?w i d?ugich procedur.
+
+Czy mo?emy porozmawia? o wdro?eniu tego rozwi?zania u Was?
+
+
+Pozdrawiam
+Wojciech Kami?ski
+
+
+From philipp_subx at redfish-solutions.com  Sun Sep  7 12:05:17 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 7 Sep 2025 13:05:17 -0600
+Subject: PBR using network settings, mwan3, etc. and our Wiki examples
+Message-ID: <D46BF004-9030-4F5D-85FD-CB5FBF4C219A@redfish-solutions.com>
+
+Hi,
+
+I was looking through the Wiki of a useful example of policy-based routing when one is multi-homed and you want to force a certain type of traffic out a particular interface.
+
+In my case, my SMTP traffic can only egress my non T-Mobile 5G for Business Internet connection because, despite claiming to be ?5G for Business Internet?, they don?t consider rDNS or outbound SMTP to be essential business functions.  Not sure how to do mTLS without certificate pinning to a DNS-based Subject Alternate Name (SAN) in X.509, but that?s a separate issue.  I could pin to an IPv4 address but shouldn?t have to.
+
+Anyway, yes, I?m about to use mwan3 for multihoming but as far as my outbound SMTP traffic is considered I?m unfortunately single-homed.
+
+Anyone have some UCI for my network config that would accomplish this?  Might be something useful to include in the PBR or routing sections of our Wiki.
+
+Thanks,
+
+-Philip
+
+
+
+From jan.kardell at telliq.com  Mon Sep  8 02:09:13 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Mon, 8 Sep 2025 11:09:13 +0200
+Subject: Changed ABI of libxml2
+Message-ID: <d58966e5-27c6-730d-7d0e-b51a9bb7bea1@telliq.com>
+
+Hi,
+
+I noticed that libxml2 has a changed ABI from version 2.14. Since the 
+version was bumped from 2.13.6 to 2.14.5, my opinion is there should be 
+an ABI version set.
+
+https://github.com/openwrt/openwrt/pull/19983
+https://github.com/openwrt/openwrt/pull/19985
+
+Regards
+Jan
+
+
+
+
+From shep971 at spectrum.net  Mon Sep  8 08:38:02 2025
+From: shep971 at spectrum.net (Heppler, J. Scott)
+Date: Mon, 8 Sep 2025 08:38:02 -0700
+Subject: 2 Step plan to add Linksys MR6350 support
+Message-ID: <aL74Wln3tI_bmqg4@spectrum.net>
+
+My EA7300v2 went catatonic and it lead to a look at currently available
+factory recertified devices that have OpenWRT builds.  Old, new stock
+EA7300v2 have tripled in price.  I came across and bought a Linksys
+MR6350 which is characterized as an MR8300 minus one 5Ghz radio and
+two antennas and stuffed into a legacy case. Significant infrastructure
+is already in place and two contributors and a helpful forum thread
+exist.  Both forum contributors has written that they do not plan to
+pursue further work.
+
+I've put together a plan to submit to master and wanted to run it by the
+senior developers.  I suspect I can use the install method for the
+MR8300 using the legacy 22.03 MR8300 factory image to gain access,
+increase the kernel partition size, then flash the MR6350 factory image.
+
+First, a patch for the EA6350v3, EA8300, MR8300, WH03 common
+infrastructure that adds the MR6350 followed by a patch specific to the
+MR6350 itself.  To generate the second patch, essentially duplicate the
+MR8300 and strip out the 2nd 5Ghz and remove the channel limitations for
+the 1st 5Ghz radio.  I would wait for the 1st patch to be committed to
+master. Then  update, build/test the MR6350 and if it flies, submit for
+review.
+
+Comments?
+
+Thanks,
+-- 
+J. Scott Heppler
+
+
+From openwrt at jonaslochmann.de  Mon Sep  8 23:51:45 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Tue, 9 Sep 2025 08:51:45 +0200
+Subject: PBR using network settings, mwan3, etc. and our Wiki examples
+In-Reply-To: <mailman.141918.1757272105.1866309.openwrt-devel@lists.openwrt.org>
+References: <mailman.141918.1757272105.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <grcayfockhthgyabce7hseaedhrmzpelgxlg7s3khouzzv3tuh@7gdiqwokb2d5>
+
+Am Sun, Sep 07, 2025 at 01:05:17PM -0600, schrieb Philip Prindeville via openwrt-devel:
+> I was looking through the Wiki of a useful example of policy-based routing when one is multi-homed and you want to force a certain type of traffic out a particular interface.
+> 
+> In my case, my SMTP traffic can only egress my non T-Mobile 5G for Business Internet connection because, despite claiming to be ?5G for Business Internet?, they don?t consider rDNS or outbound SMTP to be essential business functions.  Not sure how to do mTLS without certificate pinning to a DNS-based Subject Alternate Name (SAN) in X.509, but that?s a separate issue.  I could pin to an IPv4 address but shouldn?t have to.
+> 
+> Anyway, yes, I?m about to use mwan3 for multihoming but as far as my outbound SMTP traffic is considered I?m unfortunately single-homed.
+> 
+> Anyone have some UCI for my network config that would accomplish this?  Might be something useful to include in the PBR or routing sections of our Wiki.
+
+I do something like this for wireguard traffic. So there are multiple tunnels using
+different uplinks.
+
+mwan3 already sets up the policy based routing. One just needs to use it. In case of
+wireguard, one can set the fwmark directly. I don't know right now if the fw4 offers
+setting the fwmarks.
+
+Doesn't mwan3 offer setting a different "policy" (rule?) for smtp?
+
+
+From koen.vandeputte at citymesh.com  Wed Sep 10 04:25:50 2025
+From: koen.vandeputte at citymesh.com (Koen Vandeputte)
+Date: Wed, 10 Sep 2025 13:25:50 +0200
+Subject: ustream-ssl build error (mbedtls)
+Message-ID: <CAPh3n80xCSGUF_99hif4OmjoEsNFYr-iJHbT49T1q9MKwuFcCw@mail.gmail.com>
+
+HI All,
+
+After encoutering following issue a lot of times in the past year, I
+was finally able to get a log of it.
+It only happens in 2% of all builds when using a massive amount of
+cores on a full openwrt build (>=32 cores)
+
+Simply doing a clean and full rebuild fixes/avoids the issue in 95% of
+the tries.
+
+Does anyone have any idea how to properly fix this one?
+
+Thanks!
+
+
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/scripts/config'
+make[2]: 'conf' is up to date.
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/scripts/config'
+make[1]: Entering directory '/home/koen/firmware/builds/generic_dr40x9'
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/ustream-ssl'
+rm -rf /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+rm -f /home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/stamp/.ustream-ssl.mbedtls_installed
+rm -f /home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/packages/ustream-ssl.mbedtls.list
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/ustream-ssl'
+time: package/libs/ustream-ssl/mbedtls/clean#0.06#0.02#0.08
+make[1]: Leaving directory '/home/koen/firmware/builds/generic_dr40x9'
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/scripts/config'
+make[2]: 'conf' is up to date.
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/scripts/config'
+make[1]: Entering directory '/home/koen/firmware/builds/generic_dr40x9'
+mkdir -p /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/stamp
+touch /home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/.prepared
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/toolchain'
+echo "libc" >> /home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/toolchain.default.install
+echo "libgcc" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/toolchain.default.install
+echo "libatomic" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/toolchain.default.install
+echo "libstdcpp" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/toolchain.default.install
+echo "libpthread" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/toolchain.default.install
+echo "librt" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/toolchain.default.install
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/toolchain'
+time: package/libs/toolchain/compile#0.05#0.02#0.07
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/libjson-c'
+echo "libjson-c" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/libjson-c.default.install
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/libjson-c'
+time: package/libs/libjson-c/compile#0.08#0.03#0.10
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/package/utils/lua'
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/package/utils/lua'
+time: package/utils/lua/compile#0.09#0.03#0.12
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/libubox'
+echo "libubox" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/libubox.default.install
+echo "libblobmsg-json" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/libubox.default.install
+echo "jshn" >> /home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/libubox.default.install
+echo "libjson-script" >>
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/pkginfo/libubox.default.install
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/libubox'
+time: package/libs/libubox/compile#0.07#0.02#0.09
+make[2]: Entering directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/ustream-ssl'
+touch /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b/.prepared_3297593354519463e216066bfe5a845b_6664517399ebbbc92a37c5bb081b5c53_check
+. /home/koen/firmware/builds/generic_dr40x9/include/shell.sh; zstdcat
+/home/koen/firmware/builds/generic_dr40x9/dl/ustream-ssl-2024.07.28~99bd3d2b.tar.zst
+| tar -C /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b/..
+-xf -
+[ ! -d ./src/ ] || cp -fpR ./src/.
+/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+touch /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b/.prepared_3297593354519463e216066bfe5a845b_6664517399ebbbc92a37c5bb081b5c53
+rm -f /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b/.configured_*
+rm -f /home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/stamp/.ustream-ssl.mbedtls_installed
+mkdir -p /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+(cd /home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b;
+CFLAGS="-O2 -pipe -fno-caller-saves -fno-plt -fhonour-copts
+-mfloat-abi=hard
+-fmacro-prefix-map=/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b=ustream-ssl-2024.07.28~99bd3d2b
+-ffunction-sections -fdata-sections -Wformat -Werror=format-security
+-fstack-protector -D_FORTIFY_SOURCE=1 -Wl,-z,now -Wl,-z,relro "
+CXXFLAGS="-O2 -pipe -fno-caller-saves -fno-plt -fhonour-copts
+-mfloat-abi=hard
+-fmacro-prefix-map=/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b=ustream-ssl-2024.07.28~99bd3d2b
+-ffunction-sections -fdata-sections -Wformat -Werror=format-security
+-fstack-protector -D_FORTIFY_SOURCE=1 -Wl,-z,now -Wl,-z,relro
+-ffunction-sections -fdata-sections "
+LDFLAGS="-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/usr/lib
+-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/lib
+-fuse-ld=bfd -Wl,--gc-sections -znow -zrelro " cmake
+--no-warn-unused-cli -DCMAKE_SYSTEM_NAME=Linux
+-DCMAKE_SYSTEM_VERSION=1 -DCMAKE_SYSTEM_PROCESSOR=arm
+-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-DNDEBUG"
+-DCMAKE_CXX_FLAGS_RELEASE="-DNDEBUG"
+-DCMAKE_C_COMPILER_LAUNCHER="/home/koen/firmware/builds/generic_dr40x9/staging_dir/host/bin/ccache"
+-DCMAKE_C_COMPILER="arm-openwrt-linux-muslgnueabi-gcc"
+-DCMAKE_CXX_COMPILER_LAUNCHER="/home/koen/firmware/builds/generic_dr40x9/staging_dir/host/bin/ccache"
+-DCMAKE_CXX_COMPILER="arm-openwrt-linux-muslgnueabi-g++"
+-DCMAKE_ASM_COMPILER_LAUNCHER="/home/koen/firmware/builds/generic_dr40x9/staging_dir/host/bin/ccache"
+-DCMAKE_ASM_COMPILER="arm-openwrt-linux-muslgnueabi-gcc"
+-DCMAKE_EXE_LINKER_FLAGS:STRING="-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/usr/lib
+-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/lib
+-fuse-ld=bfd -Wl,--gc-sections -znow -zrelro"
+-DCMAKE_MODULE_LINKER_FLAGS:STRING="-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/usr/lib
+-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/lib
+-fuse-ld=bfd -Wl,--gc-sections -znow -zrelro -Wl,-Bsymbolic-functions"
+-DCMAKE_SHARED_LINKER_FLAGS:STRING="-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/usr/lib
+-L/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/lib
+-fuse-ld=bfd -Wl,--gc-sections -znow -zrelro -Wl,-Bsymbolic-functions"
+-DCMAKE_AR="/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/bin/arm-openwrt-linux-muslgnueabi-gcc-ar"
+-DCMAKE_NM="/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/bin/arm-openwrt-linux-muslgnueabi-gcc-nm"
+-DCMAKE_RANLIB="/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/bin/arm-openwrt-linux-muslgnueabi-gcc-ranlib"
+-DCMAKE_FIND_ROOT_PATH="/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/usr;/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi"
+-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=BOTH
+-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY
+-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_STRIP=:
+-DCMAKE_INSTALL_PREFIX=/usr
+-DDL_LIBRARY=/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi
+-DCMAKE_PREFIX_PATH=/home/koen/firmware/builds/generic_dr40x9/staging_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi
+-DCMAKE_SKIP_RPATH=TRUE -DCMAKE_EXPORT_PACKAGE_REGISTRY=FALSE
+-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=TRUE
+-DCMAKE_FIND_USE_PACKAGE_REGISTRY=FALSE
+-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=TRUE
+-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=FALSE
+-DCMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY=TRUE
+-DCMAKE_GENERATOR="Ninja" -DMBEDTLS=on
+/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+)
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+Not searching for unused variables given on the command line.
+
+-- The C compiler identification is GNU 14.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler:
+/home/koen/firmware/builds/generic_dr40x9/staging_dir/toolchain-arm_cortex-a7+neon-vfpv4_gcc-14.3.0_musl_eabi/bin/arm-openwrt-linux-muslgnueabi-gcc
+- skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done (0.1s)
+CMake Error: The following variables are used in this project, but
+they are set to NOTFOUND.
+Please set them or make sure they are set and tested correctly in the
+CMake files:
+mbedcrypto_library
+    linked by target "ustream-ssl" in directory
+/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+mbedtls_library
+    linked by target "ustream-ssl" in directory
+/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+mbedx509_library
+    linked by target "ustream-ssl" in directory
+/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b
+
+-- Generating done (0.0s)
+CMake Generate step failed.  Build files cannot be regenerated correctly.
+make[2]: *** [Makefile:75:
+/home/koen/firmware/builds/generic_dr40x9/build_dir/target-arm_cortex-a7+neon-vfpv4_musl_eabi/ustream-ssl-mbedtls/ustream-ssl-2024.07.28~99bd3d2b/.configured_68b329da9893e34099c7d8ad5cb9c940]
+Error 1
+make[2]: Leaving directory
+'/home/koen/firmware/builds/generic_dr40x9/package/libs/ustream-ssl'
+time: package/libs/ustream-ssl/mbedtls/compile#0.11#0.04#0.14
+    ERROR: package/libs/ustream-ssl failed to build (build variant: mbedtls).
+make[1]: Leaving directory '/home/koen/firmware/builds/generic_dr40x9'
+
+
+From cjd at cjdns.fr  Sun Sep 14 09:50:52 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Sun, 14 Sep 2025 18:50:52 +0200
+Subject: [RFC] Advice re auto-extroot for EcoNet platform
+Message-ID: <cf1e5f6c-2bcc-45ec-9715-3d5fc57c916c@cjdns.fr>
+
+Hello,
+
+I'm seeking comments regarding how best to provide a default 
+auto-extroot implementation for EcoNet (and other) devices.
+
+
+The EcoNet target is Fiber and DSL modems, these devices use dual-image 
+layouts, so the EcoNet target to only ever uses OS-A, thus converting 
+dual-image into dual-boot. This way a user can boot the factory OS to 
+access the complete drivers. This is important information because it 
+means we do not want to disturb the data on flash.
+
+
+EcoNet devices use NAND but they store raw kernel + squashfs because 
+there is a bad block management system. Factory OS uses either a UBI 
+partition or just binary "config" partitions, depending on available 
+space. They do not use JFFS at all.
+
+
+To keep with the factory layout, the EcoNet platform uses squashfs + 
+ramdisk only.
+
+
+Many EcoNet devices contain an SDCard reader, USB port(s), or both, so I 
+would like to offer extroot as an option.
+
+
+My goals are:
+
+1. A plain EcoNet OpenWRT build should be capable of automatic 
+partition, mount, and pivot if a drive is plugged in.
+
+2. It should never use a drive that isn't partitioned as OpenWRT rootfs
+
+3. It should never partition a drive that isn't meant to be partitioned 
+(e.g. use `echo 'OPENWRT DESTROY ALL DATA' | dd ...` to mark the empty 
+drive)
+
+4. It should be (easily) reusable in other platforms than EcoNet, in 
+case others want it
+
+5. It should have predictable behavior during upgrades
+
+
+I looked at 
+https://openwrt.org/docs/guide-user/additional-software/extroot_configuration 
+and https://github.com/attila-lendvai/openwrt-auto-extroot and what I 
+found is:
+
+
+1. Not that easy because it requires a special build using the image builder
+
+2/3. There is a warning that it can trash disks if they're left plugged in
+
+4. Is obviously satisfied (within the limitation of needing to use the 
+image builder)
+
+5. There is a note about problems with upgrade
+
+
+I think there should be a way to implement this as a package so it can 
+be selected in the base image build.
+
+
+I'm thinking the biggest problem with this is the fact that USB is 
+implemented as kmods, and kmods are loaded after 80_mount_root, so 
+unless that's resolved, extroot is always going to be buggy. I assume if 
+it becomes available during preinit, updating should be the same as with 
+JFFS / UBI, please correct me if I'm wrong.
+
+
+I see 3 possible ways around this:
+
+A. Add USB symbols to config-6.12 for EcoNet - Not very reusable to 
+other platforms, and hard to turn off when extroot is not wanted
+
+B. Submit a PR to add a config option to make all kmods builtin if 
+they're in the base image - Then the extroot option can depend on this.
+
+C. Possibly a way to generate kmod-builtin-xxx for every kmod-xxx (?)
+
+
+My preference is B, because A is doesn't meet the goals, and I really 
+don't know how to go about implementing C. If I did, I would definitely 
+make some bad Makefile code which would require a lot of review and 
+discussion. Furthermore, making all of the modules built-in has been 
+shown to have a significant amount of space-savings ( 
+https://openwrt.org/docs/guide-user/additional-software/saving_space#making_all_kernel_modules_built-in 
+) so that flag might be worth something to others as well.
+
+
+The second question is what is the right way to handle devices which 
+have a small JFFS or UBI section in addition to the extroot? If it 
+exists at the time the extroot is first mounted, we can copy files over, 
+but if we boot with the extroot removed, data will be stored there again 
+and it will go out of sync. We can imagine creating an init script which 
+prints a warning in this case, but the risk will always be present. My 
+preference, because I would rather avoid additional code and testing, is 
+to ignore whatever may be found in the JFFS / UBI volume for the first 
+version.
+
+
+What do you think, is this a viable idea?
+
+
+Thanks,
+
+Caleb
+
+
+
+
+From mcr at sandelman.ca  Sun Sep 14 12:36:23 2025
+From: mcr at sandelman.ca (Michael Richardson)
+Date: Sun, 14 Sep 2025 15:36:23 -0400
+Subject: [RFC] Advice re auto-extroot for EcoNet platform
+In-Reply-To: <cf1e5f6c-2bcc-45ec-9715-3d5fc57c916c@cjdns.fr>
+References: <cf1e5f6c-2bcc-45ec-9715-3d5fc57c916c@cjdns.fr>
+Message-ID: <13146.1757878583@obiwan.sandelman.ca>
+
+
+Caleb James DeLisle <cjd at cjdns.fr> wrote:
+    > I see 3 possible ways around this:
+
+    > A. Add USB symbols to config-6.12 for EcoNet - Not very reusable to other
+    > platforms, and hard to turn off when extroot is not wanted
+
+How many bytes impact?
+
+    > B. Submit a PR to add a config option to make all kmods builtin if they're in
+    > the base image - Then the extroot option can depend on this.
+
+That's even a bigger hit, right?
+
+    > C. Possibly a way to generate kmod-builtin-xxx for every kmod-xxx (?)
+
+    > discussion. Furthermore, making all of the modules built-in has been shown to
+    > have a significant amount of space-savings (
+    > https://openwrt.org/docs/guide-user/additional-software/saving_space#making_all_kernel_modules_built-in
+    > ) so that flag might be worth something to others as well.
+
+Oh, so it's a overwall win by removing .ko files from the rootfs.
+
+    > The second question is what is the right way to handle devices which have a
+    > small JFFS or UBI section in addition to the extroot? If it exists at the
+    > time the extroot is first mounted, we can copy files over, but if we boot
+    > with the extroot removed, data will be stored there again and it will go out
+    > of sync. We can imagine creating an init script which prints a warning in
+    > this case, but the risk will always be present. My preference, because
+    > I
+
+Panic, flash available LEDs?
+extroot seems like an "us" problem, not a user problem.
+Anyone likely to do it, is likely aware of this list.
+Sure, some of us might do this for someone else... hide the key with black tape.
+
+{I have used USB keys that were barely bigger than the connector for white
+label router platforms that ran essentially from ram.  Customer then wanted
+RAID for the USB keys :-).  Customers also couldn't even see some of them, as
+some MBs have USB slots inside 1U}
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250914/ccd84d65/attachment.ksh>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 511 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250914/ccd84d65/attachment.sig>
+
+From noreply at github.com  Sun Sep 14 13:14:52 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 14 Sep 2025 13:14:52 -0700
+Subject: [sdwalker/sdwalker.github.io] dd83b2: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/0a851d-dd83b2@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: dd83b2ca41899418573c92676acde57e96ce6b69
+      https://github.com/sdwalker/sdwalker.github.io/commit/dd83b2ca41899418573c92676acde57e96ce6b69
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-09-14 (Sun, 14 Sep 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From cjd at cjdns.fr  Mon Sep 15 01:32:38 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Mon, 15 Sep 2025 10:32:38 +0200
+Subject: [RFC] Advice re auto-extroot for EcoNet platform
+In-Reply-To: <13146.1757878583@obiwan.sandelman.ca>
+References: <cf1e5f6c-2bcc-45ec-9715-3d5fc57c916c@cjdns.fr>
+ <13146.1757878583@obiwan.sandelman.ca>
+Message-ID: <1a4fb8e1-4939-4d22-a7b9-45fc0e59faba@cjdns.fr>
+
+>      > discussion. Furthermore, making all of the modules built-in has been shown to
+>      > have a significant amount of space-savings (
+>      > https://openwrt.org/docs/guide-user/additional-software/saving_space#making_all_kernel_modules_built-in
+>      > ) so that flag might be worth something to others as well.
+>
+> Oh, so it's a overwall win by removing .ko files from the rootfs.
+
+I just checked and in the econet configuration, setting every =m to =y 
+saves 1328 bytes in the kernel+initramfs image.
+
+On the TRX it costs 4 bytes, which is probably some padding issue.
+
+>      > The second question is what is the right way to handle devices which have a
+>      > small JFFS or UBI section in addition to the extroot? If it exists at the
+>      > time the extroot is first mounted, we can copy files over, but if we boot
+>      > with the extroot removed, data will be stored there again and it will go out
+>      > of sync. We can imagine creating an init script which prints a warning in
+>      > this case, but the risk will always be present. My preference, because
+>      > I
+>
+> Panic, flash available LEDs?
+> extroot seems like an "us" problem, not a user problem.
+> Anyone likely to do it, is likely aware of this list.
+> Sure, some of us might do this for someone else... hide the key with black tape.
+
+Good point. For my use case, it's fine to do nothing, so I think I would 
+prefer to make a PR with nothing, then wait for someone who has a use 
+case where something should be done to update the code to do that. Same 
+goes for other things like auto-installing additional packages after the 
+extroot mounts, I don't think I need this right now, so I prefer not to 
+try to implement something I imagine someone else might want.
+
+Thanks,
+
+Caleb
+
+>
+> {I have used USB keys that were barely bigger than the connector for white
+> label router platforms that ran essentially from ram.  Customer then wanted
+> RAID for the USB keys :-).  Customers also couldn't even see some of them, as
+> some MBs have USB slots inside 1U}
+>
+>
+> --
+> ]               Never tell me the odds!                 | ipv6 mesh networks [
+> ]   Michael Richardson, Sandelman Software Works        |    IoT architect   [
+> ]     mcr at sandelman.ca  http://www.sandelman.ca/        |   ruby on rails    [
+>
+>
+>
+
+
+From cjd at cjdns.fr  Wed Sep 17 12:34:39 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Wed, 17 Sep 2025 21:34:39 +0200
+Subject: [RFC] Advice re auto-extroot for EcoNet platform
+In-Reply-To: <1a4fb8e1-4939-4d22-a7b9-45fc0e59faba@cjdns.fr>
+References: <cf1e5f6c-2bcc-45ec-9715-3d5fc57c916c@cjdns.fr>
+ <13146.1757878583@obiwan.sandelman.ca>
+ <1a4fb8e1-4939-4d22-a7b9-45fc0e59faba@cjdns.fr>
+Message-ID: <5dd6d38f-7185-4bb2-871f-7a3ae7551796@cjdns.fr>
+
+Update:
+
+I have gotten something working.
+
+1. I have a patch which adds BUILTIN_KMODS, making all kmod packages to 
+become kernel builtins
+
+2. I have a preinit script to ensure there is a block device in /dev for 
+any disk with PARTNAME=rootfs_data
+
+
+This works most of the time, but occasionally the USB device fails to 
+register until after mount_root(see dmesg below).
+
+
+What I'm thinking about doing is adding a hotplug.d script which reboots 
+the device in that case, and this can also partition an empty device. 
+Then I should be able to make this as a package.
+
+
+Thanks,
+
+Caleb
+
+
+[??? 2.763207] scsi 0:0:0:0: Direct-Access???? USB????? Disk???????????? 
+2.10 PQ: 0 ANSI: 2
+[??? 2.784567] sd 0:0:0:0: [sda] 1022464 512-byte logical blocks: (524 
+MB/499 MiB)
+[??? 2.794943] sd 0:0:0:0: [sda] Write Protect is off
+[??? 2.802288] sd 0:0:0:0: [sda] No Caching mode page found
+[??? 2.807647] sd 0:0:0:0: [sda] Assuming drive cache: write through
+[??? 2.878976] r8152-cfgselector 1-2.1: reset high-speed USB device 
+number 4 using xhci-mtk
+[??? 4.339676] r8152 1-2.1:1.0 eth0: v1.12.13
+[??? 4.388681] random: crng init done
+[??? 4.478821] usb 1-2.4: new high-speed USB device number 5 using xhci-mtk
+[??? 4.759125] usb-storage 1-2.4:1.0: USB Mass Storage device detected
+[??? 4.767230] scsi host1: usb-storage 1-2.4:1.0
+Press the [f] key and hit [enter] to enter failsafe mode
+Press the [1], [2], [3] or [4] key and hit [enter] to select the debug level
+[??? 5.818867] scsi 1:0:0:0: Direct-Access???? Multi??? Flash Reader???? 
+1.00 PQ: 0 ANSI: 0
+[??? 5.868796] sd 1:0:0:0: [sdb] Media removed, stopped polling
+[??? 5.875152] sd 1:0:0:0: [sdb] Attached SCSI removable disk
+[??? 7.088867] r8152 1-2.1:1.0 eth0: carrier on
+[??? 9.291450] mount_root: no usable overlay filesystem found, using 
+tmpfs overlay
+[??? 9.303630] urandom-seed: Seed file not found (/etc/urandom.seed)
+[??? 9.913945] procd: - early -
+[?? 10.632452] procd: - ubus -
+[?? 10.816972] procd: - init -
+Please press Enter to activate this console.
+[?? 12.222074] kmodloader: loading kernel modules from /etc/modules.d/*
+[?? 12.360596] kmodloader: done loading kernel modules from /etc/modules.d/*
+[?? 13.584036] urngd: v1.0.2 started.
+[?? 33.348852] usb 1-1: reset high-speed USB device number 2 using xhci-mtk
+[?? 33.978962] Alternate GPT is invalid, using primary GPT.
+[?? 33.984378]? sda: sda1
+[?? 33.987203] sd 0:0:0:0: [sda] Attached SCSI removable disk
+
+
+
+From cjd at cjdns.fr  Fri Sep 19 02:27:01 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Fri, 19 Sep 2025 11:27:01 +0200
+Subject: [RFC] Advice re auto-extroot for EcoNet platform
+In-Reply-To: <5dd6d38f-7185-4bb2-871f-7a3ae7551796@cjdns.fr>
+References: <cf1e5f6c-2bcc-45ec-9715-3d5fc57c916c@cjdns.fr>
+ <13146.1757878583@obiwan.sandelman.ca>
+ <1a4fb8e1-4939-4d22-a7b9-45fc0e59faba@cjdns.fr>
+ <5dd6d38f-7185-4bb2-871f-7a3ae7551796@cjdns.fr>
+Message-ID: <13189a33-ef93-4057-88c8-070443f994be@cjdns.fr>
+
+Update: I have made a draft pull request for adding external root FS 
+capability.
+
+https://github.com/openwrt/openwrt/pull/20092
+
+
+I would like to move the conversation there, since now there is some 
+code to talk about.
+
+
+Thanks,
+
+Caleb
+
+
+
+From fe at dev.tdt.de  Fri Sep 19 02:40:08 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Fri, 19 Sep 2025 11:40:08 +0200
+Subject: [PATCH] imagebuilder: fix manifest generation for apk
+Message-ID: <20250919094008.230990-1-fe@dev.tdt.de>
+
+The manifest file created by the imagebuilder command 'make manifest' does
+not contain '-' between packages name and version for the apk backend.
+Therefore this file can not be used as an input file for 'package-metadata.pl'
+script to get further informations.
+
+This change fixes this by addding the missing '-' char.
+
+Fixes 23dc466969f3 ("imagebuilder: implement STRIP_ABI option for manifest target")
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ target/imagebuilder/files/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/target/imagebuilder/files/Makefile b/target/imagebuilder/files/Makefile
+index 3f919a0658..fa162fa208 100644
+--- a/target/imagebuilder/files/Makefile
++++ b/target/imagebuilder/files/Makefile
+@@ -169,7 +169,7 @@ ifeq ($(CONFIG_USE_APK),)
+ 	$(OPKG) list-installed $(if $(STRIP_ABI),--strip-abi)
+ else
+ 	$(APK) query --format json --fields name,version,$(if $(STRIP_ABI),tags) --installed '*' | \
+-		$(SCRIPT_DIR)/make-index-json.py -a $(ARCH_PACKAGES) -f apk --manifest -
++		$(SCRIPT_DIR)/make-index-json.py -a $(ARCH_PACKAGES) -f apk --manifest - | sort | sed 's/ / - /'
+ endif
+ 
+ package_index: FORCE
+-- 
+2.39.5
+
+
+
+From fe at dev.tdt.de  Fri Sep 19 02:51:21 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Fri, 19 Sep 2025 11:51:21 +0200
+Subject: [PATCH] buildsystem: add imgmanifestjson JSON generation support
+Message-ID: <20250919095121.234388-1-fe@dev.tdt.de>
+
+The script 'package-metadata.pl' already has a functionality to generate
+JSON output from '.packageinfo'. However, this output containing
+information about 'all' packages.
+
+This information is also interesting at the image level in order to
+further machine-process the information about the installed packages. This
+commit adds the creation of a '*.pkg.info.json' file when building the
+image.
+
+The creation of the file is disabled by default and can be enabled via the
+new Kconfig option 'CONFIG_JSON_PKG_INFO'.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ config/Config-build.in      |  7 ++++++
+ include/image.mk            |  6 +++++
+ scripts/package-metadata.pl | 44 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+)
+
+diff --git a/config/Config-build.in b/config/Config-build.in
+index 42b353ecf7..197a26a8ae 100644
+--- a/config/Config-build.in
++++ b/config/Config-build.in
+@@ -34,6 +34,13 @@ menu "Global build settings"
+ 		  directory containing Software Bill Of Materials in CycloneDX
+ 		  format.
+ 
++	config JSON_PKG_INFO
++		bool "Create packages info JSON"
++		default n
++		help
++		  Create a JSON files *.info.pkg.json in the build
++		  directory for further machine processing.
++
+ 	config ALL_NONSHARED
+ 		bool "Select all target specific packages by default"
+ 		select ALL_KMODS
+diff --git a/include/image.mk b/include/image.mk
+index 048e750f33..5b800956f8 100644
+--- a/include/image.mk
++++ b/include/image.mk
+@@ -340,6 +340,12 @@ ifneq ($(CONFIG_JSON_CYCLONEDX_SBOM),)
+ 		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).manifest > \
+ 		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).bom.cdx.json
+ endif
++ifneq ($(CONFIG_JSON_PKG_INFO),)
++	$(SCRIPT_DIR)/package-metadata.pl imgmanifestjson \
++		$(if $(IB),$(TOPDIR)/.packageinfo, $(TMP_DIR)/.packageinfo) \
++		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).manifest > \
++		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).pkg.info.json
++endif
+ endef
+ 
+ define Image/gzip-ext4-padded-squashfs
+diff --git a/scripts/package-metadata.pl b/scripts/package-metadata.pl
+index 82bd4360f3..90f0946e3a 100755
+--- a/scripts/package-metadata.pl
++++ b/scripts/package-metadata.pl
+@@ -589,6 +589,48 @@ sub gen_usergroup_list() {
+ 	}
+ }
+ 
++sub gen_image_manifest_json() {
++	my $pkginfo = shift @ARGV;
++	my $imgmanifest = shift @ARGV;
++	my $json;
++	my %image_packages;
++
++	%image_packages = image_manifest_packages($imgmanifest);
++	%image_packages or exit 1;
++
++	parse_package_metadata($pkginfo) or exit 1;
++	foreach my $name (sort {uc($a) cmp uc($b)} keys %image_packages) {
++		my %depends;
++		my $pkg = $package{$name};
++		foreach my $dep (@{$pkg->{depends} || []}) {
++			if ($dep =~ m!^\+?(?:[^:]+:)?([^@]+)$!) {
++				$depends{$1}++;
++			}
++		}
++		my @depends = sort keys %depends;
++		my $pkg_deps = join ' ', map { qq/"$_",/ } @depends;
++		$pkg_deps =~ s/\,$//;
++
++		my $pkg_maintainer = join ' ', map { qq/"$_",/ } @{$pkg->{maintainer} || []};
++		$pkg_maintainer =~ s/\,$//;
++
++		$json = <<"END_JSON";
++${json}{
++"name":"$name",
++"version":"$pkg->{version}",
++"category":"$pkg->{category}",
++"license":"$pkg->{license}",
++"cpe_id":"$pkg->{cpe_id}",
++"maintainer": [$pkg_maintainer],
++"depends":[$pkg_deps]},
++END_JSON
++	}
++
++	$json =~ s/[\n\r]//g;
++	$json =~ s/\,$//;
++	print "[$json]";
++}
++
+ sub gen_package_manifest_json() {
+ 	my $json;
+ 	parse_package_metadata($ARGV[0]) or exit 1;
+@@ -802,6 +844,7 @@ sub parse_command() {
+ 		/^kconfig/ and return gen_kconfig_overrides();
+ 		/^source$/ and return gen_package_source();
+ 		/^pkgaux$/ and return gen_package_auxiliary();
++		/^imgmanifestjson$/ and return gen_image_manifest_json();
+ 		/^pkgmanifestjson$/ and return gen_package_manifest_json();
+ 		/^imgcyclonedxsbom$/ and return gen_image_cyclonedxsbom();
+ 		/^pkgcyclonedxsbom$/ and return gen_package_cyclonedxsbom();
+@@ -817,6 +860,7 @@ Available Commands:
+ 	$0 kconfig [file] [config] [patchver]	Kernel config overrides
+ 	$0 source [file] 				Package source file information
+ 	$0 pkgaux [file]				Package auxiliary variables in makefile format
++	$0 imgmanifestjson [file] [manifest]	Image manifests in JSON format
+ 	$0 pkgmanifestjson [file]			Package manifests in JSON format
+ 	$0 imgcyclonedxsbom <file> [manifest]	Image package manifest in CycloneDX SBOM JSON format
+ 	$0 pkgcyclonedxsbom <file>			Package manifest in CycloneDX SBOM JSON format
+-- 
+2.39.5
+
+
+
+From ericfahlgren at gmail.com  Fri Sep 19 09:39:33 2025
+From: ericfahlgren at gmail.com (Eric Fahlgren)
+Date: Fri, 19 Sep 2025 09:39:33 -0700
+Subject: [PATCH] imagebuilder: fix manifest generation for apk
+In-Reply-To: <CAP2Qz+WvSpvuFmGc-u3d6eX-td5atwbWhzi9n1jZ8e7xgjtXqQ@mail.gmail.com>
+References: <20250919094008.230990-1-fe@dev.tdt.de> <CAP2Qz+WvSpvuFmGc-u3d6eX-td5atwbWhzi9n1jZ8e7xgjtXqQ@mail.gmail.com>
+Message-ID: <CAP2Qz+WeFixjDTiTs4-5g-XEX3r4J-KVaybAojVabMRy=g2Y8A@mail.gmail.com>
+
+Something like this:
+
+     if args.manifest:
+-        for name, version in packages.items():
+-            print(name, version)
++        for name, version in sorted(packages.items()):
++            print(name, "-", version)
+     else:
+
+If you want me to do the PR, just let me know...
+
+Eric
+
+On Fri, Sep 19, 2025 at 9:32?AM Eric Fahlgren <ericfahlgren at gmail.com> wrote:
+>
+> Hi Florian,
+>
+> I'd prefer you just add the dash (and sort, if needed) to make-index-json.py[1] as the '--manifest' option's sole purpose in life is to produce that output.  I was emulating the 'apk list --manifest' for that change, which does not include a dash, but I think the only use of the non-dash is in the ASU server, and that already handles both cases[2] properly.
+>
+> [1] https://github.com/openwrt/openwrt/blob/fc9cf208c5ef56489dcc7664b4ba75223fc51607/scripts/make-index-json.py#L94
+> [2] https://github.com/openwrt/asu/blob/dca946f68732d70f78d97df336310c59bb6db4d1/asu/util.py#L314
+>
+> Eric
+>
+>
+> On Fri, Sep 19, 2025 at 2:40?AM Florian Eckert <fe at dev.tdt.de> wrote:
+>>
+>> The manifest file created by the imagebuilder command 'make manifest' does
+>> not contain '-' between packages name and version for the apk backend.
+>> Therefore this file can not be used as an input file for 'package-metadata.pl'
+>> script to get further informations.
+>>
+>> This change fixes this by addding the missing '-' char.
+>>
+>> Fixes 23dc466969f3 ("imagebuilder: implement STRIP_ABI option for manifest target")
+>> Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+>> ---
+>>  target/imagebuilder/files/Makefile | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/target/imagebuilder/files/Makefile b/target/imagebuilder/files/Makefile
+>> index 3f919a0658..fa162fa208 100644
+>> --- a/target/imagebuilder/files/Makefile
+>> +++ b/target/imagebuilder/files/Makefile
+>> @@ -169,7 +169,7 @@ ifeq ($(CONFIG_USE_APK),)
+>>         $(OPKG) list-installed $(if $(STRIP_ABI),--strip-abi)
+>>  else
+>>         $(APK) query --format json --fields name,version,$(if $(STRIP_ABI),tags) --installed '*' | \
+>> -               $(SCRIPT_DIR)/make-index-json.py -a $(ARCH_PACKAGES) -f apk --manifest -
+>> +               $(SCRIPT_DIR)/make-index-json.py -a $(ARCH_PACKAGES) -f apk --manifest - | sort | sed 's/ / - /'
+>>  endif
+>>
+>>  package_index: FORCE
+>> --
+>> 2.39.5
+>>
+
+
+From ericfahlgren at gmail.com  Fri Sep 19 10:06:13 2025
+From: ericfahlgren at gmail.com (Eric Fahlgren)
+Date: Fri, 19 Sep 2025 10:06:13 -0700
+Subject: [PATCH] imagebuilder: fix manifest generation for apk
+In-Reply-To: <CAP2Qz+WeFixjDTiTs4-5g-XEX3r4J-KVaybAojVabMRy=g2Y8A@mail.gmail.com>
+References: <20250919094008.230990-1-fe@dev.tdt.de> <CAP2Qz+WvSpvuFmGc-u3d6eX-td5atwbWhzi9n1jZ8e7xgjtXqQ@mail.gmail.com>
+ <CAP2Qz+WeFixjDTiTs4-5g-XEX3r4J-KVaybAojVabMRy=g2Y8A@mail.gmail.com>
+Message-ID: <CAP2Qz+VufKQYZYxGHJsYJq+PdLCNwHFQ7A556Hm81xCDgJeaeA@mail.gmail.com>
+
+How about this? https://github.com/openwrt/openwrt/pull/20094
+
+On Fri, Sep 19, 2025 at 9:39?AM Eric Fahlgren <ericfahlgren at gmail.com> wrote:
+>
+> Something like this:
+>
+>      if args.manifest:
+> -        for name, version in packages.items():
+> -            print(name, version)
+> +        for name, version in sorted(packages.items()):
+> +            print(name, "-", version)
+>      else:
+>
+> If you want me to do the PR, just let me know...
+>
+> Eric
+>
+> On Fri, Sep 19, 2025 at 9:32?AM Eric Fahlgren <ericfahlgren at gmail.com> wrote:
+> >
+> > Hi Florian,
+> >
+> > I'd prefer you just add the dash (and sort, if needed) to make-index-json.py[1] as the '--manifest' option's sole purpose in life is to produce that output.  I was emulating the 'apk list --manifest' for that change, which does not include a dash, but I think the only use of the non-dash is in the ASU server, and that already handles both cases[2] properly.
+> >
+> > [1] https://github.com/openwrt/openwrt/blob/fc9cf208c5ef56489dcc7664b4ba75223fc51607/scripts/make-index-json.py#L94
+> > [2] https://github.com/openwrt/asu/blob/dca946f68732d70f78d97df336310c59bb6db4d1/asu/util.py#L314
+> >
+> > Eric
+> >
+> >
+> > On Fri, Sep 19, 2025 at 2:40?AM Florian Eckert <fe at dev.tdt.de> wrote:
+> >>
+> >> The manifest file created by the imagebuilder command 'make manifest' does
+> >> not contain '-' between packages name and version for the apk backend.
+> >> Therefore this file can not be used as an input file for 'package-metadata.pl'
+> >> script to get further informations.
+> >>
+> >> This change fixes this by addding the missing '-' char.
+> >>
+> >> Fixes 23dc466969f3 ("imagebuilder: implement STRIP_ABI option for manifest target")
+> >> Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+> >> ---
+> >>  target/imagebuilder/files/Makefile | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/target/imagebuilder/files/Makefile b/target/imagebuilder/files/Makefile
+> >> index 3f919a0658..fa162fa208 100644
+> >> --- a/target/imagebuilder/files/Makefile
+> >> +++ b/target/imagebuilder/files/Makefile
+> >> @@ -169,7 +169,7 @@ ifeq ($(CONFIG_USE_APK),)
+> >>         $(OPKG) list-installed $(if $(STRIP_ABI),--strip-abi)
+> >>  else
+> >>         $(APK) query --format json --fields name,version,$(if $(STRIP_ABI),tags) --installed '*' | \
+> >> -               $(SCRIPT_DIR)/make-index-json.py -a $(ARCH_PACKAGES) -f apk --manifest -
+> >> +               $(SCRIPT_DIR)/make-index-json.py -a $(ARCH_PACKAGES) -f apk --manifest - | sort | sed 's/ / - /'
+> >>  endif
+> >>
+> >>  package_index: FORCE
+> >> --
+> >> 2.39.5
+> >>
+
+
+From cjd at cjdns.fr  Fri Sep 19 11:54:20 2025
+From: cjd at cjdns.fr (Caleb James DeLisle)
+Date: Fri, 19 Sep 2025 18:54:20 +0000
+Subject: [PATCH] libfstools: partname: Create block device in init if needed
+Message-ID: <20250919185420.3038448-1-cjd@cjdns.fr>
+
+Rootfs on devices such as USB is currently impossible, but
+not because the kernel modules aren't loaded early enough.
+The only problem is that procd does not create hotplug
+device files until after preinit.
+
+Update partname_volume_init to also create the device file
+if necessary so that it will be able to be mounted. With
+this patch, USB rootfs with normal kmods Just Works.
+
+Signed-off-by: Caleb James DeLisle <cjd at cjdns.fr>
+---
+ libfstools/partname.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/libfstools/partname.c b/libfstools/partname.c
+index 9f2347a..a2b2b2c 100644
+--- a/libfstools/partname.c
++++ b/libfstools/partname.c
+@@ -2,6 +2,8 @@
+ 
+ #include "common.h"
+ 
++#include <sys/sysmacros.h>
++
+ #define BUFLEN 64
+ 
+ struct devpath {
+@@ -41,14 +43,45 @@ static int partname_volume_identify(struct volume *v)
+ 	return ret;
+ }
+ 
++static int ensure_block_dev(struct partname_volume *p, const char *voldir)
++{
++	unsigned int major, minor;
++	struct stat s;
++	char dev[8];
++
++	if (stat(p->dev.devpathstr, &s) < 0) {
++		if (errno != ENOENT)
++			return -1;
++	} else {
++		return S_ISBLK(s.st_mode) ? 0 : -2;
++	}
++
++	if (read_string_from_file(voldir, "dev", dev, sizeof(dev)) == NULL)
++		return -3;
++
++	if (sscanf(dev, "%d:%d", &major, &minor) != 2)
++		return -4;
++
++	if (mknod(p->dev.devpathstr, S_IFBLK | 0600, makedev(major, minor)) < 0)
++		return -5;
++
++	return 0;
++}
++
+ static int partname_volume_init(struct volume *v)
+ {
+ 	struct partname_volume *p = container_of(v, struct partname_volume, v);
+ 	char voldir[BUFLEN];
+ 	unsigned int volsize;
++	int ret;
+ 
+ 	snprintf(voldir, sizeof(voldir), "%s/%s", block_dir_name, p->dev.devpath.device);
+ 
++	ret = ensure_block_dev(p, voldir);
++	if (ret < 0)
++		printf("Failed to create block device %s ret=%d errno=%d\n",
++			p->dev.devpathstr, ret, errno);
++
+ 	if (read_uint_from_file(voldir, "size", &volsize))
+ 		return -1;
+ 
+-- 
+2.39.5
+
+
+
+From ehem+openwrt at m5p.com  Sun Sep 21 17:30:00 2025
+From: ehem+openwrt at m5p.com (Elliott Mitchell)
+Date: Sun, 21 Sep 2025 17:30:00 -0700
+Subject: Reuse/uniqueness of BSSIDs in 802.11
+Message-ID: <aNCYiG6EzXMYto78@mattapan.m5p.com>
+
+There is an odd issue which comes up with DBDC cards.  What are 802.11's
+requirements for uniqueness/reuse of BSSIDs?
+
+Can a DBDC chip with 2 radios reuse its BSSIDs on each radio?
+
+I would suspect so, though there could be limitations.  I would think it
+legal if both radios were on different bands.  Perhaps it would be
+required for the BSSID to be paired with the same SSID on each radio.
+
+In a different way you can think of tuples:
+
+<bssid, ssid, chan, band>
+
+Is <bssid0, chan0> sufficiently distinct from <bssid0, chan1>?  Does
+this pair require the same SSID for both?
+
+Is <bssid0, band0> sufficiently distinct from <bssid0, band1>?  Does
+this pair require the same SSID for both?
+
+The rules for radio/802.11 are different from ethernet.  Issue #995 on
+GitHub needs an expert who can speak to the actual rules/limitations.
+
+-- 
+(\___(\___(\______          --=> 8-) EHM <=--          ______/)___/)___/)
+ \BS (    |         ehem+sigmsg at m5p.com  PGP 87145445         |    )   /
+  \_CS\   |  _____  -O #include <stddisclaimer.h> O-   _____  |   /  _/
+8A19\___\_|_/58D2 7E3D DDF4 7BA6 <-PGP-> 41D1 B375 37D0 8714\_|_/___/5445
+
+
+
+
+From noreply at github.com  Sun Sep 21 19:48:55 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 21 Sep 2025 19:48:55 -0700
+Subject: [sdwalker/sdwalker.github.io] 32c807: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/dd83b2-32c807@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 32c807be61f95c1a29fb07bd921ff437c4a69eb0
+      https://github.com/sdwalker/sdwalker.github.io/commit/32c807be61f95c1a29fb07bd921ff437c4a69eb0
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-09-21 (Sun, 21 Sep 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From felix.baumann at freifunk-aachen.de  Sun Sep 21 22:30:52 2025
+From: felix.baumann at freifunk-aachen.de (Felix Baumann)
+Date: Mon, 22 Sep 2025 07:30:52 +0200
+Subject: Reuse/uniqueness of BSSIDs in 802.11
+In-Reply-To: <aNCYiG6EzXMYto78@mattapan.m5p.com>
+References: <aNCYiG6EzXMYto78@mattapan.m5p.com>
+Message-ID: <C3DAD85B-E299-4CF3-9052-AD33E989B400@freifunk-aachen.de>
+
+Am 22. September 2025 02:30:00 MESZ schrieb Elliott Mitchell <ehem+openwrt at m5p.com>:
+>There is an odd issue which comes up with DBDC cards.  What are 802.11's
+>requirements for uniqueness/reuse of BSSIDs?
+>
+>Can a DBDC chip with 2 radios reuse its BSSIDs on each radio?
+>
+>I would suspect so, though there could be limitations.  I would think it
+>legal if both radios were on different bands.  Perhaps it would be
+>required for the BSSID to be paired with the same SSID on each radio.
+>
+>In a different way you can think of tuples:
+>
+><bssid, ssid, chan, band>
+>
+>Is <bssid0, chan0> sufficiently distinct from <bssid0, chan1>?  Does
+>this pair require the same SSID for both?
+>
+>Is <bssid0, band0> sufficiently distinct from <bssid0, band1>?  Does
+>this pair require the same SSID for both?
+>
+>The rules for radio/802.11 are different from ethernet.  Issue #995 on
+>GitHub needs an expert who can speak to the actual rules/limitations.
+>
+
+Hi,
+
+you forgot to post a link to the issue you mentioned:
+<https://github.com/openwrt/mt76/issues/995>
+
+People would look here which is entirely unrelated:
+<https://github.com/openwrt/openwrt/pull/995> 
+
+Regards
+Felix Baumann
+
+
+From ck at dev.tdt.de  Mon Sep 22 01:01:43 2025
+From: ck at dev.tdt.de (Christian Korber)
+Date: Mon, 22 Sep 2025 10:01:43 +0200
+Subject: [PATCH] ufp: add ubus_rpc_session to call arguments
+Message-ID: <20250922080143.1445328-1-ck@dev.tdt.de>
+
+To display vendor information via ubus call in uhttpd,
+it is necessary to add `ubus_rpc_session` as argument
+to fingerprint.
+
+Signed-off-by: Christian Korber <ck at dev.tdt.de>
+---
+ ufpd | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/ufpd b/ufpd
+index 26f263c..c41ab8c 100755
+--- a/ufpd
++++ b/ufpd
+@@ -363,6 +363,7 @@ global.ubus_object = {
+ 	fingerprint: {
+ 		args: {
+ 			macaddr: "",
++			ubus_rpc_session: "",
+ 			weight: false,
+ 			local: false
+ 		},
+-- 
+2.39.5
+
+
+
+From leon at georgemail.eu  Mon Sep 22 11:29:42 2025
+From: leon at georgemail.eu (Leon Busch-George)
+Date: Mon, 22 Sep 2025 20:29:42 +0200
+Subject: Routers go 'rogue' randomly with recent trunk build
+Message-ID: <20250922202942.055899fa@keks>
+
+Hi,
+
+I've noticed that, in the week after updating to 125c974bf7ee, a sizeable amount of routers stops working, seemingly at random times of day.
+
+Addressing is (still?) intact but connections to the router don't work. In this state, WiFi is broken as well (bridged to ethernet).
+Interestingly, the behaviour is slightly different on ath79/ramips:
+
+On ath79, a TCP connection to SSH is accepted. All traffic is ACK'ed but not answered by dropbear (.pcap attached).
+On ramips, the connection is just refused.
+
+There's a daemon sending out broadcast probes at a regular interval. At least 'hopefully' there is. That traffic also can't be seen from the outside.
+
+Is anyone else seeing something like this?
+
+kind regards,
+Leon
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: rogue.pcap
+Type: application/vnd.tcpdump.pcap
+Size: 2736 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20250922/11700876/attachment-0001.pcap>
+
+From hauke at hauke-m.de  Mon Sep 22 16:38:16 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Tue, 23 Sep 2025 01:38:16 +0200
+Subject: OpenWrt 24.10.3 - Service Release
+Message-ID: <d173f3f6-e5c9-48dd-8116-ad7fbb306d01@hauke-m.de>
+
+Hi,
+
+The OpenWrt community is proud to announce the newest stable release of 
+the OpenWrt 24.10 stable series.
+
+Download firmware images using the OpenWrt Firmware Selector:
+   * https://firmware-selector.openwrt.org?version=24.10.3
+
+Download firmware images directly from our download servers:
+   * https://downloads.openwrt.org/releases/24.10.3/targets/
+
+
+Main changes between OpenWrt 24.10.2 and OpenWrt 24.10.3
+========================================================
+
+Device support
+==============
+
+   * Added new devices:
+     * mediatek: Cudy TR3000 256MB v1 flash version
+     * mediatek: Huasifei WH3000 Pro
+     * mediatek: ipTIME AX3000Q
+     * mediatek: ipTIME AX3000SM
+     * mediatek: OpenFi 6C
+     * mediatek: Zbtlink ZBT-Z8102AX v2
+     * qualcommax: ipq807x: Linksys HomeWRK
+     * ramips: Hongdian H7920 v40
+     * rockchip: Radxa ROCK 4C+
+     * rockchip: Radxa ROCK 4SE
+   * armsr: Fix problem creating kthread in boot up on qemu
+   * armsr: Fix serial console regression on device tree systems
+   * ath79: COMFAST CF-EW71 v2: Fix LED GPIOs
+   * ath79: MikroTik hAP ac: Enable USB by default
+   * ath79: Ubiquiti: Fix flash write unlock on multiple devices
+   * ath79: Xiaomi AIoT AC2350: Fix 5GHz Wifi
+   * imx: Add device tree overlay support
+   * ipq40xx: Reduce SPI clock frequency to 24MHz
+   * lantiq: DSL: Fix reading downstream band borders
+   * lantiq: Fix occasional kernel panic in ltq-adsl driver
+   * mediatek: Cudy tr3000 v1: Add ubootmod layout
+   * mediatek: Fix tx vlan tag for llc packets
+   * mediatek: mt7981: Reduce DMA memory usage regression
+   * mediatek: mt7986: Reduce DMA memory usage regression
+   * mediatek: Prevent PPE flow tables to leak across reboots
+   * mediatek: Ruijie RG-X60 Pro: Fix LAN port status light
+   * mediatek: Xiaomi AX3000T: Fix Foresee NAND
+   * mpc85xx: TP-Link: TL-WDR4900: Add back 5ghz LED
+   * ramips: mt7621: Reduce DMA memory usage regression
+   * ramips: rt5350: Reduce DMA memory usage regression
+   * ramips: TP-Link mr600: Fix 5 GHz Wifi
+   * realtek: Avoid interrupt storm on mass packet receive
+   * realtek: Fix stall after restart of otto timer
+   * rockchip: Fix for MSI/MSI-X bug: no MSI/MSI-X, Back to INTx.
+   * rockchip: NanoPC-T6 with A3A444 chips: Fix eMMC corruption
+   * rockchip: rk35xx: Increase the number of serial ports
+   * tegra: Bring back workaround for spurious interrupts
+   * x86: Fix boot problems by activating CONFIG_PCI_MMCONFIG
+
+
+Various fixes and improvements
+==============================
+
+   * busybox: Fix login applet on selinux
+   * hostapd: Reduce debug logging
+   * kernel: Add support for FudanMicro FM25S01A SPI-NAND
+   * kernel: Fix netdev trigger for PHY LEDs
+   * mac80211: Improve  WiFi-7 TX performance
+   * mt76: Improve system recovery routine for MT7915
+   * wifi-scripts: Correctly set basic-rates with wpa_supplicant
+
+
+Core components update
+======================
+
+   * Linux kernel: update from 6.6.93 to 6.6.104
+   * mac80211: update from 6.12.6 to 6.12.44
+   * mt76: update from 2025-02-14 to 2025-09-15
+   * kmod-r8125: update from 9.016.00 to 9.016.01
+   * kmod-r8126: update from 10.015.00 to 10.016.00
+   * kmod-r8127: update from 11.014.00 to 11.015.00
+   * libubox: update from 2024-12-19 to 2025-07-23
+   * udebug: update from 2023-12-06 to 2025-08-24
+   * ucode: update from 2025-05-11 to 2025-07-18
+   * uhttpd: update from 2023-06-25 to 2025-07-06
+   * uqmi: update from 2024-08-25 to 2025-07-30
+   * rpcd: update from 2024-09-17 to 2025-09-01
+   * ubus: update from 2025-05-16 to 2025-07-02
+   * libxml2: update from 2.13.6 to 2.14.5
+   * mbedtls: update from 3.6.3 to 3.6.4
+   * openssl: update from 3.0.16 to 3.0.17
+   * ca-certificates: update from 20241223 to 20250419
+   * wireless-regdb: update from 2025.02.20 to 2025.07.10
+
+
+Upgrading to 24.10
+==================
+
+Sysupgrade can be used to upgrade a device from 23.05 to 24.10, and 
+configuration will be preserved in most cases.
+
+For for upgrades inside the OpenWrt 24.10 stable series for example from 
+a OpenWrt 24.10 release candidate [Attended 
+Sysupgrade](https://openwrt.org/docs/guide-user/installation/attended.sysupgrade) 
+is supported in addition which allows preserving the installed packages too.
+
+  * Sysupgrade from 22.03 to 24.10 is not officially supported.
+
+  * There is no configuration migration path for users of the ipq806x
+    target for Qualcomm Atheros IPQ806X SoCs because it switched to DSA.
+    You have to upgrade without saving the configuration.
+
+  * User of the Linksys E8450 aka. Belkin RT3200 running OpenWrt 23.05 or
+    earlier will need to run installer version v1.1.3 or later in order
+    to reorganize the UBI layout for the 24.10 release. A detailed
+    description is in the OpenWrt wiki. Updating without using the
+    installer will break the device. Sysupgrade will show a warning
+    before doing an incompatible upgrade.
+    https://github.com/dangowrt/owrt-ubi-installer/releases/tag/v1.1.3
+
+https://openwrt.org/toh/linksys/e8450#upgrading_an_ubi_installation_to_new_releases_after_2024-02_includes_all_snapshots_2410-snapshots_24100-rcx_releases_and_all_releases_in_the_foreseable_future
+
+  * Users of the Xiaomi AX3200 aka. Redmi AX6S running OpenWrt 23.05 or
+    earlier have to follow a special upgrade procedure described in the
+    wiki. This will increase the flash memory available for OpenWrt.
+    Updating without following the guide in the wiki break the device.
+    Sysupgrade will show a warning before doing an incompatible upgrade.
+
+https://openwrt.org/toh/xiaomi/ax3200#upgrading_from_2305_and_earlier_to_upcoming_2410_or_snapshot
+
+  * Users of Zyxel GS1900 series switches running OpenWrt 23.05 or
+    earlier have to perform a new factory install with the initramfs
+    image due to a changed partition layout. Sysupgrade will show a
+    warning before doing an incompatible upgrade and is not possible.
+
+Known issues
+===========
+
+   * **LEDs for Airoha AN8855 are not yet supported.** Devices like the
+     Xiaomi AX3000T with an Airoha switch will have their switch LEDs
+     powered off. This issue will be addressed in an upcoming OpenWrt
+     SNAPSHOT and the OpenWrt 24.10 minor release.
+   * **5GHz WiFi is non-functional on certain devices with ath10k
+     chipsets.** Affected models include the TP-Link Archer C60 v1,
+     and possibly others.
+     https://github.com/openwrt/openwrt/issues/14541
+
+-----------------
+
+Full release notes and upgrade instructions are available at
+  https://openwrt.org/releases/24.10/notes-24.10.3
+
+In particular, make sure to read the regressions and known issues before 
+upgrading:
+  https://openwrt.org/releases/24.10/notes-24.10.3#known_issues
+
+For a detailed list of all changes since 24.10.2, refer to
+  https://openwrt.org/releases/24.10/changelog-24.10.3
+
+To download the 24.10.3 images, navigate to:
+  https://downloads.openwrt.org/releases/24.10.3/targets/
+Use OpenWrt Firmware Selector to download:
+  https://firmware-selector.openwrt.org?version=24.10.3
+
+As always, a big thank you goes to all our active package maintainers, 
+testers, documenters and supporters.
+
+Have fun!
+
+The OpenWrt Community
+
+---
+
+To stay informed of new OpenWrt releases and security advisories, there
+are new channels available:
+
+   * a low-volume mailing list for important announcements:
+https://lists.openwrt.org/mailman/listinfo/openwrt-announce
+
+   * a dedicated "announcements" section in the forum:
+https://forum.openwrt.org/c/announcements/14
+
+   * other announcement channels (such as RSS feeds) might be added in
+     the future, they will be listed at https://openwrt.org/contact
+
+
+From fe at dev.tdt.de  Tue Sep 23 00:08:59 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Tue, 23 Sep 2025 09:08:59 +0200
+Subject: [PATCH] imagebuilder: fix manifest generation for apk
+In-Reply-To: <CAP2Qz+VufKQYZYxGHJsYJq+PdLCNwHFQ7A556Hm81xCDgJeaeA@mail.gmail.com>
+References: <20250919094008.230990-1-fe@dev.tdt.de>
+ <CAP2Qz+WvSpvuFmGc-u3d6eX-td5atwbWhzi9n1jZ8e7xgjtXqQ@mail.gmail.com>
+ <CAP2Qz+WeFixjDTiTs4-5g-XEX3r4J-KVaybAojVabMRy=g2Y8A@mail.gmail.com>
+ <CAP2Qz+VufKQYZYxGHJsYJq+PdLCNwHFQ7A556Hm81xCDgJeaeA@mail.gmail.com>
+Message-ID: <1a50d9da052e7479a8af1b8a467a1a84@dev.tdt.de>
+
+Hello Eric,
+
+On 2025-09-19 19:06, Eric Fahlgren wrote:
+> How about this? https://github.com/openwrt/openwrt/pull/20094
+
+LGTM. I will close this Patch in favour of the solution on Github
+
+Thanks
+
+
+From leon at georgemail.eu  Tue Sep 23 12:04:12 2025
+From: leon at georgemail.eu (Leon Busch-George)
+Date: Tue, 23 Sep 2025 21:04:12 +0200
+Subject: Routers go 'rogue' randomly with recent trunk build
+In-Reply-To: <20250922202942.055899fa@keks>
+References: <20250922202942.055899fa@keks>
+Message-ID: <20250923210412.553074d3@keks>
+
+It looks as if the underlying problem is a memory leak that just spontaneously started to occur in existing (untouched for years) code linking against ubus, ubox, json-c, and openssl.
+
+Sadly, there also appears to be a problem with musl+valgrind that makes it a lot harder to track down the cause. Everything I tried using valgrind on segfauls before the main is entered. It looks to me as if a strcpy corrupts valgrind's memory. This is what it looks like:
+
+$ valgrind --leak-check=full --track-origins=yes busybox echo
+==24829== Memcheck, a memory error detector
+==24829== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==24829== Using Valgrind-3.23.0 and LibVEX; rerun with -h for copyright info
+==24829== Command: /bin/sh
+==24829== 
+==24829== Conditional jump or move depends on uninitialised value(s)
+==24829==    at 0x408CBAC: stpcpy (in /lib/libc.so)
+==24829==    by 0x408D054: strcpy (in /lib/libc.so)
+==24829==  Uninitialised value was created by a stack allocation
+==24829==    at 0x40A1FF8: ??? (in /lib/libc.so)
+==24829== 
+==24829== 
+==24829== Process terminating with default action of signal 4 (SIGILL)
+==24829==  Illegal opcode at address 0x4097F1
+==24829==    at 0x4097F1: ??? (in /bin/busybox)
+==24829==    by 0x4025CDC: ??? (in /lib/libc.so)
+
+The memory at that address is:
+
+00000000  63 7f 67 07 d3 08 d4 09  d5 23 b4 00 1a 65 24 00  |c.g......#...e$.|
+00000010  65 09 92 04                                       |e...|
+
+No idea whether this memory corruption also occurs without valgrind running (why wouldn't it?).
+I'm trying to let this rest for a few days.
+
+On Mon, 22 Sep 2025 20:29:42 +0200
+Leon Busch-George <leon at georgemail.eu> wrote:
+
+> Hi,
+> 
+> I've noticed that, in the week after updating to 125c974bf7ee, a
+> sizeable amount of routers stops working, seemingly at random times
+> of day.
+> 
+> Addressing is (still?) intact but connections to the router don't
+> work. In this state, WiFi is broken as well (bridged to ethernet).
+> Interestingly, the behaviour is slightly different on ath79/ramips:
+> 
+> On ath79, a TCP connection to SSH is accepted. All traffic is ACK'ed
+> but not answered by dropbear (.pcap attached). On ramips, the
+> connection is just refused.
+> 
+> There's a daemon sending out broadcast probes at a regular interval.
+> At least 'hopefully' there is. That traffic also can't be seen from
+> the outside.
+> 
+> Is anyone else seeing something like this?
+> 
+> kind regards,
+> Leon
+
+
+
+From hauke at hauke-m.de  Thu Sep 25 13:33:51 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Thu, 25 Sep 2025 22:33:51 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+Message-ID: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+
+Hi,
+
+I would like to have the basic attended sysupgrade features in the 
+default images for the next major release.
+
+I am not very familiar with the feature and what is needed.
+
+I think LuCI should inform the user when a new major release is 
+available. There should be a button in LuCI which will tell ASU to 
+create an image and then install it using sysupgrade.
+
+We should also have this feature on the command line, at least that you 
+can ask a tool if an upgrade is available and then tell it to upgrade 
+including all packages.
+
+Maybe we should restrict this to large flash devices.
+
+Do we have to install luci-app-attendedsysupgrade and owut for this or 
+is it possible with less?
+
+Should we add luci-app-attendedsysupgrade as a dependency to 
+luci/collections/luci/Makefile ?
+
+Should we move utils/attendedsysupgrade-common from the package feed to 
+the main repository?
+
+Should we also move utils/owut from the package feed to the main 
+repository and add it as a default dependency to DEFAULT_PACKAGES.
+
+Is this all needed or does this feature also work with less new packages?
+
+Hauke
+
+
+From evil.function at proton.me  Thu Sep 25 16:25:58 2025
+From: evil.function at proton.me (Eric)
+Date: Thu, 25 Sep 2025 23:25:58 +0000
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+Message-ID: <FIb1pm7_aZeBxln61Rj3oQiGHbInLTJv1mKqbdLb616r3batX26e7YCz3vtDNP5V_Spa3nbjKMckUtr7vc7lZzAaun1w0dtawiVEB9HBBnY=@proton.me>
+
+
+On Thursday, September 25th, 2025 at 13:36, Hauke Mehrtens <hauke at hauke-m.de> wrote:
+> I would like to have the basic attended sysupgrade features in the
+> default images for the next major release.
+> 
+> I am not very familiar with the feature and what is needed.
+> 
+> I think LuCI should inform the user when a new major release is
+> available. 
+
+Hi Hauke,
+
+There's already a "prototype" of this bit that comes when you install
+the luci-app-attendedsysupgrade package.  Its current form is a bit
+messy, as it injects a checkbox obtrusively on the Status page (gui
+needs some work):
+
+  X Look online for upgrades upon status page load
+
+Controlling
+$ cat /etc/config/luci
+config core 'main'
+        option check_for_newer_firmwares '1'
+
+When selected, it runs a check against downloads.o.o and creates a
+popup when a newer version is available.
+
+> There should be a button in LuCI which will tell ASU to
+> create an image and then install it using sysupgrade.
+
+That would be pretty much the LuCI Attended Sysupgrade app, it only
+has a couple bells and whistles beyond that.
+
+> We should also have this feature on the command line, at least that you
+> can ask a tool if an upgrade is available and then tell it to upgrade
+> including all packages.
+
+owut does all that and a bunch more.  For example, 'owut check' not
+only checks firmware version, but also the versions of all installed
+packages.  In addition, it goes out to the package feeds and attempts
+to verify that all of the installed packages are built correctly and
+currently available (it scrapes the faillogs).
+
+Two variants do the build, 'owut download' simply generates the image,
+runs checksums and all that, then dumps it in /tmp/firmware.bin;
+'owut upgrade' does that, then fires off 'sysupgrade -f /tmp/firmware.bin'.
+
+> Maybe we should restrict this to large flash devices.
+
+Note: Overlapping dependencies are what I'll call things like
+libc or libubox or luci-base, where the package is required by
+other stuff, so it's going to be there regardless of whether
+you install luci-app-attendedsysupgrade or owut, or not...
+
+The luci-app-attendedsysupgrade package with its non-overlapping
+dependencies is about 137k bytes; owut is much heavier at about 220kB.
+
+The base code for luci app is 23k, with rpcd-mod-rpcsys adding
+the biggest chunk to the total at 113k.
+
+owut source is 89k of ucode, add on above rpcd-mod-rpcsys from
+above, and also ucode-mod-uclient (17k), ucode-mod-uloop (29k)
+and that's pretty much it.  (Note though, that ucode-mod-uloop
+is now a required package for netifd, so it becomes an overlap
+in snapshot/25.x.)
+
+Installing both together right now requires about (unsquashed) 242k...
+
+> Do we have to install luci-app-attendedsysupgrade and owut for this or
+> is it possible with less?
+
+luci-app= is already pretty minimal.  I could make an 'owut-lite',
+but not sure if it's worth it since it would probably only remove
+about 25k max.  We might be able to apply the javascript mangler
+to it and save some space, not sure it would handle ucode's
+differences from js, but it might be worth a try...
+
+> Should we add luci-app-attendedsysupgrade as a dependency to
+> luci/collections/luci/Makefile ?
+> 
+> Should we move utils/attendedsysupgrade-common from the package feed to
+> the main repository?
+> 
+> Should we also move utils/owut from the package feed to the main
+> repository and add it as a default dependency to DEFAULT_PACKAGES.
+
+All way above my pay grade. :)
+
+One comment on owut, though.  I've been working toward breaking
+out the 'argparse.uc' utility component of its source code as I
+use it in a couple other utilities, and Paul Donald has requested
+that it be packaged separately so he can use it in his utilities,
+too.  There's a PR where I half-assed it, that I need to close 
+and rework, so I'd need to know where it should go (/openwrt
+or /packages/lang/ucode or ???).  Some discussion on
+https://github.com/openwrt/packages/pull/26988
+
+> Is this all needed or does this feature also work with less new packages?
+
+I know of no other means for doing "one button" upgrades than
+the ASU server and its various clients...
+
+Hope this helps,
+Eric
+
+
+From daniel at makrotopia.org  Thu Sep 25 19:01:44 2025
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Fri, 26 Sep 2025 03:01:44 +0100
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+Message-ID: <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+
+Hi,
+
+On Thu, Sep 25, 2025 at 10:33:51PM +0200, Hauke Mehrtens wrote:
+> Hi,
+> 
+> I would like to have the basic attended sysupgrade features in the default
+> images for the next major release.
+> 
+> I am not very familiar with the feature and what is needed.
+> 
+> I think LuCI should inform the user when a new major release is available.
+
+Currently both, the LuCI app as well as owut only show possible updates
+when instructed by the user to do so.
+
+We should better think twice before having all devices with those tools
+installed query online services for updates when ever the admin logs in,
+this has wide ranging implications regarding the user's privacy as well,
+RAM usage for package lists, data consumption on metered connections, ...
+
+I'd therefore restrict this to query for release updates (and not just a
+newer snapshot build in case of a device currently running a snapshot
+image, and also only query for package updates upon user requests).
+Checking the availability of an newer release could be done using a
+TXT record in DNS, for example, which would be much more lightweight
+(on both ends) than using HTTPS JSON RPC queries for that.
+
+Neither of the ASU clients currently supports anything like that, but
+it would obviously be quite easy to implement in either
+luci-mod-admin-full or the ASU clients.
+
+> There should be a button in LuCI which will tell ASU to create an image and
+> then install it using sysupgrade.
+> 
+> We should also have this feature on the command line, at least that you can
+> ask a tool if an upgrade is available and then tell it to upgrade including
+> all packages.
+> 
+> Maybe we should restrict this to large flash devices.
+
+One of the design goals of ASU was to support devices with very small
+flash. In fact, having an ASU client (owut or the LuCI app) installed takes
+less space than keeping a full package manager incl. unstripped metadata of
+the installed packages -- so on small flash devices I'd rather drop the
+(in this case anyway pretty useless) package manager and keep only an ASU
+client instead.
+
+> 
+> Do we have to install luci-app-attendedsysupgrade and owut for this or is it
+> possible with less?
+
+Either of the two packages is sufficient, we don't need both of them.
+
+> 
+> Should we add luci-app-attendedsysupgrade as a dependency to
+> luci/collections/luci/Makefile ?
+
+I'd say yes, but that's just my opinion.
+
+> 
+> Should we move utils/attendedsysupgrade-common from the package feed to the
+> main repository?
+
+I suggest to merge the content of the utils/attendedsysuprade-common
+package into base-files, as the packaging overhead is bigger than the
+actual content (a single UCI configuration file).
+
+> 
+> Should we also move utils/owut from the package feed to the main repository
+> and add it as a default dependency to DEFAULT_PACKAGES.
+
+I'd say yes for !SMALL_FLASH devices.
+
+> 
+> Is this all needed or does this feature also work with less new packages?
+
+The approach of both clients a slightly different:
+- owut talks to the configured ASU server directly over HTTPS. Hence it
+  requires network connectivity with the ASU server, and depends on
+  libuclient (+ ucode bindings), libustream-ssl and ca-certs or ca-bundle
+  being installed.
+
+- The LuCI app does not require connectivity (nor CA certs) on the device
+  itself but instead has the browser accessing LuCI query the ASU server
+  on its behalf. Hence, only the browser accessing the LuCI app needs
+  connectivity with the ASU server while the device itself doesn't.
+
+
+Cheers
+
+
+Daniel
+
+
+
+From kamil.lasek at bizial.pl  Fri Sep 26 00:50:47 2025
+From: kamil.lasek at bizial.pl (Kamil Lasek)
+Date: Fri, 26 Sep 2025 07:50:47 GMT
+Subject: Fotowoltaika dla firm
+Message-ID: <20250926084500-0.1.b1.1w73s.0.4350p7897n@bizial.pl>
+
+Dzie? dobry,
+
+pomagamy mikro, ma?ym i ?rednim przedsi?biorstwom obni?y? koszty energii elektrycznej dzi?ki monta?owi instalacji fotowoltaicznej. 
+
+Aktualnie proponujemy bezkonkurencyjne warunki wsp??pracy, od planu poprzez realizacj? a? po serwis.
+
+Prosz? o informacj? czy mo?emy przedstawi? propozycje dla Pa?stwa firmy?
+
+
+Pozdrawiam
+Kamil Lasek
+
+
+From jonas.gorski at gmail.com  Fri Sep 26 02:32:12 2025
+From: jonas.gorski at gmail.com (Jonas Gorski)
+Date: Fri, 26 Sep 2025 11:32:12 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de> <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+Message-ID: <CAOiHx==n71LkAyAwNrJ9iHcEhvJLaMRSARJ1yAC+1s4k1qM1Eg@mail.gmail.com>
+
+On Fri, Sep 26, 2025 at 4:02?AM Daniel Golle <daniel at makrotopia.org> wrote:
+>
+> Hi,
+>
+> On Thu, Sep 25, 2025 at 10:33:51PM +0200, Hauke Mehrtens wrote:
+> > Hi,
+> >
+> > I would like to have the basic attended sysupgrade features in the default
+> > images for the next major release.
+> >
+> > I am not very familiar with the feature and what is needed.
+> >
+> > I think LuCI should inform the user when a new major release is available.
+>
+> Currently both, the LuCI app as well as owut only show possible updates
+> when instructed by the user to do so.
+>
+> We should better think twice before having all devices with those tools
+> installed query online services for updates when ever the admin logs in,
+> this has wide ranging implications regarding the user's privacy as well,
+> RAM usage for package lists, data consumption on metered connections, ...
+
+We could cache the result and only do an online check if it is older
+than e.g. 24 hours. Or have a service do the actual checking once per
+interval, and let LuCI just display the service's last result.
+
+A service has the advantage of making it easier to configure
+(interval, which kind of updates you are interested in, etc), and
+maybe even allow letting it update the motd so you also get notified
+about available updates when logging in via ssh.
+
+Best regards,
+Jonas
+
+
+From hacks at slashdirt.org  Fri Sep 26 02:40:32 2025
+From: hacks at slashdirt.org (Thibaut)
+Date: Fri, 26 Sep 2025 11:40:32 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+Message-ID: <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org>
+
+Hi,
+
+> Le 26 sept. 2025 ? 04:01, Daniel Golle <daniel at makrotopia.org> a ?crit :
+> 
+> Hi,
+> 
+> On Thu, Sep 25, 2025 at 10:33:51PM +0200, Hauke Mehrtens wrote:
+>> Hi,
+>> 
+>> I would like to have the basic attended sysupgrade features in the default
+>> images for the next major release.
+>> 
+>> I am not very familiar with the feature and what is needed.
+>> 
+>> I think LuCI should inform the user when a new major release is available.
+> 
+> Currently both, the LuCI app as well as owut only show possible updates
+> when instructed by the user to do so.
+> 
+> We should better think twice before having all devices with those tools
+> installed query online services for updates when ever the admin logs in,
+> this has wide ranging implications regarding the user's privacy as well,
+> RAM usage for package lists, data consumption on metered connections, ...
+
++1
+
+I think that if OpenWrt devices started *by default* to ? phone home ? (whether directly or via an in-browser query), that would certainly be a concern.
+
+Such a feature - while appealing - should *absolutely* be an opt-in, and not an opt-out.
+Opt-out may also have legal implications (e.g. GDPR?).
+
+> I'd therefore restrict this to query for release updates (and not just a
+> newer snapshot build in case of a device currently running a snapshot
+> image, and also only query for package updates upon user requests).
+> Checking the availability of an newer release could be done using a
+> TXT record in DNS, for example, which would be much more lightweight
+> (on both ends) than using HTTPS JSON RPC queries for that.
+
+That?s indeed better from a privacy point of view.
+
+My 2c.
+T
+
+
+
+From karlp at tweak.au  Fri Sep 26 07:57:36 2025
+From: karlp at tweak.au (Karl Palsson)
+Date: Fri, 26 Sep 2025 14:57:36 +0000
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+ <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org>
+Message-ID: <0bacf409-bc84-4005-81b4-46cec7cc1076@tweak.au>
+
+> +1
+>
+> I think that if OpenWrt devices started *by default* to ? phone home ? (whether directly or via an in-browser query), that would certainly be a concern.
+>
+> Such a feature - while appealing - should *absolutely* be an opt-in, and not an opt-out.
+> Opt-out may also have legal implications (e.g. GDPR?).
+>
+FWIW, CRA implies that it _should_ be _opt out_ for updates, and they 
+should be enabled by default.? Yes, I know some people don't like that, 
+but people don't opt in :)
+
+Annex I, 2c)
+
+"ensure that vulnerabilities can be addressed through security updates,
+including, where applicable, through automatic security updates that
+are installed within an appropriate timeframe enabled as a default
+setting, with a clear and easy-to-use opt-out mechanism, through the
+notification of available updates to users, and the option to temporarily
+postpone them;"
+
+
+I would believe Hauke is looking at this from a CRA compliance 
+viewpoint, ... yeah, it should be opt out, not in....
+
+
+Sincerely,
+
+Karl Palsson
+
+
+
+From hacks at slashdirt.org  Fri Sep 26 08:06:00 2025
+From: hacks at slashdirt.org (Thibaut)
+Date: Fri, 26 Sep 2025 17:06:00 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <0bacf409-bc84-4005-81b4-46cec7cc1076@tweak.au>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+ <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org>
+ <0bacf409-bc84-4005-81b4-46cec7cc1076@tweak.au>
+Message-ID: <C4147223-F672-4D79-9D4F-370E151EBDE1@slashdirt.org>
+
+
+
+> Le 26 sept. 2025 ? 16:57, Karl Palsson <karlp at tweak.au> a ?crit :
+> 
+>> +1
+>> 
+>> I think that if OpenWrt devices started *by default* to ? phone home ? (whether directly or via an in-browser query), that would certainly be a concern.
+>> 
+>> Such a feature - while appealing - should *absolutely* be an opt-in, and not an opt-out.
+>> Opt-out may also have legal implications (e.g. GDPR?).
+>> 
+> FWIW, CRA implies that it _should_ be _opt out_ for updates, and they should be enabled by default.  Yes, I know some people don't like that, but people don't opt in :)
+> 
+> Annex I, 2c)
+> 
+> "ensure that vulnerabilities can be addressed through security updates,
+> including, where applicable, through automatic security updates that
+> are installed within an appropriate timeframe enabled as a default
+> setting, with a clear and easy-to-use opt-out mechanism, through the
+> notification of available updates to users, and the option to temporarily
+> postpone them;"
+> 
+> 
+> I would believe Hauke is looking at this from a CRA compliance viewpoint, ... yeah, it should be opt out, not in....
+
+I see, thanks for the explanation. I indeed don?t like it but I see the rationale, I stand corrected :)
+
+Hopefully we can make this work in an ? as private as possible ? way.
+Daniel?s suggestion seems pretty good in that context.
+
+T.
+
+From lotigara at lotigara.ru  Fri Sep 26 14:30:37 2025
+From: lotigara at lotigara.ru (lotigara at lotigara.ru)
+Date: Sat, 27 Sep 2025 00:30:37 +0300
+Subject: [PATCH] ramips: mt76x8: add support for Keenetic KN-1510 Specification: * SoC: MediaTek MT7628AN * RAM: 64 MB, Winbond W9751G6KB-25 (DDR2) * Flash: 16MB, GigaDevice GD25Q128CSIG (Dual Boot, SPI) * Switch: MediaTek MT7628AN, 3 ports 100 Mbps * WiFi:   * MediaTek MT7628AN 2x2:2/2.4GHz 802.11b/g/n   * MediaTek MT7610E 1x1:1/5GHz 802.11an+ac * GPIO:  * 2 buttons (Wi-Fi, Reset)   * 4 LEDs (Power, Internet, 5GHz Wi-Fi (FN), 2GHz Wi-Fi)
+Message-ID: <20250926213037.1542519-1-lotigara@lotigara.ru>
+
+From: Ivan Davydov <lotigara at lotigara.ru>
+
+Disassembly:
+  At the bottom there are 4 screws hidden by rubber feet. After removing
+  the screws, pry the gray plastic part around (it is secured with
+  latches) and remove it.
+
+Serial Interface:
+  The serial interface can be connected to the 4 pin dots to the left of
+  the flash. Pins (from LEDs to LAN ports):
+  3.3V (do not connect) | TX | RX | GND
+  Settings: 57600, 8N1
+
+Flashing via TFTP:
+  1. Connect your PC and router to port 1-3, configure PC interface using
+     IP 192.168.1.2, mask 255.255.255.252
+  2. Serve the firmware image (for OpenWRT it is *-squashfs-factory.bin)
+     renamed to KN-1510_recovery.bin via TFTP
+  3. Power up the router while pressing Reset button on the back (ex.
+     with a toothstick)
+  4. Release Restart button when the Power LED starts blinking
+
+To revert back to OEM firmware: The return to the OEM firmware is carried
+out by using the methods described above with the help of the appropriate
+firmware image. When using OEM bootloader, the firmware image size cannot
+exceed the size of one OEM "Firmware_x" partition or Kernel + rootFS size.
+
+Signed-off-by: Ivan Davydov <lotigara at lotigara.ru>
+---
+ .../ramips/dts/mt7628an_keenetic_kn-1510.dts  | 236 ++++++++++++++++++
+ target/linux/ramips/image/mt76x8.mk           |  11 +
+ .../mt76x8/base-files/etc/board.d/01_leds     |   1 +
+ .../mt76x8/base-files/etc/board.d/02_network  |   2 +
+ 4 files changed, 250 insertions(+)
+ create mode 100644 target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts
+
+diff --git a/target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts b/target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts
+new file mode 100644
+index 0000000000..62d46066f9
+--- /dev/null
++++ b/target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include "mt7628an.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++
++/ {
++	compatible = "keenetic,kn-1510", "mediatek,mt7628an-soc";
++	model = "Keenetic KN-1510";
++
++	aliases {
++		label-mac-device = &ethernet;
++
++		led-boot = &led_power;
++		led-failsafe = &led_power;
++		led-running = &led_power;
++		led-upgrade = &led_power;
++	};
++
++	chosen {
++		bootargs = "console=ttyS0,57600";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led_power: power {
++			function = LED_FUNCTION_POWER;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 44 GPIO_ACTIVE_LOW>;
++		};
++
++		internet {
++			function = LED_FUNCTION_WAN;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
++		};
++
++		wifi2 {
++			function = LED_FUNCTION_WLAN_2GHZ;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy0tpt";
++		};
++
++		wifi5 {
++			function = LED_FUNCTION_WLAN_5GHZ;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy1tpt";
++		};
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_RESTART>;
++		};
++
++		wps {
++			label = "wps";
++			gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_WPS_BUTTON>;
++		};
++	};
++
++	virtual_flash {
++		compatible = "mtd-concat";
++		devices = <&firmware1 &firmware2>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition at 0 {
++				compatible = "denx,uimage";
++				label = "firmware";
++				reg = <0x0 0x1000000>;
++			};
++		};
++	};
++};
++
++&state_default {
++	gpio {
++		groups = "i2s", "gpio", "refclk", "wdt", "wled_an";
++		function = "gpio";
++	};
++};
++
++&usbphy {
++	status = "disabled";
++};
++
++&ehci {
++	status = "disabled";
++};
++
++&ohci {
++	status = "disabled";
++};
++
++&spi0 {
++	status = "okay";
++
++	flash at 0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <32000000>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition at 0 {
++				label = "u-boot";
++				reg = <0x0 0x30000>;
++				read-only;
++			};
++
++			partition at 30000 {
++				label = "u-config";
++				reg = <0x30000 0x10000>;
++				read-only;
++			};
++
++			partition at 40000 {
++				label = "rf-eeprom";
++				reg = <0x40000 0x10000>;
++				read-only;
++
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++
++					eeprom_factory_0: eeprom at 0 {
++						reg = <0x0 0x400>;
++					};
++
++					eeprom_factory_8000: eeprom at 8000 {
++						reg = <0x8000 0x200>;
++					};
++
++					macaddr_factory_4: macaddr at 4 {
++						reg = <0x4 0x6>;
++					};
++				};
++			};
++
++			firmware1: partition at 50000 {
++				label = "firmware_1";
++				reg = <0x50000 0x790000>;
++			};
++
++			partition at 7e0000 {
++				label = "config_1";
++				reg = <0x7e0000 0x10000>;
++				read-only;
++			};
++
++			partition at 7f0000 {
++				label = "dump";
++				reg = <0x7f0000 0x10000>;
++				read-only;
++			};
++
++			partition at 800000 {
++				label = "u-state";
++				reg = <0x800000 0x30000>;
++				read-only;
++			};
++
++			partition at 830000 {
++				label = "u-config_res";
++				reg = <0x830000 0x10000>;
++				read-only;
++			};
++
++			partition at 840000 {
++				label = "rf-eeprom_res";
++				reg = <0x840000 0x10000>;
++				read-only;
++			};
++
++			firmware2: partition at 850000 {
++				label = "firmware_2";
++				reg = <0x850000 0x790000>;
++			};
++
++			partition at fe0000 {
++				label = "config_2";
++				reg = <0xfe0000 0x10000>;
++				read-only;
++			};
++		};
++	};
++};
++
++&ethernet {
++	nvmem-cells = <&macaddr_factory_4>;
++	nvmem-cell-names = "mac-address";
++};
++
++&esw {
++	mediatek,portmap = <0x3e>;
++	mediatek,portdisable = <0x30>;
++};
++
++&wmac {
++	status = "okay";
++
++	nvmem-cells = <&eeprom_factory_0>;
++	nvmem-cell-names = "eeprom";
++};
++
++&pcie {
++	status = "okay";
++};
++
++&pcie0 {
++	wifi at 0,0 {
++		compatible = "mediatek,mt76";
++		reg = <0x0000 0 0 0 0>;
++		nvmem-cells = <&eeprom_factory_8000>;
++		nvmem-cell-names = "eeprom";
++		ieee80211-freq-limit = <5000000 6000000>;
++	};
++};
+diff --git a/target/linux/ramips/image/mt76x8.mk b/target/linux/ramips/image/mt76x8.mk
+index 2555596edf..acab39a57c 100644
+--- a/target/linux/ramips/image/mt76x8.mk
++++ b/target/linux/ramips/image/mt76x8.mk
+@@ -442,6 +442,17 @@ define Device/keenetic_kn-1221
+ endef
+ TARGET_DEVICES += keenetic_kn-1221
+ 
++define Device/keenetic_kn-1510
++  IMAGE_SIZE := 16064k
++  DEVICE_VENDOR := Keenetic
++  DEVICE_MODEL := KN-1510
++  DEVICE_PACKAGES := kmod-mt76x0e
++  IMAGES += factory.bin
++  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to $$$$(BLOCKSIZE) | \
++	check-size | zyimage -d 0x801510 -v "KN-1510"
++endef
++TARGET_DEVICES += keenetic_kn-1510
++
+ define Device/keenetic_kn-1613
+   IMAGE_SIZE := 15073280
+   DEVICE_VENDOR := Keenetic
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+index 5f74acf45f..31fdc3b9e7 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+@@ -64,6 +64,7 @@ hiwifi,hc5761a)
+ keenetic,kn-1112|\
+ keenetic,kn-1212|\
+ keenetic,kn-1221|\
++keenetic,kn-1510|\
+ keenetic,kn-1613|\
+ keenetic,kn-1711|\
+ keenetic,kn-1713)
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+index d1689ccc2f..e949d731c2 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+@@ -142,6 +142,7 @@ ramips_setup_interfaces()
+ 		;;
+ 	keenetic,kn-1112|\
+ 	keenetic,kn-1212|\
++	keenetic,kn-1510|\
+ 	keenetic,kn-1613|\
+ 	keenetic,kn-1713|\
+ 	motorola,mwr03)
+@@ -311,6 +312,7 @@ ramips_setup_macs()
+ 		wan_mac=$(mtd_get_mac_binary factory 0x2e)
+ 		;;
+ 	keenetic,kn-1221|\
++	keenetic,kn-1510|\
+ 	keenetic,kn-1613|\
+ 	keenetic,kn-3211|\
+ 	zyxel,keenetic-extra-ii)
+-- 
+2.47.3
+
+
+
+From jonas.gorski at gmail.com  Sat Sep 27 04:30:36 2025
+From: jonas.gorski at gmail.com (Jonas Gorski)
+Date: Sat, 27 Sep 2025 13:30:36 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <C4147223-F672-4D79-9D4F-370E151EBDE1@slashdirt.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org> <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org>
+ <0bacf409-bc84-4005-81b4-46cec7cc1076@tweak.au> <C4147223-F672-4D79-9D4F-370E151EBDE1@slashdirt.org>
+Message-ID: <CAOiHx=k_pTFnb6Jp7TN7XZpYyU_y4M5UNcou244AXYm9pPhBFg@mail.gmail.com>
+
+On Fri, Sep 26, 2025 at 5:06?PM Thibaut <hacks at slashdirt.org> wrote:
+> > Le 26 sept. 2025 ? 16:57, Karl Palsson <karlp at tweak.au> a ?crit :
+> >
+> >> +1
+> >>
+> >> I think that if OpenWrt devices started *by default* to ? phone home ? (whether directly or via an in-browser query), that would certainly be a concern.
+> >>
+> >> Such a feature - while appealing - should *absolutely* be an opt-in, and not an opt-out.
+> >> Opt-out may also have legal implications (e.g. GDPR?).
+> >>
+> > FWIW, CRA implies that it _should_ be _opt out_ for updates, and they should be enabled by default.  Yes, I know some people don't like that, but people don't opt in :)
+> >
+> > Annex I, 2c)
+> >
+> > "ensure that vulnerabilities can be addressed through security updates,
+> > including, where applicable, through automatic security updates that
+> > are installed within an appropriate timeframe enabled as a default
+> > setting, with a clear and easy-to-use opt-out mechanism, through the
+> > notification of available updates to users, and the option to temporarily
+> > postpone them;"
+> >
+> >
+> > I would believe Hauke is looking at this from a CRA compliance viewpoint, ... yeah, it should be opt out, not in....
+>
+> I see, thanks for the explanation. I indeed don?t like it but I see the rationale, I stand corrected :)
+>
+> Hopefully we can make this work in an ? as private as possible ? way.
+> Daniel?s suggestion seems pretty good in that context.
+
+Annex I(2) is "On the basis of the cybersecurity risk assessment
+referred to in Article 13(2)", and Article 13 is "Obligations of
+manufacturers". Since OpenWrt is not a "manufacturer" in the CRA
+sense, this may not apply to us, so arguably we could get away with
+disabled by default / opt-in.
+
+It's up to those that monetize OpenWrt to have this enabled by
+default. Though more likely they'll have or want their own system for
+that anyway, so what we do wouldn't have any impact on them.
+
+We could have an opt-in package that does nothing but enabling this by
+default so you can easily create an image with it enabled by default.
+Or remove from the package list it to have it disabled by default.
+
+Best regards,
+Jonas
+
+
+From david at lang.hm  Sat Sep 27 08:02:21 2025
+From: david at lang.hm (David Lang)
+Date: Sat, 27 Sep 2025 08:02:21 -0700 (PDT)
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <CAOiHx=k_pTFnb6Jp7TN7XZpYyU_y4M5UNcou244AXYm9pPhBFg@mail.gmail.com>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de> <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org> <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org> <0bacf409-bc84-4005-81b4-46cec7cc1076@tweak.au> <C4147223-F672-4D79-9D4F-370E151EBDE1@slashdirt.org>
+ <CAOiHx=k_pTFnb6Jp7TN7XZpYyU_y4M5UNcou244AXYm9pPhBFg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.02.2509270758550.18871@nftneq.ynat.uz>
+
+re: opt in vs opt out. If we can have this check mirrors rather than one central 
+point (and especially if we allow the check to hit non-optimal mirrors 
+randomly), it should mitigate the privacy concerns as there is nobody who has 
+logs from all the mirrors.
+
+Also, a check every 24 hours seems aggressive, once a week or once a month 
+should be sufficient (as long as there is a way to manually trigger the check as 
+well)
+
+David Lang
+
+
+On Sat, 27 Sep 2025, Jonas Gorski wrote:
+
+> Date: Sat, 27 Sep 2025 13:30:36 +0200
+> From: Jonas Gorski <jonas.gorski at gmail.com>
+> To: Thibaut <hacks at slashdirt.org>
+> Cc: Karl Palsson <karlp at tweak.au>, openwrt-devel at lists.openwrt.org
+> Subject: Re: luci-app-attendedsysupgrade and owut by default?
+> 
+> On Fri, Sep 26, 2025 at 5:06?PM Thibaut <hacks at slashdirt.org> wrote:
+>> > Le 26 sept. 2025 ? 16:57, Karl Palsson <karlp at tweak.au> a ?crit :
+>> >
+>> >> +1
+>> >>
+>> >> I think that if OpenWrt devices started *by default* to ? phone home ? (whether directly or via an in-browser query), that would certainly be a concern.
+>> >>
+>> >> Such a feature - while appealing - should *absolutely* be an opt-in, and not an opt-out.
+>> >> Opt-out may also have legal implications (e.g. GDPR?).
+>> >>
+>> > FWIW, CRA implies that it _should_ be _opt out_ for updates, and they should be enabled by default.  Yes, I know some people don't like that, but people don't opt in :)
+>> >
+>> > Annex I, 2c)
+>> >
+>> > "ensure that vulnerabilities can be addressed through security updates,
+>> > including, where applicable, through automatic security updates that
+>> > are installed within an appropriate timeframe enabled as a default
+>> > setting, with a clear and easy-to-use opt-out mechanism, through the
+>> > notification of available updates to users, and the option to temporarily
+>> > postpone them;"
+>> >
+>> >
+>> > I would believe Hauke is looking at this from a CRA compliance viewpoint, ... yeah, it should be opt out, not in....
+>>
+>> I see, thanks for the explanation. I indeed don?t like it but I see the rationale, I stand corrected :)
+>>
+>> Hopefully we can make this work in an ? as private as possible ? way.
+>> Daniel?s suggestion seems pretty good in that context.
+>
+> Annex I(2) is "On the basis of the cybersecurity risk assessment
+> referred to in Article 13(2)", and Article 13 is "Obligations of
+> manufacturers". Since OpenWrt is not a "manufacturer" in the CRA
+> sense, this may not apply to us, so arguably we could get away with
+> disabled by default / opt-in.
+>
+> It's up to those that monetize OpenWrt to have this enabled by
+> default. Though more likely they'll have or want their own system for
+> that anyway, so what we do wouldn't have any impact on them.
+>
+> We could have an opt-in package that does nothing but enabling this by
+> default so you can easily create an image with it enabled by default.
+> Or remove from the package list it to have it disabled by default.
+>
+> Best regards,
+> Jonas
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+From lotigara at lotigara.ru  Sat Sep 27 08:55:32 2025
+From: lotigara at lotigara.ru (lotigara at lotigara.ru)
+Date: Sat, 27 Sep 2025 18:55:32 +0300
+Subject: [PATCH v2] ramips: mt76x8: add support for Keenetic KN-1510
+In-Reply-To: <mailman.8165.1758922265.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.8165.1758922265.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <20250927155532.1580070-1-lotigara@lotigara.ru>
+
+From: Ivan Davydov <lotigara at lotigara.ru>
+
+Specification:
+* SoC: MediaTek MT7628AN
+* RAM: 64 MB, Winbond W9751G6KB-25 (DDR2)
+* Flash: 16MB, GigaDevice GD25Q128CSIG (Dual Boot, SPI)
+* Switch: MediaTek MT7628AN, 3 ports 100 Mbps
+* WiFi:
+  * MediaTek MT7628AN 2x2:2/2.4GHz 802.11b/g/n
+  * MediaTek MT7610E 1x1:1/5GHz 802.11an+ac
+* GPIO:
+  * 2 buttons (Wi-Fi, Reset)
+  * 4 LEDs (Power, Internet, 5GHz Wi-Fi (FN), 2GHz Wi-Fi)
+
+Disassembly:
+  At the bottom there are 4 screws hidden by rubber feet. After removing
+  the screws, pry the gray plastic part around (it is secured with
+  latches) and remove it.
+
+Serial Interface:
+  The serial interface can be connected to the 4 pin dots to the left of
+  the flash. Pins (from LEDs to LAN ports):
+  3.3V (do not connect) | TX | RX | GND
+  Settings: 57600, 8N1
+
+Flashing via TFTP:
+  1. Connect your PC and router to port 1-3, configure PC interface using
+     IP 192.168.1.2, mask 255.255.255.252
+  2. Serve the firmware image (for OpenWRT it is *-squashfs-factory.bin)
+     renamed to KN-1510_recovery.bin via TFTP
+  3. Power up the router while pressing Reset button on the back (ex.
+     with a toothstick)
+  4. Release Restart button when the Power LED starts blinking
+
+To revert back to OEM firmware: The return to the OEM firmware is carried
+out by using the methods described above with the help of the appropriate
+firmware image. When using OEM bootloader, the firmware image size cannot
+exceed the size of one OEM "Firmware_x" partition or Kernel + rootFS size.
+
+Signed-off-by: Ivan Davydov <lotigara at lotigara.ru>
+---
+ .../ramips/dts/mt7628an_keenetic_kn-1510.dts  | 236 ++++++++++++++++++
+ target/linux/ramips/image/mt76x8.mk           |  11 +
+ .../mt76x8/base-files/etc/board.d/01_leds     |   1 +
+ .../mt76x8/base-files/etc/board.d/02_network  |   2 +
+ 4 files changed, 250 insertions(+)
+ create mode 100644 target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts
+
+diff --git a/target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts b/target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts
+new file mode 100644
+index 0000000000..62d46066f9
+--- /dev/null
++++ b/target/linux/ramips/dts/mt7628an_keenetic_kn-1510.dts
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include "mt7628an.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++
++/ {
++	compatible = "keenetic,kn-1510", "mediatek,mt7628an-soc";
++	model = "Keenetic KN-1510";
++
++	aliases {
++		label-mac-device = &ethernet;
++
++		led-boot = &led_power;
++		led-failsafe = &led_power;
++		led-running = &led_power;
++		led-upgrade = &led_power;
++	};
++
++	chosen {
++		bootargs = "console=ttyS0,57600";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led_power: power {
++			function = LED_FUNCTION_POWER;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 44 GPIO_ACTIVE_LOW>;
++		};
++
++		internet {
++			function = LED_FUNCTION_WAN;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
++		};
++
++		wifi2 {
++			function = LED_FUNCTION_WLAN_2GHZ;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy0tpt";
++		};
++
++		wifi5 {
++			function = LED_FUNCTION_WLAN_5GHZ;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy1tpt";
++		};
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_RESTART>;
++		};
++
++		wps {
++			label = "wps";
++			gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_WPS_BUTTON>;
++		};
++	};
++
++	virtual_flash {
++		compatible = "mtd-concat";
++		devices = <&firmware1 &firmware2>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition at 0 {
++				compatible = "denx,uimage";
++				label = "firmware";
++				reg = <0x0 0x1000000>;
++			};
++		};
++	};
++};
++
++&state_default {
++	gpio {
++		groups = "i2s", "gpio", "refclk", "wdt", "wled_an";
++		function = "gpio";
++	};
++};
++
++&usbphy {
++	status = "disabled";
++};
++
++&ehci {
++	status = "disabled";
++};
++
++&ohci {
++	status = "disabled";
++};
++
++&spi0 {
++	status = "okay";
++
++	flash at 0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <32000000>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition at 0 {
++				label = "u-boot";
++				reg = <0x0 0x30000>;
++				read-only;
++			};
++
++			partition at 30000 {
++				label = "u-config";
++				reg = <0x30000 0x10000>;
++				read-only;
++			};
++
++			partition at 40000 {
++				label = "rf-eeprom";
++				reg = <0x40000 0x10000>;
++				read-only;
++
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++
++					eeprom_factory_0: eeprom at 0 {
++						reg = <0x0 0x400>;
++					};
++
++					eeprom_factory_8000: eeprom at 8000 {
++						reg = <0x8000 0x200>;
++					};
++
++					macaddr_factory_4: macaddr at 4 {
++						reg = <0x4 0x6>;
++					};
++				};
++			};
++
++			firmware1: partition at 50000 {
++				label = "firmware_1";
++				reg = <0x50000 0x790000>;
++			};
++
++			partition at 7e0000 {
++				label = "config_1";
++				reg = <0x7e0000 0x10000>;
++				read-only;
++			};
++
++			partition at 7f0000 {
++				label = "dump";
++				reg = <0x7f0000 0x10000>;
++				read-only;
++			};
++
++			partition at 800000 {
++				label = "u-state";
++				reg = <0x800000 0x30000>;
++				read-only;
++			};
++
++			partition at 830000 {
++				label = "u-config_res";
++				reg = <0x830000 0x10000>;
++				read-only;
++			};
++
++			partition at 840000 {
++				label = "rf-eeprom_res";
++				reg = <0x840000 0x10000>;
++				read-only;
++			};
++
++			firmware2: partition at 850000 {
++				label = "firmware_2";
++				reg = <0x850000 0x790000>;
++			};
++
++			partition at fe0000 {
++				label = "config_2";
++				reg = <0xfe0000 0x10000>;
++				read-only;
++			};
++		};
++	};
++};
++
++&ethernet {
++	nvmem-cells = <&macaddr_factory_4>;
++	nvmem-cell-names = "mac-address";
++};
++
++&esw {
++	mediatek,portmap = <0x3e>;
++	mediatek,portdisable = <0x30>;
++};
++
++&wmac {
++	status = "okay";
++
++	nvmem-cells = <&eeprom_factory_0>;
++	nvmem-cell-names = "eeprom";
++};
++
++&pcie {
++	status = "okay";
++};
++
++&pcie0 {
++	wifi at 0,0 {
++		compatible = "mediatek,mt76";
++		reg = <0x0000 0 0 0 0>;
++		nvmem-cells = <&eeprom_factory_8000>;
++		nvmem-cell-names = "eeprom";
++		ieee80211-freq-limit = <5000000 6000000>;
++	};
++};
+diff --git a/target/linux/ramips/image/mt76x8.mk b/target/linux/ramips/image/mt76x8.mk
+index 2555596edf..acab39a57c 100644
+--- a/target/linux/ramips/image/mt76x8.mk
++++ b/target/linux/ramips/image/mt76x8.mk
+@@ -442,6 +442,17 @@ define Device/keenetic_kn-1221
+ endef
+ TARGET_DEVICES += keenetic_kn-1221
+ 
++define Device/keenetic_kn-1510
++  IMAGE_SIZE := 16064k
++  DEVICE_VENDOR := Keenetic
++  DEVICE_MODEL := KN-1510
++  DEVICE_PACKAGES := kmod-mt76x0e
++  IMAGES += factory.bin
++  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to $$$$(BLOCKSIZE) | \
++	check-size | zyimage -d 0x801510 -v "KN-1510"
++endef
++TARGET_DEVICES += keenetic_kn-1510
++
+ define Device/keenetic_kn-1613
+   IMAGE_SIZE := 15073280
+   DEVICE_VENDOR := Keenetic
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+index 5f74acf45f..31fdc3b9e7 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+@@ -64,6 +64,7 @@ hiwifi,hc5761a)
+ keenetic,kn-1112|\
+ keenetic,kn-1212|\
+ keenetic,kn-1221|\
++keenetic,kn-1510|\
+ keenetic,kn-1613|\
+ keenetic,kn-1711|\
+ keenetic,kn-1713)
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+index d1689ccc2f..e949d731c2 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+@@ -142,6 +142,7 @@ ramips_setup_interfaces()
+ 		;;
+ 	keenetic,kn-1112|\
+ 	keenetic,kn-1212|\
++	keenetic,kn-1510|\
+ 	keenetic,kn-1613|\
+ 	keenetic,kn-1713|\
+ 	motorola,mwr03)
+@@ -311,6 +312,7 @@ ramips_setup_macs()
+ 		wan_mac=$(mtd_get_mac_binary factory 0x2e)
+ 		;;
+ 	keenetic,kn-1221|\
++	keenetic,kn-1510|\
+ 	keenetic,kn-1613|\
+ 	keenetic,kn-3211|\
+ 	zyxel,keenetic-extra-ii)
+-- 
+2.47.3
+
+
+
+From hauke at hauke-m.de  Sat Sep 27 09:10:51 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sat, 27 Sep 2025 18:10:51 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <alpine.DEB.2.02.2509270758550.18871@nftneq.ynat.uz>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+ <3DE5C985-2DF7-41FB-AD10-C146D0A98332@slashdirt.org>
+ <0bacf409-bc84-4005-81b4-46cec7cc1076@tweak.au>
+ <C4147223-F672-4D79-9D4F-370E151EBDE1@slashdirt.org>
+ <CAOiHx=k_pTFnb6Jp7TN7XZpYyU_y4M5UNcou244AXYm9pPhBFg@mail.gmail.com>
+ <alpine.DEB.2.02.2509270758550.18871@nftneq.ynat.uz>
+Message-ID: <8d332413-2311-4209-ad5d-0fca8fa65fff@hauke-m.de>
+
+On 9/27/25 17:02, David Lang wrote:
+> re: opt in vs opt out. If we can have this check mirrors rather than one 
+> central point (and especially if we allow the check to hit non-optimal 
+> mirrors randomly), it should mitigate the privacy concerns as there is 
+> nobody who has logs from all the mirrors.
+> 
+> Also, a check every 24 hours seems aggressive, once a week or once a 
+> month should be sufficient (as long as there is a way to manually 
+> trigger the check as well)
+> 
+> David Lang
+> 
+> 
+> On Sat, 27 Sep 2025, Jonas Gorski wrote:
+> 
+>> Date: Sat, 27 Sep 2025 13:30:36 +0200
+>> From: Jonas Gorski <jonas.gorski at gmail.com>
+>> To: Thibaut <hacks at slashdirt.org>
+>> Cc: Karl Palsson <karlp at tweak.au>, openwrt-devel at lists.openwrt.org
+>> Subject: Re: luci-app-attendedsysupgrade and owut by default?
+>>
+>> On Fri, Sep 26, 2025 at 5:06?PM Thibaut <hacks at slashdirt.org> wrote:
+>>> > Le 26 sept. 2025 ? 16:57, Karl Palsson <karlp at tweak.au> a ?crit :
+>>> >
+>>> >> +1
+>>> >>
+>>> >> I think that if OpenWrt devices started *by default* to ? phone 
+>>> home ? (whether directly or via an in-browser query), that would 
+>>> certainly be a concern.
+>>> >>
+>>> >> Such a feature - while appealing - should *absolutely* be an opt- 
+>>> in, and not an opt-out.
+>>> >> Opt-out may also have legal implications (e.g. GDPR?).
+>>> >>
+>>> > FWIW, CRA implies that it _should_ be _opt out_ for updates, and 
+>>> they should be enabled by default.? Yes, I know some people don't 
+>>> like that, but people don't opt in :)
+>>> >
+>>> > Annex I, 2c)
+>>> >
+>>> > "ensure that vulnerabilities can be addressed through security 
+>>> updates,
+>>> > including, where applicable, through automatic security updates that
+>>> > are installed within an appropriate timeframe enabled as a default
+>>> > setting, with a clear and easy-to-use opt-out mechanism, through the
+>>> > notification of available updates to users, and the option to 
+>>> temporarily
+>>> > postpone them;"
+>>> >
+>>> >
+>>> > I would believe Hauke is looking at this from a CRA compliance 
+>>> viewpoint, ... yeah, it should be opt out, not in....
+>>>
+>>> I see, thanks for the explanation. I indeed don?t like it but I see 
+>>> the rationale, I stand corrected :)
+>>>
+>>> Hopefully we can make this work in an ? as private as possible ? way.
+>>> Daniel?s suggestion seems pretty good in that context.
+>>
+>> Annex I(2) is "On the basis of the cybersecurity risk assessment
+>> referred to in Article 13(2)", and Article 13 is "Obligations of
+>> manufacturers". Since OpenWrt is not a "manufacturer" in the CRA
+>> sense, this may not apply to us, so arguably we could get away with
+>> disabled by default / opt-in.
+>>
+>> It's up to those that monetize OpenWrt to have this enabled by
+>> default. Though more likely they'll have or want their own system for
+>> that anyway, so what we do wouldn't have any impact on them.
+>>
+>> We could have an opt-in package that does nothing but enabling this by
+>> default so you can easily create an image with it enabled by default.
+>> Or remove from the package list it to have it disabled by default.
+>>
+>> Best regards,
+>> Jonas
+
+Hi,
+
+We do not plan to do anything because of the CRA as long as nobody 
+approaches us and is offering to pay us for services related to the CRA.
+
+I agree with Jonas that automatic checking for updates should be an opt 
+in in OpenWrt. We should direct it to our CDN which can handle the load.
+Maybe we can cache it. In LuCI we can just ask the browser to check if 
+the user opted in.
+
+I like the requirement in the CRA for normal manufactures to have opt 
+out automatic updates to increase the likelihood that user upgrade. This 
+is very good for consumer devices and for internet security in general.
+
+OpenWrt is not a manufacturer or open source steward in regard to the 
+CRA. OpenWrt is out of scope of the CRA. People building commercial 
+devices on top of OpenWrt are covered by the CRA.
+
+If we really want to do automatic updates we need a much better QA 
+process. We have to test the image on all supported real hardware before 
+shipping. We have to test many different configurations. We have to 
+install the updates in waves. We have to get telemetry back from the 
+devices to judge if the update is successfully running on the first waves.
+
+Hauke
+
+
+From hauke at hauke-m.de  Sat Sep 27 10:16:33 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sat, 27 Sep 2025 19:16:33 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+Message-ID: <bf466152-a40c-4d2e-ab6b-c5bc4b98aa22@hauke-m.de>
+
+On 9/26/25 04:01, Daniel Golle wrote:
+> Hi,
+> 
+> On Thu, Sep 25, 2025 at 10:33:51PM +0200, Hauke Mehrtens wrote:
+>> Hi,
+>>
+>> I would like to have the basic attended sysupgrade features in the default
+>> images for the next major release.
+>>
+>> I am not very familiar with the feature and what is needed.
+>>
+>> I think LuCI should inform the user when a new major release is available.
+> 
+> Currently both, the LuCI app as well as owut only show possible updates
+> when instructed by the user to do so.
+> 
+> We should better think twice before having all devices with those tools
+> installed query online services for updates when ever the admin logs in,
+> this has wide ranging implications regarding the user's privacy as well,
+> RAM usage for package lists, data consumption on metered connections, ...
+
+I agree with you, I think for owut it is fine it it shows the recent 
+version when asked to do and for LuCI a button like we have it and an an 
+opt in automatic check would be nice. I think we have this already.
+
+> I'd therefore restrict this to query for release updates (and not just a
+> newer snapshot build in case of a device currently running a snapshot
+> image, and also only query for package updates upon user requests).
+> Checking the availability of an newer release could be done using a
+> TXT record in DNS, for example, which would be much more lightweight
+> (on both ends) than using HTTPS JSON RPC queries for that.
+
+How well can we integrate DNS into the LuCI web interface?
+DNS is also not authenticated, it should be fine if the attacker could 
+only prevent the UI from showing an update notification, but it should 
+not be able to tell the user where to get the update.
+> Neither of the ASU clients currently supports anything like that, but
+> it would obviously be quite easy to implement in either
+> luci-mod-admin-full or the ASU clients.
+
+I would go with the interfaces which are already there for now. Someone 
+can still in parallel set up some better interfaces.
+
+>> There should be a button in LuCI which will tell ASU to create an image and
+>> then install it using sysupgrade.
+>>
+>> We should also have this feature on the command line, at least that you can
+>> ask a tool if an upgrade is available and then tell it to upgrade including
+>> all packages.
+>>
+>> Maybe we should restrict this to large flash devices.
+> 
+> One of the design goals of ASU was to support devices with very small
+> flash. In fact, having an ASU client (owut or the LuCI app) installed takes
+> less space than keeping a full package manager incl. unstripped metadata of
+> the installed packages -- so on small flash devices I'd rather drop the
+> (in this case anyway pretty useless) package manager and keep only an ASU
+> client instead.
+
+I think we would get some negative feedback from users when we remove 
+apk from the default images. We could offer an option in the ASU web 
+interface to remove APK.
+If we have a button to generate a default image without apk in the 
+firmware selector UI it would be sufficient:
+https://firmware-selector.openwrt.org/?version=24.10.3&target=mediatek%2Fmt7622&id=linksys_e8450
+Removing it manually from the list is a bit complicated for the novice user.
+>> Do we have to install luci-app-attendedsysupgrade and owut for this or is it
+>> possible with less?
+> 
+> Either of the two packages is sufficient, we don't need both of them.
+> 
+>>
+>> Should we add luci-app-attendedsysupgrade as a dependency to
+>> luci/collections/luci/Makefile ?
+> 
+> I'd say yes, but that's just my opinion.
+
+I think this is a good option.
+
+>> Should we move utils/attendedsysupgrade-common from the package feed to the
+>> main repository?
+> 
+> I suggest to merge the content of the utils/attendedsysuprade-common
+> package into base-files, as the packaging overhead is bigger than the
+> actual content (a single UCI configuration file).
+
+I agree with you.
+
+Maybe we should handle the ASU signing key a bit special.
+This key is not as good protected as the other keys.
+Maybe store it in /etc/opkg/asu-key/ and use this key for signature 
+checks initialized by the tools using ASU intentionally only.
+
+>> Should we also move utils/owut from the package feed to the main repository
+>> and add it as a default dependency to DEFAULT_PACKAGES.
+> 
+> I'd say yes for !SMALL_FLASH devices.
+
+Agree
+>> Is this all needed or does this feature also work with less new packages?
+> 
+> The approach of both clients a slightly different:
+> - owut talks to the configured ASU server directly over HTTPS. Hence it
+>    requires network connectivity with the ASU server, and depends on
+>    libuclient (+ ucode bindings), libustream-ssl and ca-certs or ca-bundle
+>    being installed.
+> 
+> - The LuCI app does not require connectivity (nor CA certs) on the device
+>    itself but instead has the browser accessing LuCI query the ASU server
+>    on its behalf. Hence, only the browser accessing the LuCI app needs
+>    connectivity with the ASU server while the device itself doesn't.
+
+
+So to summarize:
+  * Add luci-app-attendedsysupgrade as a dependency to the LuCI default 
+collections for all builds with use LuCI.
+  * Add OWUT for !SMALL_FLASH
+  * The automatic checks for updates should be opt in, we can keep it 
+like it is for now and improve later.
+
+I would keep apk for now, but make it easy for users to generate images 
+without apk in the firmware selector UI.
+
+Hauke
+
+
+From daniel at makrotopia.org  Sat Sep 27 10:40:41 2025
+From: daniel at makrotopia.org (Daniel Golle)
+Date: Sat, 27 Sep 2025 18:40:41 +0100
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <bf466152-a40c-4d2e-ab6b-c5bc4b98aa22@hauke-m.de>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+ <bf466152-a40c-4d2e-ab6b-c5bc4b98aa22@hauke-m.de>
+Message-ID: <aNghmbRINa_5mCLC@pidgin.makrotopia.org>
+
+On Sat, Sep 27, 2025 at 07:16:33PM +0200, Hauke Mehrtens wrote:
+> How well can we integrate DNS into the LuCI web interface?
+
+Very good question. I'm not into that whole web side of things at all.
+
+> DNS is also not authenticated, it should be fine if the attacker could only
+> prevent the UI from showing an update notification, but it should not be
+> able to tell the user where to get the update.
+
+That's what I thought: Only indicate the presence of a newer release,
+not where to get it.
+
+> I think we would get some negative feedback from users when we remove apk
+> from the default images. We could offer an option in the ASU web interface
+> to remove APK.
+> If we have a button to generate a default image without apk in the firmware
+> selector UI it would be sufficient:
+> https://firmware-selector.openwrt.org/?version=24.10.3&target=mediatek%2Fmt7622&id=linksys_e8450
+> Removing it manually from the list is a bit complicated for the novice user.
+
+On many devices the only possible outcome of trying to use the package
+manager is a brick because rootfs_overlay got only 1 or 2 JFFS2 blocks
+total. So even **deleting** a package would result in a brick as the
+list of installed packages would be copied to the rootfs_overlay as a
+consequence of *any* change...
+
+Apart from just not installing the package manager, I believe we should
+also not install 'ca-bundle' on SMALL_FLASH devices, and also select
+CONFIG_CLEAN_IPKG=y by default. Together with an easy to use way to
+generate and install custom ASU-generated images for such a devices the
+outcome would be something much more intuitive and user-friendly than
+an anyway broken package manager (opkg or apk are equally affected by
+this problem, obviously).
+
+> > > Do we have to install luci-app-attendedsysupgrade and owut for this or is it
+> > > possible with less?
+> > 
+> > Either of the two packages is sufficient, we don't need both of them.
+> > 
+> > > 
+> > > Should we add luci-app-attendedsysupgrade as a dependency to
+> > > luci/collections/luci/Makefile ?
+> > 
+> > I'd say yes, but that's just my opinion.
+> 
+> I think this is a good option.
+> 
+> > > Should we move utils/attendedsysupgrade-common from the package feed to the
+> > > main repository?
+> > 
+> > I suggest to merge the content of the utils/attendedsysuprade-common
+> > package into base-files, as the packaging overhead is bigger than the
+> > actual content (a single UCI configuration file).
+> 
+> I agree with you.
+> 
+> Maybe we should handle the ASU signing key a bit special.
+> This key is not as good protected as the other keys.
+> Maybe store it in /etc/opkg/asu-key/ and use this key for signature checks
+> initialized by the tools using ASU intentionally only.
+
++1 makes a lot of sense!
+
+> So to summarize:
+>  * Add luci-app-attendedsysupgrade as a dependency to the LuCI default
+> collections for all builds with use LuCI.
+>  * Add OWUT for !SMALL_FLASH
+>  * The automatic checks for updates should be opt in, we can keep it like it
+> is for now and improve later.
+
++1
+
+
+> 
+> I would keep apk for now, but make it easy for users to generate images
+> without apk in the firmware selector UI.
+
+Ok, but lets somehow expose CONFIG_CLEAN_IPKG as an option to the IB and
+ASU as well. That, together with dropping libuclient, ca-bundle and
+owut can be a good option for SMALL_FLASH devices which are then still
+suitable for running LuCI and offer a good overall UIX.
+
+
+
+From hauke at hauke-m.de  Sat Sep 27 13:03:58 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Sat, 27 Sep 2025 22:03:58 +0200
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <aNghmbRINa_5mCLC@pidgin.makrotopia.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+ <bf466152-a40c-4d2e-ab6b-c5bc4b98aa22@hauke-m.de>
+ <aNghmbRINa_5mCLC@pidgin.makrotopia.org>
+Message-ID: <0e5f2e9d-539b-4be0-942f-25d7d3d8394c@hauke-m.de>
+
+On 9/27/25 19:40, Daniel Golle wrote:
+> On Sat, Sep 27, 2025 at 07:16:33PM +0200, Hauke Mehrtens wrote:
+>> I think we would get some negative feedback from users when we remove apk
+>> from the default images. We could offer an option in the ASU web interface
+>> to remove APK.
+>> If we have a button to generate a default image without apk in the firmware
+>> selector UI it would be sufficient:
+>> https://firmware-selector.openwrt.org/?version=24.10.3&target=mediatek%2Fmt7622&id=linksys_e8450
+>> Removing it manually from the list is a bit complicated for the novice user.
+> 
+> On many devices the only possible outcome of trying to use the package
+> manager is a brick because rootfs_overlay got only 1 or 2 JFFS2 blocks
+> total. So even **deleting** a package would result in a brick as the
+> list of installed packages would be copied to the rootfs_overlay as a
+> consequence of *any* change...
+> 
+> Apart from just not installing the package manager, I believe we should
+> also not install 'ca-bundle' on SMALL_FLASH devices, and also select
+> CONFIG_CLEAN_IPKG=y by default. Together with an easy to use way to
+> generate and install custom ASU-generated images for such a devices the
+> outcome would be something much more intuitive and user-friendly than
+> an anyway broken package manager (opkg or apk are equally affected by
+> this problem, obviously).
+> 
+>>>> Do we have to install luci-app-attendedsysupgrade and owut for this or is it
+>>>> possible with less?
+>>>
+>>> Either of the two packages is sufficient, we don't need both of them.
+>>>
+>>>>
+>>>> Should we add luci-app-attendedsysupgrade as a dependency to
+>>>> luci/collections/luci/Makefile ?
+>>>
+>>> I'd say yes, but that's just my opinion.
+>>
+>> I think this is a good option.
+>>
+>>>> Should we move utils/attendedsysupgrade-common from the package feed to the
+>>>> main repository?
+>>>
+>>> I suggest to merge the content of the utils/attendedsysuprade-common
+>>> package into base-files, as the packaging overhead is bigger than the
+>>> actual content (a single UCI configuration file).
+>>
+>> I agree with you.
+>>
+>> Maybe we should handle the ASU signing key a bit special.
+>> This key is not as good protected as the other keys.
+>> Maybe store it in /etc/opkg/asu-key/ and use this key for signature checks
+>> initialized by the tools using ASU intentionally only.
+> 
+> +1 makes a lot of sense!
+> 
+>> So to summarize:
+>>   * Add luci-app-attendedsysupgrade as a dependency to the LuCI default
+>> collections for all builds with use LuCI.
+>>   * Add OWUT for !SMALL_FLASH
+>>   * The automatic checks for updates should be opt in, we can keep it like it
+>> is for now and improve later.
+> 
+> +1
+> 
+> 
+>>
+>> I would keep apk for now, but make it easy for users to generate images
+>> without apk in the firmware selector UI.
+> 
+> Ok, but lets somehow expose CONFIG_CLEAN_IPKG as an option to the IB and
+> ASU as well. That, together with dropping libuclient, ca-bundle and
+> owut can be a good option for SMALL_FLASH devices which are then still
+> suitable for running LuCI and offer a good overall UIX.
+> 
+I am scared that the media will simplify this to the following headline:
+ > OpenWrt replaces local package manager with cloud service.
+This headline will get a lot of clicks. ;-)
+
+Maybe we should remove apk for some boards only where we know that they 
+are unusable with it anyway.
+
+I would prefer to have something like profiles in the firmware selector 
+interface where users can easily select an image without apk or without 
+LuCI support. The text filed is not very intuitive to use.
+
+We should at least mark the images which are too small to provide a full 
+package manager so that users are aware.
+
+Hauke
+
+
+From noreply at github.com  Sun Sep 28 13:53:39 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 28 Sep 2025 13:53:39 -0700
+Subject: [sdwalker/sdwalker.github.io] d4fedb: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/32c807-d4fedb@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: d4fedb9803326552ec6381886ce0955ea2ff9938
+      https://github.com/sdwalker/sdwalker.github.io/commit/d4fedb9803326552ec6381886ce0955ea2ff9938
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-09-28 (Sun, 28 Sep 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From luke.walsh at commetrax.com  Mon Sep 29 01:05:44 2025
+From: luke.walsh at commetrax.com (Luke Walsh)
+Date: Mon, 29 Sep 2025 08:05:44 GMT
+Subject: Welders
+Message-ID: <20250929084500-0.1.by.14bd2.0.hdm1l6db3y@commetrax.com>
+
+Dear Sir or Madam,
+
+I am contacting you on behalf of a company specialising in comprehensive industrial services for businesses requiring the highest precision in component manufacturing.
+
+Within one cooperation we provide the outsourcing of certified welders, locksmiths and fitters, as well as professional welding services and the assembly of steel and industrial structures.
+
+Consolidating services with one partner allows you to significantly reduce costs, minimise the risk of downtime, and increase flexibility in project execution.
+
+A dedicated coordinator will ensure on-time delivery and high quality, helping to build long-term, trust-based business relationships.
+
+May I present what we can do for you in this field?
+
+
+Best regards
+Luke Walsh
+
+
+From david at hardeman.nu  Mon Sep 29 02:43:44 2025
+From: david at hardeman.nu (=?utf-8?B?RGF2aWQgSMOkcmRlbWFu?=)
+Date: Mon, 29 Sep 2025 09:43:44 +0000
+Subject: Need help with Kconfig recursive dependencies
+Message-ID: <e2e8ed81bcacfa6e2a58822f1a08fce5d36b57f1@hardeman.nu>
+
+Hi,
+
+I posted this to the forum 2 weeks ago [1], but so far I didn't get any
+feedback, so I'll try the devel list.
+
+I'm trying to change bind so that it provides packages compiled with GSSAPI
+support as a VARIANT instead of making GSSAPI a compile-time option.
+
+My current branch is here[2], with the Makefile[3] being the most interesting
+part.
+
+I've defined separate bind-libs and bind-libs-gssapi packages:
+
+  define Package/bind-libs
+    ...
+    URL:=https://www.isc.org/software/bind
+    VARIANT:=without-gssapi
+    CONFLICTS:=bind-libs-gssapi
+  endef
+
+  define Package/bind-libs-gssapi
+    $(Package/bind-libs)
+    DEPENDS+=+krb5-libs +libcomerr
+    TITLE+= with GSSAPI
+    VARIANT:=with-gssapi
+    CONFLICTS:=
+  endef
+
+And then split all the packages which depend on bind-libs in two versions:
+
+  define Package/bind/Default
+    ...
+    VARIANT:=without-gssapi
+    DEPENDS:=+bind-libs + at OPENSSL_WITH_EC
+  endef
+
+  define Package/bind-gssapi/Default
+    $(Package/bind/Default)
+    VARIANT:=with-gssapi
+    DEPENDS:=+bind-libs-gssapi + at OPENSSL_WITH_EC
+  endef
+
+For example, bind-delv:
+
+  define Package/bind-delv
+    $(Package/bind/Default)
+    TITLE+= tools (delv)
+    CONFLICTS:=bind-delv-gssapi
+  endef
+
+  define Package/bind-delv-gssapi
+    $(Package/bind-gssapi/Default)
+    TITLE+= tools (delv) with GSSAPI
+    PROVIDES:=bind-delv
+  endef
+
+So far, so good, and "make menuconfig" doesn't complain, even though
+tmp/.packageauxvars looks a bit weird (note the last line):
+
+  Package/bind-delv/subdir = packages
+  Package/bind-delv/depends = bind-libs libc
+  Package/bind-delv-gssapi/subdir = packages
+  Package/bind-delv-gssapi/depends = bind-libs-gssapi libc
+  Package/bind-delv/depends = bind-libs-gssapi libc
+
+Now, if I change e.g. bind-check, which is defined just like bind-delv:
+
+  define Package/bind-check
+    $(Package/bind/Default)
+    TITLE+= tools (named-checkconf, named-checkzone)
+    CONFLICTS:=bind-check-gssapi
+  endef
+
+  define Package/bind-check-gssapi
+    $(Package/bind-gssapi/Default)
+    TITLE+= tools (named-checkconf, named-checkzone) with GSSAPI
+    #PROVIDES:=bind-check
+  endef
+
+And uncomment the "PROVIDES" line, "make menuconfig" suddenly complains
+about recursive dependencies in bind-tools which depends on bind-check.
+The funny thing is that bind-tools also depends on bind-delv, which
+didn't cause any problems, using the exact same kind of CONFLICTS and
+PROVIDES combo. (I get similar errors if I change any other package which
+is depended upon by other tools, e.g. atlas-sw-probe-rpc depends on
+bind-dig).
+
+Before making the change to bind-check, tmp/.config-package.in looks like
+this for bind-tools:
+
+  ...
+  default y if DEFAULT_bind-tools
+  default m if ALL
+  depends on !(BIND_JEMALLOC) || ((mips||mipsel||...
+  depends on !arc
+  select PACKAGE_bind-check
+  select PACKAGE_bind-ddns-confgen if PACKAGE_bind-ddns-confgen-gssapi<PACKAGE_bind-tool
+  select PACKAGE_bind-delv if PACKAGE_bind-delv-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-dig
+  select PACKAGE_bind-dnssec if PACKAGE_bind-dnssec-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-host if PACKAGE_bind-host-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-nslookup if PACKAGE_bind-nslookup-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-rndc if PACKAGE_bind-rndc-gssapi<PACKAGE_bind-tools
+  select PACKAGE_libc
+
+Which seems ok. After changing the PROVIDES for bind-check, it suddenly turns
+into this (I've found one case where someone encountered something similar [4]):
+
+  ...
+  default y if DEFAULT_bind-tools
+  default m if ALL
+  depends on !(BIND_JEMALLOC) || ((mips||mipsel||...
+  depends on !(PACKAGE_bind-check-gssapi<PACKAGE_bind-tools && BIND_JEMALLOC) || ((mips||...
+  depends on !(PACKAGE_bind-check-gssapi<PACKAGE_bind-tools) || !arc
+  depends on !(PACKAGE_bind-delv-gssapi<PACKAGE_bind-tools && BIND_JEMALLOC) || ((mips||...
+  depends on !(PACKAGE_bind-delv-gssapi<PACKAGE_bind-tools) || !arc
+  depends on !arc
+  select PACKAGE_bind-check if PACKAGE_bind-check-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-ddns-confgen if PACKAGE_bind-ddns-confgen-gssapi<PACKAGE_bind-tool
+  select PACKAGE_bind-delv if PACKAGE_bind-delv-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-dig
+  select PACKAGE_bind-dnssec if PACKAGE_bind-dnssec-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-host if PACKAGE_bind-host-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-nslookup if PACKAGE_bind-nslookup-gssapi<PACKAGE_bind-tools
+  select PACKAGE_bind-rndc if PACKAGE_bind-rndc-gssapi<PACKAGE_bind-tools
+  select PACKAGE_libc
+
+Which upsets Kconfig:
+
+  tmp/.config-package.in:98740:error: recursive dependency detected!
+  tmp/.config-package.in:98740:	symbol PACKAGE_bind-tools depends on PACKAGE_bind-tools
+
+I could, in theory, remove bind-tools (it's just a metapackage), but the same
+thing happens with other packages which depend on one of the various bind packages.
+
+I know that both tmp/.config-package.in and tmp/.packageauxvars are created by
+scripts/package-metadata.pl, but my perl-skills are not sufficient to try to figure
+out exactly what is going on.
+
+Ideas?
+
+//David
+
+
+[1] https://forum.openwrt.org/t/need-help-debugging-kconfig-recursive-dependencies/240617
+[2] https://github.com/Alphix/packages/commits/bind-gssapi-variant/
+[3] https://github.com/Alphix/packages/blob/bind-gssapi-variant/net/bind/Makefile
+[4] https://github.com/openwrt/openwrt/pull/9648#issuecomment-1089272097
+
+
+From szczepan.andryszczuk at profitora.pl  Tue Sep 30 01:00:14 2025
+From: szczepan.andryszczuk at profitora.pl (Szczepan Andryszczuk)
+Date: Tue, 30 Sep 2025 08:00:14 GMT
+Subject: =?UTF-8?Q?W_sprawie_zam=C3=B3wie=C5=84?=
+Message-ID: <20250930084500-0.1.kz.1dan9.0.11da6j1af9@profitora.pl>
+
+Dzie? dobry,
+
+czy wiedz? Pa?stwo, ?e macie mo?liwo?? zap?aty za towar w znacznie p??niejszym terminie?
+
+Terminowo uregulujemy w Pa?stwa imieniu faktury u dostawc?w, a po zap?acie wystawiamy Pa?stwu faktur? sprzeda?y z odroczonym terminem p?atno?ci (30-90 dni).
+
+S? Pa?stwo zainteresowani takim rozwi?zaniem?
+
+
+Pozdrawiam
+Szczepan Andryszczuk
+
+

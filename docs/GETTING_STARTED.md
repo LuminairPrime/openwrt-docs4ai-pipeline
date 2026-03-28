@@ -60,13 +60,11 @@ Useful commands:
 
 ```powershell
 git rev-parse HEAD
-gh run list --workflow "openwrt-docs4ai pipeline (v12)" --limit 20 --json databaseId,headSha,status,conclusion,url
+gh run list --workflow "openwrt-docs4ai-pipeline" --limit 20 --json databaseId,headSha,status,conclusion,url
 gh run watch <run_id> --exit-status --interval 15
 gh run download <run_id> -n pipeline-summary -D tmp/ci/pipeline-summary
 gh run download <run_id> -n extract-summary -D tmp/ci/extract-summary
 ```
-
-The workflow name still uses the historical `v12` label. The active docs and output contracts do not.
 
 ## What To Read Next
 

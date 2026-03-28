@@ -14,6 +14,7 @@ Notes: Strips internal L2 YAML, injects L4 wrapper YAML, and shards oversized
 
 from __future__ import annotations
 
+import argparse
 import datetime
 import glob
 import os
@@ -23,7 +24,7 @@ import sys
 from typing import Any
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from lib import config
+from lib import config, partial_rerun_guard
 
 sys.stdout.reconfigure(line_buffering=True)
 
@@ -63,6 +64,40 @@ def rewrite_relative_links(module: str, body_text: str) -> str:
         body_with_fixed_links,
     )
     return body_with_fixed_links
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Assemble publishable L4 references and L3 skeletons from staged L2 files.",
+    )
+    parser.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help="Allow strict-subset release-tree rebuilds even if they would clobber unrelated modules.",
+    )
+    return parser.parse_args([] if argv is None else argv)
+
+
+def fail_if_partial_release_tree_rebuild(modules: list[str], allow_partial: bool) -> int:
+    if allow_partial:
+        return 0
+
+    missing_modules = partial_rerun_guard.find_missing_modules_for_partial_rerun(
+        modules,
+        RELEASE_TREE_DIR,
+    )
+    if not missing_modules:
+        return 0
+
+    print(
+        "[05a] FAIL: Refusing release-tree rebuild because incoming modules "
+        f"{sorted(modules)} are missing existing release-tree modules {missing_modules}."
+    )
+    print(
+        "[05a] FAIL: This would clobber unrelated generated content in "
+        f"{RELEASE_TREE_DIR}. Re-run with a complete staged tree or pass --allow-partial to override."
+    )
+    return 1
 
 
 def rewrite_release_relative_links(body_text: str) -> str:
@@ -527,8 +562,9 @@ def copy_release_chunked_pages(md_files: list[str], out_mod_dir: str, generated_
         with open(out_path, "w", encoding="utf-8", newline="\n") as handle:
             handle.write(output)
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """Assemble publishable L4 references and L3 skeletons from staged L2 files."""
+    args = parse_args(argv)
     if not os.path.isdir(L2_DIR):
         print(f"[05a] FAIL: L2 semantic directory not found: {L2_DIR}")
         return 1
@@ -537,6 +573,10 @@ def main() -> int:
     if not modules:
         print("[05a] FAIL: No modules found in L2 semantic directory.")
         return 1
+
+    guard_result = fail_if_partial_release_tree_rebuild(modules, args.allow_partial)
+    if guard_result != 0:
+        return guard_result
 
     if os.path.isdir(RELEASE_TREE_DIR):
         shutil.rmtree(RELEASE_TREE_DIR)
@@ -681,4 +721,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

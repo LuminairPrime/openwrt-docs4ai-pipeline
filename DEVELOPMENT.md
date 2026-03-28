@@ -58,6 +58,14 @@ See `tests/README.md` for the full layout and direct entry points.
 
 These runners are intentionally local-first. Remote GitHub Actions validation still depends on a pushed commit and the run-pinning procedure in `CI Operations`.
 
+## Cookbook Local Regeneration Warning
+
+Do not treat a cookbook-only content edit as permission to freely rerun broad generation stages in a dirty working tree.
+
+- `03`, `05a`, and downstream stages can rewrite or remove unrelated generated module trees under `openwrt-condensed-docs/`, `openwrt-condensed-docs/release-tree/`, and `openwrt-condensed-docs/support-tree/` if the local tree is incomplete or already drifted.
+- If the intended change is cookbook-only and the non-cookbook generated corpus should remain as-is, restore unrelated generated paths from `HEAD` before validating, then rerun only the minimal root-surface stages needed after the cookbook pass, typically `06 -> 07 -> 08`.
+- If a cookbook-local rerun suddenly produces missing module directories, missing `source_commit` fields in unrelated L2 content, or support-tree mirror mismatches, treat that as collateral regeneration damage and restore the non-cookbook generated paths instead of patching around the symptoms.
+
 ## Resource-Conscious Review Discipline
 
 This project is a batch documentation pipeline with recoverable failures, not a latency-sensitive production application. In practice, most real regressions are cheaper to find from execution-time evidence than from repeated speculative review.
@@ -209,7 +217,7 @@ This pipeline runs CI frequently. Follow the procedure below every time you push
 2. List recent workflow runs and find the one that matches that SHA (never assume "latest" is yours — a deploy auto-update commit may have started a newer run):
 
    ```powershell
-   gh run list --workflow "openwrt-docs4ai pipeline (v12)" --limit 20 --json databaseId,headSha,status,conclusion,url
+   gh run list --workflow "openwrt-docs4ai-pipeline" --limit 20 --json databaseId,headSha,status,conclusion,url
    ```
 
 3. Copy the `databaseId` of the matching entry and wait on that specific run with a bounded poll interval:

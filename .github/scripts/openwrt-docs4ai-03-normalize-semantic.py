@@ -16,12 +16,13 @@ import yaml
 import datetime
 import sys
 import shutil
+import argparse
 from collections import Counter
 from html import unescape
 from typing import Any, Callable, cast
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from lib import config, repo_manifest
+from lib import config, partial_rerun_guard, repo_manifest
 
 try:
     from bs4 import BeautifulSoup, Comment, Tag
@@ -907,14 +908,63 @@ def promote_to_staging(registry_path: str) -> None:
         if os.path.isfile(f):
             shutil.copy2(f, os.path.join(dst_root, os.path.basename(f)))
 
-if __name__ == "__main__":
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Normalize L1 content into L2 semantics and promote staged outputs.",
+    )
+    parser.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help="Allow strict-subset staged promotion even if it would clobber unrelated modules.",
+    )
+    return parser.parse_args([] if argv is None else argv)
+
+
+def fail_if_partial_staging_promotion(incoming_modules: set[str], allow_partial: bool) -> int:
+    if allow_partial:
+        return 0
+
+    for label in ("L1-raw", "L2-semantic"):
+        existing_root = os.path.join(config.OUTDIR, label)
+        missing_modules = partial_rerun_guard.find_missing_modules_for_partial_rerun(
+            incoming_modules,
+            existing_root,
+        )
+        if not missing_modules:
+            continue
+
+        print(
+            "[03] FAIL: Refusing staged promotion because incoming modules "
+            f"{sorted(incoming_modules)} are missing existing {label} modules {missing_modules}."
+        )
+        print(
+            "[03] FAIL: This would clobber unrelated generated content in "
+            f"{existing_root}. Re-run with a complete staged tree or pass --allow-partial to override."
+        )
+        return 1
+
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     if not os.path.isdir(L1_DIR):
         print(f"[03] FAIL: L1 input directory not found: {L1_DIR}")
-        sys.exit(1)
-    
-    TS = datetime.datetime.now(datetime.UTC).isoformat()
-    l2_list, reg, r_path = pass_1_normalize_all(TS)
+        return 1
+
+    incoming_modules = partial_rerun_guard.collect_directory_modules(L1_DIR)
+    guard_result = fail_if_partial_staging_promotion(incoming_modules, args.allow_partial)
+    if guard_result != 0:
+        return guard_result
+
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
+    l2_list, reg, r_path = pass_1_normalize_all(ts)
     pass_2_link_all(l2_list, reg)
     pass_3_deprecation_warnings(l2_list, reg)
     promote_to_staging(r_path)
     print("[03] Complete.")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

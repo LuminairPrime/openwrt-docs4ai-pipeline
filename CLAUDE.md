@@ -34,6 +34,14 @@ python tools/manage_ai_store.py --option full --keep-scratch
 
 `--run-ai` is cache-backed for regression proof only — it does not generate real AI summaries or promote to the AI store. Results land under `tmp/ci/`.
 
+## Cookbook Regeneration Guardrail
+
+Do not assume a cookbook-only source edit is isolated just because the authored files live under `content/cookbook-source/`.
+
+- A local rerun through `03` and `05a` can dirty or truncate unrelated generated trees under `openwrt-condensed-docs/`, `release-tree/`, and `support-tree/` when the working tree is already partial.
+- For cookbook authoring fixes, prefer the smallest proof first. If cookbook outputs are already present and only root routing surfaces need refresh, restore unrelated generated paths from `HEAD` and rerun only `06 -> 07 -> 08` after preserving the cookbook slice.
+- If validation starts failing on unrelated modules after a cookbook-only rerun, restore non-cookbook generated paths instead of editing unrelated generated content.
+
 ## Running a Single Test
 
 ```powershell
@@ -53,11 +61,11 @@ This repository is a documentation production pipeline, not a long-running user-
 
 ## CI Operations
 
-Always pin to your commit SHA — a successful deploy triggers a bot commit (`docs: v12 auto-update YYYY-MM-DD`) that starts a new "latest" run.
+Always pin to your commit SHA — a successful deploy triggers a bot commit (`docs: auto-update YYYY-MM-DD`) that starts a new "latest" run.
 
 ```powershell
 git rev-parse HEAD
-gh run list --workflow "openwrt-docs4ai pipeline (v12)" --limit 20 --json databaseId,headSha,status,conclusion,url
+gh run list --workflow "openwrt-docs4ai-pipeline" --limit 20 --json databaseId,headSha,status,conclusion,url
 gh run watch <run_id> --exit-status --interval 15
 
 # After completion — triage artifacts before raw logs
@@ -92,6 +100,7 @@ Scripts in `.github/scripts/` execute in numbered order. Letter suffixes (e.g., 
 | `05b-generate-agents-and-readme.py` | L3 | Generate `AGENTS.md` and root `README.md` for the corpus |
 | `05c-generate-ucode-ide-schemas.py` | L3 | TypeScript `.d.ts` IDE schemas |
 | `05d-generate-api-drift-changelog.py` | L5 | API drift telemetry vs. signature baseline |
+| `05e-generate-luci-dts.py` | L3 | LuCI TypeScript `.d.ts` IDE schemas |
 | `06-generate-llm-routing-indexes.py` | L3 | `llms.txt`, `llms-full.txt`, per-module `llms.txt` |
 | `07-generate-web-index.py` | L3 | Root and release-tree `index.html`, release overlays, and support-tree materialization |
 | `08-validate-output.py` | — | Whole-output validation gate |

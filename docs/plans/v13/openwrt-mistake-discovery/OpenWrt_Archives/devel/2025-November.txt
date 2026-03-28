@@ -1,0 +1,4636 @@
+From philipp_subx at redfish-solutions.com  Sat Nov  1 09:49:31 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sat, 1 Nov 2025 10:49:31 -0600
+Subject: Is anyone maintaining libubox?
+Message-ID: <615BF1CC-68CA-4031-BD0E-8E9B905155B7@redfish-solutions.com>
+
+There are issues and PR?s that are more than a year old.
+
+I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+
+Some of the PR?s are pretty trivial and low-risk.
+
+
+
+
+From openwrt at jonaslochmann.de  Sun Nov  2 08:44:54 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sun, 2 Nov 2025 17:44:54 +0100
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+
+Am Sat, Nov 01, 2025 at 10:49:31AM -0600, schrieb Philip Prindeville via openwrt-devel:
+> There are issues and PR?s that are more than a year old.
+
+I know the problem and very likely there are others that know it too.
+I am already considering forking OpenWrt just because changes are not
+rejected and instead ignored. I know that the time of maintainers is
+limited. Maybe forks could be good for the project long term - as long
+as those are willing to upstream stuff and react to feedback during
+this process.
+
+> I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+> 
+> Some of the PR?s are pretty trivial and low-risk.
+
+I took a look at your PRs. I am not part of the OpenWrt project and
+thus cannot do anything related to them. They solve something without
+showing that there is actually a problem. It's a bit like the PR
+"ipv6 iol intact certification" at odhcp6c that itself has a good
+motivation (with a solution that I don't like) where the original
+author failed to explain what is solves. I could be rude and say
+it did not solve anything because he did not say what problems
+resulted from the previous state and maybe he did not know himself.
+
+
+From ggoerisch at gmail.com  Sun Nov  2 09:22:24 2025
+From: ggoerisch at gmail.com (ggoerisch at gmail.com)
+Date: Sun, 2 Nov 2025 18:22:24 +0100 (CET)
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+Message-ID: <1933461420.259530.1762104144984@app.mailbox.org>
+
+Dear Jonas and Philip,
+
+Thank you for your effort to move things forward.
+
+> > I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+> > 
+> > Some of the PR?s are pretty trivial and low-risk.
+> 
+> I took a look at your PRs. I am not part of the OpenWrt project and
+> thus cannot do anything related to them.
+
+@Jonas, you can review them and add your review comments and also add your approval, if you think that the PR solves an issue and is in good shape.
+Therefore,  more eyes on a solution, the better it is.
+Thus contributing to the overall effort to maintain the project and the components.
+
+Most people are doing this because the care in their spare time.
+Forking leads only to more fragmentation IMHO.
+
+Unfortunately to my knowledge there are many commercial downstream users and even whole foundations, with, to my preception, little giving back to the upstream. OpenWrt.
+This is my view as a contributor, based on discussions and commit sign-offs.
+
+So yes, I see your point, if you might not see progress.
+
+Goetz
+
+PS: Looking a the OSS license list of my DOCSIS modem and seeing many familiar names from the OpenWrt developer community, makes me feel an effort well spend.
+
+
+From noreply at github.com  Sun Nov  2 09:24:00 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 02 Nov 2025 09:24:00 -0800
+Subject: [sdwalker/sdwalker.github.io] 850b09: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/7aef55-850b09@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 850b0983372a5791cc4ad6c3b6db77c725c18234
+      https://github.com/sdwalker/sdwalker.github.io/commit/850b0983372a5791cc4ad6c3b6db77c725c18234
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-11-02 (Sun, 02 Nov 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From philipp_subx at redfish-solutions.com  Sun Nov  2 16:46:37 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 2 Nov 2025 14:46:37 -1000
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+Message-ID: <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+
+
+
+> On Nov 2, 2025, at 6:44?AM, Jonas Lochmann <openwrt at jonaslochmann.de> wrote:
+> 
+> Am Sat, Nov 01, 2025 at 10:49:31AM -0600, schrieb Philip Prindeville via openwrt-devel:
+>> There are issues and PR?s that are more than a year old.
+> 
+> I know the problem and very likely there are others that know it too.
+> I am already considering forking OpenWrt just because changes are not
+> rejected and instead ignored. I know that the time of maintainers is
+> limited. Maybe forks could be good for the project long term - as long
+> as those are willing to upstream stuff and react to feedback during
+> this process.
+> 
+>> I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+>> 
+>> Some of the PR?s are pretty trivial and low-risk.
+> 
+> I took a look at your PRs. I am not part of the OpenWrt project and
+> thus cannot do anything related to them. They solve something without
+> showing that there is actually a problem. It's a bit like the PR
+> "ipv6 iol intact certification" at odhcp6c that itself has a good
+> motivation (with a solution that I don't like) where the original
+> author failed to explain what is solves. I could be rude and say
+> it did not solve anything because he did not say what problems
+> resulted from the previous state and maybe he did not know himself.
+
+No, I've called this out before.  But here it is again since it's been a while.  ISC-DHCP (which I own) is EOL, and I've rewritten the backend to take the existing UCI and convert it into JSON for Kea instead (which replaces it).  Generating JSON requires two passes over the UCI and random access into the JSON objects, which libubox doesn't handle easily.  The current API is meant to generate JSON linearly, not in a tree-like fashion.
+
+The commit:
+
+> From: "Philip Prindeville" <philipp at redfish-solutions.com>
+> To: openwrt-devel at lists.openwrt.org
+> Cc: Philip Prindeville <philipp at redfish-solutions.com>
+> Subject: [PATCH 1/1] jshn.sh: Add getters for the cursor and its parent
+> 
+> When building JSON, the order in which it is synthesized might not
+> match the order in which the source information is parsed.  In those
+> cases, it is useful to be able to save your place in an object or
+> an array and come back to it later and fill it out.
+> 
+> Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+
+
+Handles this specifically.
+
+And is needed to complete this migration.  I've had it ready to go for about a year and a half now.
+
+See also:
+
+https://github.com/openwrt/libubox/pull/6#issue-1899109668
+
+Which states:
+
+> You might not always want to populate JSON serially, so a way to save/restore the cursor through a convenience function is handy.
+> Also, adding anonymous (unnamed) strings to an array isn't obvious, so added a convenience function for that.
+> Lastly, some minor cleanup to show what the parameters are to functions, etc.
+
+Lastly, see:
+
+https://lists.openwrt.org/pipermail/openwrt-devel/2023-December/041920.html
+
+Where all of this was introduced and I state:
+
+> The 2nd PR includes improvements to libubox's jshn.sh, in particular the ability to save the "cursor" as one builds multiple empty tables, and then come back to them (by repositioning the cursor) on a subsequent pass to populate them. As you probably guessed, interface tables as created in one pass in the Kea init.d script, and then the host reservations are plugged into them after the reserved address is mapped back to the corresponding subnet/interface pair on the 2nd pass.
+> 
+> This requires "warping" the cursor to the appropriate table, as there is no requirement for ordering of DHCP host reservations vis-a-vis DHCP subnet definitions, etc.
+
+
+
+
+From philipp_subx at redfish-solutions.com  Sun Nov  2 16:46:37 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 2 Nov 2025 14:46:37 -1000
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+Message-ID: <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+
+
+
+> On Nov 2, 2025, at 6:44?AM, Jonas Lochmann <openwrt at jonaslochmann.de> wrote:
+> 
+> Am Sat, Nov 01, 2025 at 10:49:31AM -0600, schrieb Philip Prindeville via openwrt-devel:
+>> There are issues and PR?s that are more than a year old.
+> 
+> I know the problem and very likely there are others that know it too.
+> I am already considering forking OpenWrt just because changes are not
+> rejected and instead ignored. I know that the time of maintainers is
+> limited. Maybe forks could be good for the project long term - as long
+> as those are willing to upstream stuff and react to feedback during
+> this process.
+> 
+>> I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+>> 
+>> Some of the PR?s are pretty trivial and low-risk.
+> 
+> I took a look at your PRs. I am not part of the OpenWrt project and
+> thus cannot do anything related to them. They solve something without
+> showing that there is actually a problem. It's a bit like the PR
+> "ipv6 iol intact certification" at odhcp6c that itself has a good
+> motivation (with a solution that I don't like) where the original
+> author failed to explain what is solves. I could be rude and say
+> it did not solve anything because he did not say what problems
+> resulted from the previous state and maybe he did not know himself.
+
+No, I've called this out before.  But here it is again since it's been a while.  ISC-DHCP (which I own) is EOL, and I've rewritten the backend to take the existing UCI and convert it into JSON for Kea instead (which replaces it).  Generating JSON requires two passes over the UCI and random access into the JSON objects, which libubox doesn't handle easily.  The current API is meant to generate JSON linearly, not in a tree-like fashion.
+
+The commit:
+
+> From: "Philip Prindeville" <philipp at redfish-solutions.com>
+> To: openwrt-devel at lists.openwrt.org
+> Cc: Philip Prindeville <philipp at redfish-solutions.com>
+> Subject: [PATCH 1/1] jshn.sh: Add getters for the cursor and its parent
+> 
+> When building JSON, the order in which it is synthesized might not
+> match the order in which the source information is parsed.  In those
+> cases, it is useful to be able to save your place in an object or
+> an array and come back to it later and fill it out.
+> 
+> Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+
+
+Handles this specifically.
+
+And is needed to complete this migration.  I've had it ready to go for about a year and a half now.
+
+See also:
+
+https://github.com/openwrt/libubox/pull/6#issue-1899109668
+
+Which states:
+
+> You might not always want to populate JSON serially, so a way to save/restore the cursor through a convenience function is handy.
+> Also, adding anonymous (unnamed) strings to an array isn't obvious, so added a convenience function for that.
+> Lastly, some minor cleanup to show what the parameters are to functions, etc.
+
+Lastly, see:
+
+https://lists.openwrt.org/pipermail/openwrt-devel/2023-December/041920.html
+
+Where all of this was introduced and I state:
+
+> The 2nd PR includes improvements to libubox's jshn.sh, in particular the ability to save the "cursor" as one builds multiple empty tables, and then come back to them (by repositioning the cursor) on a subsequent pass to populate them. As you probably guessed, interface tables as created in one pass in the Kea init.d script, and then the host reservations are plugged into them after the reserved address is mapped back to the corresponding subnet/interface pair on the 2nd pass.
+> 
+> This requires "warping" the cursor to the appropriate table, as there is no requirement for ordering of DHCP host reservations vis-a-vis DHCP subnet definitions, etc.
+
+
+
+
+From hauke at hauke-m.de  Sun Nov  2 17:01:30 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Mon, 3 Nov 2025 02:01:30 +0100
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <1933461420.259530.1762104144984@app.mailbox.org>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <1933461420.259530.1762104144984@app.mailbox.org>
+Message-ID: <886af5b7-678b-4740-ab59-388a766bd387@hauke-m.de>
+
+On 11/2/25 18:22, ggoerisch at gmail.com wrote:
+> Dear Jonas and Philip,
+> 
+> Thank you for your effort to move things forward.
+> 
+>>> I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+>>>
+>>> Some of the PR?s are pretty trivial and low-risk.
+>>
+>> I took a look at your PRs. I am not part of the OpenWrt project and
+>> thus cannot do anything related to them.
+> 
+> @Jonas, you can review them and add your review comments and also add your approval, if you think that the PR solves an issue and is in good shape.
+> Therefore,  more eyes on a solution, the better it is.
+> Thus contributing to the overall effort to maintain the project and the components.
+> 
+> Most people are doing this because the care in their spare time.
+> Forking leads only to more fragmentation IMHO.
+> 
+> Unfortunately to my knowledge there are many commercial downstream users and even whole foundations, with, to my preception, little giving back to the upstream. OpenWrt.
+> This is my view as a contributor, based on discussions and commit sign-offs.
+> 
+> So yes, I see your point, if you might not see progress.
+> 
+> Goetz
+> 
+> PS: Looking a the OSS license list of my DOCSIS modem and seeing many familiar names from the OpenWrt developer community, makes me feel an effort well spend.
+> 
+
+OpenWrt is running low on active people with commit rights. Also not 
+everyone knows all the good well.
+
+Like Goetz said it is very helpful when other people also review pull 
+request. This is working pretty well with PRs admin new boards.
+Add a comment and mention if you think something should get changed or 
+if you think it looks fine. If you see a helpful PR and tested it in 
+your setup please also comment and say that it works fine for you and 
+describe a bit what you tried.
+
+Hauke
+
+
+From openwrt at jonaslochmann.de  Sun Nov  2 23:53:26 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Mon, 3 Nov 2025 08:53:26 +0100
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <886af5b7-678b-4740-ab59-388a766bd387@hauke-m.de>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <1933461420.259530.1762104144984@app.mailbox.org>
+ <886af5b7-678b-4740-ab59-388a766bd387@hauke-m.de>
+Message-ID: <qna4xksggcjnc5vcztsc6tcmjomsyonyz4bmgfvlyuyojpury7@k4xi3zyqq6qh>
+
+Am Mon, Nov 03, 2025 at 02:01:30AM +0100, schrieb Hauke Mehrtens:
+> On 11/2/25 18:22, ggoerisch at gmail.com wrote:
+> > @Jonas, you can review them and add your review comments and also add your approval, if you think that the PR solves an issue and is in good shape.
+> > Therefore,  more eyes on a solution, the better it is.
+> > Thus contributing to the overall effort to maintain the project and the components.
+
+I am not used to this concept. But yes, I can try to pick some PRs and
+take a look at them. The most demotivating result would be when I give
+positive feedback and nothing happens afterwards.
+
+> > Most people are doing this because the care in their spare time.
+> > Forking leads only to more fragmentation IMHO.
+
+Right now, whenever upgrading OpenWrt, I manually apply some patches.
+A fork would make this easier.
+
+> > Unfortunately to my knowledge there are many commercial downstream users and even whole foundations, with, to my preception, little giving back to the upstream. OpenWrt.
+> > This is my view as a contributor, based on discussions and commit sign-offs.
+
+Regarding fork developments, I have seen one so far [1]. A fork tried
+to upstream something and no one reacted. In this case, the author is
+not working for the project anymore and stopped working on this after
+six months passed. How motivating is this to try to upstream the next
+thing?
+
+Am Sun, Nov 02, 2025 at 02:46:37PM -1000, schrieb Philip Prindeville:
+> No, I've called this out before.
+
+I only looked at the two new PRs. The issue referenced in one of them [2]
+does not tell what you've written in the list now. I made the mistake in
+the past to have a good commit message but bad PR description. This
+issue does not exist with patches sent to a mailing list because then
+the commit message is always clearly visible.
+
+But I also experienced the problem with contributing to core [3]. After
+reacting to feedback, nothing happend anymore and it was required for
+some use in a package. I also know that PR in odhp6c that needed changes
+to multiple repostories where no one reacted soon after it was created.
+Maybe a monorepo structure would make this easier as it allows commits to
+span multiple components at once? This would make it easier to show in my
+case and in your one what a change in the core is good for and it reduces
+the amount of review processes that don't feel linked together.
+
+[1] https://github.com/openwrt/odhcp6c/pull/96
+[2] https://github.com/openwrt/libubox/issues/15
+[3] https://github.com/openwrt/openwrt/pull/14333
+
+
+From newtwen at gmail.com  Tue Nov  4 12:11:56 2025
+From: newtwen at gmail.com (Paul D)
+Date: Tue, 4 Nov 2025 21:11:56 +0100
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+Message-ID: <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com>
+
+On 2025-11-03 01:46, Philip Prindeville wrote:
+> 
+> 
+>> On Nov 2, 2025, at 6:44?AM, Jonas Lochmann <openwrt at jonaslochmann.de> wrote:
+>>
+>> Am Sat, Nov 01, 2025 at 10:49:31AM -0600, schrieb Philip Prindeville via openwrt-devel:
+>>> There are issues and PR?s that are more than a year old.
+>>
+>> I know the problem and very likely there are others that know it too.
+>> I am already considering forking OpenWrt just because changes are not
+>> rejected and instead ignored. I know that the time of maintainers is
+>> limited. Maybe forks could be good for the project long term - as long
+>> as those are willing to upstream stuff and react to feedback during
+>> this process.
+>>
+>>> I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+>>>
+>>> Some of the PR?s are pretty trivial and low-risk.
+>>
+>> I took a look at your PRs. I am not part of the OpenWrt project and
+>> thus cannot do anything related to them. They solve something without
+>> showing that there is actually a problem. It's a bit like the PR
+>> "ipv6 iol intact certification" at odhcp6c that itself has a good
+>> motivation (with a solution that I don't like) where the original
+>> author failed to explain what is solves. I could be rude and say
+>> it did not solve anything because he did not say what problems
+>> resulted from the previous state and maybe he did not know himself.
+> 
+> No, I've called this out before.  But here it is again since it's been a while.  ISC-DHCP (which I own) is EOL, and I've rewritten the backend to take the existing UCI and convert it into JSON for Kea instead (which replaces it).  Generating JSON requires two passes over the UCI and random access into the JSON objects, which libubox doesn't handle easily.  The current API is meant to generate JSON linearly, not in a tree-like fashion.
+> 
+> The commit:
+> 
+>> From: "Philip Prindeville" <philipp at redfish-solutions.com>
+>> To: openwrt-devel at lists.openwrt.org
+>> Cc: Philip Prindeville <philipp at redfish-solutions.com>
+>> Subject: [PATCH 1/1] jshn.sh: Add getters for the cursor and its parent
+>>
+>> When building JSON, the order in which it is synthesized might not
+>> match the order in which the source information is parsed.  In those
+>> cases, it is useful to be able to save your place in an object or
+>> an array and come back to it later and fill it out.
+>>
+>> Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+> 
+> 
+> Handles this specifically.
+> 
+> And is needed to complete this migration.  I've had it ready to go for about a year and a half now.
+> 
+> See also:
+> 
+> https://github.com/openwrt/libubox/pull/6#issue-1899109668
+> 
+> Which states:
+> 
+>> You might not always want to populate JSON serially, so a way to save/restore the cursor through a convenience function is handy.
+>> Also, adding anonymous (unnamed) strings to an array isn't obvious, so added a convenience function for that.
+>> Lastly, some minor cleanup to show what the parameters are to functions, etc.
+> 
+> Lastly, see:
+> 
+> https://lists.openwrt.org/pipermail/openwrt-devel/2023-December/041920.html
+> 
+> Where all of this was introduced and I state:
+> 
+>> The 2nd PR includes improvements to libubox's jshn.sh, in particular the ability to save the "cursor" as one builds multiple empty tables, and then come back to them (by repositioning the cursor) on a subsequent pass to populate them. As you probably guessed, interface tables as created in one pass in the Kea init.d script, and then the host reservations are plugged into them after the reserved address is mapped back to the corresponding subnet/interface pair on the 2nd pass.
+>>
+>> This requires "warping" the cursor to the appropriate table, as there is no requirement for ordering of DHCP host reservations vis-a-vis DHCP subnet definitions, etc.
+
+
+I haven't looked at what the requirements are for those scripts and whether they must be retained as .sh scripts, but ucode offers much better versatility in handling objects (which can be serialised to JSON). Is it a moving the mountain kind of change? Such a change should free a bunch of limitations that you're hitting.
+
+
+ucode scripts can have the shebang line and end in .sh which invokes ucode anyway, so in theory it could be a smooth transition, alternatively with a shim script if you make a .uc file which passes calls through to the ucode replacement for all present dependencies. 
+
+
+This is in line with stated goals for 24.10, to use more ucode. 
+
+
+Also, not certain what the ucode equivalent is for "eval export --" kinda stuff (but IIRC, those only live for the duration of the shell, no?). Perhaps jow can answer. 
+
+
+
+
+From openwrt at jonaslochmann.de  Wed Nov  5 12:51:15 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Wed, 5 Nov 2025 21:51:15 +0100
+Subject: ucode for scripts
+In-Reply-To: <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+ <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com>
+Message-ID: <4hmhm7njmp2txjaevlewyhd4oswwnbjpyvn4vq2lnc2yqwpekd@2vdf7laagont>
+
+Am Tue, Nov 04, 2025 at 09:11:56PM +0100, schrieb Paul D:
+> This is in line with stated goals for 24.10, to use more ucode. 
+
+Where are those documented?
+
+I am wondering whether ucode or native code are preferred? mwan3rtmon
+is a shell script right now but does a lot of netlink stuff by calling
+other tools. So I am thinking of rewriting it in another language and
+now I am unsure which one I should take.
+
+> Also, not certain what the ucode equivalent is for "eval export --" kinda stuff (but IIRC, those only live for the duration of the shell, no?). Perhaps jow can answer. 
+
+I assume that ucode can handle structured data and JSON without this constructions.
+
+
+From ansuelsmth at gmail.com  Wed Nov  5 12:54:41 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Wed, 5 Nov 2025 21:54:41 +0100
+Subject: ucode for scripts
+In-Reply-To: <4hmhm7njmp2txjaevlewyhd4oswwnbjpyvn4vq2lnc2yqwpekd@2vdf7laagont>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+ <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com> <4hmhm7njmp2txjaevlewyhd4oswwnbjpyvn4vq2lnc2yqwpekd@2vdf7laagont>
+Message-ID: <CA+_ehUyuy5-UV=KwSz2r=hdLOjVk3XUes5WGvQ-hwY0-FEwxsQ@mail.gmail.com>
+
+Il giorno mer 5 nov 2025 alle ore 21:53 Jonas Lochmann
+<openwrt at jonaslochmann.de> ha scritto:
+>
+> Am Tue, Nov 04, 2025 at 09:11:56PM +0100, schrieb Paul D:
+> > This is in line with stated goals for 24.10, to use more ucode.
+>
+> Where are those documented?
+>
+> I am wondering whether ucode or native code are preferred? mwan3rtmon
+> is a shell script right now but does a lot of netlink stuff by calling
+> other tools. So I am thinking of rewriting it in another language and
+> now I am unsure which one I should take.
+>
+
+Go for ucode. Without any doubt.
+
+> > Also, not certain what the ucode equivalent is for "eval export --" kinda stuff (but IIRC, those only live for the duration of the shell, no?). Perhaps jow can answer.
+>
+> I assume that ucode can handle structured data and JSON without this constructions.
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From newtwen at gmail.com  Wed Nov  5 13:33:37 2025
+From: newtwen at gmail.com (Paul D)
+Date: Wed, 5 Nov 2025 22:33:37 +0100
+Subject: ucode for scripts
+In-Reply-To: <4hmhm7njmp2txjaevlewyhd4oswwnbjpyvn4vq2lnc2yqwpekd@2vdf7laagont>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+ <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com>
+ <4hmhm7njmp2txjaevlewyhd4oswwnbjpyvn4vq2lnc2yqwpekd@2vdf7laagont>
+Message-ID: <08cbd032-38f1-4b32-83d0-382c278b7c04@gmail.com>
+
+On 2025-11-05 21:51, Jonas Lochmann wrote:
+> Am Tue, Nov 04, 2025 at 09:11:56PM +0100, schrieb Paul D:
+>> This is in line with stated goals for 24.10, to use more ucode. 
+> 
+> Where are those documented?
+> 
+
+https://forum.openwrt.org/t/openwrt-meeting-november-2024/216703#p-1102369-project-milestones-and-future-developments-4
+
+
+
+> I am wondering whether ucode or native code are preferred? mwan3rtmon
+> is a shell script right now but does a lot of netlink stuff by calling
+> other tools. So I am thinking of rewriting it in another language and
+> now I am unsure which one I should take.
+> 
+>> Also, not certain what the ucode equivalent is for "eval export --" kinda stuff (but IIRC, those only live for the duration of the shell, no?). Perhaps jow can answer. 
+> 
+> I assume that ucode can handle structured data and JSON without this constructions.
+
+
+
+From ansuelsmth at gmail.com  Fri Nov  7 01:04:08 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Fri, 7 Nov 2025 10:04:08 +0100
+Subject: Move to python3 host tool compiliation
+Message-ID: <CA+_ehUyPwPuEos3gg2+kN5QLSyy7sr5gntZF3Sg+xh1xf4U54A@mail.gmail.com>
+
+Hi all,
+
+This is mostly feedback request on a change I would like to merge.
+This is the PR in question [1].
+
+It transition from using host python3 to compile one from source.
+
+The reason is simple. We had multiple times where things ""explode""
+as the symbolic link for python gets corrupted after a python version
+update.
+
+This got even more relevant recently as they started to spam new
+versions of python almost weekly.
+
+To solve this problem once and for all (also also have a more
+predictable host tools) we compile python from source and
+use our version directly without depending on the one present
+on the host.
+
+The compilation increase is minimal and also we still provide an
+option to use the previous implementation of using the host python.
+
+Is anyone against this change or do you find any problem?
+
+Feel free to give any opinion here, the main object of this is to stop
+the periodic complain of "my buildroot installation broke and I
+can't compile anything anymore"
+
+[1] https://github.com/openwrt/openwrt/pull/10800
+
+
+From robimarko at gmail.com  Fri Nov  7 03:12:59 2025
+From: robimarko at gmail.com (Robert Marko)
+Date: Fri, 7 Nov 2025 12:12:59 +0100
+Subject: Move to python3 host tool compiliation
+In-Reply-To: <CA+_ehUyPwPuEos3gg2+kN5QLSyy7sr5gntZF3Sg+xh1xf4U54A@mail.gmail.com>
+References: <CA+_ehUyPwPuEos3gg2+kN5QLSyy7sr5gntZF3Sg+xh1xf4U54A@mail.gmail.com>
+Message-ID: <CAOX2RU5sVai4sqr2Ex9Gx-0CzcPYAj2bVmteEddn8cVb-FLSYw@mail.gmail.com>
+
+On Fri, 7 Nov 2025 at 10:04, Christian Marangi (Ansuel)
+<ansuelsmth at gmail.com> wrote:
+>
+> Hi all,
+>
+> This is mostly feedback request on a change I would like to merge.
+> This is the PR in question [1].
+>
+> It transition from using host python3 to compile one from source.
+>
+> The reason is simple. We had multiple times where things ""explode""
+> as the symbolic link for python gets corrupted after a python version
+> update.
+>
+> This got even more relevant recently as they started to spam new
+> versions of python almost weekly.
+>
+> To solve this problem once and for all (also also have a more
+> predictable host tools) we compile python from source and
+> use our version directly without depending on the one present
+> on the host.
+>
+> The compilation increase is minimal and also we still provide an
+> option to use the previous implementation of using the host python.
+>
+> Is anyone against this change or do you find any problem?
+>
+> Feel free to give any opinion here, the main object of this is to stop
+> the periodic complain of "my buildroot installation broke and I
+> can't compile anything anymore"
+
+I think this is a good idea, should avoid the constant catch-up.
+
+Regards,
+Robert
+>
+> [1] https://github.com/openwrt/openwrt/pull/10800
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From lynxis at fe80.eu  Fri Nov  7 05:29:24 2025
+From: lynxis at fe80.eu (Alexander 'lynxis' Couzens)
+Date: Fri, 7 Nov 2025 13:29:24 +0000
+Subject: Move to python3 host tool compiliation
+In-Reply-To: <CAOX2RU5sVai4sqr2Ex9Gx-0CzcPYAj2bVmteEddn8cVb-FLSYw@mail.gmail.com>
+References: <CA+_ehUyPwPuEos3gg2+kN5QLSyy7sr5gntZF3Sg+xh1xf4U54A@mail.gmail.com>
+	<CAOX2RU5sVai4sqr2Ex9Gx-0CzcPYAj2bVmteEddn8cVb-FLSYw@mail.gmail.com>
+Message-ID: <20251107132924.4757c4eb@javelin>
+
+> > Feel free to give any opinion here, the main object of this is to stop
+> > the periodic complain of "my buildroot installation broke and I
+> > can't compile anything anymore"  
+> 
+> I think this is a good idea, should avoid the constant catch-up.
+
+Nice.
+It makes also easier to have reproducible builds.
+
+Best,
+lynxis
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 931 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251107/cf7809f8/attachment.sig>
+
+From openwrt at jonaslochmann.de  Fri Nov  7 23:34:58 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sat, 8 Nov 2025 08:34:58 +0100
+Subject: Move to python3 host tool compiliation
+In-Reply-To: <CA+_ehUyPwPuEos3gg2+kN5QLSyy7sr5gntZF3Sg+xh1xf4U54A@mail.gmail.com>
+References: <CA+_ehUyPwPuEos3gg2+kN5QLSyy7sr5gntZF3Sg+xh1xf4U54A@mail.gmail.com>
+Message-ID: <xmqdpljf3ycqqj3cnh5wc7zyjosdihlyhuw5e33kwlcp5l2grk@454oqi4yehco>
+
+Am Fri, Nov 07, 2025 at 10:04:08AM +0100, schrieb Christian Marangi (Ansuel):
+> Hi all,
+> 
+> This is mostly feedback request on a change I would like to merge.
+> This is the PR in question [1].
+> 
+> It transition from using host python3 to compile one from source.
+
+I like the idea. I am wondering about other potentially low(er) hanging
+fruits in this field as I remember the build process complaining about
+my incompatible awk.
+
+> The reason is simple. We had multiple times where things ""explode""
+> as the symbolic link for python gets corrupted after a python version
+> update.
+> 
+> This got even more relevant recently as they started to spam new
+> versions of python almost weekly.
+
+This is something where I personally don't agree. I would not use a
+unstable/rolling release distribution for something like building
+OpenWrt. But I see that there are people that do this.
+
+> To solve this problem once and for all (also also have a more
+> predictable host tools) we compile python from source and
+> use our version directly without depending on the one present
+> on the host.
+> 
+> The compilation increase is minimal and also we still provide an
+> option to use the previous implementation of using the host python.
+> 
+> Is anyone against this change or do you find any problem?
+
+At the concept level, I would remove the option to use the host python.
+This sounds like an invitation for people to "optimize" stuff and then
+complain.
+
+At the code level, there are a few things that I dislike and a few
+things I don't understand. See the PR for details. I am pretty sure
+that this are only minor things.
+
+
+From champetier.etienne at gmail.com  Sat Nov  8 10:11:17 2025
+From: champetier.etienne at gmail.com (Etienne Champetier)
+Date: Sat, 8 Nov 2025 13:11:17 -0500
+Subject: mwan3rtmon rewrite in ucode (Re: ucode for scripts)
+Message-ID: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+
+Hello Jonas,
+
+Le mer. 5 nov. 2025 ? 15:52, Jonas Lochmann <openwrt at jonaslochmann.de> a ?crit :
+>
+> Am Tue, Nov 04, 2025 at 09:11:56PM +0100, schrieb Paul D:
+> > This is in line with stated goals for 24.10, to use more ucode.
+>
+> Where are those documented?
+>
+> I am wondering whether ucode or native code are preferred? mwan3rtmon
+> is a shell script right now but does a lot of netlink stuff by calling
+> other tools. So I am thinking of rewriting it in another language and
+> now I am unsure which one I should take.
+
+I also had a look at rewriting mwan3rtmon in ucode recently and I'm
+wondering if we could just get rid of it.
+Basically this script watches the main routing table to copy all non
+default routes, and also fill an ipset,
+but I think using rules like 'lookup main suppress_prefixlength 0' we
+should be able to remove mwan3rtmon.
+
+Also found some example rtnl code in
+https://github.com/jow-/ucode/issues/184 if you are looking for some
+
+Best
+Etienne
+
+> > Also, not certain what the ucode equivalent is for "eval export --" kinda stuff (but IIRC, those only live for the duration of the shell, no?). Perhaps jow can answer.
+>
+> I assume that ucode can handle structured data and JSON without this constructions.
+
+
+From openwrt at jonaslochmann.de  Sat Nov  8 13:52:05 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sat, 8 Nov 2025 22:52:05 +0100
+Subject: mwan3rtmon rewrite in ucode (Re: ucode for scripts)
+In-Reply-To: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+Message-ID: <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+
+Am Sat, Nov 08, 2025 at 01:11:17PM -0500, schrieb Etienne Champetier:
+> I also had a look at rewriting mwan3rtmon in ucode recently and I'm
+> wondering if we could just get rid of it.
+> Basically this script watches the main routing table to copy all non
+> default routes, and also fill an ipset,
+
+It does this per interface and keeps the default rules of that
+particular interface while also removing source based routing in case
+of IPv6. (Well, this can be disabled, but I would not recommend that.)
+
+> but I think using rules like 'lookup main suppress_prefixlength 0' we
+> should be able to remove mwan3rtmon.
+
+But where do we get the default routes from then? I see no possibility
+to skip mwan3rtmon.
+
+I thought of trying to put this into netifd, but it looks like it does
+not recognize routes added by other services (e.g. openvpn).
+
+> Also found some example rtnl code in
+> https://github.com/jow-/ucode/issues/184 if you are looking for some
+
+I consider https://github.com/jow-/ucode/blob/master/lib/rtnl.c more
+interesting. But it feels like many things in OpenWrt where the source
+code is the documentation/things are not documented. Same for mwan3
+where I know the architecture from working with the source code, but
+I don't know any description telling how mwan3, its parts and the linux
+network stack work together.
+
+
+From champetier.etienne at gmail.com  Sat Nov  8 16:22:29 2025
+From: champetier.etienne at gmail.com (Etienne Champetier)
+Date: Sat, 8 Nov 2025 19:22:29 -0500
+Subject: mwan3rtmon rewrite in ucode (Re: ucode for scripts)
+In-Reply-To: <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+Message-ID: <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+
+Le sam. 8 nov. 2025 ? 16:52, Jonas Lochmann <openwrt at jonaslochmann.de> a ?crit :
+>
+> Am Sat, Nov 08, 2025 at 01:11:17PM -0500, schrieb Etienne Champetier:
+> > I also had a look at rewriting mwan3rtmon in ucode recently and I'm
+> > wondering if we could just get rid of it.
+> > Basically this script watches the main routing table to copy all non
+> > default routes, and also fill an ipset,
+>
+> It does this per interface and keeps the default rules of that
+> particular interface while also removing source based routing in case
+> of IPv6. (Well, this can be disabled, but I would not recommend that.)
+
+Thanks for pointing that out, I missed that sed line
+
+> > but I think using rules like 'lookup main suppress_prefixlength 0' we
+> > should be able to remove mwan3rtmon.
+>
+> But where do we get the default routes from then?
+
+We still need something for the default routes indeed, but we can simplify a bit
+Have something like
+```
+1000: from all lookup main suppress_prefixlength 0
+```
+and then in table 1 / 2 ... just have the default route of each wan
+
+This would also remove the need for the mwan3_connected_ipv4/6 ipsets
+as the mark doesn't matter if you match rule 1000 first.
+
+> I see no possibility to skip mwan3rtmon.
+
+If we only have wans with static ips then we don't need mwan3rtmon anymore ...
+so we would still need it :), but if it only handles default routes
+that's way less work to do.
+
+> I thought of trying to put this into netifd, but it looks like it does
+> not recognize routes added by other services (e.g. openvpn).
+>
+> > Also found some example rtnl code in
+> > https://github.com/jow-/ucode/issues/184 if you are looking for some
+>
+> I consider https://github.com/jow-/ucode/blob/master/lib/rtnl.c more
+> interesting. But it feels like many things in OpenWrt where the source
+> code is the documentation/things are not documented. Same for mwan3
+> where I know the architecture from working with the source code, but
+> I don't know any description telling how mwan3, its parts and the linux
+> network stack work together.
+
+Yep, there is very little explanation of why each piece is present
+Example, the ip rule
+```
+1001:    from all iif wan1 lookup 1
+```
+I think it is used if we bind to the ip of wan1 (and not the device)
+to ensure the traffic goes out the right interface, but maybe it's for
+something else :(
+
+
+From openwrt at jonaslochmann.de  Sat Nov  8 22:38:08 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sun, 9 Nov 2025 07:38:08 +0100
+Subject: mwan3rtmon rewrite in ucode (Re: ucode for scripts)
+In-Reply-To: <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+Message-ID: <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+
+Am Sat, Nov 08, 2025 at 07:22:29PM -0500, schrieb Etienne Champetier:
+> Le sam. 8 nov. 2025 ? 16:52, Jonas Lochmann <openwrt at jonaslochmann.de> a ?crit :
+> >
+> > Am Sat, Nov 08, 2025 at 01:11:17PM -0500, schrieb Etienne Champetier:
+> > > I also had a look at rewriting mwan3rtmon in ucode recently and I'm
+> > > wondering if we could just get rid of it.
+> > > Basically this script watches the main routing table to copy all non
+> > > default routes, and also fill an ipset,
+> >
+> > It does this per interface and keeps the default rules of that
+> > particular interface while also removing source based routing in case
+> > of IPv6. (Well, this can be disabled, but I would not recommend that.)
+> 
+> Thanks for pointing that out, I missed that sed line
+> 
+> > > but I think using rules like 'lookup main suppress_prefixlength 0' we
+> > > should be able to remove mwan3rtmon.
+> >
+> > But where do we get the default routes from then?
+> 
+> We still need something for the default routes indeed, but we can simplify a bit
+> Have something like
+> ```
+> 1000: from all lookup main suppress_prefixlength 0
+> ```
+> and then in table 1 / 2 ... just have the default route of each wan
+> 
+> This would also remove the need for the mwan3_connected_ipv4/6 ipsets
+> as the mark doesn't matter if you match rule 1000 first.
+
+I think that those ipsets are useless in any case as all local routes are in
+all tables and thus you could pick any of them. But having first a "lookup
+regular routes ignoring default routes" could simplify a few things.
+
+> > I see no possibility to skip mwan3rtmon.
+> 
+> If we only have wans with static ips then we don't need mwan3rtmon anymore ...
+> so we would still need it :), but if it only handles default routes
+> that's way less work to do.
+
+That would remove that theoretical route update delay for local routes.
+So I consider it an advantage. I would also go from the current imperative
+implementation to a functional one: wait for changes; calculate new interface
+specific tables; replace tables.
+
+> Yep, there is very little explanation of why each piece is present
+> Example, the ip rule
+> ```
+> 1001:    from all iif wan1 lookup 1
+> ```
+> I think it is used if we bind to the ip of wan1 (and not the device)
+> to ensure the traffic goes out the right interface, but maybe it's for
+> something else :(
+
+That's about the input interface. It prevents routing from one wan to
+another. But that's a task for the firewall and not mwan3.
+
+I don't expect binding to an IP only to work correctly. There is a
+reason why "mwan3 use" sets the fwmark.
+
+I just found some rough description of the mwan3 architecture at
+https://openwrt.org/docs/guide-user/network/wan/multiwan/mwan3
+
+
+From noreply at github.com  Sun Nov  9 10:31:24 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 09 Nov 2025 10:31:24 -0800
+Subject: [sdwalker/sdwalker.github.io] de8e81: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/850b09-de8e81@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: de8e814b1e463a172cb79bbaff4442a470d81f6c
+      https://github.com/sdwalker/sdwalker.github.io/commit/de8e814b1e463a172cb79bbaff4442a470d81f6c
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-11-09 (Sun, 09 Nov 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From hauke at hauke-m.de  Sun Nov  9 15:20:43 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Mon, 10 Nov 2025 00:20:43 +0100
+Subject: luci-app-attendedsysupgrade and owut by default?
+In-Reply-To: <aNghmbRINa_5mCLC@pidgin.makrotopia.org>
+References: <3bcf1bb5-299e-46a7-95ef-2d4c4630493e@hauke-m.de>
+ <aNX0CGxr0Nm9WC2b@pidgin.makrotopia.org>
+ <bf466152-a40c-4d2e-ab6b-c5bc4b98aa22@hauke-m.de>
+ <aNghmbRINa_5mCLC@pidgin.makrotopia.org>
+Message-ID: <fe3a7b1e-b94c-4b3f-81b3-9754fae8ce02@hauke-m.de>
+
+On 9/27/25 19:40, Daniel Golle wrote:
+> On Sat, Sep 27, 2025 at 07:16:33PM +0200, Hauke Mehrtens wrote:
+>> How well can we integrate DNS into the LuCI web interface?
+> 
+> Very good question. I'm not into that whole web side of things at all.
+> 
+>> DNS is also not authenticated, it should be fine if the attacker could only
+>> prevent the UI from showing an update notification, but it should not be
+>> able to tell the user where to get the update.
+> 
+> That's what I thought: Only indicate the presence of a newer release,
+> not where to get it.
+> 
+>> I think we would get some negative feedback from users when we remove apk
+>> from the default images. We could offer an option in the ASU web interface
+>> to remove APK.
+>> If we have a button to generate a default image without apk in the firmware
+>> selector UI it would be sufficient:
+>> https://firmware-selector.openwrt.org/?version=24.10.3&target=mediatek%2Fmt7622&id=linksys_e8450
+>> Removing it manually from the list is a bit complicated for the novice user.
+> 
+> On many devices the only possible outcome of trying to use the package
+> manager is a brick because rootfs_overlay got only 1 or 2 JFFS2 blocks
+> total. So even **deleting** a package would result in a brick as the
+> list of installed packages would be copied to the rootfs_overlay as a
+> consequence of *any* change...
+> 
+> Apart from just not installing the package manager, I believe we should
+> also not install 'ca-bundle' on SMALL_FLASH devices, and also select
+> CONFIG_CLEAN_IPKG=y by default. Together with an easy to use way to
+> generate and install custom ASU-generated images for such a devices the
+> outcome would be something much more intuitive and user-friendly than
+> an anyway broken package manager (opkg or apk are equally affected by
+> this problem, obviously).
+> 
+>>>> Do we have to install luci-app-attendedsysupgrade and owut for this or is it
+>>>> possible with less?
+>>>
+>>> Either of the two packages is sufficient, we don't need both of them.
+>>>
+>>>>
+>>>> Should we add luci-app-attendedsysupgrade as a dependency to
+>>>> luci/collections/luci/Makefile ?
+>>>
+>>> I'd say yes, but that's just my opinion.
+>>
+>> I think this is a good option.
+>>
+>>>> Should we move utils/attendedsysupgrade-common from the package feed to the
+>>>> main repository?
+>>>
+>>> I suggest to merge the content of the utils/attendedsysuprade-common
+>>> package into base-files, as the packaging overhead is bigger than the
+>>> actual content (a single UCI configuration file).
+>>
+>> I agree with you.
+>>
+>> Maybe we should handle the ASU signing key a bit special.
+>> This key is not as good protected as the other keys.
+>> Maybe store it in /etc/opkg/asu-key/ and use this key for signature checks
+>> initialized by the tools using ASU intentionally only.
+> 
+> +1 makes a lot of sense!
+> 
+>> So to summarize:
+>>   * Add luci-app-attendedsysupgrade as a dependency to the LuCI default
+>> collections for all builds with use LuCI.
+>>   * Add OWUT for !SMALL_FLASH
+>>   * The automatic checks for updates should be opt in, we can keep it like it
+>> is for now and improve later.
+> 
+> +1
+
+LuCi installs luci-app-attendedsysupgrade by default now, see:
+https://github.com/openwrt/luci/pull/8080
+
+Hauke
+
+
+
+
+From philipp_subx at redfish-solutions.com  Mon Nov 10 16:35:57 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Mon, 10 Nov 2025 17:35:57 -0700
+Subject: Is anyone maintaining libubox?
+In-Reply-To: <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com>
+References: <mailman.21109.1762015791.2093109.openwrt-devel@lists.openwrt.org>
+ <hyqdyx6r4ej67rnj5uassxeuie4tvlhcjxluktvhasivbegpyp@lekjx4nmywbu>
+ <E93F0D71-C0BD-4D4E-BB6A-2918AC4D4687@redfish-solutions.com>
+ <b0e7b2c3-d668-47ab-8981-e32e01ea8ffa@gmail.com>
+Message-ID: <89C54715-BCEE-4AC4-9BC6-6EA63A2A7EBB@redfish-solutions.com>
+
+
+
+> On Nov 4, 2025, at 1:11?PM, Paul D <newtwen at gmail.com> wrote:
+> 
+> On 2025-11-03 01:46, Philip Prindeville wrote:
+>> 
+>> 
+>>> On Nov 2, 2025, at 6:44?AM, Jonas Lochmann <openwrt at jonaslochmann.de> wrote:
+>>> 
+>>> Am Sat, Nov 01, 2025 at 10:49:31AM -0600, schrieb Philip Prindeville via openwrt-devel:
+>>>> There are issues and PR?s that are more than a year old.
+>>> 
+>>> I know the problem and very likely there are others that know it too.
+>>> I am already considering forking OpenWrt just because changes are not
+>>> rejected and instead ignored. I know that the time of maintainers is
+>>> limited. Maybe forks could be good for the project long term - as long
+>>> as those are willing to upstream stuff and react to feedback during
+>>> this process.
+>>> 
+>>>> I?ve put the same set of PR?s out 3 times and not received so much as a single review comment.
+>>>> 
+>>>> Some of the PR?s are pretty trivial and low-risk.
+>>> 
+>>> I took a look at your PRs. I am not part of the OpenWrt project and
+>>> thus cannot do anything related to them. They solve something without
+>>> showing that there is actually a problem. It's a bit like the PR
+>>> "ipv6 iol intact certification" at odhcp6c that itself has a good
+>>> motivation (with a solution that I don't like) where the original
+>>> author failed to explain what is solves. I could be rude and say
+>>> it did not solve anything because he did not say what problems
+>>> resulted from the previous state and maybe he did not know himself.
+>> 
+>> No, I've called this out before.  But here it is again since it's been a while.  ISC-DHCP (which I own) is EOL, and I've rewritten the backend to take the existing UCI and convert it into JSON for Kea instead (which replaces it).  Generating JSON requires two passes over the UCI and random access into the JSON objects, which libubox doesn't handle easily.  The current API is meant to generate JSON linearly, not in a tree-like fashion.
+>> 
+>> The commit:
+>> 
+>>> From: "Philip Prindeville" <philipp at redfish-solutions.com>
+>>> To: openwrt-devel at lists.openwrt.org
+>>> Cc: Philip Prindeville <philipp at redfish-solutions.com>
+>>> Subject: [PATCH 1/1] jshn.sh: Add getters for the cursor and its parent
+>>> 
+>>> When building JSON, the order in which it is synthesized might not
+>>> match the order in which the source information is parsed.  In those
+>>> cases, it is useful to be able to save your place in an object or
+>>> an array and come back to it later and fill it out.
+>>> 
+>>> Signed-off-by: Philip Prindeville <philipp at redfish-solutions.com>
+>> 
+>> 
+>> Handles this specifically.
+>> 
+>> And is needed to complete this migration.  I've had it ready to go for about a year and a half now.
+>> 
+>> See also:
+>> 
+>> https://github.com/openwrt/libubox/pull/6#issue-1899109668
+>> 
+>> Which states:
+>> 
+>>> You might not always want to populate JSON serially, so a way to save/restore the cursor through a convenience function is handy.
+>>> Also, adding anonymous (unnamed) strings to an array isn't obvious, so added a convenience function for that.
+>>> Lastly, some minor cleanup to show what the parameters are to functions, etc.
+>> 
+>> Lastly, see:
+>> 
+>> https://lists.openwrt.org/pipermail/openwrt-devel/2023-December/041920.html
+>> 
+>> Where all of this was introduced and I state:
+>> 
+>>> The 2nd PR includes improvements to libubox's jshn.sh, in particular the ability to save the "cursor" as one builds multiple empty tables, and then come back to them (by repositioning the cursor) on a subsequent pass to populate them. As you probably guessed, interface tables as created in one pass in the Kea init.d script, and then the host reservations are plugged into them after the reserved address is mapped back to the corresponding subnet/interface pair on the 2nd pass.
+>>> 
+>>> This requires "warping" the cursor to the appropriate table, as there is no requirement for ordering of DHCP host reservations vis-a-vis DHCP subnet definitions, etc.
+> 
+> 
+> I haven't looked at what the requirements are for those scripts and whether they must be retained as .sh scripts, but ucode offers much better versatility in handling objects (which can be serialised to JSON). Is it a moving the mountain kind of change? Such a change should free a bunch of limitations that you're hitting.
+
+
+How easy is that to integrate into another script?  The init.d script for kea will call a filter which tries to read the /etc/config/dhcp file and write out JSON.
+
+There?s a draft (WIP) PR here:
+
+https://github.com/openwrt/packages/pull/27439
+
+
+
+> ucode scripts can have the shebang line and end in .sh which invokes ucode anyway, so in theory it could be a smooth transition, alternatively with a shim script if you make a .uc file which passes calls through to the ucode replacement for all present dependencies. 
+> 
+> 
+> This is in line with stated goals for 24.10, to use more ucode. 
+> 
+> 
+> Also, not certain what the ucode equivalent is for "eval export --" kinda stuff (but IIRC, those only live for the duration of the shell, no?). Perhaps jow can answer. 
+> 
+
+
+I?m not thrilled with the prospect of having to redo ALL of the work I've done so far because delays by other people have caused things to be overtaken by events.
+
+I?d rather get it merged as is after the libubox changes and if someone wants to step up and do the ucode rewrite I?ll have a look at it.
+
+-Philip
+
+
+
+
+From tmn505 at terefe.re  Tue Nov 11 10:39:50 2025
+From: tmn505 at terefe.re (Tomasz Maciej Nowak)
+Date: Tue, 11 Nov 2025 19:39:50 +0100
+Subject: [PATCH] tegra: promote kernel 6.12 as default
+Message-ID: <20251111183950.426981-1-tmn505@terefe.re>
+
+From: Tomasz Maciej Nowak <tmn505 at gmail.com>
+
+It has been stable so far. As result of this change drop 6.6 files.
+
+Signed-off-by: Tomasz Maciej Nowak <tmn505 at gmail.com>
+---
+ target/linux/tegra/Makefile                   |   2 +-
+ target/linux/tegra/config-6.6                 | 577 ------------------
+ ...interrupts-due-to-tegra2-silicon-bug.patch |  77 ---
+ ...enable-front-panel-leds-in-TrimSlice.patch |  46 --
+ 4 files changed, 1 insertion(+), 701 deletions(-)
+ delete mode 100644 target/linux/tegra/config-6.6
+ delete mode 100644 target/linux/tegra/patches-6.6/100-serial8250-on-tegra-hsuart-recover-from-spurious-interrupts-due-to-tegra2-silicon-bug.patch
+ delete mode 100644 target/linux/tegra/patches-6.6/101-ARM-dtc-tegra-enable-front-panel-leds-in-TrimSlice.patch
+
+diff --git a/target/linux/tegra/Makefile b/target/linux/tegra/Makefile
+index 9e1bf15e7f48..ae4099ceeaca 100644
+--- a/target/linux/tegra/Makefile
++++ b/target/linux/tegra/Makefile
+@@ -12,7 +12,7 @@ CPU_TYPE := cortex-a9
+ CPU_SUBTYPE := vfpv3-d16
+ SUBTARGETS := generic
+ 
+-KERNEL_PATCHVER := 6.6
++KERNEL_PATCHVER := 6.12
+ KERNEL_TESTING_PATCHVER := 6.12
+ 
+ include $(INCLUDE_DIR)/target.mk
+diff --git a/target/linux/tegra/config-6.6 b/target/linux/tegra/config-6.6
+deleted file mode 100644
+index a98d81c92da1..000000000000
+--- a/target/linux/tegra/config-6.6
++++ /dev/null
+@@ -1,577 +0,0 @@
+-CONFIG_AC97_BUS=y
+-# CONFIG_AHCI_TEGRA is not set
+-CONFIG_ALIGNMENT_TRAP=y
+-CONFIG_ARCH_32BIT_OFF_T=y
+-CONFIG_ARCH_HIBERNATION_POSSIBLE=y
+-CONFIG_ARCH_KEEP_MEMBLOCK=y
+-CONFIG_ARCH_MIGHT_HAVE_PC_PARPORT=y
+-CONFIG_ARCH_MULTIPLATFORM=y
+-CONFIG_ARCH_MULTI_V6_V7=y
+-CONFIG_ARCH_MULTI_V7=y
+-CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED=y
+-CONFIG_ARCH_OPTIONAL_KERNEL_RWX=y
+-CONFIG_ARCH_OPTIONAL_KERNEL_RWX_DEFAULT=y
+-CONFIG_ARCH_SELECT_MEMORY_MODEL=y
+-CONFIG_ARCH_SPARSEMEM_ENABLE=y
+-CONFIG_ARCH_STACKWALK=y
+-CONFIG_ARCH_SUSPEND_POSSIBLE=y
+-CONFIG_ARCH_TEGRA=y
+-# CONFIG_ARCH_TEGRA_114_SOC is not set
+-# CONFIG_ARCH_TEGRA_124_SOC is not set
+-CONFIG_ARCH_TEGRA_2x_SOC=y
+-# CONFIG_ARCH_TEGRA_3x_SOC is not set
+-CONFIG_ARM=y
+-CONFIG_ARM_AMBA=y
+-CONFIG_ARM_CPU_SUSPEND=y
+-CONFIG_ARM_ERRATA_720789=y
+-CONFIG_ARM_ERRATA_754327=y
+-CONFIG_ARM_ERRATA_764369=y
+-CONFIG_ARM_GIC=y
+-CONFIG_ARM_HAS_GROUP_RELOCS=y
+-CONFIG_ARM_HEAVY_MB=y
+-CONFIG_ARM_L1_CACHE_SHIFT=6
+-CONFIG_ARM_L1_CACHE_SHIFT_6=y
+-CONFIG_ARM_PATCH_IDIV=y
+-CONFIG_ARM_PATCH_PHYS_VIRT=y
+-# CONFIG_ARM_PL172_MPMC is not set
+-# CONFIG_ARM_SMMU is not set
+-# CONFIG_ARM_TEGRA124_CPUFREQ is not set
+-CONFIG_ARM_TEGRA20_CPUFREQ=y
+-CONFIG_ARM_TEGRA_CPUIDLE=y
+-CONFIG_ARM_THUMB=y
+-CONFIG_ARM_THUMBEE=y
+-CONFIG_ARM_UNWIND=y
+-CONFIG_ARM_VIRT_EXT=y
+-CONFIG_ASN1=y
+-CONFIG_ATA=y
+-CONFIG_ATAGS=y
+-CONFIG_AUTO_ZRELADDR=y
+-CONFIG_BINFMT_FLAT_ARGVP_ENVP_ON_STACK=y
+-CONFIG_BLK_DEV_BSG=y
+-CONFIG_BLK_DEV_BSG_COMMON=y
+-CONFIG_BLK_DEV_LOOP=y
+-CONFIG_BLK_MQ_PCI=y
+-CONFIG_BLK_PM=y
+-CONFIG_BOUNCE=y
+-CONFIG_BUFFER_HEAD=y
+-CONFIG_CACHE_L2X0=y
+-CONFIG_CC_HAVE_STACKPROTECTOR_TLS=y
+-CONFIG_CLKSRC_MMIO=y
+-CONFIG_CLONE_BACKWARDS=y
+-CONFIG_CLZ_TAB=y
+-CONFIG_CMA=y
+-CONFIG_CMA_ALIGNMENT=8
+-CONFIG_CMA_AREAS=7
+-# CONFIG_CMA_DEBUG is not set
+-# CONFIG_CMA_DEBUGFS is not set
+-CONFIG_CMA_SIZE_MBYTES=16
+-# CONFIG_CMA_SIZE_SEL_MAX is not set
+-CONFIG_CMA_SIZE_SEL_MBYTES=y
+-# CONFIG_CMA_SIZE_SEL_MIN is not set
+-# CONFIG_CMA_SIZE_SEL_PERCENTAGE is not set
+-# CONFIG_CMA_SYSFS is not set
+-CONFIG_COMMON_CLK=y
+-CONFIG_COMPACT_UNEVICTABLE_DEFAULT=1
+-CONFIG_COMPAT_32BIT_TIME=y
+-CONFIG_CONTEXT_TRACKING=y
+-CONFIG_CONTEXT_TRACKING_IDLE=y
+-CONFIG_CONTIG_ALLOC=y
+-CONFIG_CPUFREQ_DT=y
+-CONFIG_CPUFREQ_DT_PLATDEV=y
+-CONFIG_CPU_32v6K=y
+-CONFIG_CPU_32v7=y
+-CONFIG_CPU_ABRT_EV7=y
+-CONFIG_CPU_CACHE_V7=y
+-CONFIG_CPU_CACHE_VIPT=y
+-CONFIG_CPU_COPY_V6=y
+-CONFIG_CPU_CP15=y
+-CONFIG_CPU_CP15_MMU=y
+-CONFIG_CPU_FREQ=y
+-CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
+-# CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE is not set
+-CONFIG_CPU_FREQ_GOV_ATTR_SET=y
+-CONFIG_CPU_FREQ_GOV_COMMON=y
+-CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
+-CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+-CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+-CONFIG_CPU_FREQ_GOV_POWERSAVE=y
+-CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+-CONFIG_CPU_FREQ_GOV_USERSPACE=y
+-# CONFIG_CPU_FREQ_STAT is not set
+-CONFIG_CPU_HAS_ASID=y
+-CONFIG_CPU_IDLE=y
+-CONFIG_CPU_IDLE_GOV_LADDER=y
+-CONFIG_CPU_LITTLE_ENDIAN=y
+-CONFIG_CPU_MITIGATIONS=y
+-CONFIG_CPU_PABRT_V7=y
+-CONFIG_CPU_PM=y
+-CONFIG_CPU_RMAP=y
+-CONFIG_CPU_SPECTRE=y
+-CONFIG_CPU_THUMB_CAPABLE=y
+-CONFIG_CPU_TLB_V7=y
+-CONFIG_CPU_V7=y
+-CONFIG_CRC16=y
+-# CONFIG_CRC32_SARWATE is not set
+-CONFIG_CRC32_SLICEBY8=y
+-CONFIG_CROSS_MEMORY_ATTACH=y
+-CONFIG_CRYPTO_AES_ARM=y
+-CONFIG_CRYPTO_CRC32=y
+-CONFIG_CRYPTO_CRC32C=y
+-CONFIG_CRYPTO_CRYPTD=y
+-CONFIG_CRYPTO_DEFLATE=y
+-CONFIG_CRYPTO_DRBG=y
+-CONFIG_CRYPTO_DRBG_HMAC=y
+-CONFIG_CRYPTO_DRBG_MENU=y
+-CONFIG_CRYPTO_ECHAINIV=y
+-CONFIG_CRYPTO_GENIV=y
+-CONFIG_CRYPTO_HMAC=y
+-CONFIG_CRYPTO_JITTERENTROPY=y
+-CONFIG_CRYPTO_LIB_BLAKE2S_GENERIC=y
+-CONFIG_CRYPTO_LIB_GF128MUL=y
+-CONFIG_CRYPTO_LIB_SHA1=y
+-CONFIG_CRYPTO_LIB_SHA256=y
+-CONFIG_CRYPTO_LIB_UTILS=y
+-CONFIG_CRYPTO_LZ4=y
+-CONFIG_CRYPTO_LZ4HC=y
+-CONFIG_CRYPTO_LZO=y
+-CONFIG_CRYPTO_RNG=y
+-CONFIG_CRYPTO_RNG2=y
+-CONFIG_CRYPTO_RNG_DEFAULT=y
+-CONFIG_CRYPTO_RSA=y
+-CONFIG_CRYPTO_SEQIV=y
+-CONFIG_CRYPTO_SHA1=y
+-CONFIG_CRYPTO_SHA1_ARM=y
+-CONFIG_CRYPTO_SHA256=y
+-CONFIG_CRYPTO_SHA256_ARM=y
+-CONFIG_CRYPTO_SHA3=y
+-CONFIG_CRYPTO_SHA512=y
+-CONFIG_CRYPTO_SHA512_ARM=y
+-CONFIG_CRYPTO_TWOFISH=y
+-CONFIG_CRYPTO_TWOFISH_COMMON=y
+-CONFIG_CURRENT_POINTER_IN_TPIDRURO=y
+-CONFIG_DCACHE_WORD_ACCESS=y
+-CONFIG_DDR=y
+-CONFIG_DEBUG_ALIGN_RODATA=y
+-CONFIG_DEBUG_INFO=y
+-CONFIG_DEBUG_LL_INCLUDE="mach/debug-macro.S"
+-# CONFIG_DEVFREQ_GOV_PASSIVE is not set
+-# CONFIG_DEVFREQ_GOV_PERFORMANCE is not set
+-# CONFIG_DEVFREQ_GOV_POWERSAVE is not set
+-CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+-# CONFIG_DEVFREQ_GOV_USERSPACE is not set
+-CONFIG_DEVFREQ_THERMAL=y
+-# CONFIG_DEVPORT is not set
+-CONFIG_DMADEVICES=y
+-CONFIG_DMA_CMA=y
+-CONFIG_DMA_ENGINE=y
+-CONFIG_DMA_OF=y
+-CONFIG_DMA_OPS=y
+-CONFIG_DMA_SHARED_BUFFER=y
+-CONFIG_DNOTIFY=y
+-CONFIG_DRM=y
+-CONFIG_DRM_BRIDGE=y
+-CONFIG_DRM_DISPLAY_DP_HELPER=y
+-CONFIG_DRM_DISPLAY_HDMI_HELPER=y
+-CONFIG_DRM_DISPLAY_HELPER=y
+-CONFIG_DRM_DP_AUX_BUS=y
+-CONFIG_DRM_FBDEV_EMULATION=y
+-CONFIG_DRM_FBDEV_OVERALLOC=100
+-CONFIG_DRM_KMS_HELPER=y
+-CONFIG_DRM_MIPI_DSI=y
+-CONFIG_DRM_PANEL=y
+-CONFIG_DRM_PANEL_BRIDGE=y
+-CONFIG_DRM_PANEL_ORIENTATION_QUIRKS=y
+-CONFIG_DRM_TEGRA=y
+-# CONFIG_DRM_TEGRA_DEBUG is not set
+-# CONFIG_DRM_TEGRA_STAGING is not set
+-CONFIG_DTC=y
+-CONFIG_EDAC_ATOMIC_SCRUB=y
+-CONFIG_EDAC_SUPPORT=y
+-CONFIG_EXCLUSIVE_SYSTEM_RAM=y
+-CONFIG_EXT4_FS=y
+-CONFIG_EXTCON=y
+-CONFIG_F2FS_FS=y
+-CONFIG_FB=y
+-CONFIG_FB_CORE=y
+-CONFIG_FB_DEFERRED_IO=y
+-CONFIG_FB_DMAMEM_HELPERS=y
+-CONFIG_FB_IOMEM_FOPS=y
+-CONFIG_FB_SYSMEM_HELPERS=y
+-CONFIG_FB_SYSMEM_HELPERS_DEFERRED=y
+-CONFIG_FB_SYS_COPYAREA=y
+-CONFIG_FB_SYS_FILLRECT=y
+-CONFIG_FB_SYS_FOPS=y
+-CONFIG_FB_SYS_IMAGEBLIT=y
+-CONFIG_FIX_EARLYCON_MEM=y
+-CONFIG_FS_IOMAP=y
+-CONFIG_FS_MBCACHE=y
+-CONFIG_FUNCTION_ALIGNMENT=0
+-CONFIG_FW_LOADER_PAGED_BUF=y
+-CONFIG_FW_LOADER_SYSFS=y
+-CONFIG_GCC_ASM_GOTO_OUTPUT_WORKAROUND=y
+-CONFIG_GENERIC_ALLOCATOR=y
+-CONFIG_GENERIC_ARCH_TOPOLOGY=y
+-CONFIG_GENERIC_BUG=y
+-CONFIG_GENERIC_CLOCKEVENTS=y
+-CONFIG_GENERIC_CLOCKEVENTS_BROADCAST=y
+-CONFIG_GENERIC_CPU_AUTOPROBE=y
+-CONFIG_GENERIC_CPU_VULNERABILITIES=y
+-CONFIG_GENERIC_EARLY_IOREMAP=y
+-CONFIG_GENERIC_GETTIMEOFDAY=y
+-CONFIG_GENERIC_IDLE_POLL_SETUP=y
+-CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK=y
+-CONFIG_GENERIC_IRQ_MIGRATION=y
+-CONFIG_GENERIC_IRQ_MULTI_HANDLER=y
+-CONFIG_GENERIC_IRQ_SHOW=y
+-CONFIG_GENERIC_IRQ_SHOW_LEVEL=y
+-CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED=y
+-CONFIG_GENERIC_MSI_IRQ=y
+-CONFIG_GENERIC_PCI_IOMAP=y
+-CONFIG_GENERIC_PHY=y
+-CONFIG_GENERIC_PINCONF=y
+-CONFIG_GENERIC_PINCTRL_GROUPS=y
+-CONFIG_GENERIC_PINMUX_FUNCTIONS=y
+-CONFIG_GENERIC_SCHED_CLOCK=y
+-CONFIG_GENERIC_SMP_IDLE_THREAD=y
+-CONFIG_GENERIC_STRNCPY_FROM_USER=y
+-CONFIG_GENERIC_STRNLEN_USER=y
+-CONFIG_GENERIC_TIME_VSYSCALL=y
+-CONFIG_GENERIC_VDSO_32=y
+-CONFIG_GLOB=y
+-CONFIG_GPIOLIB_IRQCHIP=y
+-CONFIG_GPIO_CDEV=y
+-CONFIG_GPIO_TEGRA=y
+-CONFIG_HARDEN_BRANCH_PREDICTOR=y
+-CONFIG_HARDIRQS_SW_RESEND=y
+-CONFIG_HAS_DMA=y
+-CONFIG_HAS_IOMEM=y
+-CONFIG_HAS_IOPORT=y
+-CONFIG_HAS_IOPORT_MAP=y
+-CONFIG_HAVE_SMP=y
+-CONFIG_HDMI=y
+-CONFIG_HIGHMEM=y
+-CONFIG_HIGHPTE=y
+-CONFIG_HOTPLUG_CORE_SYNC=y
+-CONFIG_HOTPLUG_CORE_SYNC_DEAD=y
+-CONFIG_HOTPLUG_CPU=y
+-CONFIG_HWMON=y
+-CONFIG_HZ_FIXED=0
+-CONFIG_HZ_PERIODIC=y
+-CONFIG_I2C=y
+-CONFIG_I2C_ALGOBIT=y
+-CONFIG_I2C_BOARDINFO=y
+-CONFIG_I2C_COMPAT=y
+-CONFIG_I2C_TEGRA=y
+-CONFIG_INITRAMFS_SOURCE=""
+-CONFIG_INPUT=y
+-CONFIG_INPUT_KEYBOARD=y
+-CONFIG_INPUT_VIVALDIFMAP=y
+-CONFIG_INTERCONNECT=y
+-# CONFIG_IOMMUFD is not set
+-CONFIG_IOMMU_API=y
+-# CONFIG_IOMMU_DEBUGFS is not set
+-# CONFIG_IOMMU_DEFAULT_DMA_LAZY is not set
+-CONFIG_IOMMU_DEFAULT_DMA_STRICT=y
+-# CONFIG_IOMMU_DEFAULT_PASSTHROUGH is not set
+-CONFIG_IOMMU_IOVA=y
+-# CONFIG_IOMMU_IO_PGTABLE_ARMV7S is not set
+-# CONFIG_IOMMU_IO_PGTABLE_LPAE is not set
+-CONFIG_IOMMU_SUPPORT=y
+-CONFIG_IRQCHIP=y
+-CONFIG_IRQSTACKS=y
+-CONFIG_IRQ_DOMAIN=y
+-CONFIG_IRQ_DOMAIN_HIERARCHY=y
+-CONFIG_IRQ_FORCED_THREADING=y
+-CONFIG_IRQ_WORK=y
+-CONFIG_JBD2=y
+-CONFIG_KCMP=y
+-CONFIG_KEYBOARD_ATKBD=y
+-CONFIG_KMAP_LOCAL=y
+-CONFIG_KMAP_LOCAL_NON_LINEAR_PTE_ARRAY=y
+-CONFIG_LIBFDT=y
+-CONFIG_LOCK_DEBUGGING_SUPPORT=y
+-CONFIG_LOCK_SPIN_ON_OWNER=y
+-CONFIG_LZ4HC_COMPRESS=y
+-CONFIG_LZ4_COMPRESS=y
+-CONFIG_LZ4_DECOMPRESS=y
+-CONFIG_LZO_COMPRESS=y
+-CONFIG_LZO_DECOMPRESS=y
+-CONFIG_MEDIA_CONTROLLER=y
+-CONFIG_MEDIA_CONTROLLER_REQUEST_API=y
+-CONFIG_MEDIA_PLATFORM_DRIVERS=y
+-CONFIG_MEDIA_PLATFORM_SUPPORT=y
+-CONFIG_MEDIA_SUPPORT=y
+-CONFIG_MEDIA_SUPPORT_FILTER=y
+-CONFIG_MEMORY=y
+-CONFIG_MEMORY_ISOLATION=y
+-# CONFIG_MFD_ACER_A500_EC is not set
+-# CONFIG_MFD_NVEC is not set
+-CONFIG_MIGHT_HAVE_CACHE_L2X0=y
+-CONFIG_MIGRATION=y
+-CONFIG_MMC=y
+-CONFIG_MMC_BLOCK=y
+-CONFIG_MMC_CQHCI=y
+-CONFIG_MMC_SDHCI=y
+-CONFIG_MMC_SDHCI_IO_ACCESSORS=y
+-# CONFIG_MMC_SDHCI_PCI is not set
+-CONFIG_MMC_SDHCI_PLTFM=y
+-CONFIG_MMC_SDHCI_TEGRA=y
+-CONFIG_MMU_LAZY_TLB_REFCOUNT=y
+-CONFIG_MODULES_USE_ELF_REL=y
+-CONFIG_MPILIB=y
+-CONFIG_MTD_SPI_NOR=y
+-CONFIG_MTD_SPI_NOR_USE_4K_SECTORS=y
+-CONFIG_MUTEX_SPIN_ON_OWNER=y
+-CONFIG_NEED_DMA_MAP_STATE=y
+-CONFIG_NEED_SRCU_NMI_SAFE=y
+-# CONFIG_NEON is not set
+-CONFIG_NET_EGRESS=y
+-CONFIG_NET_FLOW_LIMIT=y
+-CONFIG_NET_INGRESS=y
+-CONFIG_NET_XGRESS=y
+-CONFIG_NLS=y
+-CONFIG_NR_CPUS=4
+-CONFIG_NVMEM=y
+-CONFIG_NVMEM_LAYOUTS=y
+-CONFIG_OF=y
+-CONFIG_OF_ADDRESS=y
+-CONFIG_OF_EARLY_FLATTREE=y
+-CONFIG_OF_FLATTREE=y
+-CONFIG_OF_GPIO=y
+-CONFIG_OF_IOMMU=y
+-CONFIG_OF_IRQ=y
+-CONFIG_OF_KOBJ=y
+-CONFIG_OLD_SIGACTION=y
+-CONFIG_OLD_SIGSUSPEND3=y
+-CONFIG_OUTER_CACHE=y
+-CONFIG_OUTER_CACHE_SYNC=y
+-CONFIG_PADATA=y
+-CONFIG_PAGE_OFFSET=0xC0000000
+-CONFIG_PAGE_POOL=y
+-CONFIG_PAGE_SIZE_LESS_THAN_256KB=y
+-CONFIG_PAGE_SIZE_LESS_THAN_64KB=y
+-CONFIG_PAHOLE_HAS_LANG_EXCLUDE=y
+-CONFIG_PCI=y
+-CONFIG_PCIEAER=y
+-CONFIG_PCIEASPM=y
+-CONFIG_PCIEASPM_DEFAULT=y
+-# CONFIG_PCIEASPM_PERFORMANCE is not set
+-# CONFIG_PCIEASPM_POWERSAVE is not set
+-# CONFIG_PCIEASPM_POWER_SUPERSAVE is not set
+-CONFIG_PCIEPORTBUS=y
+-CONFIG_PCIE_PME=y
+-CONFIG_PCI_DOMAINS=y
+-CONFIG_PCI_DOMAINS_GENERIC=y
+-CONFIG_PCI_MSI=y
+-CONFIG_PCI_TEGRA=y
+-CONFIG_PERF_USE_VMALLOC=y
+-CONFIG_PGTABLE_LEVELS=2
+-CONFIG_PHY_TEGRA_XUSB=y
+-CONFIG_PINCTRL=y
+-CONFIG_PINCTRL_TEGRA=y
+-CONFIG_PINCTRL_TEGRA20=y
+-CONFIG_PINCTRL_TEGRA_XUSB=y
+-CONFIG_PL310_ERRATA_727915=y
+-CONFIG_PL310_ERRATA_769419=y
+-CONFIG_PL353_SMC=y
+-CONFIG_PM=y
+-CONFIG_PM_CLK=y
+-CONFIG_PM_DEVFREQ=y
+-# CONFIG_PM_DEVFREQ_EVENT is not set
+-CONFIG_PM_GENERIC_DOMAINS=y
+-CONFIG_PM_GENERIC_DOMAINS_OF=y
+-CONFIG_PM_OPP=y
+-CONFIG_POWER_RESET=y
+-CONFIG_POWER_RESET_GPIO=y
+-CONFIG_POWER_SUPPLY=y
+-CONFIG_PREEMPT_NONE_BUILD=y
+-CONFIG_PROC_PAGE_MONITOR=y
+-CONFIG_PTP_1588_CLOCK_OPTIONAL=y
+-CONFIG_PWM=y
+-CONFIG_PWM_SYSFS=y
+-CONFIG_PWM_TEGRA=y
+-CONFIG_RANDSTRUCT_NONE=y
+-CONFIG_RAS=y
+-CONFIG_RATIONAL=y
+-CONFIG_REGMAP=y
+-CONFIG_REGMAP_I2C=y
+-CONFIG_REGMAP_MMIO=y
+-CONFIG_REGMAP_SPI=y
+-CONFIG_REGULATOR=y
+-CONFIG_REGULATOR_FIXED_VOLTAGE=y
+-CONFIG_REGULATOR_GPIO=y
+-CONFIG_RESET_CONTROLLER=y
+-CONFIG_RFS_ACCEL=y
+-CONFIG_RPS=y
+-CONFIG_RTC_CLASS=y
+-# CONFIG_RTC_DRV_CMOS is not set
+-CONFIG_RTC_DRV_TEGRA=y
+-CONFIG_RTC_I2C_AND_SPI=y
+-CONFIG_RTC_NVMEM=y
+-CONFIG_RWSEM_SPIN_ON_OWNER=y
+-CONFIG_SCSI=y
+-CONFIG_SCSI_COMMON=y
+-# CONFIG_SCSI_LOWLEVEL is not set
+-# CONFIG_SCSI_PROC_FS is not set
+-CONFIG_SERIAL_8250_FSL=y
+-CONFIG_SERIAL_8250_TEGRA=y
+-CONFIG_SERIAL_MCTRL_GPIO=y
+-CONFIG_SERIAL_OF_PLATFORM=y
+-CONFIG_SERIAL_TEGRA=y
+-CONFIG_SERIO=y
+-CONFIG_SERIO_LIBPS2=y
+-CONFIG_SGL_ALLOC=y
+-CONFIG_SG_POOL=y
+-CONFIG_SMP=y
+-CONFIG_SMP_ON_UP=y
+-CONFIG_SND=y
+-CONFIG_SND_AUDIO_GRAPH_CARD=y
+-# CONFIG_SND_COMPRESS_OFFLOAD is not set
+-CONFIG_SND_DMAENGINE_PCM=y
+-# CONFIG_SND_HDA_TEGRA is not set
+-CONFIG_SND_JACK=y
+-CONFIG_SND_JACK_INPUT_DEV=y
+-# CONFIG_SND_PCI is not set
+-CONFIG_SND_PCM=y
+-CONFIG_SND_PCM_ELD=y
+-CONFIG_SND_PCM_IEC958=y
+-# CONFIG_SND_PROC_FS is not set
+-CONFIG_SND_SIMPLE_CARD=y
+-CONFIG_SND_SIMPLE_CARD_UTILS=y
+-CONFIG_SND_SOC=y
+-CONFIG_SND_SOC_AC97_BUS=y
+-CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM=y
+-CONFIG_SND_SOC_HDMI_CODEC=y
+-CONFIG_SND_SOC_I2C_AND_SPI=y
+-CONFIG_SND_SOC_TEGRA=y
+-# CONFIG_SND_SOC_TEGRA186_ASRC is not set
+-# CONFIG_SND_SOC_TEGRA186_DSPK is not set
+-CONFIG_SND_SOC_TEGRA20_AC97=y
+-CONFIG_SND_SOC_TEGRA20_DAS=y
+-CONFIG_SND_SOC_TEGRA20_I2S=y
+-CONFIG_SND_SOC_TEGRA20_SPDIF=y
+-# CONFIG_SND_SOC_TEGRA210_ADMAIF is not set
+-# CONFIG_SND_SOC_TEGRA210_ADX is not set
+-# CONFIG_SND_SOC_TEGRA210_AHUB is not set
+-# CONFIG_SND_SOC_TEGRA210_AMX is not set
+-# CONFIG_SND_SOC_TEGRA210_DMIC is not set
+-# CONFIG_SND_SOC_TEGRA210_I2S is not set
+-# CONFIG_SND_SOC_TEGRA210_MIXER is not set
+-# CONFIG_SND_SOC_TEGRA210_MVC is not set
+-# CONFIG_SND_SOC_TEGRA210_OPE is not set
+-# CONFIG_SND_SOC_TEGRA210_SFC is not set
+-# CONFIG_SND_SOC_TEGRA30_AHUB is not set
+-# CONFIG_SND_SOC_TEGRA30_I2S is not set
+-# CONFIG_SND_SOC_TEGRA_ALC5632 is not set
+-# CONFIG_SND_SOC_TEGRA_AUDIO_GRAPH_CARD is not set
+-CONFIG_SND_SOC_TEGRA_MACHINE_DRV=y
+-# CONFIG_SND_SOC_TEGRA_MAX98088 is not set
+-# CONFIG_SND_SOC_TEGRA_MAX98090 is not set
+-# CONFIG_SND_SOC_TEGRA_RT5631 is not set
+-# CONFIG_SND_SOC_TEGRA_RT5640 is not set
+-# CONFIG_SND_SOC_TEGRA_RT5677 is not set
+-# CONFIG_SND_SOC_TEGRA_SGTL5000 is not set
+-CONFIG_SND_SOC_TEGRA_TRIMSLICE=y
+-# CONFIG_SND_SOC_TEGRA_WM8753 is not set
+-# CONFIG_SND_SOC_TEGRA_WM8903 is not set
+-# CONFIG_SND_SOC_TEGRA_WM9712 is not set
+-CONFIG_SND_SOC_TLV320AIC23=y
+-CONFIG_SND_SOC_TLV320AIC23_I2C=y
+-# CONFIG_SND_USB is not set
+-CONFIG_SOCK_RX_QUEUE_MAPPING=y
+-CONFIG_SOC_BUS=y
+-CONFIG_SOC_TEGRA20_VOLTAGE_COUPLER=y
+-CONFIG_SOC_TEGRA_FLOWCTRL=y
+-CONFIG_SOC_TEGRA_FUSE=y
+-CONFIG_SOC_TEGRA_PMC=y
+-CONFIG_SOFTIRQ_ON_OWN_STACK=y
+-CONFIG_SOUND=y
+-CONFIG_SOUND_OSS_CORE=y
+-CONFIG_SOUND_OSS_CORE_PRECLAIM=y
+-CONFIG_SPARSE_IRQ=y
+-CONFIG_SPI=y
+-CONFIG_SPI_MASTER=y
+-CONFIG_SPI_MEM=y
+-# CONFIG_SPI_TEGRA114 is not set
+-CONFIG_SPI_TEGRA20_SFLASH=y
+-CONFIG_SPI_TEGRA20_SLINK=y
+-# CONFIG_SPI_TEGRA210_QUAD is not set
+-CONFIG_SQUASHFS_DECOMP_MULTI_PERCPU=y
+-CONFIG_SRAM=y
+-CONFIG_SRAM_EXEC=y
+-CONFIG_SWP_EMULATE=y
+-CONFIG_SYNC_FILE=y
+-CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+-# CONFIG_TEGRA186_TIMER is not set
+-CONFIG_TEGRA20_APB_DMA=y
+-CONFIG_TEGRA20_EMC=y
+-# CONFIG_TEGRA210_ADMA is not set
+-# CONFIG_TEGRA_ACONNECT is not set
+-CONFIG_TEGRA_AHB=y
+-CONFIG_TEGRA_GMI=y
+-CONFIG_TEGRA_HOST1X=y
+-CONFIG_TEGRA_HOST1X_CONTEXT_BUS=y
+-CONFIG_TEGRA_HOST1X_FIREWALL=y
+-CONFIG_TEGRA_IOMMU_GART=y
+-# CONFIG_TEGRA_IOMMU_SMMU is not set
+-# CONFIG_TEGRA_IVC is not set
+-CONFIG_TEGRA_MC=y
+-CONFIG_TEGRA_SOCTHERM=y
+-CONFIG_TEGRA_TIMER=y
+-CONFIG_TEGRA_WATCHDOG=y
+-CONFIG_THREAD_INFO_IN_TASK=y
+-CONFIG_TICK_CPU_ACCOUNTING=y
+-CONFIG_TIMER_OF=y
+-CONFIG_TIMER_PROBE=y
+-CONFIG_TREE_RCU=y
+-CONFIG_TREE_SRCU=y
+-# CONFIG_UCLAMP_TASK is not set
+-CONFIG_UNCOMPRESS_INCLUDE="debug/uncompress.h"
+-CONFIG_UNWINDER_ARM=y
+-CONFIG_USB=y
+-CONFIG_USB_CHIPIDEA=y
+-CONFIG_USB_CHIPIDEA_HOST=y
+-CONFIG_USB_CHIPIDEA_TEGRA=y
+-CONFIG_USB_CHIPIDEA_UDC=y
+-CONFIG_USB_COMMON=y
+-CONFIG_USB_CONN_GPIO=y
+-CONFIG_USB_EHCI_HCD=y
+-# CONFIG_USB_EHCI_HCD_PLATFORM is not set
+-CONFIG_USB_EHCI_TEGRA=y
+-CONFIG_USB_GADGET=y
+-CONFIG_USB_PHY=y
+-CONFIG_USB_ROLE_SWITCH=y
+-CONFIG_USB_SUPPORT=y
+-CONFIG_USB_TEGRA_PHY=y
+-# CONFIG_USB_TEGRA_XUDC is not set
+-CONFIG_USB_ULPI=y
+-CONFIG_USB_ULPI_BUS=y
+-CONFIG_USB_ULPI_VIEWPORT=y
+-# CONFIG_USB_XHCI_TEGRA is not set
+-CONFIG_USE_OF=y
+-CONFIG_V4L2_H264=y
+-CONFIG_V4L2_MEM2MEM_DEV=y
+-CONFIG_V4L_MEM2MEM_DRIVERS=y
+-CONFIG_V4L_PLATFORM_DRIVERS=y
+-CONFIG_VFP=y
+-CONFIG_VFPv3=y
+-CONFIG_VIDEOBUF2_CORE=y
+-CONFIG_VIDEOBUF2_DMA_CONTIG=y
+-CONFIG_VIDEOBUF2_DMA_SG=y
+-CONFIG_VIDEOBUF2_MEMOPS=y
+-CONFIG_VIDEOBUF2_V4L2=y
+-CONFIG_VIDEO_CMDLINE=y
+-CONFIG_VIDEO_DEV=y
+-CONFIG_VIDEO_NOMODESET=y
+-CONFIG_VIDEO_TEGRA_VDE=y
+-CONFIG_VIDEO_V4L2_I2C=y
+-CONFIG_WATCHDOG_CORE=y
+-# CONFIG_WQ_POWER_EFFICIENT_DEFAULT is not set
+-CONFIG_XPS=y
+-CONFIG_XZ_DEC_ARM=y
+-CONFIG_XZ_DEC_ARMTHUMB=y
+-CONFIG_XZ_DEC_BCJ=y
+-CONFIG_ZBOOT_ROM_BSS=0
+-CONFIG_ZBOOT_ROM_TEXT=0
+-CONFIG_ZLIB_DEFLATE=y
+-CONFIG_ZLIB_INFLATE=y
+diff --git a/target/linux/tegra/patches-6.6/100-serial8250-on-tegra-hsuart-recover-from-spurious-interrupts-due-to-tegra2-silicon-bug.patch b/target/linux/tegra/patches-6.6/100-serial8250-on-tegra-hsuart-recover-from-spurious-interrupts-due-to-tegra2-silicon-bug.patch
+deleted file mode 100644
+index 8f01f73eb24a..000000000000
+--- a/target/linux/tegra/patches-6.6/100-serial8250-on-tegra-hsuart-recover-from-spurious-interrupts-due-to-tegra2-silicon-bug.patch
++++ /dev/null
+@@ -1,77 +0,0 @@
+-From patchwork Fri Jul 13 11:32:42 2018
+-Content-Type: text/plain; charset="utf-8"
+-MIME-Version: 1.0
+-Content-Transfer-Encoding: 7bit
+-Subject: serial8250 on tegra hsuart: recover from spurious interrupts due to
+- tegra2 silicon bug
+-X-Patchwork-Submitter: "David R. Piegdon" <lkml at p23q.org>
+-X-Patchwork-Id: 943440
+-Message-Id: <4676ea34-69ce-5422-1ded-94218b89f7d9 at p23q.org>
+-To: linux-tegra at vger.kernel.org
+-Date: Fri, 13 Jul 2018 11:32:42 +0000
+-From: "David R. Piegdon" <lkml at p23q.org>
+-List-Id: <linux-tegra.vger.kernel.org>
+-
+-Hi,
+-a while back I sent a few mails regarding spurious interrupts in the
+-UARTA (hsuart) block of the Tegra2 SoC, when using the 8250 driver for
+-it instead of the hsuart driver. After going down a pretty deep
+-debugging/testing hole, I think I found a patch that fixes the issue. So
+-far testing in a reboot-cycle suggests that the error frequency dropped
+-from >3% of all reboots to at least <0.05% of all reboots. Tests
+-continue to run over the weekend.
+-
+-The patch below already is a second iteration; the first did not reset
+-the MCR or contain the lines below '// clear interrupts'. This resulted
+-in no more spurious interrupts, but in a few % of spurious interrupts
+-that were recovered the UART block did not receive any characters any
+-more. So further resetting was required to fully reacquire operational
+-state of the UART block.
+-
+-I'd love any comments/suggestions on this!
+-
+-Cheers,
+-
+-David
+-
+---- a/drivers/tty/serial/8250/8250_core.c
+-+++ b/drivers/tty/serial/8250/8250_core.c
+-@@ -134,6 +134,38 @@ static irqreturn_t serial8250_interrupt(
+- 
+- 		if (l == i->head && pass_counter++ > PASS_LIMIT)
+- 			break;
+-+
+-+#ifdef CONFIG_ARCH_TEGRA_2x_SOC
+-+		if (!handled && (port->type == PORT_TEGRA)) {
+-+			/*
+-+			 * Fix Tegra 2 CPU silicon bug where sometimes
+-+			 * "TX holding register empty" interrupts result in a
+-+			 * bad (metastable?) state in Tegras HSUART IP core.
+-+			 * Only way to recover seems to be to reset all
+-+			 * interrupts as well as the TX queue and the MCR.
+-+			 * But we don't want to loose any outgoing characters,
+-+			 * so only do it if the RX and TX queues are empty.
+-+			 */
+-+			unsigned char lsr = port->serial_in(port, UART_LSR);
+-+			const unsigned char fifo_empty_mask =
+-+						(UART_LSR_TEMT | UART_LSR_THRE);
+-+			if (((lsr & (UART_LSR_DR | fifo_empty_mask)) ==
+-+							fifo_empty_mask)) {
+-+				port->serial_out(port, UART_IER, 0);
+-+				port->serial_out(port, UART_MCR, 0);
+-+				serial8250_clear_and_reinit_fifos(up);
+-+				port->serial_out(port, UART_MCR, up->mcr);
+-+				port->serial_out(port, UART_IER, up->ier);
+-+				// clear interrupts
+-+				serial_port_in(port, UART_LSR);
+-+				serial_port_in(port, UART_RX);
+-+				serial_port_in(port, UART_IIR);
+-+				serial_port_in(port, UART_MSR);
+-+				up->lsr_saved_flags = 0;
+-+				up->msr_saved_flags = 0;
+-+			}
+-+		}
+-+#endif
+- 	} while (l != end);
+- 
+- 	spin_unlock(&i->lock);
+diff --git a/target/linux/tegra/patches-6.6/101-ARM-dtc-tegra-enable-front-panel-leds-in-TrimSlice.patch b/target/linux/tegra/patches-6.6/101-ARM-dtc-tegra-enable-front-panel-leds-in-TrimSlice.patch
+deleted file mode 100644
+index 9ec7f8b839f6..000000000000
+--- a/target/linux/tegra/patches-6.6/101-ARM-dtc-tegra-enable-front-panel-leds-in-TrimSlice.patch
++++ /dev/null
+@@ -1,46 +0,0 @@
+---- a/arch/arm/boot/dts/nvidia/tegra20-trimslice.dts
+-+++ b/arch/arm/boot/dts/nvidia/tegra20-trimslice.dts
+-@@ -201,16 +201,17 @@
+- 			conf_ata {
+- 				nvidia,pins = "ata", "atc", "atd", "ate",
+- 					"crtp", "dap2", "dap3", "dap4", "dta",
+--					"dtb", "dtc", "dtd", "dte", "gmb",
+--					"gme", "i2cp", "pta", "slxc", "slxd",
+--					"spdi", "spdo", "uda";
+-+					"dtb", "dtc", "dtd", "gmb", "gme",
+-+					"i2cp", "pta", "slxc", "slxd", "spdi",
+-+					"spdo", "uda";
+- 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+- 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+- 			};
+- 			conf_atb {
+- 				nvidia,pins = "atb", "cdev1", "cdev2", "dap1",
+--					"gma", "gmc", "gmd", "gpu", "gpu7",
+--					"gpv", "sdio1", "slxa", "slxk", "uac";
+-+					"dte", "gma", "gmc", "gmd", "gpu",
+-+					"gpu7", "gpv", "sdio1", "slxa", "slxk",
+-+					"uac";
+- 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+- 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+- 			};
+-@@ -408,6 +409,20 @@
+- 		};
+- 	};
+- 
+-+	gpio-leds {
+-+		compatible = "gpio-leds";
+-+
+-+		ds2 {
+-+			label = "trimslice:green:right";
+-+			gpios = <&gpio TEGRA_GPIO(D, 2) GPIO_ACTIVE_LOW>;
+-+		};
+-+
+-+		ds3 {
+-+			label = "trimslice:green:left";
+-+			gpios = <&gpio TEGRA_GPIO(BB, 5) GPIO_ACTIVE_LOW>;
+-+		};
+-+	};
+-+
+- 	poweroff {
+- 		compatible = "gpio-poweroff";
+- 		gpios = <&gpio TEGRA_GPIO(X, 7) GPIO_ACTIVE_LOW>;
+-- 
+2.51.2
+
+
+
+From fe at dev.tdt.de  Tue Nov 11 23:43:19 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Wed, 12 Nov 2025 08:43:19 +0100
+Subject: mwan3rtmon rewrite in ucode (Re: ucode for scripts)
+In-Reply-To: <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+Message-ID: <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+
+Hello Jonas,
+Hello Etienne,
+Hello Alex,
+
+I would like to join the discussion. Due to time constraints, I still 
+haven't
+managed to port mwan3 to use native nftables and also replace the shell 
+scripting
+mess. I experimented with C last year, but didn't get very far [1].
+
+I am currently considering using ucode to replace the shell scripting 
+mess. There
+was recently a merge that already converted the ubus backend into ucode 
+[2].
+@Etienne thanks for that.
+
+I would be delighted if we could find a way to work together to make 
+mwan3 fit
+for nftables and replace shell script handling with ucode.
+
+I included Alex in the discussion because he recently submitted a PR. It 
+contained
+a mini-mwan written in LUA.
+
+Best regards
+
+Florian
+
+[1] https://github.com/feckert/mwan4
+[2] 
+https://github.com/openwrt/packages/commit/6423781254b9f3e52c6102fb2cbcd9f99f2445a3
+[3] https://github.com/openwrt/packages/pull/27704
+
+
+On 2025-11-09 07:38, Jonas Lochmann wrote:
+> Am Sat, Nov 08, 2025 at 07:22:29PM -0500, schrieb Etienne Champetier:
+>> Le sam. 8 nov. 2025 ? 16:52, Jonas Lochmann <openwrt at jonaslochmann.de> 
+>> a ?crit :
+>> >
+>> > Am Sat, Nov 08, 2025 at 01:11:17PM -0500, schrieb Etienne Champetier:
+>> > > I also had a look at rewriting mwan3rtmon in ucode recently and I'm
+>> > > wondering if we could just get rid of it.
+>> > > Basically this script watches the main routing table to copy all non
+>> > > default routes, and also fill an ipset,
+>> >
+>> > It does this per interface and keeps the default rules of that
+>> > particular interface while also removing source based routing in case
+>> > of IPv6. (Well, this can be disabled, but I would not recommend that.)
+>> 
+>> Thanks for pointing that out, I missed that sed line
+>> 
+>> > > but I think using rules like 'lookup main suppress_prefixlength 0' we
+>> > > should be able to remove mwan3rtmon.
+>> >
+>> > But where do we get the default routes from then?
+>> 
+>> We still need something for the default routes indeed, but we can 
+>> simplify a bit
+>> Have something like
+>> ```
+>> 1000: from all lookup main suppress_prefixlength 0
+>> ```
+>> and then in table 1 / 2 ... just have the default route of each wan
+>> 
+>> This would also remove the need for the mwan3_connected_ipv4/6 ipsets
+>> as the mark doesn't matter if you match rule 1000 first.
+> 
+> I think that those ipsets are useless in any case as all local routes 
+> are in
+> all tables and thus you could pick any of them. But having first a 
+> "lookup
+> regular routes ignoring default routes" could simplify a few things.
+> 
+>> > I see no possibility to skip mwan3rtmon.
+>> 
+>> If we only have wans with static ips then we don't need mwan3rtmon 
+>> anymore ...
+>> so we would still need it :), but if it only handles default routes
+>> that's way less work to do.
+> 
+> That would remove that theoretical route update delay for local routes.
+> So I consider it an advantage. I would also go from the current 
+> imperative
+> implementation to a functional one: wait for changes; calculate new 
+> interface
+> specific tables; replace tables.
+> 
+>> Yep, there is very little explanation of why each piece is present
+>> Example, the ip rule
+>> ```
+>> 1001:    from all iif wan1 lookup 1
+>> ```
+>> I think it is used if we bind to the ip of wan1 (and not the device)
+>> to ensure the traffic goes out the right interface, but maybe it's for
+>> something else :(
+> 
+> That's about the input interface. It prevents routing from one wan to
+> another. But that's a task for the firewall and not mwan3.
+> 
+> I don't expect binding to an IP only to work correctly. There is a
+> reason why "mwan3 use" sets the fwmark.
+> 
+> I just found some rough description of the mwan3 architecture at
+> https://openwrt.org/docs/guide-user/network/wan/multiwan/mwan3
+
+
+From openwrt at jonaslochmann.de  Wed Nov 12 10:40:16 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Wed, 12 Nov 2025 19:40:16 +0100
+Subject: mwan3, mwan4, mini-mwan and further developments
+In-Reply-To: <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+Message-ID: <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+
+I think that the code from Etienne would be dropped long term. I
+dislike the design of keeping "variables" in the file system. Yes, it's
+the ramdisk, I know. But after removing that, not much is left from
+that ucode development. I see the same issue for mini-mwan - it
+communicates using files that contain the current status.
+
+Regarding simple solutions: Before I introduced mwan3, a simple in house
+solution based on iperf, a cron job and a simple route replacement was
+used. That provided a kind of HA (failover without manual actions), but
+no load balancing at all. This looks like mini-mwan, altough it uses
+pings instead and does not use cron.
+
+I did not took a closer look at mwan4 yet, but I like the idea. What is
+done in it and what is missing? I don't know the possibilities of ucode.
+If it does not have good support for parallel processing (ubus,
+subprocesses for pings), I actually consider that mwan4 (the C
+implementation) a good path forward.
+
+Regarding nftables: I see other options:
+
+- using fw4 as a foundation (thus using its fw4 table); its hook
+  mechanism most likely needs to be extended to make this usable
+- using the library version of nftables libnftnl (yes, this is still
+  nftables, but much nicer than generating text to just throw it into
+  a parser as fw4 does it)
+
+I assume that using an own mwan table in nftables would be useful. The
+priority system in nftables is flexible enough to make this work
+correctly.
+
+I see that we should have talked earlier about this topic.
+
+
+From fe at dev.tdt.de  Thu Nov 13 00:58:18 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Thu, 13 Nov 2025 09:58:18 +0100
+Subject: [PATCH] base-files: stage2: stop Wi-Fi service on firmware upgrade
+Message-ID: <20251113085818.371086-1-fe@dev.tdt.de>
+
+It may happen that the WiFi service cannot be stopped with a 'TERM' and
+'KILL' signal. As a result the firmware upgrade is failing with the
+following log messages.
+
+Mon Nov  3 21:28:06 CET 2025 upgrade: Sending KILL to remaining processes ...
+Mon Nov  3 21:28:06 CET 2025 upgrade: Sending signal KILL to hostapd (5664)
+Mon Nov  3 21:28:09 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:11 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:13 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:15 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:17 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:19 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:22 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:24 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:26 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+Mon Nov  3 21:28:28 CET 2025 upgrade: Failed to kill all processes.
+sysupgrade aborted with return code: 256
+
+It appears that this is because clients remain connected to the system
+via Wi-Fi during the system upgrade. The script call '/sbin/wifi down'
+before sending the 'TERM' and 'KILL' signal fixes the problem and the
+sysupgrade is completed successfully.
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ package/base-files/files/lib/upgrade/stage2 | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/package/base-files/files/lib/upgrade/stage2 b/package/base-files/files/lib/upgrade/stage2
+index 5ce0b3549c..00c957c8eb 100755
+--- a/package/base-files/files/lib/upgrade/stage2
++++ b/package/base-files/files/lib/upgrade/stage2
+@@ -154,6 +154,11 @@ killall -9 telnetd 2>/dev/null
+ killall -9 dropbear 2>/dev/null
+ killall -9 ash 2>/dev/null
+ 
++[ -f /sbin/wifi ] && {
++	v "Stopping Wi-Fi service"
++	/sbin/wifi down
++}
++
+ kill_remaining TERM
+ sleep 4
+ kill_remaining KILL 1
+-- 
+2.39.5
+
+
+
+From hacks at slashdirt.org  Thu Nov 13 01:04:45 2025
+From: hacks at slashdirt.org (Thibaut)
+Date: Thu, 13 Nov 2025 10:04:45 +0100
+Subject: [PATCH] base-files: stage2: stop Wi-Fi service on firmware
+ upgrade
+In-Reply-To: <20251113085818.371086-1-fe@dev.tdt.de>
+References: <20251113085818.371086-1-fe@dev.tdt.de>
+Message-ID: <F15DC952-11C7-471B-8AD3-8F11C92770E1@slashdirt.org>
+
+
+
+> Le 13 nov. 2025 ? 09:58, Florian Eckert <fe at dev.tdt.de> a ?crit :
+> 
+> It may happen that the WiFi service cannot be stopped with a 'TERM' and
+> 'KILL' signal. As a result the firmware upgrade is failing with the
+> following log messages.
+> 
+> Mon Nov  3 21:28:06 CET 2025 upgrade: Sending KILL to remaining processes ...
+> Mon Nov  3 21:28:06 CET 2025 upgrade: Sending signal KILL to hostapd (5664)
+> Mon Nov  3 21:28:09 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:11 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:13 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:15 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:17 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:19 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:22 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:24 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:26 CET 2025 upgrade: Sending signal KILL to hostapd (5688)
+> Mon Nov  3 21:28:28 CET 2025 upgrade: Failed to kill all processes.
+> sysupgrade aborted with return code: 256
+> 
+> It appears that this is because clients remain connected to the system
+> via Wi-Fi during the system upgrade. The script call '/sbin/wifi down'
+> before sending the 'TERM' and 'KILL' signal fixes the problem and the
+> sysupgrade is completed successfully.
+
+Err, isn?t this working around the actual issue here? It seems like a (serious?) problem that a process cannot be KILLed.
+
+This is bound to affect regular reboots as well, which in turn will have other consequences for end users.
+
+IMHO hostapd should be fixed instead.
+
+My 2c,
+T.
+
+
+
+From fe at dev.tdt.de  Thu Nov 13 01:24:04 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Thu, 13 Nov 2025 10:24:04 +0100
+Subject: [PATCH] base-files: stage2: stop Wi-Fi service on firmware
+ upgrade
+In-Reply-To: <F15DC952-11C7-471B-8AD3-8F11C92770E1@slashdirt.org>
+References: <20251113085818.371086-1-fe@dev.tdt.de>
+ <F15DC952-11C7-471B-8AD3-8F11C92770E1@slashdirt.org>
+Message-ID: <1b68511d743420129761a68fdc653336@dev.tdt.de>
+
+On 2025-11-13 10:04, Thibaut wrote:
+>> Le 13 nov. 2025 ? 09:58, Florian Eckert <fe at dev.tdt.de> a ?crit :
+>> 
+>> It may happen that the WiFi service cannot be stopped with a 'TERM' 
+>> and
+>> 'KILL' signal. As a result the firmware upgrade is failing with the
+>> following log messages.
+>> 
+>> Mon Nov  3 21:28:06 CET 2025 upgrade: Sending KILL to remaining 
+>> processes ...
+>> Mon Nov  3 21:28:06 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5664)
+>> Mon Nov  3 21:28:09 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:11 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:13 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:15 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:17 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:19 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:22 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:24 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:26 CET 2025 upgrade: Sending signal KILL to hostapd 
+>> (5688)
+>> Mon Nov  3 21:28:28 CET 2025 upgrade: Failed to kill all processes.
+>> sysupgrade aborted with return code: 256
+>> 
+>> It appears that this is because clients remain connected to the system
+>> via Wi-Fi during the system upgrade. The script call '/sbin/wifi down'
+>> before sending the 'TERM' and 'KILL' signal fixes the problem and the
+>> sysupgrade is completed successfully.
+> 
+> Err, isn?t this working around the actual issue here? It seems like a
+> (serious?) problem that a process cannot be KILLed.
+
+You may be right. When creating the patch, I thought about why hostapd
+does not respond to KILL!
+
+> This is bound to affect regular reboots as well, which in turn will
+> have other consequences for end users.
+
+I haven't seen any problems with that. The reboot has always worked so
+far. The problem with KILL doesn't seem to be relevant on reboot.
+
+> IMHO hostapd should be fixed instead.
+
+Of course, that would be the best solution, but currently it is a
+problem and I do not believe that the problem will be found quickly.
+
+I don't know where to start in hostpad. It may also depend on drivers
+(ath10k, ath11k, ...) and Wi-Fi firmware?
+
+--
+Florian
+
+
+From openwrt at jonaslochmann.de  Thu Nov 13 04:03:58 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Thu, 13 Nov 2025 13:03:58 +0100
+Subject: [PATCH] base-files: stage2: stop Wi-Fi service on firmware
+ upgrade
+In-Reply-To: <1b68511d743420129761a68fdc653336@dev.tdt.de>
+References: <20251113085818.371086-1-fe@dev.tdt.de>
+ <F15DC952-11C7-471B-8AD3-8F11C92770E1@slashdirt.org>
+ <1b68511d743420129761a68fdc653336@dev.tdt.de>
+Message-ID: <idjqcggg4ti2o4aeoqmlmlj2h7zl23rtdp3edci37tzt6ype2x@ogbdvuowjjst>
+
+Am Thu, Nov 13, 2025 at 10:24:04AM +0100, schrieb Florian Eckert:
+> On 2025-11-13 10:04, Thibaut wrote:
+> > IMHO hostapd should be fixed instead.
+> 
+> Of course, that would be the best solution, but currently it is a
+> problem and I do not believe that the problem will be found quickly.
+> 
+> I don't know where to start in hostpad. It may also depend on drivers
+> (ath10k, ath11k, ...) and Wi-Fi firmware?
+
+This sounds interesting. Where (at which hardware) does the issue occur?
+
+
+From fe at dev.tdt.de  Fri Nov 14 01:13:04 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Fri, 14 Nov 2025 10:13:04 +0100
+Subject: [PATCH] base-files: stage2: stop Wi-Fi service on firmware
+ upgrade
+In-Reply-To: <idjqcggg4ti2o4aeoqmlmlj2h7zl23rtdp3edci37tzt6ype2x@ogbdvuowjjst>
+References: <20251113085818.371086-1-fe@dev.tdt.de>
+ <F15DC952-11C7-471B-8AD3-8F11C92770E1@slashdirt.org>
+ <1b68511d743420129761a68fdc653336@dev.tdt.de>
+ <idjqcggg4ti2o4aeoqmlmlj2h7zl23rtdp3edci37tzt6ype2x@ogbdvuowjjst>
+Message-ID: <cfca2a55bb2fdcea716790b69a11afc4@dev.tdt.de>
+
+Hello Jonas,
+
+On 2025-11-13 13:03, Jonas Lochmann wrote:
+> Am Thu, Nov 13, 2025 at 10:24:04AM +0100, schrieb Florian Eckert:
+>> On 2025-11-13 10:04, Thibaut wrote:
+>> > IMHO hostapd should be fixed instead.
+>> 
+>> Of course, that would be the best solution, but currently it is a
+>> problem and I do not believe that the problem will be found quickly.
+>> 
+>> I don't know where to start in hostpad. It may also depend on drivers
+>> (ath10k, ath11k, ...) and Wi-Fi firmware?
+> 
+> This sounds interesting. Where (at which hardware) does the issue 
+> occur?
+
+I have encountered this on my openwrt-23.05 target with the following 
+setup.
+
+Hardware:
+0007:01:00.0 Network controller: Qualcomm Technologies, Inc QCNFA765 
+Wireless Network Adapter (rev 01)
+
+Software:
+
+ath11k-firmware-wcn6855 - 20230804-1
+kmod-ath11k - 5.15.189-6.1.145-1-1
+kmod-ath11k-pci - 5.15.189-6.1.145-1-1
+hostapd-common - 2023-09-08-e5ccbfc6-8
+hostapd-utils - 2023-09-08-e5ccbfc6-8
+
+Unfortunately, I cannot test my setup on an openwrt-24.10/master branch
+because the router is not supported there.I will test WLAN-Modul in
+another router running openwrt-24.10 when I have time or check if the
+error is also presented with an other WLAN-Modul.
+
+Best Regards
+
+Florian
+
+
+From openwrt at jonaslochmann.de  Fri Nov 14 12:12:55 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Fri, 14 Nov 2025 21:12:55 +0100
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+Message-ID: <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+
+So I took a look at mwan4 now and it looks like a skeleton. And I took a
+look at ucode and its capabilities: ubus and netlink are supported. I
+don't know how complete the netlink part is, but there was at least
+something with routes and it seems to be extendable at runtime by shared
+libraries exposing APIs in a certain way.
+
+Now I think that mwan3 could be modernized step by step:
+
+1.  replace the rpcd based ubus interface of mwan3 by a "real" service
+    implemented with ucode - but doing the same thing it does currently
+
+2.  manage state in the ucode service and not in files; provide a ubus
+    interface to get and set parameters
+
+3.1 manage the rtmon instances in the ucode service instead of using
+    procd and the init script for that
+3.2 implement rtmon within that service in ucode
+
+4.1 manage mwan3track instances by the ucode service
+4.2 implement mwan3track within the service in ucode
+
+5. replace iptables calls by nftables/libnft calls
+
+Those steps could be rearranged in many ways, but there are some
+dependencies between them.
+
+I could start with point 1 but I would like to get an OK from Florian
+Eckert first before I start this. I have to think where I can test this
+without annoying anyone.
+
+
+From champetier.etienne at gmail.com  Sat Nov 15 18:57:03 2025
+From: champetier.etienne at gmail.com (Etienne Champetier)
+Date: Sat, 15 Nov 2025 21:57:03 -0500
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de> <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+Message-ID: <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+
+(resending as text for the mailing-list)
+
+Hello Jonas,
+
+Pretty excited about this rewrite effort,
+don't know if I'll have much time to write code, but I'll definitely
+try to review / test.
+
+Le ven. 14 nov. 2025 ? 15:12, Jonas Lochmann
+<openwrt at jonaslochmann.de> a ?crit :
+>
+> So I took a look at mwan4 now and it looks like a skeleton. And I took a
+> look at ucode and its capabilities: ubus and netlink are supported. I
+> don't know how complete the netlink part is, but there was at least
+> something with routes and it seems to be extendable at runtime by shared
+> libraries exposing APIs in a certain way.
+
+or we can build libraries/bindings in C if needed,
+for example I would like mwan4track to ping / http(s)ping directly
+without exec-ing an external binary,
+we might need something to "ping" (ICMP echo) from ucode.
+
+> Now I think that mwan3 could be modernized step by step:
+>
+> 1.  replace the rpcd based ubus interface of mwan3 by a "real" service
+>     implemented with ucode - but doing the same thing it does currently
+>
+> 2.  manage state in the ucode service and not in files; provide a ubus
+>     interface to get and set parameters
+
+Maybe sum up the goals of having a main mwanX service, my list:
+- avoid serialisation to file in ramdisk
+- communicate via ubus
+- hot config reload, keeping the current mwanXtrack / mwanXrtmon
+status on reconfig / causing less interruption
+- ???
+
+> 3.1 manage the rtmon instances in the ucode service instead of using
+>     procd and the init script for that
+
+If we need multiple processes / small services, why manage the
+processes in ucode
+when procd is a service manager ? The init script when using `USE_PROCD=1`
+just make an ubus call to have procd launch a new process, so you can
+do just that,
+and benefit from the procd features (ujail / respawn / ...)
+
+> 3.2 implement rtmon within that service in ucode
+
+I would start with rewriting mwan3rtmon in ucode as it's self contained and
+is where we could find (temporary) blockers with the netlink bindings.
+
+Also at this stage do you just want to do a rewrite or also change how
+it works ?
+(I'm fine either way)
+
+> 4.1 manage mwan3track instances by the ucode service
+> 4.2 implement mwan3track within the service in ucode
+
+Do you want a single ucode process to track all wans ? Or keep 1
+process per wan ?
+In the first case we might be limited by being single threaded if we
+track a lot of wans.
+In the second case having each track instance managed by procd makes
+sense to me,
+i.e. having the main mwanX process (re)load the config, launch
+mwanXtrack instances via ubus,
+and the mwanXtrack sends back the status update via ubus.
+
+> 5. replace iptables calls by nftables/libnft calls
+
+Same question as with rtmon, do you want to rewrite as is first and
+optimise later ?
+
+> Those steps could be rearranged in many ways, but there are some
+> dependencies between them.
+>
+> I could start with point 1 but I would like to get an OK from Florian
+> Eckert first before I start this. I have to think where I can test this
+> without annoying anyone.
+
+For the tests I recommend you to just use an OpenWRT VM,
+with virt-manager (libvirt) you create multiple NAT virtual networks
+for the wans.
+
+Best
+Etienne
+
+
+From pny at posteo.net  Sun Nov 16 06:29:52 2025
+From: pny at posteo.net (pony)
+Date: Sun, 16 Nov 2025 14:29:52 +0000
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+Message-ID: <5728501.rdbgypaU67@komputereczek>
+
+Hello
+
+Nice to read about plans for a new mwan!
+
+On Sunday, 16 November 2025 03:57:03 Central European Standard Time 
+Etienne Champetier wrote:
+> we might need something to "ping" (ICMP echo) from ucode.
+
+This is already possible with the socket module. I've made a small ping 
+clone as a PoC some time ago:
+https://gist.github.com/pony1k/7c13013daf14b0abdd5c3e42bc8644e6
+
+usage example: ucode ping.uc openwrt.org
+
+Maybe this saves some time? It only does ICMPv6 though.
+
+Anyways, keep up the good work!
+
+Cheers,
+pony
+
+
+
+
+From noreply at github.com  Sun Nov 16 08:48:50 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 16 Nov 2025 08:48:50 -0800
+Subject: [sdwalker/sdwalker.github.io] cad7f8: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/de8e81-cad7f8@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: cad7f81c1b335f87e5e9414db42c9800aa4b4129
+      https://github.com/sdwalker/sdwalker.github.io/commit/cad7f81c1b335f87e5e9414db42c9800aa4b4129
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-11-16 (Sun, 16 Nov 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From openwrt at jonaslochmann.de  Sun Nov 16 09:42:22 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Sun, 16 Nov 2025 18:42:22 +0100
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+Message-ID: <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+
+Am Sat, Nov 15, 2025 at 09:57:03PM -0500, schrieb Etienne Champetier:
+> Pretty excited about this rewrite effort,
+> don't know if I'll have much time to write code, but I'll definitely
+> try to review / test.
+
+This should be enough.
+
+> or we can build libraries/bindings in C if needed,
+
+That is what I was referring to.
+
+> for example I would like mwan4track to ping / http(s)ping directly
+> without exec-ing an external binary,
+> we might need something to "ping" (ICMP echo) from ucode.
+
+I am not a fan of this idea. I would like to keep complex network
+interactions out of the service - ideally running with less privileges.
+The ICMP ping could be an exception, but this would complicats stuff.
+
+> Maybe sum up the goals of having a main mwanX service, my list:
+> - avoid serialisation to file in ramdisk
+> - communicate via ubus
+> - hot config reload, keeping the current mwanXtrack / mwanXrtmon
+> status on reconfig / causing less interruption
+> - ???
+
+This fits my goals. Another one is avoiding race conditions.
+
+> 
+> > 3.1 manage the rtmon instances in the ucode service instead of using
+> >     procd and the init script for that
+> 
+> If we need multiple processes / small services, why manage the
+> processes in ucode
+> when procd is a service manager ? The init script when using `USE_PROCD=1`
+> just make an ubus call to have procd launch a new process, so you can
+> do just that,
+> and benefit from the procd features (ujail / respawn / ...)
+
+This is to split the transition into multiple parts. First manage it by
+the new service, then remove the subprocess.
+
+> > 3.2 implement rtmon within that service in ucode
+> 
+> I would start with rewriting mwan3rtmon in ucode as it's self contained and
+> is where we could find (temporary) blockers with the netlink bindings.
+
+There will be no blockers because one could always call the "ip" binary.
+
+> Also at this stage do you just want to do a rewrite or also change how
+> it works ?
+> (I'm fine either way)
+
+When you ask for it: I would replace the incremental routing table update
+by a routine that calculates the new one. This would be triggered by any
+route change in the main table (with debouncing this to limit it to once
+per second).
+
+> > 4.1 manage mwan3track instances by the ucode service
+> > 4.2 implement mwan3track within the service in ucode
+> 
+> Do you want a single ucode process to track all wans ? Or keep 1
+> process per wan ?
+
+Only one process.
+
+> In the first case we might be limited by being single threaded if we
+> track a lot of wans.
+
+What's a lot? How powerful hardware would we expect in this cases?
+I never have more than three wans and always run mwan3 at x86 hardware.
+
+> In the second case having each track instance managed by procd makes
+> sense to me,
+> i.e. having the main mwanX process (re)load the config, launch
+> mwanXtrack instances via ubus,
+> and the mwanXtrack sends back the status update via ubus.
+> 
+> > 5. replace iptables calls by nftables/libnft calls
+> 
+> Same question as with rtmon, do you want to rewrite as is first and
+> optimise later ?
+
+I would start with nftables here and again with a functional style:
+just generate the new configuration when it changes.
+
+> For the tests I recommend you to just use an OpenWRT VM,
+> with virt-manager (libvirt) you create multiple NAT virtual networks
+> for the wans.
+
+Yes, this should be good start.
+
+
+From openwrt-devel at iremonger.me.uk  Mon Nov 17 02:36:04 2025
+From: openwrt-devel at iremonger.me.uk (Simon Iremonger)
+Date: Mon, 17 Nov 2025 10:36:04 +0000
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+ <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+Message-ID: <a28d60a0-b34a-4b7a-8c26-224ba2e9b74a@iremonger.me.uk>
+
+On 16/11/2025 17:42, Jonas Lochmann wrote:
+> Am Sat, Nov 15, 2025 at 09:57:03PM -0500, schrieb Etienne Champetier:
+>> Pretty excited about this rewrite effort,
+>> don't know if I'll have much time to write code, but I'll definitely
+>> try to review / test.
+
+Just to observe, in OpenWrt 24.10.4 mwan3 and ddns-scripts packages :-
+
+* mwan3 IPv6-tracking never seemn to work, never finds interface 'up'
+    despite the IPs in config pinging perfectly fine.  Maybe this
+    did work in older OpenWrt but not 24.10 series?
+
+* ddns-scripts IPv6 interface or IPv6-scrape [using
+     suggested checkipv6.dyndns.com or other tests], others report
+     having to use external script as workaround.
+
+I may well be able to help testing newer builds/tests in time for
+IPv6-enabledness; I have many IPv6 blocks, dynamic via other ISP,
+one DHCPv6, one static routing, etc --so options to do so.
+
+I would like to see convenient options for NAT66/etc options
+for failover IPv6 to work more easily / integrated where
+appropriate.  I do wonder if there are better ways this
+could or 'should' work that involve changing routing metrics
+on the fly so that current global address ranges get prioritised.
+
+
+--Simon
+
+
+
+From fe at dev.tdt.de  Mon Nov 17 03:02:27 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Mon, 17 Nov 2025 12:02:27 +0100
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+Message-ID: <29cf652eb71b00fc3b4609c43f2a7ecb@dev.tdt.de>
+
+Hello Jonas
+
+> So I took a look at mwan4 now and it looks like a skeleton.
+
+Here, I just tried to implement pinging in C with uloop. The
+rtmon and the firewall update still need to be implemented.
+
+> And I took a
+> look at ucode and its capabilities: ubus and netlink are supported. I
+> don't know how complete the netlink part is, but there was at least
+> something with routes and it seems to be extendable at runtime by 
+> shared
+> libraries exposing APIs in a certain way.
+
+If we want to use ucode, then we are entering new territory in terms of
+ucode and networking. We would then also have a script language again.
+This has advantages but also disadvantages in terms of runtime errors.
+
+> Now I think that mwan3 could be modernized step by step:
+
+We can certainly do that. However, it is important that we use the
+same configuration scheme as the current mwan3 implementation.
+If we don't start from scratch.
+
+> 1.  replace the rpcd based ubus interface of mwan3 by a "real" service
+>     implemented with ucode - but doing the same thing it does currently
+> 
+> 2.  manage state in the ucode service and not in files; provide a ubus
+>     interface to get and set parameters
+> 
+> 3.1 manage the rtmon instances in the ucode service instead of using
+>     procd and the init script for that
+> 3.2 implement rtmon within that service in ucode
+> 
+> 4.1 manage mwan3track instances by the ucode service
+> 4.2 implement mwan3track within the service in ucode
+> 
+> 5. replace iptables calls by nftables/libnft calls
+
+I would suggest to integrate the mwan3 firewall rules into the fw4
+include framework [1] with ucode. Then we would have everything in
+one place. We'll have to see if that's possible with fw4 and that
+all firewall extension are supported. The pbr tool in openwrt
+is using this include handling already [2].
+
+> I could start with point 1 but I would like to get an OK from Florian
+> Eckert first before I start this. I have to think where I can test this
+> without annoying anyone.
+
+In my view, there is no reason not to implement this. OK from my side.
+We should just agree whether we implement all this in ucode or C.
+Everything has its advantages and disadvantages.
+
+Best regards
+
+Florian
+
+[1] 
+https://openwrt.org/docs/guide-user/firewall/firewall_configuration?s[]=open&s[]=pass#includes_2203_and_later_with_fw4
+[2] 
+https://github.com/openwrt/packages/blob/master/net/pbr/files/etc/init.d/pbr#L60
+
+
+From openwrt at jonaslochmann.de  Mon Nov 17 11:33:41 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Mon, 17 Nov 2025 20:33:41 +0100
+Subject: mwan3 and IPv6
+In-Reply-To: <a28d60a0-b34a-4b7a-8c26-224ba2e9b74a@iremonger.me.uk>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+ <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+ <a28d60a0-b34a-4b7a-8c26-224ba2e9b74a@iremonger.me.uk>
+Message-ID: <hhsnmr4gvkvry34fphzleqblfgmkxy2zxyz4vc4cbbchnagozj@zrkyxtm2po62>
+
+I consider IPv6 support independent of mwan3 refactoring. It works in
+my setup.
+
+Regarding the IPv6 tracking, there is the issue with the source IP
+selection.
+
+Issue 1: removed (zero valid lifetime) IPv6 prefixes were kept as
+deprecated by odhcp6c [1]. The fix was merged two weeks ago. This
+should not have caused issues in mwan3 because deprecated prefixes
+should be avoided, but my attempt to fix that failed because the
+system lib change my mwan3 fix implementation depended on was not
+merged without a reason for a rejection [2, 3]. The current
+implementation just uses the first IP.
+
+Issue 2: Which first IP? In the end, the first one reported by odhcp6c
+because netifd keeps that sorting and returns that when someone queries
+it [4]. I am using an unpublished patch that sorts the IP by their
+"number" in netifd to deterministically get one IP as the first IP.
+This helps because odhcp6c adds new IPs as they are received at the
+end of the list. So you can start with [public IP, private IP] and
+once the public changes, it is [private IP, public IP] and pinging
+only works from the public one/when the public one is the first one.
+Another solution is forcing the fallback to the ip utitiliy instead of
+asking netifd in mwan3 because it sorts the IPs or gets them sorted
+from the kernel.
+
+Solution from the mwan3 side: better source IP selection. This is
+independent of other changes and only affects one particular routine.
+So public IPs and non deprecated IPs should be preferred. The open
+question is what happens if there is a private IP and a deprecated
+public IP.
+
+Without knowing ddns-scripts, they could be affected by the same issues.
+When asking a web service, then the kernel just picks the source IP
+and usally does a good job when doing that.
+
+Regarding the NAT: I have my patch for prefix rewriting using fw4 [5].
+There was no feedback that helped improving it and still no one feeling
+the need to merge it. This implementation rewrites the prefix if it
+does not fit to the output interface and otherwise keeps the address
+as it is. Because this is ucode, one can just apply the patch on the
+device itself and then add a masquerade-prefix instead of a masquerade
+rule.
+
+Now, one could add this to mwan3 instead once it uses nftables. Still,
+I consider this functionality useful even without mwan3, so it belongs
+to fw4 or some extra package, but the hooks provided by fw4 are not
+flexible enough for this use case.
+
+[1] https://github.com/openwrt/odhcp6c/pull/108
+[2] https://github.com/openwrt/packages/pull/23057
+[3] https://github.com/openwrt/openwrt/pull/14333
+[4] https://lists.openwrt.org/pipermail/openwrt-devel/2025-October/044321.html
+[5] https://lists.openwrt.org/pipermail/openwrt-devel/2025-October/044301.html
+
+Am Mon, Nov 17, 2025 at 10:36:04AM +0000, schrieb Simon Iremonger:
+> On 16/11/2025 17:42, Jonas Lochmann wrote:
+> > Am Sat, Nov 15, 2025 at 09:57:03PM -0500, schrieb Etienne Champetier:
+> > > Pretty excited about this rewrite effort,
+> > > don't know if I'll have much time to write code, but I'll definitely
+> > > try to review / test.
+> 
+> Just to observe, in OpenWrt 24.10.4 mwan3 and ddns-scripts packages :-
+> 
+> * mwan3 IPv6-tracking never seemn to work, never finds interface 'up'
+>    despite the IPs in config pinging perfectly fine.  Maybe this
+>    did work in older OpenWrt but not 24.10 series?
+> 
+> * ddns-scripts IPv6 interface or IPv6-scrape [using
+>     suggested checkipv6.dyndns.com or other tests], others report
+>     having to use external script as workaround.
+> 
+> I may well be able to help testing newer builds/tests in time for
+> IPv6-enabledness; I have many IPv6 blocks, dynamic via other ISP,
+> one DHCPv6, one static routing, etc --so options to do so.
+> 
+> I would like to see convenient options for NAT66/etc options
+> for failover IPv6 to work more easily / integrated where
+> appropriate.  I do wonder if there are better ways this
+> could or 'should' work that involve changing routing metrics
+> on the fly so that current global address ranges get prioritised.
+> 
+> 
+> --Simon
+> 
+
+
+From openwrt at jonaslochmann.de  Mon Nov 17 11:41:39 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Mon, 17 Nov 2025 20:41:39 +0100
+Subject: mwan3, mwan4, and the next steps
+In-Reply-To: <29cf652eb71b00fc3b4609c43f2a7ecb@dev.tdt.de>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <29cf652eb71b00fc3b4609c43f2a7ecb@dev.tdt.de>
+Message-ID: <uthtc2tqjnqewf7eynygzs27vqnit4ac3my77hkmjt4whlionp@pi7je6qsktx4>
+
+Am Mon, Nov 17, 2025 at 12:02:27PM +0100, schrieb Florian Eckert:
+> If we want to use ucode, then we are entering new territory in terms of
+> ucode and networking. We would then also have a script language again.
+> This has advantages but also disadvantages in terms of runtime errors.
+
+I consider that a good fit for improving mwan3. Depending on its outcome,
+mwan4/a C implementation could then turn out to be useful - or not.
+
+> > Now I think that mwan3 could be modernized step by step:
+> 
+> We can certainly do that. However, it is important that we use the
+> same configuration scheme as the current mwan3 implementation.
+> If we don't start from scratch.
+
+I know the rules.
+
+> I would suggest to integrate the mwan3 firewall rules into the fw4
+> include framework [1] with ucode. Then we would have everything in
+> one place. We'll have to see if that's possible with fw4 and that
+> all firewall extension are supported. The pbr tool in openwrt
+> is using this include handling already [2].
+
+I looked into it and it's to inflexible. You can only include nft files
+in the filesystem (and I want to avoid writing stuff into files again)
+or let fw4 execute some scripts AFTER the new configuration was applied.
+Executing a script and including its output in the nftables configuration
+does not seem to be possible. So you have a firewall tool (nftables)
+with a documented API for atomic configuration changes (iptables only
+has an undocumented iptables-save format) and then cannot use it.
+
+> > I could start with point 1 but I would like to get an OK from Florian
+> > Eckert first before I start this. I have to think where I can test this
+> > without annoying anyone.
+> 
+> In my view, there is no reason not to implement this. OK from my side.
+> We should just agree whether we implement all this in ucode or C.
+> Everything has its advantages and disadvantages.
+
+I would prefer ucode in the beginning. Experimenting is easier with
+ucode scripts that you can just edit at the device. I started my wan3
+development by editing the shell scripts at the device.
+
+
+From openwrt-devel at iremonger.me.uk  Tue Nov 18 03:27:09 2025
+From: openwrt-devel at iremonger.me.uk (Simon Iremonger)
+Date: Tue, 18 Nov 2025 11:27:09 +0000
+Subject: mwan3 and IPv6
+In-Reply-To: <hhsnmr4gvkvry34fphzleqblfgmkxy2zxyz4vc4cbbchnagozj@zrkyxtm2po62>
+References: <CAOdf3gq99dFDrv0DpoEOf_78cZbjpZWvuiymsJCYbf+MNfdxOA@mail.gmail.com>
+ <a7panl45lo2blubpq4hiubavcpfzanxz6rgohiyv76dw4awu5d@torj3gqvfbpt>
+ <CAOdf3gpAo=AsErmcn3U4RzZ8zUn=XXpsfpQgZMkM=KhE5LszKQ@mail.gmail.com>
+ <js2ohdpkbj2x67or5r3fczh3k7fo6emphmfveyod4wevnljebt@rxzd5ttol6wr>
+ <8de0176381895f4ed34e62cda062e811@dev.tdt.de>
+ <axvgeupk2tesgzr2xz36vsc4aforr7wrstth2bjd4qqfm2vtad@v773r2ynkumc>
+ <ezbc3koctmpzd3ftyg5jd5n27noxun6g7zjcz7yfyd77vc6edv@b6rn7qqppyif>
+ <CAOdf3goYDTKP00kJX5xofSiqoEzeswbqY6e4vbXpuBdDyuMW-g@mail.gmail.com>
+ <5kszyajt6fzkoi52r6xbr3jwv4zkdhaqgi4bv6nr4x4ubsikt4@7emnbncqrxum>
+ <a28d60a0-b34a-4b7a-8c26-224ba2e9b74a@iremonger.me.uk>
+ <hhsnmr4gvkvry34fphzleqblfgmkxy2zxyz4vc4cbbchnagozj@zrkyxtm2po62>
+Message-ID: <4a75cb9b-d19f-4c48-a319-c456462ac5f7@iremonger.me.uk>
+
+> I consider IPv6 support independent of mwan3 refactoring. It works in
+> my setup.
+
+Thankyou for your detailed consideration of the mwan* IPv6
+situations.
+
+I can also point out, "as-is" if you add 'mwan3' package on
+current OpenWrt 24.10.x and do not add any mwan3 configuration,
+IPv6 gets 'disabled'.
+
+The 'default' should be that routing tables etc are not affected,
+somehow or other, any of the new mwan* packages and NAT66 functions
+shouldn't create a change/issue just by being 'installed' ...
+
+
+> Issue 2: Which first IP? In the end, the first one reported by odhcp6c
+> because netifd keeps that sorting and returns that when someone queries
+
+Certainly, I can say, in UK; some ISPs have the property that the
+router gets an actual IPv6-"wan" address, and some do not.
+E.g. Zen provide a separate /64 linking-block and AAISP provide
+something like 2001:8b0:1111:[something] /128 per wan-link.
+
+However, linking OpenWrt to VodaFone, only getting /56 delegation
+and NO separate IPv6 on the WAN; so clearly practice varies.  In
+one circumstance, once, I got OpenWrt ddns-scripts IPv6 to manage
+to pick up a "network" or "interface" address and get the /56 ::1
+addy as the IP address for OpenWrt itself.
+
+Currently the Vodafone link certainly only shows link local
+inet6 fe80::407a:[..]:8c0e peer fe80::[..]ff:fe[..]/128 scope link nodad
+
+
+In any case, one way or another you need sensible way of coping with
+different scenarios for IPv6 wans and 'what is my address' .....
+
+> Solution from the mwan3 side: better source IP selection. This is
+
+Exactly :O
+
+> the need to merge it. This implementation rewrites the prefix if it
+> does not fit to the output interface and otherwise keeps the address
+
+I like that idea.
+
+
+Hope that helps!
+
+--Simon
+
+
+
+From philipp_subx at redfish-solutions.com  Wed Nov 19 07:56:20 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Wed, 19 Nov 2025 08:56:20 -0700
+Subject: Need reviewers for libubox PR #33
+Message-ID: <6B2CF005-9F14-4597-8E4D-8EAC4C447F4F@redfish-solutions.com>
+
+Hi,
+
+I?ve got a PR left for jshn_get_index which retrieves the index of an object (the currently selected object) inside an array.  It?s the last PR needed for Kea migration from ISC-DHCP compatible UCI configs.
+
+There?s test coverage included (thanks Alvaro and Petr!).
+
+https://github.com/openwrt/libubox/pull/33
+
+
+If one or more of the core maintainers of libubox could review and merge that would be appreciated.
+
+Thanks,
+
+-Philip
+
+
+
+From openwrt at jonaslochmann.de  Wed Nov 19 11:01:29 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Wed, 19 Nov 2025 20:01:29 +0100
+Subject: Need reviewers for libubox PR #33
+In-Reply-To: <mailman.28615.1763567801.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.28615.1763567801.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <lswx3nliotoc2hoorgkmqlbsiyev75nnmzacazbcxgd4fik27m@crqr2rvh62tn>
+
+Am Wed, Nov 19, 2025 at 08:56:20AM -0700, schrieb Philip Prindeville via openwrt-devel:
+> I?ve got a PR left for jshn_get_index which retrieves the index of an object (the currently selected object) inside an array. 
+> It?s the last PR needed for Kea migration from ISC-DHCP compatible UCI configs.
+
+Please be honest. It's not needed at all for this migration. It is
+needed for your implementation of the migration - that I consider
+questionable, but still OK.
+
+I could also cry that my PRs are required for working IPv6. But I
+am honest. Due to this, they are not considered important enough to
+check soon. So technically, I am running and depending on a fork of
+OpenWrt. But we already discussed that in the list.
+
+
+From openwrt at jonaslochmann.de  Wed Nov 19 11:12:21 2025
+From: openwrt at jonaslochmann.de (Jonas Lochmann)
+Date: Wed, 19 Nov 2025 20:12:21 +0100
+Subject: [PATCH] fw4 - masquerade-prefix - please review
+In-Reply-To: <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+References: <20250112131635.8660-1-openwrt@jonaslochmann.de>
+ <tsndeodryexnxyqislmwigh7d5yfj3zig4q4jppszd6yotzfmc@7i7xnyp2xm5u>
+Message-ID: <yvcj574fvrfn2hg2h4n4srvasinv2dqfpoasgl4np62hbm7vf6@y54t2bpugnbn>
+
+Another three weeks have passed. So I am interested if there is the
+chance to get this merged (including after adjusting this according
+to some feedback) or not at all. In case of a rejection, I am super
+motivated to start my OpenWrt fork - because I depend on this
+feature and don't want to patch it in on the devices that need it.
+
+Reminder: This patch is from the January
+
+The feedback could be: I will check/review it during the next two
+months. But the current situation is frustrating.
+
+Am Sun, Oct 26, 2025 at 09:03:05AM +0100, schrieb Jonas Lochmann:
+> I want to continue this topic. For those who don't remember a short summary:
+> 
+> - this is for use in combination with mwan3 to keep individual addresses
+>   for the internal devices with IPv6
+> - this is NOT NPTv6 and NPTv6 would not work; devices know their public
+>   IPs and a stateless aproach never knows if a particular reply packet
+>   must be rewritten and to which prefix it must be rewritten (the hosts
+>   in the internal network have IPs (plural) and could have used any of
+>   them to start the outbound connection)
+> - the problem is so specific that there is no standard for it;
+>   I had a conversation with the IPv6 WG about it [1]
+> - NAT with IPv6 seems to be a political issue in standards [2]
+> - the "normal" IPv6 NAT is not standardized either (as far as I know)
+> 
+> [1] https://mailman.ripe.net/archives/list/ipv6-wg at ripe.net/thread/HQRLNKT7O6H7CIO4QVBNNOKWOOLTU5DQ/
+> [2] https://mailman.ripe.net/archives/list/ipv6-wg at ripe.net/thread/HQRLNKT7O6H7CIO4QVBNNOKWOOLTU5DQ/#OGDOKF4LR6GHOJK4L3X4V2DLUK2A27BV
+
+
+From kiraushakov at gmail.com  Thu Nov 20 13:16:56 2025
+From: kiraushakov at gmail.com (Deeily)
+Date: Fri, 21 Nov 2025 00:16:56 +0300
+Subject: Adding support for Zyxel GS1900-48HPv2
+Message-ID: <CAMrSqm+dUeL+DmKO5=9f_yRLOKg3rigdEGc=4BvKw+L=006CYQ@mail.gmail.com>
+
+Hello OpenWrt developers,
+
+I am writing to contribute a preliminary device tree source (DTS) file
+for the Zyxel GS1900-48HP switch. I am a beginner in this area, but I
+managed to create a working DTS by using the DTS for the GS1900-24HPv2
+model as a base.
+
+With this DTS, the device boots and basic switching functionality
+works. Power over Ethernet (PoE) is supplied on all 24 PoE-capable
+ports, however, I have identified a significant issue with PoE
+management:
+
+    PoE Control Issue: Currently, it is only possible to control the
+power (on/off) for the first PoE port (port 0). The remaining 23 PoE
+ports are always on and cannot be managed via software.
+
+I understand that this is an incomplete patch and the PoE control
+needs to be fixed. However, I am providing it as a starting point. I
+am willing to help in any way I can.
+
+I am ready to test new firmware builds and provide any additional
+data, outputs from dmesg, logread, or information from ubus that might
+be helpful for debugging the PoE control issue.
+
+The DTS file is attached to this email. Thank you for your time and
+for the great work you do on OpenWrt.
+
+Best regards, Kirill
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: rtl8393_zyxel_gs1900-48hp.dts
+Type: audio/vnd.dts
+Size: 7026 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251121/dc9770bc/attachment-0001.dts>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: boot.log
+Type: text/x-log
+Size: 45271 bytes
+Desc: not available
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251121/dc9770bc/attachment-0001.bin>
+
+From karol.zdunski at optivobiz.pl  Fri Nov 21 00:30:22 2025
+From: karol.zdunski at optivobiz.pl (=?UTF-8?Q? Karol_Zdu=C5=84ski ?=)
+Date: Fri, 21 Nov 2025 08:30:22 GMT
+Subject: Prezentacja magazynu
+Message-ID: <20251121084500-0.1.s8.3701s.0.7otlq27u1h@optivobiz.pl>
+
+Szanowni Pa?stwo,
+
+zajmujemy si? pe?n? obs?ug? najmu oraz renegocjacji um?w magazynowych na terenie woj. mazowieckiego i wielkopolskiego.
+
+Nasze 14-letnie do?wiadczenie pozwala na szybkie znalezienie najlepszych opcji magazynowych dopasowanych do specyfiki Pa?stwa dzia?alno?ci. Wspieramy w analizie, negocjacjach technicznych i komercyjnych, minimalizuj?c czas i koszty po stronie Klienta.
+
+Czy interesuj? Pa?stwa dost?pne obiekty?
+
+
+Pozdrawiam
+Karol Zdu?ski
+
+
+From sander at svanheule.net  Sat Nov 22 01:29:26 2025
+From: sander at svanheule.net (Sander Vanheule)
+Date: Sat, 22 Nov 2025 10:29:26 +0100
+Subject: Adding support for Zyxel GS1900-48HPv2
+In-Reply-To: <CAMrSqm+dUeL+DmKO5=9f_yRLOKg3rigdEGc=4BvKw+L=006CYQ@mail.gmail.com>
+References: <CAMrSqm+dUeL+DmKO5=9f_yRLOKg3rigdEGc=4BvKw+L=006CYQ@mail.gmail.com>
+Message-ID: <320b78bc59881b9eb8632087f3503cb2b4879de7.camel@svanheule.net>
+
+Hi Kirill,
+
+On Fri, 2025-11-21 at 00:16 +0300, Deeily wrote:
+> Hello OpenWrt developers,
+> 
+> I am writing to contribute a preliminary device tree source (DTS) file
+> for the Zyxel GS1900-48HP switch. I am a beginner in this area, but I
+> managed to create a working DTS by using the DTS for the GS1900-24HPv2
+> model as a base.
+
+To submit patches, also as a request for comments (RFC), please have a look at
+https://openwrt.org/submitting-patches
+
+GitHub is the most popular platform, but you can still submit patches via mail
+if you prefer so. Please use "git format-patch" to mail changes, rather than
+attaching files, as attachments are harder to review. See
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#the-canonical-patch-format
+
+> 
+> With this DTS, the device boots and basic switching functionality
+> works. Power over Ethernet (PoE) is supplied on all 24 PoE-capable
+> ports, however, I have identified a significant issue with PoE
+> management:
+> 
+> ??? PoE Control Issue: Currently, it is only possible to control the
+> power (on/off) for the first PoE port (port 0). The remaining 23 PoE
+> ports are always on and cannot be managed via software.
+> 
+> I understand that this is an incomplete patch and the PoE control
+> needs to be fixed. However, I am providing it as a starting point. I
+> am willing to help in any way I can.
+
+You have a "realtek,poe-mcu" node in your DT, but AFAIK that's not actually a
+thing that has a driver. If you are using the realtek-poe package, you need to
+make sure you have a device entry for realtek_setup_poe() in
+target/linux/realtek/base-files/etc/board.d/02_network. Otherwise realtek-poe
+cannot generate a proper config file (it used to default to a config file with
+only port 1) and you have to create it manually.
+
+For the PoE LEDs, you indicate in the DTS that these are driven by the RTL8231,
+but you didn't provide any LED nodes, nor did you provide any pinctrl settings
+to correctly mux the required pins to the LED controller. Is this just a
+placeholder?
+
+If you do submit an RFC on GitHub or via mail, please try be complete about what
+is working, what isn't, and which things you haven't tested yet.
+
+
+Best,
+Sander
+
+
+From ggoerisch at gmail.com  Sat Nov 22 05:52:48 2025
+From: ggoerisch at gmail.com (Goetz Goerisch)
+Date: Sat, 22 Nov 2025 14:52:48 +0100
+Subject: at91 - support going forward
+Message-ID: <CAP52KpMj4Jgwcev28NNQifNhqJefwsneJ9std79xB01Pycm_Cw@mail.gmail.com>
+
+Dear all,
+
+The at91 target has an open PR for testing kernel 6.12 for many months.
+
+https://github.com/openwrt/openwrt/pull/19471
+
+Also the discussion is ongoing in the forum:
+https://forum.openwrt.org/t/kernel-6-12-at91-target-needs-basic-testing-and-debugging-or-it-will-be-dropped/242857
+
+So far no one has taken up the ball to test this target.
+I typically rebase after a kernel bump and run a build test, but have
+no target to test.
+
+Please decide how to proceed.
+
+Cheers Goetz
+
+
+From info at egg-gmbh.de  Sat Nov 22 14:16:35 2025
+From: info at egg-gmbh.de (Lucas John )
+Date: 22 Nov 2025 14:16:35 -0800
+Subject: REQUEST
+Message-ID: <20251122141635.504BC3AAC0937AA2@egg-gmbh.de>
+
+Dear ,
+
+We are ready to provide you with Genuine funding facility for 
+lucrative projects through loans, we issue banking instruments 
+like BG, SBLC, Letter of Credit, MT 103 credit enhancement.
+
+The project must not be sited in prohibited Countries and 
+prohibited businesses. You will be provided with the details upon 
+a positive response and show of interest.
+
+Please contact me via my email for further information on any of 
+our services listed above.
+
+Warm Regards,
+
+
+From noreply at github.com  Sun Nov 23 14:27:33 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 23 Nov 2025 14:27:33 -0800
+Subject: [sdwalker/sdwalker.github.io] a4b41c: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/cad7f8-a4b41c@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: a4b41c420b4b975d773795dda6d4d55eb9bb1609
+      https://github.com/sdwalker/sdwalker.github.io/commit/a4b41c420b4b975d773795dda6d4d55eb9bb1609
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-11-23 (Sun, 23 Nov 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From philipp_subx at redfish-solutions.com  Sun Nov 23 17:13:01 2025
+From: philipp_subx at redfish-solutions.com (Philip Prindeville)
+Date: Sun, 23 Nov 2025 18:13:01 -0700
+Subject: Need reviewers for libubox PR #33
+In-Reply-To: <lswx3nliotoc2hoorgkmqlbsiyev75nnmzacazbcxgd4fik27m@crqr2rvh62tn>
+References: <mailman.28615.1763567801.2093109.openwrt-devel@lists.openwrt.org>
+ <lswx3nliotoc2hoorgkmqlbsiyev75nnmzacazbcxgd4fik27m@crqr2rvh62tn>
+Message-ID: <C5750B9B-75A1-42D7-8C80-697D98B3623B@redfish-solutions.com>
+
+
+
+> On Nov 19, 2025, at 12:01?PM, Jonas Lochmann <openwrt at jonaslochmann.de> wrote:
+> 
+> Am Wed, Nov 19, 2025 at 08:56:20AM -0700, schrieb Philip Prindeville via openwrt-devel:
+>> I?ve got a PR left for jshn_get_index which retrieves the index of an object (the currently selected object) inside an array. 
+>> It?s the last PR needed for Kea migration from ISC-DHCP compatible UCI configs.
+> 
+> Please be honest. It's not needed at all for this migration. It is
+> needed for your implementation of the migration - that I consider
+> questionable, but still OK.
+
+Being honest... We need a migration path from ISC-DHCP and bikeshedding or downright apathy has been an impediment to that happening.
+
+There are multiple ways to solve most engineering problems.  I picked one that got me the most dependenable path forward given my skills and the time available to test and develop.
+
+But be honest: ucode isn't the only way to solve this, is it?
+
+If I'm going to be maintaining this indefinitely, then I'd think I'd get some lattitude in how I pick to solve this particular problem.
+
+
+> I could also cry that my PRs are required for working IPv6. But I
+> am honest. Due to this, they are not considered important enough to
+> check soon. So technically, I am running and depending on a fork of
+> OpenWrt. But we already discussed that in the list.
+
+I think this isn't an apples-to-apples comparison.  I'm the maintainer for 12 packages, and you maintain.... zero.
+
+I've made a commitment to the project.  It would be good to get some reciprocity for my efforts.  That's all any contributor asks for.
+
+-Philip
+
+
+
+From paul.henrys_ext at softathome.com  Mon Nov 24 03:47:54 2025
+From: paul.henrys_ext at softathome.com (Paul HENRYS)
+Date: Mon, 24 Nov 2025 12:47:54 +0100
+Subject: [PATCH] fstools: partname: use device string path
+Message-ID: <20251124114754.997780-1-paul.henrys_ext@softathome.com>
+
+partname_volume_init() calls block_volume_format() passing the device path.
+
+Previously the parent path was passed typically leading to retrieve the
+size of the parent device and not the device to be formatted. Eventually,
+formatting the block device with mkfs.f2fs failed silently when the block
+device is too small and created a ram overlayfs instead of trying to format
+with ext4.
+
+Signed-off-by: Paul HENRYS <paul.henrys_ext at softathome.com>
+---
+ libfstools/partname.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libfstools/partname.c b/libfstools/partname.c
+index 9f2347a..836abf0 100644
+--- a/libfstools/partname.c
++++ b/libfstools/partname.c
+@@ -56,7 +56,7 @@ static int partname_volume_init(struct volume *v)
+ 	v->size = volsize << 9; /* size is returned in sectors of 512 bytes */
+ 	v->blk = p->dev.devpathstr;
+ 
+-	return block_volume_format(v, 0, p->parent_dev.devpathstr);
++	return block_volume_format(v, 0, p->dev.devpathstr);
+ }
+ 
+ /* adapted from procd/utils.c -> should go to libubox */
+-- 
+2.43.0
+
+
+
+From mail at aparcar.org  Mon Nov 24 05:09:30 2025
+From: mail at aparcar.org (Paul Spooren)
+Date: Mon, 24 Nov 2025 14:09:30 +0100
+Subject: Increase in AI generated "vulnerability reports" and CVE requests
+Message-ID: <701DAD4E-800A-4B0D-A135-7DADEEBC7691@aparcar.org>
+
+Hi,
+
+over the last days I?m witnessing an increased number of security reports on our contact@ mail address. While I very much appreciate anyone improving the security of OpenWrt, this becomes a bit more tedious with the number of AI slop sent to us.
+
+I?m writing this mostly because those ?security researchers? start filing (unconfirmed) CVEs and use disorienting email subjections on mailing list. The OpenWrt team is dedicated to resolve and annouce security issues, please don?t get distracted by any false information.
+
+Please have a nice day,
+Paul
+
+From ck at dev.tdt.de  Mon Nov 24 05:51:15 2025
+From: ck at dev.tdt.de (Christian Korber)
+Date: Mon, 24 Nov 2025 14:51:15 +0100
+Subject: [PATCH] ufpd: import unetmsg.client conditionally
+Message-ID: <20251124135115.1003941-1-ck@dev.tdt.de>
+
+unetmsg depends on ucode functions (acl) that are not in openwrt-23.05.
+To make it possible to use ufp in that branch, this commit tests
+if unetmsg is installed on the target.
+
+Signed-off-by: Christian Korber <ck at dev.tdt.de>
+---
+ ufpd | 46 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
+
+diff --git a/ufpd b/ufpd
+index c41ab8c..2068f66 100755
+--- a/ufpd
++++ b/ufpd
+@@ -2,14 +2,22 @@
+ 'use strict';
+ import * as uloop from "uloop";
+ import * as libubus from "ubus";
+-import * as unetmsg from "unetmsg.client";
+-import { readfile, glob, basename } from "fs";
++import { readfile, glob, basename, stat } from "fs";
+ let uht = require("uht");
++let unetmsg, unet;
+ push(REQUIRE_SEARCH_PATH, "/usr/share/ufp/*.uc");
+ 
++let unetmsg_installed = stat("/usr/share/ucode/unetmsg");
++
++if (unetmsg_installed)
++	unetmsg = require("unetmsg.client");
++
+ uloop.init();
+ let ubus = libubus.connect();
+-let unet = unetmsg.open(ubus);
++
++if (unetmsg_installed)
++	unet = unetmsg.open(ubus);
++
+ let fingerprints = {};
+ let fingerprint_ht = [];
+ let devices = {};
+@@ -49,17 +57,19 @@ function match_fingerprint(key)
+ 	return fp;
+ }
+ 
+-unet.publish("ufp", (req) => {
+-	let data = req.args;
+-	switch (data.type) {
+-	case "get_data":
+-		let mac = data.macaddr;
+-		if (mac)
+-			return { data: devices[mac] };
+-		return { data: devices };
+-	}
+-});
+-unet.subscribe("ufp");
++if (unetmsg_installed) {
++	unet.publish("ufp", (req) => {
++		let data = req.args;
++		switch (data.type) {
++		case "get_data":
++			let mac = data.macaddr;
++			if (mac)
++				return { data: devices[mac] };
++			return { data: devices };
++		}
++	});
++	unet.subscribe("ufp");
++}
+ 
+ function dev_timestamp_cmp(a, b)
+ {
+@@ -74,9 +84,11 @@ function network_devices(local) {
+ 		devices
+ 	];
+ 
+-	unet.request("ufp", "get_data", {}, (msg) => {
+-		push(device_lists, msg.data);
+-	});
++	if (unetmsg_installed) {
++		unet.request("ufp", "get_data", {}, (msg) => {
++			push(device_lists, msg.data);
++		});
++	}
+ 
+ 	let cur_devices = [];
+ 	for (let list in device_lists)
+
+
+From hauke at hauke-m.de  Mon Nov 24 13:42:25 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Mon, 24 Nov 2025 22:42:25 +0100
+Subject: Increase in AI generated "vulnerability reports" and CVE requests
+In-Reply-To: <701DAD4E-800A-4B0D-A135-7DADEEBC7691@aparcar.org>
+References: <701DAD4E-800A-4B0D-A135-7DADEEBC7691@aparcar.org>
+Message-ID: <c836faae-bce8-406c-ba97-4a36f5f82523@hauke-m.de>
+
+On 11/24/25 14:09, Paul Spooren wrote:
+> Hi,
+> 
+> over the last days I?m witnessing an increased number of security reports on our contact@ mail address. While I very much appreciate anyone improving the security of OpenWrt, this becomes a bit more tedious with the number of AI slop sent to us.
+> 
+> I?m writing this mostly because those ?security researchers? start filing (unconfirmed) CVEs and use disorienting email subjections on mailing list. The OpenWrt team is dedicated to resolve and annouce security issues, please don?t get distracted by any false information.
+> 
+> Please have a nice day,
+> Paul
+
+Hi Paul,
+
+Thank you for taking care of this.
+
+I assume these people want a CVE (Curriculum vitae enhancer) and do not 
+care much about security.
+Maybe we should publish all security reports and our responses to them, 
+then it could become a CVR (Curriculum vitae reducer) for them if they 
+just send some AI slob and this is associated with their name.
+
+Hauke
+
+
+From amadeus at jmu.edu.cn  Tue Nov 25 02:00:19 2025
+From: amadeus at jmu.edu.cn (Chukun Pan)
+Date: Tue, 25 Nov 2025 18:00:19 +0800
+Subject: [PATCH 1/1] Revert "mediatek: fix uart clocks in MT7987 infracfg clock driver"
+Message-ID: <20251125100019.734578-1-amadeus@jmu.edu.cn>
+
+This reverts commit 1c3b32c45a25a6b80b9b1541a5ec4ce082939e5e.
+This patch causes the kernel to hang after the following log:
+[    1.575050] clk: Disabling unused clocks
+
+Fixes: 1c3b32c ("mediatek: fix uart clocks in MT7987 infracfg clock driver")
+
+Reported-By: Chen Minqiang <ptpt52 at gmail.com>
+Signed-off-by: Chukun Pan <amadeus at jmu.edu.cn>
+---
+ .../361-clk-mediatek-add-mt7987-clock-drivers-support.patch  | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch b/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch
+index 249e239086..577b2b7dfc 100644
+--- a/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch
++++ b/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch
+@@ -273,7 +273,7 @@ Signed-off-by: Daniel Golle <daniel at makrotopia.org>
+ +MODULE_LICENSE("GPL");
+ --- /dev/null
+ +++ b/drivers/clk/mediatek/clk-mt7987-infracfg.c
+-@@ -0,0 +1,325 @@
++@@ -0,0 +1,328 @@
+ +// SPDX-License-Identifier: GPL-2.0
+ +/*
+ + * Copyright (c) 2024 MediaTek Inc.
+@@ -301,12 +301,15 @@ Signed-off-by: Daniel Golle <daniel at makrotopia.org>
+ +static DEFINE_SPINLOCK(mt7987_clk_lock);
+ +
+ +static const char *const infra_mux_uart0_parents[] = { "csw_infra_f26m_sel",
+++						       "infra_hf_66m_uart0_pck",
+ +						       "uart_sel" };
+ +
+ +static const char *const infra_mux_uart1_parents[] = { "csw_infra_f26m_sel",
+++						       "infra_hf_66m_uart1_pck",
+ +						       "uart_sel" };
+ +
+ +static const char *const infra_mux_uart2_parents[] = { "csw_infra_f26m_sel",
+++						       "infra_hf_66m_uart1_pck",
+ +						       "uart_sel" };
+ +
+ +static const char *const infra_mux_spi0_parents[] = {
+-- 
+2.25.1
+
+
+
+From ansuelsmth at gmail.com  Tue Nov 25 02:07:36 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Tue, 25 Nov 2025 11:07:36 +0100
+Subject: [PATCH 1/1] Revert "mediatek: fix uart clocks in MT7987 infracfg
+ clock driver"
+In-Reply-To: <20251125100019.734578-1-amadeus@jmu.edu.cn>
+References: <20251125100019.734578-1-amadeus@jmu.edu.cn>
+Message-ID: <CA+_ehUy3qo4iJ0N_h3UtQ0N2RbxFi-VnaRVCwKu-LV7YgDicBA@mail.gmail.com>
+
+Il giorno mar 25 nov 2025 alle ore 11:02 Chukun Pan
+<amadeus at jmu.edu.cn> ha scritto:
+>
+> This reverts commit 1c3b32c45a25a6b80b9b1541a5ec4ce082939e5e.
+> This patch causes the kernel to hang after the following log:
+> [    1.575050] clk: Disabling unused clocks
+>
+> Fixes: 1c3b32c ("mediatek: fix uart clocks in MT7987 infracfg clock driver")
+>
+> Reported-By: Chen Minqiang <ptpt52 at gmail.com>
+> Signed-off-by: Chukun Pan <amadeus at jmu.edu.cn>
+
+If the problem happen in disabling unused clock then either flag the
+clock as critical
+or use assigned-clock binding to fix this.
+
+I feel for clock we should invest more time to find the proper
+solution than going
+for the quick one.
+
+> ---
+>  .../361-clk-mediatek-add-mt7987-clock-drivers-support.patch  | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch b/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch
+> index 249e239086..577b2b7dfc 100644
+> --- a/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch
+> +++ b/target/linux/mediatek/patches-6.12/361-clk-mediatek-add-mt7987-clock-drivers-support.patch
+> @@ -273,7 +273,7 @@ Signed-off-by: Daniel Golle <daniel at makrotopia.org>
+>  +MODULE_LICENSE("GPL");
+>  --- /dev/null
+>  +++ b/drivers/clk/mediatek/clk-mt7987-infracfg.c
+> -@@ -0,0 +1,325 @@
+> +@@ -0,0 +1,328 @@
+>  +// SPDX-License-Identifier: GPL-2.0
+>  +/*
+>  + * Copyright (c) 2024 MediaTek Inc.
+> @@ -301,12 +301,15 @@ Signed-off-by: Daniel Golle <daniel at makrotopia.org>
+>  +static DEFINE_SPINLOCK(mt7987_clk_lock);
+>  +
+>  +static const char *const infra_mux_uart0_parents[] = { "csw_infra_f26m_sel",
+> ++                                                     "infra_hf_66m_uart0_pck",
+>  +                                                     "uart_sel" };
+>  +
+>  +static const char *const infra_mux_uart1_parents[] = { "csw_infra_f26m_sel",
+> ++                                                     "infra_hf_66m_uart1_pck",
+>  +                                                     "uart_sel" };
+>  +
+>  +static const char *const infra_mux_uart2_parents[] = { "csw_infra_f26m_sel",
+> ++                                                     "infra_hf_66m_uart1_pck",
+>  +                                                     "uart_sel" };
+>  +
+>  +static const char *const infra_mux_spi0_parents[] = {
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From erin.kalouskova at nic.cz  Wed Nov 26 04:23:10 2025
+From: erin.kalouskova at nic.cz (=?UTF-8?Q?Erin_Kalouskov=C3=A1?=)
+Date: Wed, 26 Nov 2025 13:23:10 +0100
+Subject: [PATCH] odhcpd: send DHCPv6 lease events over U-Bus
+Message-ID: <2c659fc1-d621-4f79-8779-246695855412@nic.cz>
+
+odhcpd currently only sends DHCPv4 lease events over U-Bus. For DHCPv6 
+the only option was to use a trigger hook script and then parse a lease 
+file and diff it against previous version.
+This made it very inconvenient to use in cases like adding DHCP hosts to 
+DNS server and the behavior is also inconsistent with DHCPv4 counterpart.
+Format of the U-Bus message is based on reply of `ipv6leases` U-Bus method.
+This patch is largely based on 
+https://github.com/mikma/openwrt-odhcpd/commit/b796d613dfe74fd36a8df8564c51907321f6a187
+Signed-off-by: Erin Kalouskov? <erin.kalouskova at nic.cz>
+---
+src/dhcpv6-ia.c | 12 +++++++-
+src/odhcpd.h | 6 ++++
+src/ubus.c | 82 +++++++++++++++++++++++++++++++++++++++++++++++++
+3 files changed, 99 insertions(+), 1 deletion(-)
+diff --git a/src/dhcpv6-ia.c b/src/dhcpv6-ia.c
+index 8cc9515..ea8a63b 100644
+--- a/src/dhcpv6-ia.c
++++ b/src/dhcpv6-ia.c
+@@ -208,7 +208,7 @@ static void dhcpv6_ia_free_assignment(struct 
+dhcp_assignment *a)
+close(a->managed_sock.fd.fd);
+}
+- if ((a->flags & OAF_BOUND) && (a->flags & OAF_DHCPV6_PD))
++ if (a->flags & OAF_BOUND)
+apply_lease(a, false);
+if (a->fr_cnt)
+@@ -591,6 +591,10 @@ void dhcpv6_ia_write_statefile(void)
+static void __apply_lease(struct dhcp_assignment *a,
+struct odhcpd_ipaddr *addrs, ssize_t addr_len, bool add)
+{
++ #ifdef WITH_UBUS
++ ubus_bcast_dhcp6_event(add ? "dhcpv6.ack" : "dhcpv6.release", a, 
+addr_len, addrs);
++ #endif
++
+if (a->flags & OAF_DHCPV6_NA)
+return;
+@@ -844,6 +848,9 @@ static bool assign_na(struct interface *iface, 
+struct dhcp_assignment *a)
+list_for_each_entry(c, &iface->ia_assignments, head) {
+if (!(c->flags & OAF_DHCPV6_NA) || c->assigned_host_id > 
+a->assigned_host_id ) {
+list_add_tail(&a->head, &c->head);
++ if (a->flags &OAF_BOUND)
++ apply_lease(a, true);
++
+return true;
+} else if (c->assigned_host_id == a->assigned_host_id)
+return false;
+@@ -891,6 +898,9 @@ static bool assign_na(struct interface *iface, 
+struct dhcp_assignment *a)
+if (!(c->flags & OAF_DHCPV6_NA) || c->assigned_host_id > try) {
+a->assigned_host_id = try;
+list_add_tail(&a->head, &c->head);
++ if (a->flags &OAF_BOUND)
++ apply_lease(a, true);
++
+return true;
+} else if (c->assigned_host_id == try)
+break;
+diff --git a/src/odhcpd.h b/src/odhcpd.h
+index 916d6da..ee4b6f5 100644
+--- a/src/odhcpd.h
++++ b/src/odhcpd.h
+@@ -510,6 +510,12 @@ void ubus_apply_network(void);
+bool ubus_has_prefix(const char *name, const char *ifname);
+void ubus_bcast_dhcp_event(const char *type, const uint8_t *mac, const 
+size_t mac_len,
+const struct in_addr *addr, const char *name, const char *interface);
++void ubus_bcast_dhcp6_event(
++ const char* type,
++ const struct dhcp_assignment *assignment,
++ size_t addrs_len,
++ const struct odhcpd_ipaddr addrs[static addrs_len]
++);
+#endif
+ssize_t dhcpv6_ia_handle_IAs(uint8_t *buf, size_t buflen, struct 
+interface *iface,
+diff --git a/src/ubus.c b/src/ubus.c
+index 00fd171..f5ebc95 100644
+--- a/src/ubus.c
++++ b/src/ubus.c
+@@ -1,3 +1,4 @@
++#include <stdint.h>
+#include <syslog.h>
+#include <libubus.h>
+#include <libubox/uloop.h>
+@@ -6,7 +7,9 @@
+#include <inttypes.h>
+#include <libubox/utils.h>
++#include <time.h>
++#include "libubox/blobmsg.h"
+#include "odhcpd.h"
+#include "dhcpv6.h"
+#include "dhcpv4.h"
+@@ -416,6 +419,85 @@ void ubus_bcast_dhcp_event(const char *type, const 
+uint8_t *mac,
+ubus_notify(ubus, &main_object, type, b.head, -1);
+}
++void ubus_bcast_dhcp6_event(
++ const char* type,
++ const struct dhcp_assignment *assignment,
++ size_t addrs_len_,
++ const struct odhcpd_ipaddr addrs[static addrs_len_]
++) {
++ if (
++ type == NULL
++ || assignment == NULL
++ || (addrs_len_ != 0 && addrs == NULL)
++ || addrs_len_ > PTRDIFF_MAX
++ ) {
++ fputs(stderr, "[ubus_bcast_dhcp6_event]: parameter assertion failed");
++ return;
++ }
++
++ ptrdiff_t addrs_len = addrs_len_;
++
++ if (ubus == NULL || !main_object.has_subscribers)
++ return;
++
++ blob_buf_init(&b, 0);
++ if (assignment->hostname != NULL)
++ blobmsg_add_string(&b, "hostname", assignment->hostname);
++
++ if (assignment->iface != NULL && assignment->iface->ifname != NULL)
++ blobmsg_add_string(&b, "interface", assignment->iface->ifname);
++
++ if (assignment->iaid != 0)
++ blobmsg_add_u32(&b, "iaid", ntohl(assignment->iaid));
++
++ if (assignment->clid_len != 0) {
++ char *duid_buf = blobmsg_alloc_string_buffer(&b, "duid", 
+assignment->clid_len * 2 + 1);
++ odhcpd_hexlify(duid_buf, assignment->clid_data, assignment->clid_len);
++ blobmsg_add_string_buffer(&b);
++ }
++
++ blobmsg_add_u8(&b, "accept-reconf", assignment->accept_fr_nonce);
++ blobmsg_add_u64(&b, "valid-until", assignment->valid_until);
++ blobmsg_add_u64(&b, "preferred-until", assignment->preferred_until);
++
++ if (assignment->flags & OAF_DHCPV6_NA)
++ blobmsg_add_u64(&b, "assigned", assignment->assigned_host_id);
++ else
++ blobmsg_add_u16(&b, "assigned", assignment->assigned_subnet_id);
++
++ {
++ void *array_h = blobmsg_open_array(&b, "flags");
++ if (assignment->flags & OAF_BOUND)
++ blobmsg_add_string(&b, NULL, "bound");
++
++ if (assignment->flags & OAF_STATIC)
++ blobmsg_add_string(&b, NULL, "static");
++
++ blobmsg_close_array(&b, array_h);
++ }
++
++ void *array_h = blobmsg_open_array(&b, assignment->flags & 
+OAF_DHCPV6_NA ? "ipv6-addr" : "ipv6-prefix");
++ for (ptrdiff_t ix = 0; ix != addrs_len; ++ix) {
++ const struct odhcpd_ipaddr *entry = &addrs[ix];
++
++ void *table_h = blobmsg_open_table(&b, NULL);
++
++ char *addr_buf = blobmsg_alloc_string_buffer(&b, "address", 
+INET6_ADDRSTRLEN);
++ memset(addr_buf, 0, INET6_ADDRSTRLEN);
++
++ (void) inet_ntop(AF_INET6, &entry->addr.in6, addr_buf, INET6_ADDRSTRLEN);
++ blobmsg_add_string_buffer(&b);
++
++ if (entry->prefix != 128)
++ blobmsg_add_u32(&b, "prefix-length", entry->prefix);
++
++ blobmsg_close_table(&b, table_h);
++ }
++
++ blobmsg_close_array(&b, array_h);
++ ubus_notify(ubus, &main_object, type, b.head, -1);
++}
++
+static void handle_event(_unused struct ubus_context *ctx, _unused 
+struct ubus_event_handler *ev,
+_unused const char *type, struct blob_attr *msg)
+{
+-- 
+2.52.0
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_0x399339FCF5EEBDCF.asc
+Type: application/pgp-keys
+Size: 656 bytes
+Desc: OpenPGP public key
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251126/4820bd8a/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 236 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.openwrt.org/pipermail/openwrt-devel/attachments/20251126/4820bd8a/attachment.sig>
+
+From neocturne at universe-factory.net  Wed Nov 26 11:36:06 2025
+From: neocturne at universe-factory.net (Nora Matthias Schiffer)
+Date: Wed, 26 Nov 2025 20:36:06 +0100
+Subject: [PATCH procd 1/2] rcS, ubus: constify char * arguments and variables where appropriate
+Message-ID: <027ab232ef708f26d5d76f702b21774f47e245b0.1764185383.git.neocturne@universe-factory.net>
+
+Signed-off-by: Nora Matthias Schiffer <neocturne at universe-factory.net>
+---
+ procd.h |  2 +-
+ rcS.c   | 10 +++++-----
+ rcS.h   |  4 ++--
+ ubus.c  |  2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/procd.h b/procd.h
+index c656d3b..f48edeb 100644
+--- a/procd.h
++++ b/procd.h
+@@ -27,7 +27,7 @@
+ 
+ #define __init __attribute__((constructor))
+ 
+-extern char *ubus_socket;
++extern const char *ubus_socket;
+ 
+ void procd_connect_ubus(void);
+ void procd_reconnect_ubus(int reconnect);
+diff --git a/rcS.c b/rcS.c
+index bfaf50b..45a96a9 100644
+--- a/rcS.c
++++ b/rcS.c
+@@ -125,7 +125,7 @@ static void q_initd_complete(struct runqueue *q, struct runqueue_task *p)
+ 	free(s);
+ }
+ 
+-static bool find_runqueue_list_entry(struct list_head *list, char *file, char *param)
++static bool find_runqueue_list_entry(struct list_head *list, const char *file, const char *param)
+ {
+ 	struct initd *s;
+ 
+@@ -135,7 +135,7 @@ static bool find_runqueue_list_entry(struct list_head *list, char *file, char *p
+ 	return false;
+ }
+ 
+-static void add_initd(struct runqueue *q, char *file, char *param)
++static void add_initd(struct runqueue *q, const char *file, const char *param)
+ {
+ 	static const struct runqueue_task_type initd_type = {
+ 		.run = q_initd_run,
+@@ -168,7 +168,7 @@ static void add_initd(struct runqueue *q, char *file, char *param)
+ 	runqueue_task_add(q, &s->proc.task, false);
+ }
+ 
+-static int _rc(struct runqueue *q, char *path, const char *file, char *pattern, char *param)
++static int _rc(struct runqueue *q, const char *path, const char *file, const char *pattern, const char *param)
+ {
+ 	char *dir = alloca(2 + strlen(path) + strlen(file) + strlen(pattern));
+ 	glob_t gl;
+@@ -194,7 +194,7 @@ static int _rc(struct runqueue *q, char *path, const char *file, char *pattern,
+ 	return 0;
+ }
+ 
+-int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *))
++int rcS(const char *pattern, const char *param, void (*q_empty)(struct runqueue *))
+ {
+ 	runqueue_init(&q);
+ 	q.empty_cb = q_empty;
+@@ -203,7 +203,7 @@ int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *))
+ 	return _rc(&q, "/etc/rc.d", pattern, "*", param);
+ }
+ 
+-int rc(const char *file, char *param)
++int rc(const char *file, const char *param)
+ {
+ 	return _rc(&r, "/etc/init.d", file, "", param);
+ }
+diff --git a/rcS.h b/rcS.h
+index 91d37d1..9b6bb84 100644
+--- a/rcS.h
++++ b/rcS.h
+@@ -17,7 +17,7 @@
+ 
+ #include <libubox/runqueue.h>
+ 
+-extern int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *));
+-extern int rc(const char *file, char *param);
++extern int rcS(const char *pattern, const char *param, void (*q_empty)(struct runqueue *));
++extern int rc(const char *file, const char *param);
+ 
+ #endif
+diff --git a/ubus.c b/ubus.c
+index b0b7c9a..23f640a 100644
+--- a/ubus.c
++++ b/ubus.c
+@@ -19,7 +19,7 @@
+ 
+ #include "procd.h"
+ 
+-char *ubus_socket = NULL;
++const char *ubus_socket = NULL;
+ static struct ubus_context *ctx;
+ static struct uloop_timeout ubus_timer;
+ static int timeout;
+-- 
+2.52.0
+
+
+
+From neocturne at universe-factory.net  Wed Nov 26 11:36:07 2025
+From: neocturne at universe-factory.net (Nora Matthias Schiffer)
+Date: Wed, 26 Nov 2025 20:36:07 +0100
+Subject: [PATCH procd 2/2] rcS: allow overriding init.d/rc.d paths
+In-Reply-To: <027ab232ef708f26d5d76f702b21774f47e245b0.1764185383.git.neocturne@universe-factory.net>
+References: <027ab232ef708f26d5d76f702b21774f47e245b0.1764185383.git.neocturne@universe-factory.net>
+Message-ID: <74075b8fcec082e403d853ea9639f66e21107427.1764185383.git.neocturne@universe-factory.net>
+
+Introduce -I and -R arguments that can be used to override the paths
+/etc/init.d and /etc/rc.d, allowing for some runlevel-like usecases.
+
+This will replace a downstream patch in Gluon [1] needed to support a
+'config mode'.
+
+[1] https://github.com/freifunk-gluon/gluon
+
+Signed-off-by: Nora Matthias Schiffer <neocturne at universe-factory.net>
+---
+ procd.c | 10 +++++++++-
+ procd.h |  3 +++
+ rcS.c   |  7 +++++--
+ 3 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/procd.c b/procd.c
+index 1223283..46ba680 100644
+--- a/procd.c
++++ b/procd.c
+@@ -83,6 +83,8 @@ static int usage(const char *prog)
+ 		"	-s <path>	Path to ubus socket\n"
+ 		"	-h <path>	run as hotplug daemon\n"
+ 		"	-d <level>	Enable debug messages\n"
++		"	-I <path>	Path to init.d directory\n"
++		"	-R <path>	Path to rc.d directory\n"
+ 		"	-S		Print messages to stdout\n"
+ 		"\n", prog);
+ 	return 1;
+@@ -99,7 +101,7 @@ int main(int argc, char **argv)
+ 		unsetenv("DBGLVL");
+ 	}
+ 
+-	while ((ch = getopt(argc, argv, "d:s:h:S")) != -1) {
++	while ((ch = getopt(argc, argv, "d:s:h:I:R:S")) != -1) {
+ 		switch (ch) {
+ 		case 'h':
+ 			return hotplug_run(optarg);
+@@ -109,6 +111,12 @@ int main(int argc, char **argv)
+ 		case 'd':
+ 			debug = atoi(optarg);
+ 			break;
++		case 'I':
++			init_d_path = optarg;
++			break;
++		case 'R':
++			rc_d_path = optarg;
++			break;
+ 		case 'S':
+ 			ulog_channels = ULOG_STDIO;
+ 			break;
+diff --git a/procd.h b/procd.h
+index f48edeb..55efc82 100644
+--- a/procd.h
++++ b/procd.h
+@@ -27,6 +27,9 @@
+ 
+ #define __init __attribute__((constructor))
+ 
++extern const char *init_d_path;
++extern const char *rc_d_path;
++
+ extern const char *ubus_socket;
+ 
+ void procd_connect_ubus(void);
+diff --git a/rcS.c b/rcS.c
+index 45a96a9..1e36c98 100644
+--- a/rcS.c
++++ b/rcS.c
+@@ -33,6 +33,9 @@
+ #include "procd.h"
+ #include "rcS.h"
+ 
++const char *init_d_path = "/etc/init.d";
++const char *rc_d_path = "/etc/rc.d";
++
+ static struct runqueue q, r;
+ 
+ struct initd {
+@@ -200,12 +203,12 @@ int rcS(const char *pattern, const char *param, void (*q_empty)(struct runqueue
+ 	q.empty_cb = q_empty;
+ 	q.max_running_tasks = 1;
+ 
+-	return _rc(&q, "/etc/rc.d", pattern, "*", param);
++	return _rc(&q, rc_d_path, pattern, "*", param);
+ }
+ 
+ int rc(const char *file, const char *param)
+ {
+-	return _rc(&r, "/etc/init.d", file, "", param);
++	return _rc(&r, init_d_path, file, "", param);
+ }
+ 
+ static void r_empty(struct runqueue *q)
+-- 
+2.52.0
+
+
+
+From tito.brasolin at gmail.com  Thu Nov 27 01:50:23 2025
+From: tito.brasolin at gmail.com (Tito Brasolin)
+Date: Thu, 27 Nov 2025 10:50:23 +0100
+Subject: [PATCH] Reminder for uhttpd: Fix potential SIGSEGV on
+ /ubus/subscribe/ disconnect (Fixes: #1)
+Message-ID: <238ff9f9-4a30-4d9a-a05c-f0854a1b5d7c@gmail.com>
+
+Hello everyone,
+
+I am writing to follow up on Pull Request (#18) I opened on GitHub a few 
+months ago for the uhttpd daemon.
+
+The patch resolves a critical stability issue (documented in issue #1) 
+that causes a potential **SIGSEGV** (Segmentation Fault) when an HTTP 
+client disconnects from a **/ubus/subscribe/...** endpoint without first 
+explicitly unsubscribing.
+
+The fix ensures that the ubus subscriber is properly unregistered in a 
+cleanup handler, preventing subsequent callbacks from referencing freed 
+client structures. This is vital for the reliable operation of the 
+Server-Sent Events (SSE) functionality introduced in 2020.
+
+* References:
+     * Pull Request: https://github.com/openwrt/uhttpd/pull/18
+     * Related Issue: https://github.com/openwrt/uhttpd/issues/1
+     * Original SSE Patch (2020): 
+https://lists.openwrt.org/pipermail/openwrt-devel/2020-September/031396.html
+
+I understand core maintainers have limited time, and I would greatly 
+appreciate it if someone could review this PR at their convenience. I am 
+ready to receive feedback and make any necessary revisions.
+
+Thank you for your time and for the great work on OpenWrt.
+
+Best regards,
+
+Tito Brasolin
+tito.brasolin at gmail.com
+
+
+From david at hardeman.nu  Fri Nov 28 10:35:45 2025
+From: david at hardeman.nu (=?utf-8?B?RGF2aWQgSMOkcmRlbWFu?=)
+Date: Fri, 28 Nov 2025 18:35:45 +0000
+Subject: [PATCH] odhcpd: send DHCPv6 lease events over U-Bus
+In-Reply-To: <mailman.30815.1764159801.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.30815.1764159801.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <ec49afed92f6af9e51b87a5e2d7d0fa1ca7c3500@hardeman.nu>
+
+26 November 2025 at 13:23, "Erin Kalouskov? via openwrt-devel" <openwrt-devel at lists.openwrt.org> wrote:
+> odhcpd currently only sends DHCPv4 lease events over U-Bus. For DHCPv6 
+> the only option was to use a trigger hook script and then parse a lease 
+> file and diff it against previous version.
+> This made it very inconvenient to use in cases like adding DHCP hosts to 
+> DNS server and the behavior is also inconsistent with DHCPv4 counterpart.
+> Format of the U-Bus message is based on reply of `ipv6leases` U-Bus method.
+>
+
+Hey,
+
+could you post the patch as a PR here:
+https://github.com/openwrt/odhcpd
+
+Then I'd be happy to take a look.
+
+Regards,
+David
+
+
+From agriveaux at deutnet.info  Fri Nov 28 12:33:49 2025
+From: agriveaux at deutnet.info (Alexandre GRIVEAUX)
+Date: Fri, 28 Nov 2025 21:33:49 +0100
+Subject: [PATCH] bcm47xx: Change WiFi driver for BCM4716 SoC.
+Message-ID: <aSoHLffZacuDSWtM@deutnet.info>
+
+This patch change the WiFi driver for the BCM4716 SoC related equipements
+from b43 to brcmsmac, which are supported according to the documentation [0].
+
+The brcmsmac driver have been tested on a Netgear WNR3500Lv1 equipped by an
+BCM4716 SoC
+
+[0] https://wireless.docs.kernel.org/en/latest/en/users/drivers/brcm80211.html
+
+Signed-off-by: Alexandre GRIVEAUX <agriveaux at deutnet.info>
+---
+ target/linux/bcm47xx/image/mips74k.mk | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/target/linux/bcm47xx/image/mips74k.mk b/target/linux/bcm47xx/image/mips74k.mk
+index 0f7610f3dd..a5bb1e562a 100644
+--- a/target/linux/bcm47xx/image/mips74k.mk
++++ b/target/linux/bcm47xx/image/mips74k.mk
+@@ -70,7 +70,7 @@ TARGET_DEVICES += asus_rt-n10u-b
+ define Device/asus_rt-n12
+   DEVICE_MODEL := RT-N12
+   DEVICE_VARIANT := A1
+-  DEVICE_PACKAGES := kmod-b43
++  DEVICE_PACKAGES := kmod-brcmsmac
+   $(Device/asus)
+   PRODUCTID := "RT-N12      "
+   DEFAULT := n
+@@ -164,7 +164,7 @@ TARGET_DEVICES += asus_rt-n66w
+ define Device/linksys_wrt160n-v3
+   DEVICE_MODEL := WRT160N
+   DEVICE_VARIANT := v3
+-  DEVICE_PACKAGES := kmod-b43
++  DEVICE_PACKAGES := kmod-brcmsmac
+   $(Device/linksys)
+   DEVICE_ID := N150
+   VERSION := 3.0.3
+@@ -175,7 +175,7 @@ TARGET_DEVICES += linksys_wrt160n-v3
+ define Device/linksys_wrt310n-v2
+   DEVICE_MODEL := WRT310N
+   DEVICE_VARIANT := v2
+-  DEVICE_PACKAGES := kmod-b43
++  DEVICE_PACKAGES := kmod-brcmsmac
+   $(Device/linksys)
+   DEVICE_ID := 310N
+   VERSION := 2.0.1
+@@ -207,7 +207,7 @@ TARGET_DEVICES += linksys_e900-v1
+ define Device/linksys_e1000
+   DEVICE_MODEL := E1000
+   DEVICE_VARIANT := v1/v2/v2.1
+-  DEVICE_PACKAGES := kmod-b43
++  DEVICE_PACKAGES := kmod-brcmsmac
+   $(Device/linksys)
+   DEVICE_ID := E100
+   VERSION := 1.1.3
+@@ -449,7 +449,7 @@ TARGET_DEVICES += netgear_wnr1000-v3
+ define Device/netgear_wnr2000v2
+   DEVICE_MODEL := WNR2000
+   DEVICE_VARIANT := v2
+-  DEVICE_PACKAGES := kmod-b43
++  DEVICE_PACKAGES := kmod-brcmsmac
+   $(Device/netgear)
+   NETGEAR_BOARD_ID := U12H114T00_NETGEAR
+   NETGEAR_REGION := 2
+@@ -460,7 +460,7 @@ TARGET_DEVICES += netgear_wnr2000v2
+ define Device/netgear_wnr3500l-v1-na
+   DEVICE_MODEL := WNR3500L
+   DEVICE_VARIANT := v1 (NA)
+-  DEVICE_PACKAGES := kmod-b43 $(USB2_PACKAGES)
++  DEVICE_PACKAGES := kmod-brcmsmac $(USB2_PACKAGES)
+   $(Device/netgear)
+   NETGEAR_BOARD_ID := U12H136T99_NETGEAR
+   NETGEAR_REGION := 2
+@@ -470,7 +470,7 @@ TARGET_DEVICES += netgear_wnr3500l-v1-na
+ define Device/netgear_wnr3500l-v1
+   DEVICE_MODEL := WNR3500L
+   DEVICE_VARIANT := v1 (ROW)
+-  DEVICE_PACKAGES := kmod-b43 $(USB2_PACKAGES)
++  DEVICE_PACKAGES := kmod-brcmsmac $(USB2_PACKAGES)
+   $(Device/netgear)
+   NETGEAR_BOARD_ID := U12H136T99_NETGEAR
+   NETGEAR_REGION := 1
+-- 
+2.47.3
+
+
+
+From rosenp at gmail.com  Fri Nov 28 13:40:09 2025
+From: rosenp at gmail.com (Rosen Penev)
+Date: Fri, 28 Nov 2025 13:40:09 -0800
+Subject: [PATCH] bcm47xx: Change WiFi driver for BCM4716 SoC.
+In-Reply-To: <mailman.31722.1764362171.2093109.openwrt-devel@lists.openwrt.org>
+References: <mailman.31722.1764362171.2093109.openwrt-devel@lists.openwrt.org>
+Message-ID: <CAKxU2N-VHQu-f7zkzaMDBzcwqKA-nLzMFMy12O1=kYVnpgAi-A@mail.gmail.com>
+
+On Fri, Nov 28, 2025 at 12:37?PM Alexandre GRIVEAUX via openwrt-devel
+<openwrt-devel at lists.openwrt.org> wrote:
+>
+> The sender domain has a DMARC Reject/Quarantine policy which disallows
+> sending mailing list messages using the original "From" header.
+>
+> To mitigate this problem, the original message has been wrapped
+> automatically by the mailing list software.
+>
+>
+> ---------- Forwarded message ----------
+> From: Alexandre GRIVEAUX <agriveaux at deutnet.info>
+> To: openwrt-devel at lists.openwrt.org
+> Cc: agriveaux at deutnet.info
+> Bcc:
+> Date: Fri, 28 Nov 2025 21:33:49 +0100
+> Subject: [PATCH] bcm47xx: Change WiFi driver for BCM4716 SoC.
+> This patch change the WiFi driver for the BCM4716 SoC related equipements
+> from b43 to brcmsmac, which are supported according to the documentation [0].
+>
+> The brcmsmac driver have been tested on a Netgear WNR3500Lv1 equipped by an
+> BCM4716 SoC
+Interesting. Does AP mode work OK?
+>
+> [0] https://wireless.docs.kernel.org/en/latest/en/users/drivers/brcm80211.html
+>
+> Signed-off-by: Alexandre GRIVEAUX <agriveaux at deutnet.info>
+> ---
+>  target/linux/bcm47xx/image/mips74k.mk | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/target/linux/bcm47xx/image/mips74k.mk b/target/linux/bcm47xx/image/mips74k.mk
+> index 0f7610f3dd..a5bb1e562a 100644
+> --- a/target/linux/bcm47xx/image/mips74k.mk
+> +++ b/target/linux/bcm47xx/image/mips74k.mk
+> @@ -70,7 +70,7 @@ TARGET_DEVICES += asus_rt-n10u-b
+>  define Device/asus_rt-n12
+>    DEVICE_MODEL := RT-N12
+>    DEVICE_VARIANT := A1
+> -  DEVICE_PACKAGES := kmod-b43
+> +  DEVICE_PACKAGES := kmod-brcmsmac
+>    $(Device/asus)
+>    PRODUCTID := "RT-N12      "
+>    DEFAULT := n
+> @@ -164,7 +164,7 @@ TARGET_DEVICES += asus_rt-n66w
+>  define Device/linksys_wrt160n-v3
+>    DEVICE_MODEL := WRT160N
+>    DEVICE_VARIANT := v3
+> -  DEVICE_PACKAGES := kmod-b43
+> +  DEVICE_PACKAGES := kmod-brcmsmac
+>    $(Device/linksys)
+>    DEVICE_ID := N150
+>    VERSION := 3.0.3
+> @@ -175,7 +175,7 @@ TARGET_DEVICES += linksys_wrt160n-v3
+>  define Device/linksys_wrt310n-v2
+>    DEVICE_MODEL := WRT310N
+>    DEVICE_VARIANT := v2
+> -  DEVICE_PACKAGES := kmod-b43
+> +  DEVICE_PACKAGES := kmod-brcmsmac
+>    $(Device/linksys)
+>    DEVICE_ID := 310N
+>    VERSION := 2.0.1
+> @@ -207,7 +207,7 @@ TARGET_DEVICES += linksys_e900-v1
+>  define Device/linksys_e1000
+>    DEVICE_MODEL := E1000
+>    DEVICE_VARIANT := v1/v2/v2.1
+> -  DEVICE_PACKAGES := kmod-b43
+> +  DEVICE_PACKAGES := kmod-brcmsmac
+>    $(Device/linksys)
+>    DEVICE_ID := E100
+>    VERSION := 1.1.3
+> @@ -449,7 +449,7 @@ TARGET_DEVICES += netgear_wnr1000-v3
+>  define Device/netgear_wnr2000v2
+>    DEVICE_MODEL := WNR2000
+>    DEVICE_VARIANT := v2
+> -  DEVICE_PACKAGES := kmod-b43
+> +  DEVICE_PACKAGES := kmod-brcmsmac
+>    $(Device/netgear)
+>    NETGEAR_BOARD_ID := U12H114T00_NETGEAR
+>    NETGEAR_REGION := 2
+> @@ -460,7 +460,7 @@ TARGET_DEVICES += netgear_wnr2000v2
+>  define Device/netgear_wnr3500l-v1-na
+>    DEVICE_MODEL := WNR3500L
+>    DEVICE_VARIANT := v1 (NA)
+> -  DEVICE_PACKAGES := kmod-b43 $(USB2_PACKAGES)
+> +  DEVICE_PACKAGES := kmod-brcmsmac $(USB2_PACKAGES)
+>    $(Device/netgear)
+>    NETGEAR_BOARD_ID := U12H136T99_NETGEAR
+>    NETGEAR_REGION := 2
+> @@ -470,7 +470,7 @@ TARGET_DEVICES += netgear_wnr3500l-v1-na
+>  define Device/netgear_wnr3500l-v1
+>    DEVICE_MODEL := WNR3500L
+>    DEVICE_VARIANT := v1 (ROW)
+> -  DEVICE_PACKAGES := kmod-b43 $(USB2_PACKAGES)
+> +  DEVICE_PACKAGES := kmod-brcmsmac $(USB2_PACKAGES)
+>    $(Device/netgear)
+>    NETGEAR_BOARD_ID := U12H136T99_NETGEAR
+>    NETGEAR_REGION := 1
+> --
+> 2.47.3
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From agriveaux at deutnet.info  Sat Nov 29 00:09:26 2025
+From: agriveaux at deutnet.info (Alexandre GRIVEAUX)
+Date: Sat, 29 Nov 2025 09:09:26 +0100
+Subject: [PATCH] bcm47xx: Change WiFi driver for BCM4716 SoC.
+In-Reply-To: <CAKxU2N-VHQu-f7zkzaMDBzcwqKA-nLzMFMy12O1=kYVnpgAi-A@mail.gmail.com>
+References: <mailman.31722.1764362171.2093109.openwrt-devel@lists.openwrt.org>
+ <CAKxU2N-VHQu-f7zkzaMDBzcwqKA-nLzMFMy12O1=kYVnpgAi-A@mail.gmail.com>
+Message-ID: <773922ea-dd54-4cbd-a01d-0eb1a37e823f@deutnet.info>
+
+Le 28/11/2025 ? 22:40, Rosen Penev a ?crit?:
+> On Fri, Nov 28, 2025 at 12:37?PM Alexandre GRIVEAUX via openwrt-devel
+> <openwrt-devel at lists.openwrt.org> wrote:
+>> The sender domain has a DMARC Reject/Quarantine policy which disallows
+>> sending mailing list messages using the original "From" header.
+>>
+>> To mitigate this problem, the original message has been wrapped
+>> automatically by the mailing list software.
+>>
+>>
+>> ---------- Forwarded message ----------
+>> From: Alexandre GRIVEAUX <agriveaux at deutnet.info>
+>> To: openwrt-devel at lists.openwrt.org
+>> Cc: agriveaux at deutnet.info
+>> Bcc:
+>> Date: Fri, 28 Nov 2025 21:33:49 +0100
+>> Subject: [PATCH] bcm47xx: Change WiFi driver for BCM4716 SoC.
+>> This patch change the WiFi driver for the BCM4716 SoC related equipements
+>> from b43 to brcmsmac, which are supported according to the documentation [0].
+>>
+>> The brcmsmac driver have been tested on a Netgear WNR3500Lv1 equipped by an
+>> BCM4716 SoC
+> Interesting. Does AP mode work OK?
+>
+For me yes, i've got pretty good results, with quick test iwinfo show :
+phy0-ap0  ESSID: "Turris"
+           Access Point: C0:3F:0E:xx:xx:xx
+           Mode: Master  Channel: 1 (2.412 GHz)  HT Mode: HT20
+           Center Channel 1: 1 2: unknown
+           Tx-Power: 19 dBm  Link Quality: 46/70
+           Signal: -64 dBm  Noise: unknown
+           Bit Rate: 108.3 MBit/s
+           Encryption: mixed WPA2/WPA3 PSK/SAE (CCMP)
+           Type: nl80211  HW Mode(s): 802.11b/g/n
+           Hardware: unknown [Generic MAC80211]
+           TX power offset: unknown
+           Frequency offset: unknown
+           Supports VAPs: no  PHY name: phy0
+
+With a Galaxy S20 FE 5G and SatStat application, I get -55dBm signal at 6 meters~ radius with wall between.
+
+
+The AP have been up for 15days, en exept some messages on dmesg, work pretty good:
+
+
+root at OpenWrt:~# dmesg | grep brcmsmac
+[   26.677483] brcmsmac bcma0:1: mfg 4bf core 812 rev 17 class 0 irq 3
+[  120.678002] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  120.686403] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  125.498171] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  125.506576] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  130.508030] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  130.516426] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  135.504567] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  135.512986] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  140.553608] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  140.562011] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  145.554969] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  145.563373] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  150.657091] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  150.665492] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  155.659189] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  155.667589] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  160.654518] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  160.662920] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  165.685243] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  165.693645] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  170.733910] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: false (implement)
+[  170.742344] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  248.880250] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: true (implement)
+[  248.888586] brcmsmac bcma0:1: brcms_ops_config: change power-save mode: false (implement)
+[  248.946105] brcmsmac bcma0:1 phy0-ap0: entered allmulticast mode
+[  248.953034] brcmsmac bcma0:1 phy0-ap0: entered promiscuous mode
+[  249.416775] brcmsmac bcma0:1: brcms_ops_bss_info_changed: Beacon enabled: true
+[  250.999016] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: true (implement)
+[  251.024270] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: true (implement)
+[  251.033495] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: true (implement)
+[  251.054296] brcmsmac bcma0:1: brcms_ops_bss_info_changed: qos enabled: true (implement)
+
+Thanks.
+
+Ps: I've played with my mail server configuration yesterday, sorry for the multipost...
+
+
+
+From frodo at morgul.net  Sun Nov 30 16:41:07 2025
+From: frodo at morgul.net (Noah Meyerhans)
+Date: Sun, 30 Nov 2025 19:41:07 -0500
+Subject: github CI failures on the packages/openwrt-24.10 branch
+Message-ID: <aSzkI82oygWQi4L5@doom.morgul.net>
+
+There seems to be something wrong with the CI configuration as it
+applies to the openwrt-24.10 branch in the packages repository.  All
+builds associated with some fairly straightforward package updates are
+failing for similar reasons that don't seem to have anything to do with
+the actual package changes themselves.
+
+https://github.com/openwrt/packages/pull/27896
+https://github.com/openwrt/packages/pull/27944
+https://github.com/openwrt/packages/pull/27945
+
+I'm not at all familiar with how the CI build environment is configured,
+so I figured I'd bring it up here in case this is obvious to somebody.
+There have only been a couple of changes to the .github/workflows
+directory in packages since May, and neither of them look like they'd
+lead to this.
+
+>From the pr 27944 logs, it seems that it's the package/index target
+that's failing.  I do not encounter failures here when building locally.
+
+2025-11-30T18:16:39.9585120Z ##[group]  make package/index
+2025-11-30T18:16:40.4196375Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'eip197-mini-firmware', which does not exist
+2025-11-30T18:16:40.4203797Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'airoha-en8811h-firmware', which does not exist
+2025-11-30T18:16:40.4205133Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'r8169-firmware', which do
+es not exist
+2025-11-30T18:16:40.4206558Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'e100-firmware', which does not exist
+2025-11-30T18:16:40.4208669Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'bnx2-firmware', which does not exist
+2025-11-30T18:16:40.4209926Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'bnx2x-firmware', which does not exist
+2025-11-30T18:16:40.4213797Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'ar3k-firmware', which does not exist
+2025-11-30T18:16:40.4214807Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'mwifiex-sdio-firmware', which does not exist
+2025-11-30T18:16:40.4219439Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'kmod-phy-bcm-ns-usb2', which does not exist
+2025-11-30T18:16:40.4220775Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'edgeport-firmware', which does not exist
+2025-11-30T18:16:40.4223987Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'r8152-firmware', which does not exist
+2025-11-30T18:16:40.4225288Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'kmod-phy-bcm-ns-usb3', which does not exist
+2025-11-30T18:16:40.4226874Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'amdgpu-firmware', which does not exist
+2025-11-30T18:16:40.4228172Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'i915-firmware-dmc', which does not exist
+2025-11-30T18:16:40.4229430Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'radeon-firmware', which does not exist
+2025-11-30T18:16:40.6154290Z make[2]: Entering directory '/builder/scripts/config'
+2025-11-30T18:16:40.6154832Z make[2]: 'conf' is up to date.
+2025-11-30T18:16:40.6155269Z make[2]: Leaving directory '/builder/scripts/config'
+2025-11-30T18:16:40.6785268Z tmp/.config-package.in:7:warning: ignoring type redefinition of 'PACKAGE_ca-bundle' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6786423Z tmp/.config-package.in:82:warning: ignoring type redefinition of 'PACKAGE_libc' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6787279Z tmp/.config-package.in:109:warning: ignoring type redefinition of 'PACKAGE_libgcc' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6787941Z tmp/.config-package.in:223:warning: ignoring type redefinition of 'PACKAGE_libpthread' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6788592Z tmp/.config-package.in:278:warning: ignoring type redefinition of 'PACKAGE_librt' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6797968Z tmp/.config-package.in:2935:warning: ignoring type redefinition of 'PACKAGE_libblkid' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6799198Z tmp/.config-package.in:3107:warning: ignoring type redefinition of 'PACKAGE_libsmartcols' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6800362Z tmp/.config-package.in:3125:warning: ignoring type redefinition of 'PACKAGE_libuuid' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6801545Z tmp/.config-package.in:3536:warning: ignoring type redefinition of 'PACKAGE_partx-utils' from 'bool' to 'tristate'
+2025-11-30T18:16:40.6806541Z Config-build.in:1315:warning: defaults for choice values not supported
+2025-11-30T18:16:40.6807042Z Config-build.in:1319:warning: defaults for choice values not supported
+2025-11-30T18:16:40.6807493Z Config-build.in:1323:warning: defaults for choice values not supported
+2025-11-30T18:16:40.6845698Z #
+2025-11-30T18:16:40.6846155Z # No change to .config
+2025-11-30T18:16:40.6846501Z #
+2025-11-30T18:16:40.6909523Z  make[1] package/index
+2025-11-30T18:16:57.6734802Z make -r package/index: build failed. Please re-run make with -j1 V=s or V=sc for a higher verbosity level to see what's going on
+2025-11-30T18:16:57.6735825Z make: *** [/builder/include/toplevel.mk:226: package/index] Error 1
+2025-11-30T18:16:57.6739282Z ##[endgroup]
+
+
+
+
+From george at sapk.in  Sun Nov 30 18:04:47 2025
+From: george at sapk.in (George Sapkin)
+Date: Mon, 1 Dec 2025 04:04:47 +0200
+Subject: github CI failures on the packages/openwrt-24.10 branch
+In-Reply-To: <aSzkI82oygWQi4L5@doom.morgul.net>
+References: <aSzkI82oygWQi4L5@doom.morgul.net>
+Message-ID: <CAMPMS9w=hiag_1+xf6tTjQCaf1YwdOvOpvNqY6i=B0DtTstC+w@mail.gmail.com>
+
+There were some changes in the multi-arch-test-build, disabling signing local
+packages both for opkg and apk. And there were related fixes to gh-action-sdk,
+but it looks like there was no tag created, so 24.10 is using a tag without the
+fix. I suppose somebody (@aparcar?) needs to create a tag and I can update the
+workflow.
+
+https://github.com/openwrt/actions-shared-workflows/pull/66
+https://github.com/openwrt/actions-shared-workflows/pull/68
+https://github.com/openwrt/gh-action-sdk/pull/56
+
+
+On Mon, Dec 1, 2025 at 2:45?AM Noah Meyerhans <frodo at morgul.net> wrote:
+>
+> There seems to be something wrong with the CI configuration as it
+> applies to the openwrt-24.10 branch in the packages repository.  All
+> builds associated with some fairly straightforward package updates are
+> failing for similar reasons that don't seem to have anything to do with
+> the actual package changes themselves.
+>
+> https://github.com/openwrt/packages/pull/27896
+> https://github.com/openwrt/packages/pull/27944
+> https://github.com/openwrt/packages/pull/27945
+>
+> I'm not at all familiar with how the CI build environment is configured,
+> so I figured I'd bring it up here in case this is obvious to somebody.
+> There have only been a couple of changes to the .github/workflows
+> directory in packages since May, and neither of them look like they'd
+> lead to this.
+>
+> From the pr 27944 logs, it seems that it's the package/index target
+> that's failing.  I do not encounter failures here when building locally.
+>
+> 2025-11-30T18:16:39.9585120Z ##[group]  make package/index
+> 2025-11-30T18:16:40.4196375Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'eip197-mini-firmware', which does not exist
+> 2025-11-30T18:16:40.4203797Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'airoha-en8811h-firmware', which does not exist
+> 2025-11-30T18:16:40.4205133Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'r8169-firmware', which do
+> es not exist
+> 2025-11-30T18:16:40.4206558Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'e100-firmware', which does not exist
+> 2025-11-30T18:16:40.4208669Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'bnx2-firmware', which does not exist
+> 2025-11-30T18:16:40.4209926Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'bnx2x-firmware', which does not exist
+> 2025-11-30T18:16:40.4213797Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'ar3k-firmware', which does not exist
+> 2025-11-30T18:16:40.4214807Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'mwifiex-sdio-firmware', which does not exist
+> 2025-11-30T18:16:40.4219439Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'kmod-phy-bcm-ns-usb2', which does not exist
+> 2025-11-30T18:16:40.4220775Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'edgeport-firmware', which does not exist
+> 2025-11-30T18:16:40.4223987Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'r8152-firmware', which does not exist
+> 2025-11-30T18:16:40.4225288Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'kmod-phy-bcm-ns-usb3', which does not exist
+> 2025-11-30T18:16:40.4226874Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'amdgpu-firmware', which does not exist
+> 2025-11-30T18:16:40.4228172Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'i915-firmware-dmc', which does not exist
+> 2025-11-30T18:16:40.4229430Z WARNING: Makefile 'package/kernel/linux/Makefile' has a dependency on 'radeon-firmware', which does not exist
+> 2025-11-30T18:16:40.6154290Z make[2]: Entering directory '/builder/scripts/config'
+> 2025-11-30T18:16:40.6154832Z make[2]: 'conf' is up to date.
+> 2025-11-30T18:16:40.6155269Z make[2]: Leaving directory '/builder/scripts/config'
+> 2025-11-30T18:16:40.6785268Z tmp/.config-package.in:7:warning: ignoring type redefinition of 'PACKAGE_ca-bundle' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6786423Z tmp/.config-package.in:82:warning: ignoring type redefinition of 'PACKAGE_libc' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6787279Z tmp/.config-package.in:109:warning: ignoring type redefinition of 'PACKAGE_libgcc' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6787941Z tmp/.config-package.in:223:warning: ignoring type redefinition of 'PACKAGE_libpthread' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6788592Z tmp/.config-package.in:278:warning: ignoring type redefinition of 'PACKAGE_librt' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6797968Z tmp/.config-package.in:2935:warning: ignoring type redefinition of 'PACKAGE_libblkid' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6799198Z tmp/.config-package.in:3107:warning: ignoring type redefinition of 'PACKAGE_libsmartcols' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6800362Z tmp/.config-package.in:3125:warning: ignoring type redefinition of 'PACKAGE_libuuid' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6801545Z tmp/.config-package.in:3536:warning: ignoring type redefinition of 'PACKAGE_partx-utils' from 'bool' to 'tristate'
+> 2025-11-30T18:16:40.6806541Z Config-build.in:1315:warning: defaults for choice values not supported
+> 2025-11-30T18:16:40.6807042Z Config-build.in:1319:warning: defaults for choice values not supported
+> 2025-11-30T18:16:40.6807493Z Config-build.in:1323:warning: defaults for choice values not supported
+> 2025-11-30T18:16:40.6845698Z #
+> 2025-11-30T18:16:40.6846155Z # No change to .config
+> 2025-11-30T18:16:40.6846501Z #
+> 2025-11-30T18:16:40.6909523Z  make[1] package/index
+> 2025-11-30T18:16:57.6734802Z make -r package/index: build failed. Please re-run make with -j1 V=s or V=sc for a higher verbosity level to see what's going on
+> 2025-11-30T18:16:57.6735825Z make: *** [/builder/include/toplevel.mk:226: package/index] Error 1
+> 2025-11-30T18:16:57.6739282Z ##[endgroup]
+>
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From noreply at github.com  Sun Nov 30 18:46:05 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 30 Nov 2025 18:46:05 -0800
+Subject: [sdwalker/sdwalker.github.io] a6e02e: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/a4b41c-a6e02e@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: a6e02e607170817998e24a47fd0bfda3218f2369
+      https://github.com/sdwalker/sdwalker.github.io/commit/a6e02e607170817998e24a47fd0bfda3218f2369
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-11-30 (Sun, 30 Nov 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+

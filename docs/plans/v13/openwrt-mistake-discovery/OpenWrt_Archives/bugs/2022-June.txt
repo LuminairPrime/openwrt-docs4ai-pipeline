@@ -1,0 +1,20 @@
+From openwrt-bugs at lists.openwrt.org  Wed Jun 15 23:57:19 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Thu, 16 Jun 2022 06:57:19 +0000
+Subject: Query regd. rw rootfs
+Message-ID: <mailman.7675.1655362648.2536778.openwrt-bugs@lists.openwrt.org>
+
+Hi All,
+   I'm new to OpenWRT development.
+I see below text from OpenWRT documentation @ https://openwrt.org/docs/techref/preinit_mount#failsafe.
+
+"The root file system is actually an overlay which can be consisted of a read-only SquashFS file system (mounted at /rom) and a writable JFFS2 partition (mounted under /overlay)."
+
+As rootfs is made rw via overlay, any changes made to sensitive files for e.g. /etc/password (deleting a line etc.) will have adverse impact on security and some init scripts may not start etc.
+On systemd, changes made to sensitive files via overlay (present in upper directory) won't be read at reboot but instead only lower directory will be read, so it wont harm the system.
+Is this behavior the same with procd?
+
+Thanks,
+Ravi
+
+

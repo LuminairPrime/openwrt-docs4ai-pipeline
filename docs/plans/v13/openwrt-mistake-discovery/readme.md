@@ -1,0 +1,1 @@
+in this folder we are looking for comon programming mistakes that might be found in openwrt-related projects. we will use this information to find code snippits in the openwrt project which demonstrate those kinds of mistakes being done properly. we will use these code snippits to make "cookbooks" or mini tutorials about how to program for openwrt correctly.

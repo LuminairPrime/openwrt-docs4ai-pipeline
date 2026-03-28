@@ -1,0 +1,3071 @@
+From fe at dev.tdt.de  Tue Apr  1 07:07:41 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Tue, 01 Apr 2025 16:07:41 +0200
+Subject: How is the mac80211 backport package generated?
+Message-ID: <f55ba45f42f158bbeacc1b401f1a05de@dev.tdt.de>
+
+Hello Felix
+Hello Community,
+
+I'm working on openwrt-23.05/openwrt-24.10 and want to add
+a new Wifi7 module that doesn't work with the current stack
+because some patches are missing. While I'm researching, I'm
+wondering how the mac80211 package is generated.
+
+Until the commit[1] the backports[2] from linux were used.
+
+Who generates the backport package that is now on the mirror
+server of openwrt?
+
+Is there a workflow for this?
+
+
+Best regards
+
+Florian
+
+[1] 
+https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=8d90b9fef1ef6b01228c6af73cf06ecbe5d0adaf
+[2] https://backports.docs.kernel.org/
+
+
+From ansuelsmth at gmail.com  Tue Apr  1 07:11:06 2025
+From: ansuelsmth at gmail.com (Christian Marangi (Ansuel))
+Date: Tue, 1 Apr 2025 16:11:06 +0200
+Subject: How is the mac80211 backport package generated?
+In-Reply-To: <f55ba45f42f158bbeacc1b401f1a05de@dev.tdt.de>
+References: <f55ba45f42f158bbeacc1b401f1a05de@dev.tdt.de>
+Message-ID: <CA+_ehUyp85b_vMsQvexT+f22Cw3hL1s6OAB5LPtNnfR7JMX7pQ@mail.gmail.com>
+
+Il giorno mar 1 apr 2025 alle ore 16:09 Florian Eckert <fe at dev.tdt.de>
+ha scritto:
+>
+> Hello Felix
+> Hello Community,
+>
+> I'm working on openwrt-23.05/openwrt-24.10 and want to add
+> a new Wifi7 module that doesn't work with the current stack
+> because some patches are missing. While I'm researching, I'm
+> wondering how the mac80211 package is generated.
+>
+> Until the commit[1] the backports[2] from linux were used.
+>
+> Who generates the backport package that is now on the mirror
+> server of openwrt?
+>
+> Is there a workflow for this?
+>
+>
+
+I remember I developed some times ago a github actions that generated
+backports package but I lost track of it...
+
+Maybe Robimarko remembers it as we had some planning on automating
+the release process?
+
+
+From robimarko at gmail.com  Tue Apr  1 07:54:07 2025
+From: robimarko at gmail.com (Robert Marko)
+Date: Tue, 1 Apr 2025 16:54:07 +0200
+Subject: How is the mac80211 backport package generated?
+In-Reply-To: <CA+_ehUyp85b_vMsQvexT+f22Cw3hL1s6OAB5LPtNnfR7JMX7pQ@mail.gmail.com>
+References: <f55ba45f42f158bbeacc1b401f1a05de@dev.tdt.de> <CA+_ehUyp85b_vMsQvexT+f22Cw3hL1s6OAB5LPtNnfR7JMX7pQ@mail.gmail.com>
+Message-ID: <CAOX2RU63nHQ_cK1yYDrG=_6uJH63ZDYi4oaECFxdpfpL8NfDJA@mail.gmail.com>
+
+On Tue, 1 Apr 2025 at 16:11, Christian Marangi (Ansuel)
+<ansuelsmth at gmail.com> wrote:
+>
+> Il giorno mar 1 apr 2025 alle ore 16:09 Florian Eckert <fe at dev.tdt.de>
+> ha scritto:
+> >
+> > Hello Felix
+> > Hello Community,
+> >
+> > I'm working on openwrt-23.05/openwrt-24.10 and want to add
+> > a new Wifi7 module that doesn't work with the current stack
+> > because some patches are missing. While I'm researching, I'm
+> > wondering how the mac80211 package is generated.
+> >
+> > Until the commit[1] the backports[2] from linux were used.
+> >
+> > Who generates the backport package that is now on the mirror
+> > server of openwrt?
+> >
+> > Is there a workflow for this?
+
+Hi Florian,
+
+It's currently manually generated, usually, Felix does it since he
+bumps the backports most of the time.
+The current version that backports are generated from is here:
+https://github.com/nbd168/backports
+
+There are python scripts inside that generate the final tarball.
+> >
+> >
+>
+> I remember I developed some times ago a github actions that generated
+> backports package but I lost track of it...
+>
+> Maybe Robimarko remembers it as we had some planning on automating
+> the release process?
+
+Yeah, it's still in my fork:
+https://github.com/robimarko/backports
+
+I guess we should really restart this and move the backports into
+OpenWrt org itself.
+
+Regards,
+Robert
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From ke.vigouroux at laposte.net  Wed Apr  2 07:37:36 2025
+From: ke.vigouroux at laposte.net (Kevin Vigouroux)
+Date: Wed, 02 Apr 2025 16:37:36 +0200
+Subject: [odhcpd] Is =?utf-8?Q?=E2=80=9Cdhcpv6=5Ffor=5Feach=5Foption=28=29?=
+ =?utf-8?Q?=E2=80=9D?= correctly implemented?
+Message-ID: <87tt76y6hb.fsf@laposte.net>
+
+Hi!
+
+It seems to me that this macro isn?t correct.
+
+Why aren't the ?otype?, ?olen? and ?odata? fields initialized at loop entry?
+
+This macro is defined in the file dhcpv6.h provided by odhcpd.
+
+#+BEGIN_SRC C
+#define dhcpv6_for_each_option(start, end, otype, olen, odata)\
+	for (uint8_t *_o = (uint8_t*)(start); _o + 4 <= (end) &&\
+		((otype) = _o[0] << 8 | _o[1]) && ((odata) = (void*)&_o[4]) &&\
+		((olen) = _o[2] << 8 | _o[3]) + (odata) <= (end); \
+		_o += 4 + (_o[2] << 8 | _o[3]))
+#+END_SRC
+
+-- 
+Best regards,
+Kevin Vigouroux
+
+
+From ke.vigouroux at laposte.net  Wed Apr  2 10:45:07 2025
+From: ke.vigouroux at laposte.net (Kevin Vigouroux)
+Date: Wed, 02 Apr 2025 19:45:07 +0200
+Subject: [odhcpd] Is =?utf-8?Q?=E2=80=9Cdhcpv6=5Ffor=5Feach=5Foption?=
+ =?utf-8?Q?=28=29=E2=80=9D?= correctly implemented?
+In-Reply-To: <mailman.19825.1743604671.1866309.openwrt-devel@lists.openwrt.org>
+	(Kevin Vigouroux via openwrt-devel's message of "Wed, 02 Apr 2025
+	16:37:36 +0200")
+References: <mailman.19825.1743604671.1866309.openwrt-devel@lists.openwrt.org>
+Message-ID: <87iknm31b0.fsf@laposte.net>
+
+I understood my issue. I mistakenly thought that the second expression of the
+for statement was evaluated in the second loop. So, it's a misunderstanding of
+the C language. Sorry!
+-- 
+Best regards,
+Kevin Vigouroux
+
+
+From hauke at hauke-m.de  Wed Apr  2 11:16:43 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Wed, 2 Apr 2025 20:16:43 +0200
+Subject: EU Cyber Resilience Act, standardization at ETSI
+Message-ID: <be52bb85-5e70-4c85-bc22-ffd14e615eff@hauke-m.de>
+
+Hi,
+
+I was contacted by Ilu, she is looking for someone who can go into the 
+ETSI working groups which will work on more details of the EU Cyber 
+Resilience Act. We need someone with technical expertise on 
+Router/Switches/Modems to represent the open source community.
+
+This activity is coordinated by Simon Phipps from the OSI.
+There are also someone from Mozilla involved.
+
+I do not know how much work this is.
+
+Hauke
+
+
+From denver at ossguy.com  Wed Apr  2 11:30:03 2025
+From: denver at ossguy.com (Denver Gingerich)
+Date: Wed, 2 Apr 2025 18:30:03 +0000
+Subject: EU Cyber Resilience Act, standardization at ETSI
+In-Reply-To: <be52bb85-5e70-4c85-bc22-ffd14e615eff@hauke-m.de>
+References: <be52bb85-5e70-4c85-bc22-ffd14e615eff@hauke-m.de>
+Message-ID: <20250402183002.GR25162@ossguy.com>
+
+On Wed, Apr 02, 2025 at 08:16:43PM +0200, Hauke Mehrtens wrote:
+> I was contacted by Ilu, she is looking for someone who can go into the ETSI
+> working groups which will work on more details of the EU Cyber Resilience
+> Act. We need someone with technical expertise on Router/Switches/Modems to
+> represent the open source community.
+> 
+> This activity is coordinated by Simon Phipps from the OSI.
+> There are also someone from Mozilla involved.
+
+We at SFC are planning to join the ETSI working group(s) directly.  We will have more details in the next week or so.  It would be best for OpenWrt to have a direct voice via SFC, instead of through an unaffiliated organization.
+
+Denver Gingerich
+Director of Compliance
+Software Freedom Conservancy
+
+
+From linus.walleij at linaro.org  Wed Apr  2 14:12:34 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Wed, 02 Apr 2025 23:12:34 +0200
+Subject: [PATCH] kernel: modules: Fix RTL8366RB title
+Message-ID: <20250402-fix-rtl8366rb-title-v1-1-d3ced57a0e9c@linaro.org>
+
+The title of the RTL8366RB was wrong, probably a pure
+copy/paste bug by me.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ package/kernel/linux/modules/netdevices.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package/kernel/linux/modules/netdevices.mk b/package/kernel/linux/modules/netdevices.mk
+index d96108fdd4b37373dab4490ee61bedf2a1cafc2f..5ad21ae6284054821503a8dbf8b120083e56db04 100644
+--- a/package/kernel/linux/modules/netdevices.mk
++++ b/package/kernel/linux/modules/netdevices.mk
+@@ -658,7 +658,7 @@ $(eval $(call KernelPackage,dsa-realtek))
+ 
+ define KernelPackage/dsa-rtl8366rb
+   SUBMENU:=$(NETWORK_DEVICES_MENU)
+-  TITLE:=Realtek RTL8365MB switch DSA support
++  TITLE:=Realtek RTL8366RB switch DSA support
+   DEPENDS:=+kmod-dsa-realtek @!TARGET_x86 @!TARGET_bcm47xx @!TARGET_uml
+   KCONFIG:= \
+ 	CONFIG_NET_DSA_REALTEK_RTL8366RB \
+
+---
+base-commit: cba55fade8f7d8aafbaf301b8dfbd3d9830830c5
+change-id: 20250402-fix-rtl8366rb-title-d3ba9cfc107c
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij at linaro.org>
+
+
+
+From drieb at swcp.com  Wed Apr  2 14:42:34 2025
+From: drieb at swcp.com (Declan Rieb)
+Date: Wed, 2 Apr 2025 15:42:34 -0600
+Subject: Eero Max 7
+Message-ID: <8163C637-DF90-46CE-94F8-6C731A7124C4@swcp.com>
+
+Any chance of getting OpenWRT on a high-end residential router (Eero Max 7, Netgear Nighthawk, and/or UniFi Dream 7)??
+
+What?s it take to help it happen?
+
+
+________________________
+Declan Rieb
+DRieb at swcp.com
+
+
+
+
+
+From mark at mdvthu.com  Wed Apr  2 22:40:13 2025
+From: mark at mdvthu.com (Mark Thurston)
+Date: Thu, 03 Apr 2025 06:40:13 +0100
+Subject: Eero Max 7
+In-Reply-To: <8163C637-DF90-46CE-94F8-6C731A7124C4@swcp.com>
+References: <8163C637-DF90-46CE-94F8-6C731A7124C4@swcp.com>
+Message-ID: <195fa2a0778.db026eec428027.8026011241553632385@mdvthu.com>
+
+This probably isn't the forum to ask these sorts of questions without demonstrating evidence of some reading/research first. Here are the places you probably should have looked already:
+
+The Table of Hardware (https://openwrt.org/toh/start) is the best place to start a hardware search and you will find that the WiFi 6 RAX120 Nighthawk is supported.
+
+Other posters have already asked about equivalents to Ubiquiti Dream
+https://forum.openwrt.org/t/which-router-with-openwrt-instead-of-the-unifi-dream-machine/182124
+
+If you're looking for something with WiFi 7, this might be a good option (https://www.reddit.com/r/openwrt/comments/1d8l1x1/any_good_wifi_7_openwrt_routers_out_there/):
+https://www.amazon.com/BPI-R4-Wi-Fi-Dual-Band-Router-Board/dp/B0CPFJQCG2?th=1
+
+
+ ---- On Wed, 02 Apr 2025 22:42:34 +0100  Declan Rieb <drieb at swcp.com> wrote --- 
+ > Any chance of getting OpenWRT on a high-end residential router (Eero Max 7, Netgear Nighthawk, and/or UniFi Dream 7)??
+ > 
+ > What?s it take to help it happen?
+ > 
+ > 
+ > ________________________
+ > Declan Rieb
+ > DRieb at swcp.com
+ > 
+ > 
+ > 
+ > 
+ > _______________________________________________
+ > openwrt-devel mailing list
+ > openwrt-devel at lists.openwrt.org
+ > https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+ > 
+
+
+
+From bjorn at mork.no  Wed Apr  2 23:03:28 2025
+From: bjorn at mork.no (=?utf-8?Q?Bj=C3=B8rn_Mork?=)
+Date: Thu, 03 Apr 2025 08:03:28 +0200
+Subject: Eero Max 7
+In-Reply-To: <8163C637-DF90-46CE-94F8-6C731A7124C4@swcp.com> (Declan Rieb's
+	message of "Wed, 2 Apr 2025 15:42:34 -0600")
+References: <8163C637-DF90-46CE-94F8-6C731A7124C4@swcp.com>
+Message-ID: <87ldsh6atr.fsf@miraculix.mork.no>
+
+Declan Rieb <drieb at swcp.com> writes:
+
+> Any chance of getting OpenWRT on a high-end residential router (Eero Max 7, Netgear Nighthawk, and/or UniFi Dream 7)??
+>
+> What?s it take to help it happen?
+
+https://openwrt.org/docs/guide-developer/add.new.device
+
+
+Bj?rn
+
+
+From linus.walleij at linaro.org  Wed Apr  2 23:51:01 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 03 Apr 2025 08:51:01 +0200
+Subject: [PATCH v2 1/4] package: usbgadget: Require kmod-fs-configfs
+In-Reply-To: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+Message-ID: <20250403-dns313-usb-serial-v2-1-d84de8e86931@linaro.org>
+
+The usbgadget package tries to mount and use configfs so it
+needs to require the kernel module instead of implying it.
+
+There should be a newline at the end of the file as well.
+
+Cc: Chuanhong Guo <gch981213 at gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ package/utils/usbgadget/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+index d3a68ea9dfa82eb083bafe2c033cdab9156d1e9b..65673e730f1728b9d6d33c0533669d988d9789b1 100644
+--- a/package/utils/usbgadget/Makefile
++++ b/package/utils/usbgadget/Makefile
+@@ -12,7 +12,7 @@ include $(INCLUDE_DIR)/package.mk
+ define Package/$(PKG_NAME)
+   SECTION:=utils
+   CATEGORY:=Utilities
+-  DEPENDS:=@USB_GADGET_SUPPORT +kmod-usb-gadget +kmod-usb-lib-composite
++  DEPENDS:=@USB_GADGET_SUPPORT +kmod-usb-gadget +kmod-fs-configfs +kmod-usb-lib-composite
+   TITLE:=init script to create USB gadgets
+ endef
+ 
+@@ -51,4 +51,4 @@ define GadgetPreset
+ endef
+ 
+ $(eval $(call GadgetPreset,ncm,CDC-NCM,+kmod-usb-gadget-ncm))
+-$(eval $(call GadgetPreset,acm,CDC-ACM,+kmod-usb-gadget-serial))
+\ No newline at end of file
++$(eval $(call GadgetPreset,acm,CDC-ACM,+kmod-usb-gadget-serial))
+
+-- 
+2.49.0
+
+
+
+From linus.walleij at linaro.org  Wed Apr  2 23:51:00 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 03 Apr 2025 08:51:00 +0200
+Subject: [PATCH v2 0/4] Enable USB serial console on the D-Link DNS-313
+Message-ID: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+
+This patch set makes it possible to plug in a USB cable
+into the device USB B receptacle on the DNS-313 and
+it will appear as /dev/ttyACM0 on the host and there will
+be a serial console on it, at 115200 baud.
+
+This is useful for users who don't like to solder in
+their device to get a serial console.
+
+I did some minor patching to the usbgadet utility package
+to make things work properly for me.
+
+The custom inittab is a bit ugly, but I've seen that this
+seems to be what other devices do, other ideas welcome.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+Changes in v2:
+- Use Chuanhong Guo's usbgadget configfs package
+- Add a few patches to usbgadget to make it easier to use
+- Link to v1: https://patchwork.ozlabs.org/project/openwrt/list/?series=381797
+
+---
+Linus Walleij (4):
+      package: usbgadget: Require kmod-fs-configfs
+      package: usbgadget: Define conffile
+      package: usbgadget: Fix subpackage dependencies
+      gemini: Activate serial USB console on the DNS-313
+
+ package/utils/usbgadget/Makefile                        | 10 +++++++---
+ target/linux/gemini/Makefile                            |  2 +-
+ target/linux/gemini/base-files/etc/board.d/02_usbgadget | 11 +++++++++++
+ target/linux/gemini/base-files/etc/inittab              |  4 ++++
+ target/linux/gemini/image/Makefile                      |  2 +-
+ 5 files changed, 24 insertions(+), 5 deletions(-)
+---
+base-commit: cba55fade8f7d8aafbaf301b8dfbd3d9830830c5
+change-id: 20231111-dns313-usb-serial-b9ac47e3a27e
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij at linaro.org>
+
+
+
+From linus.walleij at linaro.org  Wed Apr  2 23:51:02 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 03 Apr 2025 08:51:02 +0200
+Subject: [PATCH v2 2/4] package: usbgadget: Define conffile
+In-Reply-To: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+Message-ID: <20250403-dns313-usb-serial-v2-2-d84de8e86931@linaro.org>
+
+The /etc/config/usbgadget file is a conffile, so specify
+it as such.
+
+Cc: Chuanhong Guo <gch981213 at gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ package/utils/usbgadget/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+index 65673e730f1728b9d6d33c0533669d988d9789b1..55f30b6729a00c6cf28da19f25653a3217243495 100644
+--- a/package/utils/usbgadget/Makefile
++++ b/package/utils/usbgadget/Makefile
+@@ -16,6 +16,10 @@ define Package/$(PKG_NAME)
+   TITLE:=init script to create USB gadgets
+ endef
+ 
++define Package/$(PKG_NAME)/conffiles
++/etc/config/usbgadget
++endef
++
+ define Build/Compile
+ endef
+ 
+
+-- 
+2.49.0
+
+
+
+From linus.walleij at linaro.org  Wed Apr  2 23:51:03 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 03 Apr 2025 08:51:03 +0200
+Subject: [PATCH v2 3/4] package: usbgadget: Fix subpackage dependencies
+In-Reply-To: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+Message-ID: <20250403-dns313-usb-serial-v2-3-d84de8e86931@linaro.org>
+
+Currently if a target wants to use acm or ncm gadget config,
+they need to select both usbgadget and the config package
+such as usbgadget-acm.
+
+It's better if the target just select usbgadget-acm and get
+all dependencies satisfied.
+
+Adding a dependency using usbgadget+ fixes this.
+
+Cc: Chuanhong Guo <gch981213 at gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ package/utils/usbgadget/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+index 55f30b6729a00c6cf28da19f25653a3217243495..40a68b7601a8b73770fc3fc921df6f708a143ffb 100644
+--- a/package/utils/usbgadget/Makefile
++++ b/package/utils/usbgadget/Makefile
+@@ -54,5 +54,5 @@ define GadgetPreset
+   $$(eval $$(call BuildPackage,$(PKG_NAME)-$(1)))
+ endef
+ 
+-$(eval $(call GadgetPreset,ncm,CDC-NCM,+kmod-usb-gadget-ncm))
+-$(eval $(call GadgetPreset,acm,CDC-ACM,+kmod-usb-gadget-serial))
++$(eval $(call GadgetPreset,ncm,CDC-NCM,+usbgadget +kmod-usb-gadget-ncm))
++$(eval $(call GadgetPreset,acm,CDC-ACM,+usbgadget +kmod-usb-gadget-serial))
+
+-- 
+2.49.0
+
+
+
+From linus.walleij at linaro.org  Wed Apr  2 23:51:04 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 03 Apr 2025 08:51:04 +0200
+Subject: [PATCH v2 4/4] gemini: Activate serial USB console on the DNS-313
+In-Reply-To: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+Message-ID: <20250403-dns313-usb-serial-v2-4-d84de8e86931@linaro.org>
+
+This brings up a serial console on the USB device port of
+the DNS-313 by:
+
+- Activating the usbgadget feature
+- Selecting the usbgadget-acm package
+- Adding an inittab that opens a console at ttyGS0 which is
+  the device side of ttyACMn of a connected host
+
+Cc: Chuanhong Guo <gch981213 at gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/gemini/Makefile                            |  2 +-
+ target/linux/gemini/base-files/etc/board.d/02_usbgadget | 11 +++++++++++
+ target/linux/gemini/base-files/etc/inittab              |  4 ++++
+ target/linux/gemini/image/Makefile                      |  2 +-
+ 4 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/target/linux/gemini/Makefile b/target/linux/gemini/Makefile
+index b2869ff72edf2db557843a729a67ec97cf601b4b..ddfe67be2bb3ddf8a00b53d9729a743fa4b4b5c8 100644
+--- a/target/linux/gemini/Makefile
++++ b/target/linux/gemini/Makefile
+@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
+ ARCH:=arm
+ BOARD:=gemini
+ BOARDNAME:=Cortina Systems CS351x
+-FEATURES:=squashfs pci rtc usb dt gpio display ext4 rootfs-part boot-part
++FEATURES:=squashfs pci rtc usb usbgadget dt gpio display ext4 rootfs-part boot-part
+ CPU_TYPE:=fa526
+ SUBTARGETS:=generic
+ 
+diff --git a/target/linux/gemini/base-files/etc/board.d/02_usbgadget b/target/linux/gemini/base-files/etc/board.d/02_usbgadget
+new file mode 100644
+index 0000000000000000000000000000000000000000..7337e6638aeb4538ca580c5fa814b4ee76526ed2
+--- /dev/null
++++ b/target/linux/gemini/base-files/etc/board.d/02_usbgadget
+@@ -0,0 +1,11 @@
++. /lib/functions.sh
++
++case "$(board_name)" in
++dlink,dns-313)
++	uci set usbgadget. at preset[0].name="acm"
++	uci set usbgadget. at preset[0].UDC="69000000.usb"
++	uci commit usbgadget
++	;;
++esac
++
++exit 0
+diff --git a/target/linux/gemini/base-files/etc/inittab b/target/linux/gemini/base-files/etc/inittab
+new file mode 100644
+index 0000000000000000000000000000000000000000..253036402d8330b708af896df214d975f0721bc1
+--- /dev/null
++++ b/target/linux/gemini/base-files/etc/inittab
+@@ -0,0 +1,4 @@
++::sysinit:/etc/init.d/rcS S boot
++::shutdown:/etc/init.d/rcS K shutdown
++::askconsole:/usr/libexec/login.sh
++ttyGS0::askfirst:/usr/libexec/login.sh
+diff --git a/target/linux/gemini/image/Makefile b/target/linux/gemini/image/Makefile
+index 389c8f8c442af8323de57c3f22b287716af88dfd..c5d09e7120b47cab08a0d479ef2c6eb48ac4a783 100644
+--- a/target/linux/gemini/image/Makefile
++++ b/target/linux/gemini/image/Makefile
+@@ -170,7 +170,7 @@ define Device/dlink_dns-313
+ 	DEVICE_VENDOR := D-Link
+ 	DEVICE_MODEL := DNS-313 1-Bay Network Storage Enclosure
+ 	DEVICE_DTS := gemini-dlink-dns-313
+-	DEVICE_PACKAGES := $(GEMINI_NAS_PACKAGES)
++	DEVICE_PACKAGES := $(GEMINI_NAS_PACKAGES) usbgadget-acm
+ 	BLOCKSIZE := 1k
+ 	FILESYSTEMS := ext4
+ 	IMAGES := factory.bin.gz
+
+-- 
+2.49.0
+
+
+
+From gch981213 at gmail.com  Thu Apr  3 18:51:03 2025
+From: gch981213 at gmail.com (Chuanhong Guo)
+Date: Fri, 4 Apr 2025 09:51:03 +0800
+Subject: [PATCH v2 3/4] package: usbgadget: Fix subpackage dependencies
+In-Reply-To: <20250403-dns313-usb-serial-v2-3-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org> <20250403-dns313-usb-serial-v2-3-d84de8e86931@linaro.org>
+Message-ID: <CAJsYDVK2a9nwcTP6hBi0eCFiLQPwYKouhMLUPQzv=8XbKwiOZA@mail.gmail.com>
+
+Hi!
+
+On Thu, Apr 3, 2025 at 2:51?PM Linus Walleij <linus.walleij at linaro.org> wrote:
+>
+> Currently if a target wants to use acm or ncm gadget config,
+> they need to select both usbgadget and the config package
+> such as usbgadget-acm.
+>
+> It's better if the target just select usbgadget-acm and get
+> all dependencies satisfied.
+>
+> Adding a dependency using usbgadget+ fixes this.
+>
+> Cc: Chuanhong Guo <gch981213 at gmail.com>
+> Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+> ---
+>  package/utils/usbgadget/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+> index 55f30b6729a00c6cf28da19f25653a3217243495..40a68b7601a8b73770fc3fc921df6f708a143ffb 100644
+> --- a/package/utils/usbgadget/Makefile
+> +++ b/package/utils/usbgadget/Makefile
+> @@ -54,5 +54,5 @@ define GadgetPreset
+>    $$(eval $$(call BuildPackage,$(PKG_NAME)-$(1)))
+>  endef
+>
+> -$(eval $(call GadgetPreset,ncm,CDC-NCM,+kmod-usb-gadget-ncm))
+> -$(eval $(call GadgetPreset,acm,CDC-ACM,+kmod-usb-gadget-serial))
+> +$(eval $(call GadgetPreset,ncm,CDC-NCM,+usbgadget +kmod-usb-gadget-ncm))
+> +$(eval $(call GadgetPreset,acm,CDC-ACM,+usbgadget +kmod-usb-gadget-serial))
+
+This dependency is needed by all preset packages and can be added to
+the GadgetPreset template instead.
+Other than that:
+
+Reviewed-by: Chuanhong Guo <gch981213 at gmail.com>
+
+-- 
+Regards,
+Chuanhong Guo
+
+
+From gch981213 at gmail.com  Thu Apr  3 18:51:22 2025
+From: gch981213 at gmail.com (Chuanhong Guo)
+Date: Fri, 4 Apr 2025 09:51:22 +0800
+Subject: [PATCH v2 2/4] package: usbgadget: Define conffile
+In-Reply-To: <20250403-dns313-usb-serial-v2-2-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org> <20250403-dns313-usb-serial-v2-2-d84de8e86931@linaro.org>
+Message-ID: <CAJsYDV+_YST6p8TU+3GzgS1Y+KHXmmFPUZiUK1cwV9YfF8i3Sw@mail.gmail.com>
+
+On Thu, Apr 3, 2025 at 2:51?PM Linus Walleij <linus.walleij at linaro.org> wrote:
+>
+> The /etc/config/usbgadget file is a conffile, so specify
+> it as such.
+>
+> Cc: Chuanhong Guo <gch981213 at gmail.com>
+> Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+
+Thanks for the fixes!
+> ---
+>  package/utils/usbgadget/Makefile | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+> index 65673e730f1728b9d6d33c0533669d988d9789b1..55f30b6729a00c6cf28da19f25653a3217243495 100644
+> --- a/package/utils/usbgadget/Makefile
+> +++ b/package/utils/usbgadget/Makefile
+> @@ -16,6 +16,10 @@ define Package/$(PKG_NAME)
+>    TITLE:=init script to create USB gadgets
+>  endef
+>
+> +define Package/$(PKG_NAME)/conffiles
+> +/etc/config/usbgadget
+> +endef
+> +
+>  define Build/Compile
+>  endef
+>
+>
+> --
+> 2.49.0
+>
+
+
+-- 
+Regards,
+Chuanhong Guo
+
+
+From gch981213 at gmail.com  Thu Apr  3 18:52:12 2025
+From: gch981213 at gmail.com (Chuanhong Guo)
+Date: Fri, 4 Apr 2025 09:52:12 +0800
+Subject: [PATCH v2 2/4] package: usbgadget: Define conffile
+In-Reply-To: <CAJsYDV+_YST6p8TU+3GzgS1Y+KHXmmFPUZiUK1cwV9YfF8i3Sw@mail.gmail.com>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org>
+ <20250403-dns313-usb-serial-v2-2-d84de8e86931@linaro.org> <CAJsYDV+_YST6p8TU+3GzgS1Y+KHXmmFPUZiUK1cwV9YfF8i3Sw@mail.gmail.com>
+Message-ID: <CAJsYDVK8j5SiSZb_yJG62VfoHDiQXZ9XNczyTvgBXhqRoSahTg@mail.gmail.com>
+
+Hi!
+
+On Fri, Apr 4, 2025 at 9:51?AM Chuanhong Guo <gch981213 at gmail.com> wrote:
+>
+> On Thu, Apr 3, 2025 at 2:51?PM Linus Walleij <linus.walleij at linaro.org> wrote:
+> >
+> > The /etc/config/usbgadget file is a conffile, so specify
+> > it as such.
+> >
+> > Cc: Chuanhong Guo <gch981213 at gmail.com>
+> > Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+>
+> Thanks for the fixes!
+
+Reviewed-by: Chuanhong Guo <gch981213 at gmail.com>
+
+> > ---
+> >  package/utils/usbgadget/Makefile | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+> > index 65673e730f1728b9d6d33c0533669d988d9789b1..55f30b6729a00c6cf28da19f25653a3217243495 100644
+> > --- a/package/utils/usbgadget/Makefile
+> > +++ b/package/utils/usbgadget/Makefile
+> > @@ -16,6 +16,10 @@ define Package/$(PKG_NAME)
+> >    TITLE:=init script to create USB gadgets
+> >  endef
+> >
+> > +define Package/$(PKG_NAME)/conffiles
+> > +/etc/config/usbgadget
+> > +endef
+> > +
+> >  define Build/Compile
+> >  endef
+> >
+> >
+> > --
+> > 2.49.0
+> >
+>
+>
+> --
+> Regards,
+> Chuanhong Guo
+
+
+
+-- 
+Regards,
+Chuanhong Guo
+
+
+From gch981213 at gmail.com  Thu Apr  3 18:52:42 2025
+From: gch981213 at gmail.com (Chuanhong Guo)
+Date: Fri, 4 Apr 2025 09:52:42 +0800
+Subject: [PATCH v2 1/4] package: usbgadget: Require kmod-fs-configfs
+In-Reply-To: <20250403-dns313-usb-serial-v2-1-d84de8e86931@linaro.org>
+References: <20250403-dns313-usb-serial-v2-0-d84de8e86931@linaro.org> <20250403-dns313-usb-serial-v2-1-d84de8e86931@linaro.org>
+Message-ID: <CAJsYDVJ+toWeefiWgPFTPxMmgmsLNkDTo4YVAUOyWzMs2whttw@mail.gmail.com>
+
+Hi!
+
+On Thu, Apr 3, 2025 at 2:51?PM Linus Walleij <linus.walleij at linaro.org> wrote:
+>
+> The usbgadget package tries to mount and use configfs so it
+> needs to require the kernel module instead of implying it.
+>
+> There should be a newline at the end of the file as well.
+>
+> Cc: Chuanhong Guo <gch981213 at gmail.com>
+> Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+
+Reviewed-by: Chuanhong Guo <gch981213 at gmail.com>
+
+> ---
+>  package/utils/usbgadget/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/package/utils/usbgadget/Makefile b/package/utils/usbgadget/Makefile
+> index d3a68ea9dfa82eb083bafe2c033cdab9156d1e9b..65673e730f1728b9d6d33c0533669d988d9789b1 100644
+> --- a/package/utils/usbgadget/Makefile
+> +++ b/package/utils/usbgadget/Makefile
+> @@ -12,7 +12,7 @@ include $(INCLUDE_DIR)/package.mk
+>  define Package/$(PKG_NAME)
+>    SECTION:=utils
+>    CATEGORY:=Utilities
+> -  DEPENDS:=@USB_GADGET_SUPPORT +kmod-usb-gadget +kmod-usb-lib-composite
+> +  DEPENDS:=@USB_GADGET_SUPPORT +kmod-usb-gadget +kmod-fs-configfs +kmod-usb-lib-composite
+>    TITLE:=init script to create USB gadgets
+>  endef
+>
+> @@ -51,4 +51,4 @@ define GadgetPreset
+>  endef
+>
+>  $(eval $(call GadgetPreset,ncm,CDC-NCM,+kmod-usb-gadget-ncm))
+> -$(eval $(call GadgetPreset,acm,CDC-ACM,+kmod-usb-gadget-serial))
+> \ No newline at end of file
+> +$(eval $(call GadgetPreset,acm,CDC-ACM,+kmod-usb-gadget-serial))
+>
+> --
+> 2.49.0
+>
+
+-- 
+Regards,
+Chuanhong Guo
+
+
+From michel at lespinasse.org  Sat Apr  5 20:03:04 2025
+From: michel at lespinasse.org (Michel Lespinasse)
+Date: Sat, 5 Apr 2025 20:03:04 -0700
+Subject: OpenWrt 24.10 release status
+In-Reply-To: <949a7f96-ea16-4067-a7df-5fbace13f076@hauke-m.de>
+References: <da710280-e3e2-46ea-8e8e-2c44cb1d2e70@hauke-m.de>
+ <293376d6-1746-4149-857e-d6f818e8230b@hauke-m.de>
+ <Z6ALYQV3yKP57LUi@makrotopia.org>
+ <949a7f96-ea16-4067-a7df-5fbace13f076@hauke-m.de>
+Message-ID: <Z_Hu6CS1O7-TQZME@lespinasse.org>
+
+On Tue, Feb 04, 2025 at 12:58:21AM +0100, Hauke Mehrtens wrote:
+> We should do a OpenWrt 24.10.1 in about 4 weeks. Feel free to backport
+> fixes.
+
+I was wondering if there are current plans for a 24.10.1 release ?
+
+Thanks,
+
+--
+Michel Lespinasse
+
+
+From noreply at github.com  Sun Apr  6 12:53:43 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 06 Apr 2025 12:53:43 -0700
+Subject: [sdwalker/sdwalker.github.io] d2a81b: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/622654-d2a81b@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: d2a81bbd90c4e1b31f6139f26c99ed53f6c5e52c
+      https://github.com/sdwalker/sdwalker.github.io/commit/d2a81bbd90c4e1b31f6139f26c99ed53f6c5e52c
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-04-06 (Sun, 06 Apr 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From ewelina.koprowska at astutegenius.pl  Tue Apr  8 00:56:01 2025
+From: ewelina.koprowska at astutegenius.pl (Ewelina Koprowska)
+Date: Tue,  8 Apr 2025 07:56:01 GMT
+Subject: Karta lunchowa
+Message-ID: <20250408084500-0.1.gx.564o7.0.rngplnzclq@astutegenius.pl>
+
+Szanowni Pa?stwo,
+
+czy zastanawiali si? Pa?stwo, jak zwi?kszy? zadowolenie pracownik?w i jednocze?nie zaoszcz?dzi? na kosztach zatrudnienia? 
+
+Obecnie jest mo?liwo?? zwolnienia z op?at ZUS a? do 450 z? miesi?cznie na ka?dego pracownika poprzez dofinansowanie posi?k?w. 
+
+Za pomoc? karty lunch pracownicy mog? p?aci? w restauracjach, zamawia? jedzenie online, korzysta? z cateringu czy robi? zakupy spo?ywcze. To doskona?e narz?dzie motywacyjne, kt?re tak?e wyr??nia firm? na rynku pracy.
+
+Ch?tnie opowiem wi?cej na ten temat, czy mogliby?my porozmawia? w najbli?szym czasie?
+
+
+Pozdrawiam
+Ewelina Koprowska
+Senior HR Manager
+
+
+From denver at ossguy.com  Tue Apr  8 14:23:42 2025
+From: denver at ossguy.com (Denver Gingerich)
+Date: Tue, 8 Apr 2025 21:23:42 +0000
+Subject: EU Cyber Resilience Act, standardization at ETSI
+In-Reply-To: <be52bb85-5e70-4c85-bc22-ffd14e615eff@hauke-m.de>
+References: <be52bb85-5e70-4c85-bc22-ffd14e615eff@hauke-m.de>
+Message-ID: <20250408212342.GB25162@ossguy.com>
+
+We at SFC will be starting a monthly video chat to discuss any questions OpenWrt may have, across a range of topics.  The day/time will be announced in the coming weeks.  We are aiming for the time to align well with waking hours in North America and Europe but are open to suggestions on that.
+
+Denver Gingerich
+Director of Compliance
+Software Freedom Conservancy
+
+
+From dd at embedd.com  Wed Apr  9 09:10:53 2025
+From: dd at embedd.com (Daniel Danzberger)
+Date: Wed,  9 Apr 2025 18:10:53 +0200
+Subject: [PATCH] mvebu: Add support for Comtime CT-Router NG 5G
+Message-ID: <20250409161053.76062-1-dd@embedd.com>
+
+The device is a small industrial 5G Router build by comtime GmbH
+in Germany.
+
+https://comtime-com.de/router-5g-hutschiene-industrie-anwendung/
+
+Hardware
+--------
+CPU   : Marvell 88F3720 (Armada 3700 family) 64-Bit ARMv8,
+        Cortex A72, Dual Core, 1GHz
+Flash : 128M-bit (Serial NOR-Flash)
+eMMC  : 4GB, alt. 8GB
+RAM   : DDR3 RAM 256Mbx16
+Modem : Quectel RM520N-GL
+Switch: 4 Port Gigabit
+USB   : 1 Port
+
+Installation
+------------
+The factory image is already openwrt based, so all you need to do is scp
+an image and run sysupgrade. Default login via ssh is admin/admin, but
+you can become root by simply running 'su -'.
+
+Steps:
+ 1. Turn on sshd in webUI on 192.168.0.1
+ 2. scp openwrt-mvebu-cortexa53-comtime_ct142-3gpp-emmc-squashfs-sdcard.img.gz admin at 192.168.0.1:/tmp
+ 3. ssh admin at 192.168.0.1
+ 4. su -
+ 5. sysupgrade -n /tmp/openwrt-mvebu-cortexa53-comtime_ct142-3gpp-emmc-squashfs-sdcard.img.gz
+
+Signed-off-by: Daniel Danzberger <dd at embedd.com>
+---
+ .../cortexa53/base-files/etc/board.d/01_leds  |   4 +
+ .../base-files/etc/board.d/02_network         |   3 +
+ .../base-files/lib/upgrade/platform.sh        |   3 +
+ .../marvell/armada-3720-ct142-3gpp-emmc.dts   |  58 +++
+ .../boot/dts/marvell/armada-3720-ct142.dtsi   | 332 ++++++++++++++++++
+ target/linux/mvebu/image/cortexa53.mk         |  12 +
+ 6 files changed, 412 insertions(+)
+ create mode 100644 target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142-3gpp-emmc.dts
+ create mode 100644 target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142.dtsi
+
+diff --git a/target/linux/mvebu/cortexa53/base-files/etc/board.d/01_leds b/target/linux/mvebu/cortexa53/base-files/etc/board.d/01_leds
+index 4dce204f14..84e5266099 100644
+--- a/target/linux/mvebu/cortexa53/base-files/etc/board.d/01_leds
++++ b/target/linux/mvebu/cortexa53/base-files/etc/board.d/01_leds
+@@ -7,6 +7,10 @@ board_config_update
+ board=$(board_name)
+ 
+ case "$board" in
++comtime,ct142-3gpp-emmc)
++	ucidef_set_led_default "m2_pwron" "m2_pwron" "m2_pwron" 1
++	ucidef_set_led_default "m2_vbat" "m2_vbat" "m2_vbat" 1
++	;;
+ glinet,gl-mv1000)
+ 	ucidef_set_led_netdev "wan" "WAN" "green:wan" "wan"
+ 	;;
+diff --git a/target/linux/mvebu/cortexa53/base-files/etc/board.d/02_network b/target/linux/mvebu/cortexa53/base-files/etc/board.d/02_network
+index 6789edb861..2b0387b799 100644
+--- a/target/linux/mvebu/cortexa53/base-files/etc/board.d/02_network
++++ b/target/linux/mvebu/cortexa53/base-files/etc/board.d/02_network
+@@ -10,6 +10,9 @@ board_config_update
+ board=$(board_name)
+ 
+ case "$board" in
++comtime,ct142-3gpp-emmc)
++	ucidef_set_interface_lan "lan1 lan2 lan3 lan4"
++	;;
+ glinet,gl-mv1000|\
+ globalscale,espressobin|\
+ globalscale,espressobin-emmc|\
+diff --git a/target/linux/mvebu/cortexa53/base-files/lib/upgrade/platform.sh b/target/linux/mvebu/cortexa53/base-files/lib/upgrade/platform.sh
+index f77f15ecab..741ba6278d 100755
+--- a/target/linux/mvebu/cortexa53/base-files/lib/upgrade/platform.sh
++++ b/target/linux/mvebu/cortexa53/base-files/lib/upgrade/platform.sh
+@@ -9,6 +9,7 @@ REQUIRE_IMAGE_METADATA=1
+ 
+ platform_check_image() {
+ 	case "$(board_name)" in
++	comtime,ct142-3gpp-emmc|\
+ 	glinet,gl-mv1000|\
+ 	globalscale,espressobin|\
+ 	globalscale,espressobin-emmc|\
+@@ -25,6 +26,7 @@ platform_check_image() {
+ 
+ platform_do_upgrade() {
+ 	case "$(board_name)" in
++	comtime,ct142-3gpp-emmc|\
+ 	glinet,gl-mv1000|\
+ 	globalscale,espressobin|\
+ 	globalscale,espressobin-emmc|\
+@@ -44,6 +46,7 @@ platform_do_upgrade() {
+ }
+ platform_copy_config() {
+ 	case "$(board_name)" in
++	comtime,ct142-3gpp-emmc|\
+ 	glinet,gl-mv1000|\
+ 	globalscale,espressobin|\
+ 	globalscale,espressobin-emmc|\
+diff --git a/target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142-3gpp-emmc.dts b/target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142-3gpp-emmc.dts
+new file mode 100644
+index 0000000000..e32736d174
+--- /dev/null
++++ b/target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142-3gpp-emmc.dts
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for Comtime 3GPP Router Board with eMMC
++ * Copyright (C) 2022 Comtime-IT GmbH
++ *
++ */
++
++/dts-v1/;
++
++#include "armada-3720-ct142.dtsi"
++
++/ {
++	model = "Comtime 3GPP Router Board (eMMC)";
++	compatible = "comtime,ct142-3gpp-emmc",
++		"marvell,armada3720", "marvell,armada3710";
++
++	aliases {
++		led-upgrade = &led_l2;
++	};
++};
++
++/*
++ * Rename LEDs
++ */
++&led_l2 {
++	label = "led_NET";
++};
++&led_l3 {
++	label = "led_STATUS";
++};
++&led_l4 {
++	label = "led_QUALITY";
++};
++&led_r1 {
++	label = "led_SIM1";
++};
++&led_r2 {
++	label = "led_SIM2";
++};
++&led_r3 {
++	label = "led_VPN";
++};
++
++&usb3 {
++/*
++ * The USB3 is used for the m.2 slot,
++ * so enable it by default
++ */
++	status = "okay";
++};
++
++&sdhci0 {
++/*
++ * This eMMC is used for the Linux-Kernel and Rootfs,
++ * so enable it by default
++ */
++	status = "okay";
++};
+diff --git a/target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142.dtsi b/target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142.dtsi
+new file mode 100644
+index 0000000000..16fabd82a8
+--- /dev/null
++++ b/target/linux/mvebu/files-6.6/arch/arm64/boot/dts/marvell/armada-3720-ct142.dtsi
+@@ -0,0 +1,332 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for Comtime CT142 Router Board with eMMC
++ * Copyright (C) 2022 Comtime-IT GmbH
++ *
++ */
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include "armada-372x.dtsi"
++
++/ {
++	aliases {
++		ethernet0 = &switch0port1;	/* ethaddr at lan1 */
++		ethernet1 = &eth0;
++		ethernet2 = &switch0port2;
++		ethernet3 = &switch0port3;
++		ethernet4 = &switch0port4;
++		serial0 = &uart0;
++		serial1 = &uart1;
++		led-running = &led_running;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory at 0 {
++		device_type = "memory";
++		reg = <0x00000000 0x00000000 0x00000000 0x20000000>;
++	};
++
++	vcc_sd_reg1: regulator {
++		compatible = "regulator-gpio";
++		regulator-name = "vcc_sd1";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++
++		gpios = <&gpionb 4 GPIO_ACTIVE_HIGH>;
++		gpios-states = <0>;
++		states = <1800000 0x1
++			  3300000 0x0>;
++		enable-active-high;
++	};
++
++	pio-leds {
++		pinctrl-names = "default";
++		compatible = "gpio-leds";
++
++		out_1 {
++			label = "out_1";
++			gpios = <&gpionb 11 GPIO_ACTIVE_LOW>;
++		};
++		out_2 {
++			label = "out_2";
++			gpios = <&gpionb 12 GPIO_ACTIVE_LOW>;
++		};
++		m2_vbat {
++			label = "m2_vbat";
++			gpios = <&gpionb 13 GPIO_ACTIVE_LOW>;
++		};
++		usb_vcc {
++			label = "usb_vcc";
++			gpios = <&gpionb 14 GPIO_ACTIVE_LOW>;
++		};
++		led_running: led_pwr {
++			label = "led_PWR";
++			gpios = <&gpionb 16 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	i2c-leds {
++		compatible = "gpio-leds";
++
++		m2_pwron {
++			label = "m2_pwron";
++			gpios = <&gpio_exp 0 GPIO_ACTIVE_HIGH>;
++		};
++		m2_reset {
++			label = "m2_reset";
++			gpios = <&gpio_exp 1 GPIO_ACTIVE_HIGH>;
++		};
++		led_l2: led_l2 {
++			label = "led_L2";
++			gpios = <&gpio_exp 2 GPIO_ACTIVE_LOW>;
++		};
++		led_l3: led_l3 {
++			label = "led_L3";
++			gpios = <&gpio_exp 3 GPIO_ACTIVE_LOW>;
++		};
++		led_l4: led_l4 {
++			label = "led_L4";
++			gpios = <&gpio_exp 4 GPIO_ACTIVE_LOW>;
++		};
++		led_r3: led_r3 {
++			label = "led_R3";
++			gpios = <&gpio_exp 5 GPIO_ACTIVE_LOW>;
++		};
++		led_r1: led_r1 {
++			label = "led_R1";
++			gpios = <&gpio_exp 6 GPIO_ACTIVE_LOW>;
++		};
++		led_r2: led_r2 {
++			label = "led_R2";
++			gpios = <&gpio_exp 7 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&gpionb 2 GPIO_ACTIVE_LOW>;
++			debounce-interval = <60>;
++		};
++	};
++
++	gpio_export {
++		compatible = "gpio-export";
++		#size-cells = <0>;
++
++		in_1 {
++			gpio-export,name = "in_1";
++			gpio-export,input;
++			gpios = <&gpiosb 20 GPIO_ACTIVE_LOW>;
++		};
++		in_2 {
++			gpio-export,name = "in_2";
++			gpio-export,input;
++			gpios = <&gpiosb 21 GPIO_ACTIVE_LOW>;
++		};
++	};
++};
++
++&pcie0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
++	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
++};
++
++&sdhci1 {
++	wp-inverted;
++	bus-width = <4>;
++	cd-gpios = <&gpionb 3 GPIO_ACTIVE_LOW>;
++	marvell,pad-type = "sd";
++	vqmmc-supply = <&vcc_sd_reg1>;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdio_pins>;
++	status = "okay";
++};
++
++&spi0 {
++	status = "okay";
++
++	flash at 0 {
++		reg = <0>;
++		compatible = "jedec,spi-nor";
++		spi-max-frequency = <104000000>;
++		m25p,fast-read;
++
++		/* partition layout applies to u-boot-18.12 */
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition at 0 {
++				label = "bootfw";
++				reg = <0 0x3f0000>;
++				read-only;
++			};
++
++			partition at 3f0000 {
++				label = "u-boot-env";
++				reg = <0x3f0000 0x10000>;
++				read-only;
++			};
++		};
++	};
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart1_pins>;
++	status = "okay";
++};
++
++&usb2 {
++	status = "okay";
++};
++
++&eth0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&rgmii_pins>;
++	phy-mode = "rgmii-id";
++	status = "okay";
++
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&mdio {
++	pinctrl-names = "default";
++	pinctrl-0 = <&smi_pins>;
++	status = "okay";
++
++	switch0 at 1 {
++		compatible = "marvell,mv88e6085";
++		reg = <1>;
++
++		dsa,member = <0 0>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port at 0 {
++				reg = <0>;
++				label = "cpu";
++				ethernet = <&eth0>;
++				phy-mode = "rgmii-id";
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++
++			switch0port1: port at 1 {
++				reg = <1>;
++				label = "lan1";
++				phy-handle = <&switch0phy0>;
++			};
++
++			switch0port2: port at 2 {
++				reg = <2>;
++				label = "lan2";
++				phy-handle = <&switch0phy1>;
++			};
++
++			switch0port3: port at 3 {
++				reg = <3>;
++				label = "lan3";
++				phy-handle = <&switch0phy2>;
++			};
++
++			switch0port4: port at 4 {
++				reg = <4>;
++				label = "lan4";
++				phy-handle = <&switch0phy3>;
++			};
++		};
++
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			switch0phy0: switch0phy0 at 11 {
++				reg = <0x11>;
++			};
++			switch0phy1: switch0phy1 at 12 {
++				reg = <0x12>;
++			};
++			switch0phy2: switch0phy2 at 13 {
++				reg = <0x13>;
++			};
++			switch0phy3: switch0phy3 at 14 {
++				reg = <0x14>;
++			};
++		};
++	};
++};
++
++&i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c1_pins>;
++	clock-frequency = <100000>;
++	status = "okay";
++	/delete-property/mrvl,i2c-fast-mode;
++
++	gpio_exp: tca6408 at 20 {
++		/* TCA6408A from ti, 8 pin I/O, driver gpio-pca953x */
++		compatible = "ti,tca6408";
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		reg = <0x20>;
++		/*
++		 * IO_0: M2_PWRON
++		 * IO_1: M2_RESET
++		 * IO_2: LED_L2 (left column, 2nd from top)
++		 * IO_3: LED_L3
++		 * IO_4: LED_L4
++		 * IO_5: LED_R3 (right column, 3rd from top)
++		 * IO_6: LED_R1
++		 * IO_7: LED_R2
++		 */
++	};
++
++	rtc: rtc at 32 {
++		/* R2221T from ricoh, driver rtc-rs5c372 */
++		compatible = "ricoh,r2221tl";
++		reg = <0x32>;
++	};
++};
++
++&sdhci0 {
++	non-removable;
++	no-sd;
++	no-sdio;
++	bus-width = <8>;
++	mmc-ddr-1_8v;
++	mmc-hs200-1_8v;
++	marvell,xenon-emmc;
++	marvell,xenon-tun-count = <9>;
++	marvell,pad-type = "fixed-1-8v";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&mmc_pins>;
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++	mmccard: mmccard at 0 {
++		compatible = "mmc-card";
++		reg = <0>;
++	};
++};
+diff --git a/target/linux/mvebu/image/cortexa53.mk b/target/linux/mvebu/image/cortexa53.mk
+index 67bff6c0b2..395bb397a9 100644
+--- a/target/linux/mvebu/image/cortexa53.mk
++++ b/target/linux/mvebu/image/cortexa53.mk
+@@ -75,6 +75,18 @@ define Device/globalscale_espressobin-v7-emmc
+ endef
+ TARGET_DEVICES += globalscale_espressobin-v7-emmc
+ 
++define Device/comtime_ct142-3gpp-emmc
++  $(call Device/Default-arm64)
++  DEVICE_VENDOR := Marvell
++  DEVICE_MODEL := Comtime CT-Router NG 5G
++  DEVICE_PACKAGES += kmod-dsa-mv88e6xxx kmod-gpio-pca953x \
++			kmod-rtc-rs5c372a kmod-i2c-pxa \
++			kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi
++  SOC := armada-3720
++  BOOT_SCRIPT := espressobin
++endef
++TARGET_DEVICES += comtime_ct142-3gpp-emmc
++
+ define Device/marvell_armada-3720-db
+   $(call Device/Default-arm64)
+   DEVICE_VENDOR := Marvell
+-- 
+2.39.5
+
+
+
+From linus.walleij at linaro.org  Thu Apr 10 04:57:47 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 10 Apr 2025 13:57:47 +0200
+Subject: [PATCH 0/2] gemini: Convert the Vitesse switches into a module
+ packages
+Message-ID: <20250410-gemini-rtl-dsa-module-v1-0-60af8219b2cc@linaro.org>
+
+The Gemini is using the Vitesse VSC73XX DSA switch, so
+create a kernel module package for this switch and move
+over to using this for the machines with this switch.
+
+I think there are some non-Gemini devices that need this
+as well.
+
+The upstream kernel contains a number of fixed for VSC73XX
+that may need backporting to the OpenWrt v6.6 for these
+modules to work properly, but I believe the module
+packages will be the same.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+Linus Walleij (2):
+      kernel: netdevices: Create Vitesse DSA switch packages
+      gemini: Add module for VSC73xx switches
+
+ package/kernel/linux/modules/netdevices.mk | 48 ++++++++++++++++++++++++++++++
+ target/linux/gemini/image/Makefile         |  3 +-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
+---
+base-commit: 719f378bfb8024494e70a4d8e9269636e72097b4
+change-id: 20250112-gemini-rtl-dsa-module-54c870d0860b
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij at linaro.org>
+
+
+
+From linus.walleij at linaro.org  Thu Apr 10 04:57:48 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 10 Apr 2025 13:57:48 +0200
+Subject: [PATCH 1/2] kernel: netdevices: Create Vitesse DSA switch packages
+In-Reply-To: <20250410-gemini-rtl-dsa-module-v1-0-60af8219b2cc@linaro.org>
+References: <20250410-gemini-rtl-dsa-module-v1-0-60af8219b2cc@linaro.org>
+Message-ID: <20250410-gemini-rtl-dsa-module-v1-1-60af8219b2cc@linaro.org>
+
+This adds kernel packages for the Vitesse VSC73XX switches.
+
+I have split the switch into explicit SPI and platform integrated
+variants as it's quite a bit of code.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ package/kernel/linux/modules/netdevices.mk | 48 ++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/package/kernel/linux/modules/netdevices.mk b/package/kernel/linux/modules/netdevices.mk
+index 5ad21ae6284054821503a8dbf8b120083e56db04..e9b807a3089e3b9b8bbacc14d36e8915984a888d 100644
+--- a/package/kernel/linux/modules/netdevices.mk
++++ b/package/kernel/linux/modules/netdevices.mk
+@@ -696,6 +696,54 @@ endef
+ $(eval $(call KernelPackage,dsa-rtl8365mb))
+ 
+ 
++define KernelPackage/dsa-vsc73xx
++  SUBMENU:=$(NETWORK_DEVICES_MENU)
++  TITLE:=Vitesse VSC73XX DSA switch family support
++  DEPENDS:=+kmod-dsa +kmod-phy-vitesse +kmod-fixed-phy
++  KCONFIG:= \
++	CONFIG_NET_DSA_VITESSE_VSC73XX \
++	CONFIG_NET_DSA_TAG_VSC73XX_8021Q
++  FILES:= \
++	$(LINUX_DIR)/drivers/net/dsa/vitesse-vsc73xx-core.ko \
++	$(LINUX_DIR)/net/dsa/tag_vsc73xx_8021q.ko
++endef
++
++define KernelPackage/dsa-vsc73xx/description
++  Kernel modules for Vitesse VSC73XX switches
++endef
++
++$(eval $(call KernelPackage,dsa-vsc73xx))
++
++define KernelPackage/dsa-vsc73xx-spi
++  SUBMENU:=$(NETWORK_DEVICES_MENU)
++  TITLE:=Vitesse VSC73XX SPI support
++  DEPENDS:=+kmod-dsa-vsc73xx
++  KCONFIG:= CONFIG_NET_DSA_VITESSE_VSC73XX_SPI
++  FILES:= $(LINUX_DIR)/drivers/net/dsa/vitesse-vsc73xx-spi.ko
++  AUTOLOAD:=$(call AutoProbe,vitesse-vsc73xx-spi)
++endef
++
++define KernelPackage/dsa-vsc73xx-spi/description
++  Kernel modules for Vitesse VSC73XX switches using SPI
++endef
++
++$(eval $(call KernelPackage,dsa-vsc73xx-spi))
++
++define KernelPackage/dsa-vsc73xx-platform
++  SUBMENU:=$(NETWORK_DEVICES_MENU)
++  TITLE:=Vitesse VSC73XX platform support
++  DEPENDS:=+kmod-dsa-vsc73xx
++  KCONFIG:= CONFIG_NET_DSA_VITESSE_VSC73XX_PLATFORM
++  FILES:= $(LINUX_DIR)/drivers/net/dsa/vitesse-vsc73xx-platform.ko
++  AUTOLOAD:=$(call AutoProbe,vitesse-vsc73xx-platform)
++endef
++
++define KernelPackage/dsa-vsc73xx-spi/description
++  Kernel modules for Vitesse VSC73XX switches using platform integration
++endef
++
++$(eval $(call KernelPackage,dsa-vsc73xx-platform))
++
+ define KernelPackage/swconfig
+   SUBMENU:=$(NETWORK_DEVICES_MENU)
+   TITLE:=switch configuration API
+
+-- 
+2.49.0
+
+
+
+From linus.walleij at linaro.org  Thu Apr 10 04:57:49 2025
+From: linus.walleij at linaro.org (Linus Walleij)
+Date: Thu, 10 Apr 2025 13:57:49 +0200
+Subject: [PATCH 2/2] gemini: Add module for VSC73xx switches
+In-Reply-To: <20250410-gemini-rtl-dsa-module-v1-0-60af8219b2cc@linaro.org>
+References: <20250410-gemini-rtl-dsa-module-v1-0-60af8219b2cc@linaro.org>
+Message-ID: <20250410-gemini-rtl-dsa-module-v1-2-60af8219b2cc@linaro.org>
+
+This adds the Vitesse VSC73xx DSA switch modules to the two
+Gemini devices that have them.
+
+Signed-off-by: Linus Walleij <linus.walleij at linaro.org>
+---
+ target/linux/gemini/image/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/target/linux/gemini/image/Makefile b/target/linux/gemini/image/Makefile
+index c5d09e7120b47cab08a0d479ef2c6eb48ac4a783..c6df35c9a4ebfc91f7b9da55690afa7909f86cbd 100644
+--- a/target/linux/gemini/image/Makefile
++++ b/target/linux/gemini/image/Makefile
+@@ -194,7 +194,7 @@ define Device/itian_sq201
+ 	DEVICE_VENDOR := ITian
+ 	DEVICE_MODEL := Square One SQ201
+ 	DEVICE_DTS := gemini-sq201
+-	DEVICE_PACKAGES += kmod-rt61-pci kmod-usb2-pci
++	DEVICE_PACKAGES += kmod-rt61-pci kmod-usb2-pci kmod-dsa-vsc73xx-spi
+ endef
+ TARGET_DEVICES += itian_sq201
+ 
+@@ -211,6 +211,7 @@ define Device/storlink_sl93512r
+ 	DEVICE_VENDOR := StorLink
+ 	DEVICE_MODEL := SL93512r
+ 	DEVICE_DTS := gemini-sl93512r
++	DEVICE_PACKAGES += kmod-dsa-vsc73xx-spi
+ endef
+ TARGET_DEVICES += storlink_sl93512r
+ 
+
+-- 
+2.49.0
+
+
+
+From noreply at github.com  Sun Apr 13 14:17:43 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 13 Apr 2025 14:17:43 -0700
+Subject: [sdwalker/sdwalker.github.io] f0a8e8: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/d2a81b-f0a8e8@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: f0a8e87638ef5c56c19ca26bb3766d0f63ea3382
+      https://github.com/sdwalker/sdwalker.github.io/commit/f0a8e87638ef5c56c19ca26bb3766d0f63ea3382
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-04-13 (Sun, 13 Apr 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From felix.baumann at freifunk-aachen.de  Mon Apr 14 02:25:37 2025
+From: felix.baumann at freifunk-aachen.de (Felix Baumann)
+Date: Mon, 14 Apr 2025 11:25:37 +0200
+Subject: OpenWrt 24.10 release status
+In-Reply-To: <32bb69f7-e4d8-4d2c-9d6c-1fec77726926@arinc9.com>
+References: <da710280-e3e2-46ea-8e8e-2c44cb1d2e70@hauke-m.de> <f172f3dc-5959-4f79-a211-7753c3439831@hauke-m.de> <6a898cd4-cef1-427d-b395-6855a737720a@hauke-m.de> <Z5QJQ8qajHvv_yHB@makrotopia.org> <59a84807-1bae-4fc5-90cc-df81acb9692d@hauke-m.de> <f247ef74-b59c-4c6f-87e0-3c563a4bd6c8@arinc9.com> <Z5QltfHdz-wX84Rk@makrotopia.org> <32bb69f7-e4d8-4d2c-9d6c-1fec77726926@arinc9.com>
+Message-ID: <2F8D56A1-F0C1-43EE-BEB4-D52CB9F6C096@freifunk-aachen.de>
+
+Am 25. Januar 2025 08:52:39 MEZ schrieb "Chester A. Unal" <chester.a.unal at arinc9.com>:
+>On 24/01/2025 23:43, Daniel Golle wrote:
+>> On Fri, Jan 24, 2025 at 11:03:28PM +0000, Chester A. Unal wrote:
+>>> On 24/01/2025 22:15, Hauke Mehrtens wrote:
+>>>>> @arinc9:
+>>>>>> 
+>>>>>> Currently we have the following known bugs:
+>>>>>> 
+>>>>>> [...]
+>>>>>>  ? * Ethernet link unstable on some mt7530 switches. Deactivate EEE
+>>>>>> (Energy-Efficient Ethernet) as a workaround, see:
+>>>>>> https://github.com/openwrt/openwrt/issues/17351
+>>>>> 
+>>>>> Any idea what could be going on there?
+>>> 
+>>> Here are the facts to consider:
+>>> 
+>>> We have only started receiving reports of the unstable link issue with the
+>>> 24.10 branch.
+>>> 
+>>> I believe the MT753X DSA subdriver did not receive changes in years with
+>>> regards to EEE or any other parts of the code that would cause link
+>>> instability. I am giving this opinion as a maintainer of the said
+>>> subdriver.
+>>> 
+>>> There's a report by Florian [1], stating that the same issue appears with a
+>>> PHY that is not part of the MT7530 switch hardware. So the issue is
+>>> apparent on a system that does not have the MT7530 switch involved, and the
+>>> only common part of the reports is the MediaTek Ethernet driver.
+>> 
+>> Thanks for the quick summary.
+>> 
+>> Note that regarding Florian's report, on the WAX206 the RTL8221B-BV-VG
+>> PHY is connected to port 5 of the MT7531AE switch [1] and hence NOT to the
+>> MAC of MT7622 SoC. So it can of course still be an issue with that PHY
+>> (which has been giving us some trouble in general), but I'd be very
+>> confused if you insist that it would be caused by mtk_eth_soc, and would
+>> ask you to explain why you think that would be the case.
+>
+>Good point. I meant to say that the issue is apparent without the use of
+>the MT7530 switch PHYs. But as the switch MACs are still in use, we can't
+>completely factor out MT7530 and, therefore, the MT753X DSA subdriver.
+>
+>My suspicion had been the EEE operation on the link between the switch
+>(operating as a PHY) and the MediaTek SoC MAC, controlled by the MediaTek
+>Ethernet driver. But the switch PHY in question is a simple digital logic
+>to deliver only the basic functions of a link and is not conformant to the
+>IEEE Std 802.3-2022 so I don't expect EEE to be available at all on that
+>link.
+>
+>As all the reports involve the MT7530 switch MACs, the MediaTek Ethernet
+>driver must be irrelevant to this specific unstable link issue.
+>
+>It could be a race condition issue that existed since the EEE support was
+>brought to the MT753X DSA subdriver and became more noticeable with newer
+>kernels as things slow down. Remember the PHY initialisation issue that was
+>experienced heavily on the TP-Link devices with the MT7621 SoC? We solved
+>it by ensuring the switch as a PHY is initialised first, then the switch
+>PHYs. It could be a similar case.
+>
+>Chester A.
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+Hello arinc9,
+
+sorry to bother you with this again.
+The WAX206 issue with it's Realtek WAN PHY has long been resolved but the mt7621-ramips plattform is still causing issues for users on the new release due to unstable/sometimes not working ethernet link.
+
+matjon just put some effort into debugging this (to some degree)
+<https://github.com/openwrt/openwrt/issues/17351#issuecomment-2798953937>
+
+And HanabishiRecca noticed that EEE somehow gets enabled even when the receiving side has it disabled.
+<https://github.com/openwrt/openwrt/issues/17351#issuecomment-2799921359>
+
+Do their posts somehow shine a different light on the matter or do you have an idea what could be at fault?
+Does EEE itself work fine but gets enabled when it shouldn't be?
+
+I know you are maintaining only the mt7530 part and not all related code so I don't expect you to change anything upstream. Though your opinion on the matter would be very valuable to us here. :)
+
+Regards
+Djfe
+
+
+From chester.a.unal at arinc9.com  Mon Apr 14 03:11:14 2025
+From: chester.a.unal at arinc9.com (Chester A. Unal)
+Date: Mon, 14 Apr 2025 10:11:14 +0000 (UTC)
+Subject: OpenWrt 24.10 release status
+In-Reply-To: <2F8D56A1-F0C1-43EE-BEB4-D52CB9F6C096@freifunk-aachen.de>
+References: <da710280-e3e2-46ea-8e8e-2c44cb1d2e70@hauke-m.de>
+ <f172f3dc-5959-4f79-a211-7753c3439831@hauke-m.de>
+ <6a898cd4-cef1-427d-b395-6855a737720a@hauke-m.de>
+ <Z5QJQ8qajHvv_yHB@makrotopia.org>
+ <59a84807-1bae-4fc5-90cc-df81acb9692d@hauke-m.de>
+ <f247ef74-b59c-4c6f-87e0-3c563a4bd6c8@arinc9.com>
+ <Z5QltfHdz-wX84Rk@makrotopia.org>
+ <32bb69f7-e4d8-4d2c-9d6c-1fec77726926@arinc9.com>
+ <2F8D56A1-F0C1-43EE-BEB4-D52CB9F6C096@freifunk-aachen.de>
+Message-ID: <ee8aa34f-11a2-4e2f-b80b-caf59472b64a@arinc9.com>
+
+Hello Felix.
+
+On 14/04/2025 10:25, Felix Baumann wrote:
+> Hello arinc9,
+
+Please call me Chester.
+
+> 
+> sorry to bother you with this again.
+> The WAX206 issue with it's Realtek WAN PHY has long been resolved but the mt7621-ramips plattform is still causing issues for users on the new release due to unstable/sometimes not working ethernet link.
+> 
+> matjon just put some effort into debugging this (to some degree)
+> <https://github.com/openwrt/openwrt/issues/17351#issuecomment-2798953937>
+> 
+> And HanabishiRecca noticed that EEE somehow gets enabled even when the receiving side has it disabled.
+> <https://github.com/openwrt/openwrt/issues/17351#issuecomment-2799921359>
+> 
+> Do their posts somehow shine a different light on the matter or do you have an idea what could be at fault?
+
+No, it doesn't shine a different light.
+
+> Does EEE itself work fine but gets enabled when it shouldn't be?
+
+I can't say for certain. I don't think it matters to do so anyway, for the
+issue at hand.
+
+> 
+> I know you are maintaining only the mt7530 part and not all related code so I don't expect you to change anything upstream. Though your opinion on the matter would be very valuable to us here. :)
+
+My opinion hasn't changed. I still suspect the same thing that I stated on
+the GitHub issue [1]:
+
+> I'm going to refrain from disabling EEE for now as I see reports here
+that suggest that it is not EEE that is the cause of the problem, but
+rather it reveals an issue of race condition of sorts when EEE is enabled.
+Perhaps the cause is in the MediaTek ethernet driver...
+
+Get someone from MediaTek involved. I've got nothing else to add.
+
+[1] https://github.com/openwrt/openwrt/issues/17351#issuecomment-2609336415
+
+Chester A.
+
+
+From felix.baumann at freifunk-aachen.de  Mon Apr 14 06:01:45 2025
+From: felix.baumann at freifunk-aachen.de (Felix Baumann)
+Date: Mon, 14 Apr 2025 15:01:45 +0200
+Subject: OpenWrt 24.10 release status
+In-Reply-To: <ee8aa34f-11a2-4e2f-b80b-caf59472b64a@arinc9.com>
+References: <da710280-e3e2-46ea-8e8e-2c44cb1d2e70@hauke-m.de> <f172f3dc-5959-4f79-a211-7753c3439831@hauke-m.de> <6a898cd4-cef1-427d-b395-6855a737720a@hauke-m.de> <Z5QJQ8qajHvv_yHB@makrotopia.org> <59a84807-1bae-4fc5-90cc-df81acb9692d@hauke-m.de> <f247ef74-b59c-4c6f-87e0-3c563a4bd6c8@arinc9.com> <Z5QltfHdz-wX84Rk@makrotopia.org> <32bb69f7-e4d8-4d2c-9d6c-1fec77726926@arinc9.com> <2F8D56A1-F0C1-43EE-BEB4-D52CB9F6C096@freifunk-aachen.de> <ee8aa34f-11a2-4e2f-b80b-caf59472b64a@arinc9.com>
+Message-ID: <9E296C9C-8F2D-41C9-B7A9-18B85AC8902D@freifunk-aachen.de>
+
+Am 14. April 2025 12:11:14 MESZ schrieb "Chester A. Unal" <chester.a.unal at arinc9.com>:
+>Hello Felix.
+>
+>On 14/04/2025 10:25, Felix Baumann wrote:
+>> Hello arinc9,
+>
+>Please call me Chester.
+>
+>> 
+>> sorry to bother you with this again.
+>> The WAX206 issue with it's Realtek WAN PHY has long been resolved but the mt7621-ramips plattform is still causing issues for users on the new release due to unstable/sometimes not working ethernet link.
+>> 
+>> matjon just put some effort into debugging this (to some degree)
+>> <https://github.com/openwrt/openwrt/issues/17351#issuecomment-2798953937>
+>> 
+>> And HanabishiRecca noticed that EEE somehow gets enabled even when the receiving side has it disabled.
+>> <https://github.com/openwrt/openwrt/issues/17351#issuecomment-2799921359>
+>> 
+>> Do their posts somehow shine a different light on the matter or do you have an idea what could be at fault?
+>
+>No, it doesn't shine a different light.
+>
+>> Does EEE itself work fine but gets enabled when it shouldn't be?
+>
+>I can't say for certain. I don't think it matters to do so anyway, for the
+>issue at hand.
+>
+>> 
+>> I know you are maintaining only the mt7530 part and not all related code so I don't expect you to change anything upstream. Though your opinion on the matter would be very valuable to us here. :)
+>
+>My opinion hasn't changed. I still suspect the same thing that I stated on
+>the GitHub issue [1]:
+>
+>> I'm going to refrain from disabling EEE for now as I see reports here
+>that suggest that it is not EEE that is the cause of the problem, but
+>rather it reveals an issue of race condition of sorts when EEE is enabled.
+>Perhaps the cause is in the MediaTek ethernet driver...
+>
+>Get someone from MediaTek involved. I've got nothing else to add.
+>
+>[1] https://github.com/openwrt/openwrt/issues/17351#issuecomment-2609336415
+>
+>Chester A.
+>
+>_______________________________________________
+>openwrt-devel mailing list
+>openwrt-devel at lists.openwrt.org
+>https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+Hello Chester,
+
+I was literally thinking about calling you Chester and then chose against it. Mistake on my part. Won't happen again.
+
+Thanks a lot for taking a look and confirming your previous opinion on the matter.
+
+Regards
+Felix Baumann
+
+
+From hauke at hauke-m.de  Mon Apr 14 16:52:46 2025
+From: hauke at hauke-m.de (Hauke Mehrtens)
+Date: Tue, 15 Apr 2025 01:52:46 +0200
+Subject: OpenWrt 24.10.1 - Service Release
+Message-ID: <19d6bc50-6f40-4577-ab8c-ec2754913f8f@hauke-m.de>
+
+Hi,
+
+The OpenWrt community is proud to announce the newest stable release of 
+the OpenWrt 24.10 stable series.
+
+Download firmware images using the OpenWrt Firmware Selector:
+   * https://firmware-selector.openwrt.org?version=24.10.1
+
+Download firmware images directly from our download servers:
+   * https://downloads.openwrt.org/releases/24.10.1/targets/
+
+
+Main changes between OpenWrt 24.10.0 and OpenWrt 24.10.1
+========================================================
+
+Device support
+==============
+
+   * Added new devices:
+     * bmips: Actiontec T1200H
+     * mediatek: CMCC A10
+     * mediatek: Huasifei WH3000
+     * mediatek: Keenetic KN-3811
+     * mediatek: Keenetic KN-3911
+     * mediatek: netis NX31
+     * qualcommax: Linksys MX4300 (LN1301)
+     * ramips: Cudy M1200 v1
+     * ramips: Cudy M1300 v2
+     * ramips: Genexis / Inteno Pulse EX400
+     * ramips: Hongdian H8922 v30
+   * ath79: mikrotik Routerboard 911G: Fix clock speed
+   * ath79: NEC Aterm: Fix initramfs execution
+   * bcm27xx: Raspberry Pi: Fixes for r8169 Ethernet driver
+   * bcm27xx: Raspberry Pi: Update GPU firmware and drivers
+   * imx: Gateworks boards: Misc fixes
+   * mediatek: ASUS: RT-AX59U/TUF-AX4200/TUF-AX6000: Fix boot problems
+     with recent bootloader
+   * mediatek: Xiaomi AX3000t: Fix NMBM handling for devices with Winbond
+     W25N01KVZEIR flash
+   * mediatek: Zyxel EX5601-T0: Fix eth1 wan configuration
+   * ramips: Dovado Tiny AC: Fix wifi MAC addresses
+   * ramips: hiwifi hc5962: Fix reading MAC address
+   * ramips: LAVA LR-25G001: Fix wifi MAC address
+   * ramips: MT7621: Improve MT7621S core detection
+   * ramips: TP-Link Deco M4R v4: Fix port name conflict
+   * realtek: Add new auxiliary MDIO driver and switch devices to it
+   * realtek: HPE 1920: Fix FAN configuration
+   * realtek: Zyxel GS1900-8: Split into v1 and v2
+
+
+Various fixes and improvements
+==============================
+
+   * ath10k-ct: Silence some harmless noisy logs
+   * build: build LLVM toolchain for BPF when packet selects it
+   * dnsmasq: Fix handlers for options `filter_rr` and `cache_rr`
+   * kernel: Fix IPv6 TCP GSO segmentation with NAT
+   * kernel: Globally enable CONFIG_PCPU_DEV_REFCNT
+   * kernel: usbnet: Restore usb%d naming for cdc-ethernet devices with 
+local MAC
+   * mac80211: rt2x00: Fix loading EEPROM from card
+   * odhcpd: Fix missed packets in relay mode
+   * umdns: Automatically configure firewall for umdns when needed
+
+
+Core components update
+======================
+
+   * Update Linux from 6.6.73 to 6.6.86
+   * Update mt76 from 2025-01-14 to 2025-02-14
+   * Update mwlwifi from 2024-04-19 to 2025-02-06
+   * Update wireless-regdb from 2024.10.07 to 2025.02.20
+   * Update ucode from 2024-07-22 to 2025-02-10
+   * Update unetd from 2024-12-17 to 2025-03-09
+   * Update umdns from 2024-09-17 to 2025-02-10
+   * Update omcproxy from 2021-11-04 to 2025-02-27
+   * Update libnl-tiny from 2023-12-05 to 2025-03-19
+   * Update ethtool from 6.10 to 6.11
+   * Update openssl from 3.0.15 to 3.0.16
+   * Update mbedtls from 3.6.2 to 3.6.3
+   * Update ca-certificates from 20240203 to 20241223
+   * Update bcm27xx-gpu-fw from 2024.11.26 to 2025.03.05
+   * Update bcm27xx-utils from 2024.12.19 to 2025.03.14
+   * Update r8125 from 9.014.01 to 9.015.00
+   * Update r8126 from 10.014.01 to 10.015.00
+   * Update r8168 from 8.054.00 to 8.055.00
+   * Update bcm63xx-cfe from 2024-06-25 to 2025-04-02
+   * Update intel-microcode from 20240531 to 20250211
+   * Update firmware-utils from 2024-10-20 to 2025-02-16
+
+
+Upgrading to 24.10
+==================
+
+Sysupgrade can be used to upgrade a device from 23.05 to 24.10, and 
+configuration will be preserved in most cases.
+
+For for upgrades inside the OpenWrt 24.10 stable series for example from 
+a OpenWrt 24.10 release candidate [Attended 
+Sysupgrade](https://openwrt.org/docs/guide-user/installation/attended.sysupgrade) 
+is supported in addition which allows preserving the installed packages too.
+
+  * Sysupgrade from 22.03 to 24.10 is not officially supported.
+
+  * There is no configuration migration path for users of the ipq806x
+    target for Qualcomm Atheros IPQ806X SoCs because it switched to DSA.
+    You have to upgrade without saving the configuration.
+
+  * User of the Linksys E8450 aka. Belkin RT3200 running OpenWrt 23.05 or
+    earlier will need to run installer version v1.1.3 or later in order
+    to reorganize the UBI layout for the 24.10 release. A detailed
+    description is in the OpenWrt wiki. Updating without using the
+    installer will break the device. Sysupgrade will show a warning
+    before doing an incompatible upgrade.
+    https://github.com/dangowrt/owrt-ubi-installer/releases/tag/v1.1.3
+
+https://openwrt.org/toh/linksys/e8450#upgrading_an_ubi_installation_to_new_releases_after_2024-02_includes_all_snapshots_2410-snapshots_24100-rcx_releases_and_all_releases_in_the_foreseable_future
+
+  * Users of the Xiaomi AX3200 aka. Redmi AX6S running OpenWrt 23.05 or
+    earlier have to follow a special upgrade procedure described in the
+    wiki. This will increase the flash memory available for OpenWrt.
+    Updating without following the guide in the wiki break the device.
+    Sysupgrade will show a warning before doing an incompatible upgrade.
+
+https://openwrt.org/toh/xiaomi/ax3200#upgrading_from_2305_and_earlier_to_upcoming_2410_or_snapshot
+
+  * Users of Zyxel GS1900 series switches running OpenWrt 23.05 or
+    earlier have to perform a new factory install with the initramfs
+    image due to a changed partition layout. Sysupgrade will show a
+    warning before doing an incompatible upgrade and is not possible.
+
+Known issues
+===========
+
+   * **LEDs for Airoha AN8855 are not yet supported.** Devices like the
+     Xiaomi AX3000T with an Airoha switch will have their switch LEDs
+     powered off. This issue will be addressed in an upcoming OpenWrt
+     SNAPSHOT and the OpenWrt 24.10 minor release.
+   * **5GHz WiFi is non-functional on certain devices with ath10k
+     chipsets.** Affected models include the TP-Link Archer C60 v1,
+     TP-Link Archer C6 v2, and possibly others.
+     https://github.com/openwrt/openwrt/issues/14541
+   * **Ethernet link instability on some MT7530 switches.** Users
+     experiencing unstable Ethernet connections should disable
+     Energy-Efficient Ethernet (EEE) as a workaround.
+     https://github.com/openwrt/openwrt/issues/17351
+
+-----------------
+
+Full release notes and upgrade instructions are available at
+https://openwrt.org/releases/24.10/notes-24.10.1
+
+In particular, make sure to read the regressions and known issues before 
+upgrading:
+https://openwrt.org/releases/24.10/notes-24.10.1#known_issues
+
+For a detailed list of all changes since 24.10.0, refer to
+https://openwrt.org/releases/24.10/changelog-24.10.1
+
+To download the 24.10.1 images, navigate to:
+https://downloads.openwrt.org/releases/24.10.1/targets/
+Use OpenWrt Firmware Selector to download:
+https://firmware-selector.openwrt.org?version=24.10.1
+
+As always, a big thank you goes to all our active package maintainers, 
+testers, documenters and supporters.
+
+Have fun!
+
+The OpenWrt Community
+
+---
+
+To stay informed of new OpenWrt releases and security advisories, there
+are new channels available:
+
+   * a low-volume mailing list for important announcements:
+https://lists.openwrt.org/mailman/listinfo/openwrt-announce
+
+   * a dedicated "announcements" section in the forum:
+https://forum.openwrt.org/c/announcements/14
+
+   * other announcement channels (such as RSS feeds) might be added in
+     the future, they will be listed at https://openwrt.org/contact
+
+
+From vkosikhin at gmail.com  Tue Apr 15 12:45:43 2025
+From: vkosikhin at gmail.com (Valeriy Kosikhin)
+Date: Tue, 15 Apr 2025 22:45:43 +0300
+Subject: [PATCH] package: libiwinfo: fix noise reading for radios sharing a wiphy
+Message-ID: <CAMcVZfs+oe9_uyjaYgupRhYw-BAFfi6PdbRkqjxV6EXAqWzE2Q@mail.gmail.com>
+
+On some devices (e.g., the Banana Pi BPI-R4), the driver registers
+multiple radios under a single wiphy. As a result, the NL80211 survey
+dump returns the same data set regardless of which interface is queried.
+
+Currently, libiwinfo determines the noise value by selecting the entry
+marked with the IN_USE flag. However, when multiple interfaces share a
+wiphy, several entries may simultaneously have this flag set. This
+causes libiwinfo to return the same noise value for all interfaces,
+typically corresponding to the highest frequency in use.
+
+This patch adds a frequency match check to ensure the noise value
+corresponds to the interface?s actual frequency. The existing IN_USE
+check is retained as a fallback.
+
+Signed-off-by: Valeriy Kosikhin <vkosikhin at gmail.com>
+---
+ iwinfo_nl80211.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/iwinfo_nl80211.c b/iwinfo_nl80211.c
+index dc4ff93..c530a35 100644
+--- a/iwinfo_nl80211.c
++++ b/iwinfo_nl80211.c
+@@ -1660,7 +1660,11 @@ static int nl80211_get_signal(const char
+*ifname, int *buf)
+
+ static int nl80211_get_noise_cb(struct nl_msg *msg, void *arg)
+ {
+- int8_t *noise = arg;
++ struct {
++ int8_t *noise;
++ int *freq;
++ } *args = arg;
++
+  struct nlattr **tb = nl80211_parse(msg);
+  struct nlattr *si[NL80211_SURVEY_INFO_MAX + 1];
+
+@@ -1676,22 +1680,33 @@ static int nl80211_get_noise_cb(struct nl_msg
+*msg, void *arg)
+                      tb[NL80211_ATTR_SURVEY_INFO], sp))
+  return NL_SKIP;
+
+- if (!si[NL80211_SURVEY_INFO_NOISE])
++ if (!si[NL80211_SURVEY_INFO_NOISE] || !si[NL80211_SURVEY_INFO_FREQUENCY])
+  return NL_SKIP;
+
+- if (!*noise || si[NL80211_SURVEY_INFO_IN_USE])
+- *noise = (int8_t)nla_get_u8(si[NL80211_SURVEY_INFO_NOISE]);
++ if (!*args->noise ||
++ (nla_get_u32(si[NL80211_SURVEY_INFO_FREQUENCY]) == *args->freq &&
++ si[NL80211_SURVEY_INFO_IN_USE])) {
++ *args->noise = (int8_t)nla_get_u8(si[NL80211_SURVEY_INFO_NOISE]);
++ }
+
+  return NL_SKIP;
+ }
+
+-
+ static int nl80211_get_noise(const char *ifname, int *buf)
+ {
+  int8_t noise = 0;
++ int freq = 0;
++
++ struct {
++ int8_t *noise;
++ int *freq;
++ } args = { .noise = &noise, .freq = &freq };
++
++ if (nl80211_get_frequency(ifname, &freq) < 0)
++ goto out;
+
+  if (nl80211_request(ifname, NL80211_CMD_GET_SURVEY, NLM_F_DUMP,
+-                    nl80211_get_noise_cb, &noise))
++                    nl80211_get_noise_cb, &args))
+  goto out;
+
+  *buf = noise;
+-- 
+2.45.2
+
+
+From jan.kardell at telliq.com  Thu Apr 17 03:05:53 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Thu, 17 Apr 2025 12:05:53 +0200
+Subject: [PATCH 0/5] Update license info
+Message-ID: <20250417101112.822-1-jan.kardell@telliq.com>
+
+Add/update license variables for a few packages.
+
+Util-linux contains a plethoria of licenses. Ideally each package there
+should get its own license definitions, but that is a bit of work to do.
+
+Jan Kardell (5):
+  [spidev-test] Add license
+  [kexec-tools] Add license
+  [mac80211] Add license
+  [nettle] Fix PKG_LICENSE_FILES
+  [util-linux] Update licenses
+
+ package/boot/kexec-tools/Makefile  |  4 ++++
+ package/kernel/mac80211/Makefile   |  1 +
+ package/libs/nettle/Makefile       |  4 +++-
+ package/utils/spidev_test/Makefile |  2 ++
+ package/utils/util-linux/Makefile  | 22 ++++++++++++++--------
+ 5 files changed, 24 insertions(+), 9 deletions(-)
+
+-- 
+2.43.0
+
+
+
+From jan.kardell at telliq.com  Thu Apr 17 03:05:54 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Thu, 17 Apr 2025 12:05:54 +0200
+Subject: [PATCH 1/5] [spidev-test] Add license
+In-Reply-To: <20250417101112.822-1-jan.kardell@telliq.com>
+References: <20250417101112.822-1-jan.kardell@telliq.com>
+Message-ID: <20250417101112.822-2-jan.kardell@telliq.com>
+
+Signed-off-by: Jan Kardell <jan.kardell at telliq.com>
+---
+ package/utils/spidev_test/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/package/utils/spidev_test/Makefile b/package/utils/spidev_test/Makefile
+index d264a8950a..f0e60f8b15 100644
+--- a/package/utils/spidev_test/Makefile
++++ b/package/utils/spidev_test/Makefile
+@@ -14,6 +14,8 @@ PKG_RELEASE:=1
+ PKG_BUILD_DIR:=$(LINUX_DIR)/tools/spi-$(TARGET_DIR_NAME)
+ PKG_BUILD_PARALLEL:=1
+ 
++PKG_LICENSE:=GPL-2.0-only
++
+ include $(INCLUDE_DIR)/package.mk
+ 
+ define Package/spidev-test
+-- 
+2.43.0
+
+
+
+From jan.kardell at telliq.com  Thu Apr 17 03:05:57 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Thu, 17 Apr 2025 12:05:57 +0200
+Subject: [PATCH 4/5] [nettle] Fix PKG_LICENSE_FILES
+In-Reply-To: <20250417101112.822-1-jan.kardell@telliq.com>
+References: <20250417101112.822-1-jan.kardell@telliq.com>
+Message-ID: <20250417101112.822-5-jan.kardell@telliq.com>
+
+Signed-off-by: Jan Kardell <jan.kardell at telliq.com>
+---
+ package/libs/nettle/Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/package/libs/nettle/Makefile b/package/libs/nettle/Makefile
+index b7bad80299..5047d8c970 100644
+--- a/package/libs/nettle/Makefile
++++ b/package/libs/nettle/Makefile
+@@ -17,7 +17,9 @@ PKG_SOURCE_URL:=@GNU/nettle
+ PKG_HASH:=b0fcdd7fc0cdea6e80dcf1dd85ba794af0d5b4a57e26397eee3bc193272d9132
+ 
+ PKG_LICENSE:=GPL-2.0-or-later
+-PKG_LICENSE_FILES:=COPYING
++PKG_LICENSE_FILES:=	COPYING.LESSERv3 \
++			COPYINGv2 \
++			COPYINGv3
+ PKG_CPE_ID:=cpe:/a:nettle_project:nettle
+ PKG_BUILD_PARALLEL:=1
+ 
+-- 
+2.43.0
+
+
+
+From jan.kardell at telliq.com  Thu Apr 17 03:05:55 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Thu, 17 Apr 2025 12:05:55 +0200
+Subject: [PATCH 2/5] [kexec-tools] Add license
+In-Reply-To: <20250417101112.822-1-jan.kardell@telliq.com>
+References: <20250417101112.822-1-jan.kardell@telliq.com>
+Message-ID: <20250417101112.822-3-jan.kardell@telliq.com>
+
+Signed-off-by: Jan Kardell <jan.kardell at telliq.com>
+---
+ package/boot/kexec-tools/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/package/boot/kexec-tools/Makefile b/package/boot/kexec-tools/Makefile
+index ffedd350f4..e1447bae70 100644
+--- a/package/boot/kexec-tools/Makefile
++++ b/package/boot/kexec-tools/Makefile
+@@ -15,6 +15,10 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+ PKG_SOURCE_URL:=@KERNEL/linux/utils/kernel/kexec
+ PKG_HASH:=d2f0ef872f39e2fe4b1b01feb62b0001383207239b9f8041f98a95564161d053
+ 
++PKG_LICENSE:=GPL-2.0-only
++PKG_LICENSE_FILES:=COPYING
++PKG_CPE_ID:=cpe:/a:kernel:kexec-tools
++
+ PKG_CONFIG_DEPENDS := CONFIG_KEXEC_ZLIB CONFIG_KEXEC_LZMA
+ 
+ PKG_BUILD_FLAGS:=gc-sections
+-- 
+2.43.0
+
+
+
+From jan.kardell at telliq.com  Thu Apr 17 03:05:56 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Thu, 17 Apr 2025 12:05:56 +0200
+Subject: [PATCH 3/5] [mac80211] Add license
+In-Reply-To: <20250417101112.822-1-jan.kardell@telliq.com>
+References: <20250417101112.822-1-jan.kardell@telliq.com>
+Message-ID: <20250417101112.822-4-jan.kardell@telliq.com>
+
+Signed-off-by: Jan Kardell <jan.kardell at telliq.com>
+---
+ package/kernel/mac80211/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/package/kernel/mac80211/Makefile b/package/kernel/mac80211/Makefile
+index b0de3950b9..a1c6dbc19d 100644
+--- a/package/kernel/mac80211/Makefile
++++ b/package/kernel/mac80211/Makefile
+@@ -23,6 +23,7 @@ PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(if $(BUILD_VARIANT),$(PKG_NAME)-$(BUILD_VAR
+ PKG_BUILD_PARALLEL:=1
+ 
+ PKG_MAINTAINER:=Felix Fietkau <nbd at nbd.name>
++PKG_LICENSE:=GPL-2.0-only
+ 
+ PKG_DRIVERS = \
+ 	mac80211-hwsim \
+-- 
+2.43.0
+
+
+
+From jan.kardell at telliq.com  Thu Apr 17 03:05:58 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Thu, 17 Apr 2025 12:05:58 +0200
+Subject: [PATCH 5/5] [util-linux] Update licenses
+In-Reply-To: <20250417101112.822-1-jan.kardell@telliq.com>
+References: <20250417101112.822-1-jan.kardell@telliq.com>
+Message-ID: <20250417101112.822-6-jan.kardell@telliq.com>
+
+Signed-off-by: Jan Kardell <jan.kardell at telliq.com>
+---
+ package/utils/util-linux/Makefile | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/package/utils/util-linux/Makefile b/package/utils/util-linux/Makefile
+index 83f3a8c842..e8abffecb8 100644
+--- a/package/utils/util-linux/Makefile
++++ b/package/utils/util-linux/Makefile
+@@ -16,14 +16,20 @@ PKG_SOURCE_URL:=@KERNEL/linux/utils/$(PKG_NAME)/v2.40
+ PKG_HASH:=d78b37a66f5922d70edf3bdfb01a6b33d34ed3c3cafd6628203b2a2b67c8e8b3
+ PKG_CPE_ID:=cpe:/a:kernel:util-linux
+ 
+-PKG_LICENSE:=GPL-2.0-only
+-PKG_LICENSE_FILES:=	COPYING					\
+-			libblkid/COPYING			\
+-			libmount/COPYING			\
+-			Documentation/licenses/COPYING.GPLv2	\
+-			Documentation/licenses/COPYING.LGPLv2.1	\
+-			libuuid/COPYING				\
+-			Documentation/licenses/COPYING.BSD-3
++PKG_LICENSE:=	GPL-2.0-or-later \
++		LGPL-2.1-or-later \
++		GPL-3.0-or-later \
++		MIT \
++		BSD-3-Clause
++PKG_LICENSE_FILES:=	COPYING                                          \
++			libblkid/COPYING                                 \
++			libmount/COPYING                                 \
++			Documentation/licenses/COPYING.GPL-2.0-or-later  \
++			Documentation/licenses/COPYING.LGPL-2.1-or-later \
++			Documentation/licenses/COPYING.GPL-3.0-or-later  \
++			libuuid/COPYING                                  \
++			Documentation/licenses/COPYING.MIT               \
++			Documentation/licenses/COPYING.BSD-3-Clause
+ 
+ PKG_INSTALL:=1
+ 
+-- 
+2.43.0
+
+
+
+From vkosikhin at gmail.com  Fri Apr 18 09:12:56 2025
+From: vkosikhin at gmail.com (Valeriy Kosikhin)
+Date: Fri, 18 Apr 2025 19:12:56 +0300
+Subject: [PATCH v2] package: libiwinfo: fix noise reading for radios sharing a wiphy
+Message-ID: <20250418161338.1684427-1-vkosikhin@gmail.com>
+
+On some devices (e.g., the Banana Pi BPI-R4 with the BE14 Wi-Fi board),
+the driver registers multiple radios under a single wiphy. As a result,
+the NL80211 survey dump returns the same data set regardless of which
+interface is queried.
+
+Currently, libiwinfo determines the noise value by selecting the entry
+marked with the IN_USE flag. However, when multiple interfaces share a
+wiphy, several entries may simultaneously have this flag set. This
+causes libiwinfo to return the same noise value for all interfaces,
+typically corresponding to the highest frequency in use.
+
+This patch adds a frequency match check to ensure the noise value
+corresponds to the interface?s actual frequency. The existing IN_USE
+check is retained as a fallback.
+
+Signed-off-by: Valeriy Kosikhin <vkosikhin at gmail.com>
+---
+Changes in v2:
+- Minor correction to the commit message
+- Resent to fix formatting broken by Gmail
+
+ iwinfo_nl80211.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/iwinfo_nl80211.c b/iwinfo_nl80211.c
+index dc4ff93..c530a35 100644
+--- a/iwinfo_nl80211.c
++++ b/iwinfo_nl80211.c
+@@ -1660,7 +1660,11 @@ static int nl80211_get_signal(const char *ifname, int *buf)
+ 
+ static int nl80211_get_noise_cb(struct nl_msg *msg, void *arg)
+ {
+-	int8_t *noise = arg;
++	struct {
++		int8_t *noise;
++		int *freq;
++	} *args = arg;
++
+ 	struct nlattr **tb = nl80211_parse(msg);
+ 	struct nlattr *si[NL80211_SURVEY_INFO_MAX + 1];
+ 
+@@ -1676,22 +1680,33 @@ static int nl80211_get_noise_cb(struct nl_msg *msg, void *arg)
+ 	                     tb[NL80211_ATTR_SURVEY_INFO], sp))
+ 		return NL_SKIP;
+ 
+-	if (!si[NL80211_SURVEY_INFO_NOISE])
++	if (!si[NL80211_SURVEY_INFO_NOISE] || !si[NL80211_SURVEY_INFO_FREQUENCY])
+ 		return NL_SKIP;
+ 
+-	if (!*noise || si[NL80211_SURVEY_INFO_IN_USE])
+-		*noise = (int8_t)nla_get_u8(si[NL80211_SURVEY_INFO_NOISE]);
++	if (!*args->noise ||
++		(nla_get_u32(si[NL80211_SURVEY_INFO_FREQUENCY]) == *args->freq &&
++		si[NL80211_SURVEY_INFO_IN_USE])) {
++			*args->noise = (int8_t)nla_get_u8(si[NL80211_SURVEY_INFO_NOISE]);
++	}
+ 
+ 	return NL_SKIP;
+ }
+ 
+-
+ static int nl80211_get_noise(const char *ifname, int *buf)
+ {
+ 	int8_t noise = 0;
++	int freq = 0;
++
++	struct {
++		int8_t *noise;
++		int *freq;
++	} args = { .noise = &noise, .freq = &freq };
++
++	if (nl80211_get_frequency(ifname, &freq) < 0)
++		goto out;
+ 
+ 	if (nl80211_request(ifname, NL80211_CMD_GET_SURVEY, NLM_F_DUMP,
+-	                    nl80211_get_noise_cb, &noise))
++	                    nl80211_get_noise_cb, &args))
+ 		goto out;
+ 
+ 	*buf = noise;
+-- 
+2.45.2
+
+
+
+From noreply at github.com  Sun Apr 20 19:03:42 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 20 Apr 2025 19:03:42 -0700
+Subject: [sdwalker/sdwalker.github.io] 6f8aa4: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/f0a8e8-6f8aa4@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 6f8aa4f04b4cd5834e86b5c2d91440ee46c8e41b
+      https://github.com/sdwalker/sdwalker.github.io/commit/6f8aa4f04b4cd5834e86b5c2d91440ee46c8e41b
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-04-20 (Sun, 20 Apr 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From mat.jonczyk at o2.pl  Mon Apr 21 13:25:15 2025
+From: mat.jonczyk at o2.pl (=?UTF-8?Q?Mateusz_Jo=C5=84czyk?=)
+Date: Mon, 21 Apr 2025 22:25:15 +0200
+Subject: OpenWRT 24.10 and problems with EEE on ramips/mt7621
+Message-ID: <7656e12e-bdb4-48df-af6c-c778c9f23c6e@o2.pl>
+
+Chester A. Unal on Mon Apr 14 03:11:14 PDT 2025 wrote:*
+*
+> Hello Felix.
+> >/sorry to bother you with this again. />/The WAX206 issue with it's Realtek WAN PHY has long been resolved but 
+> the mt7621-ramips plattform is still causing issues for users on the 
+> new release due to unstable/sometimes not working ethernet link. />//>/matjon just put some effort into debugging this (to some degree) />/<https://github.com/openwrt/openwrt/issues/17351#issuecomment-2798953937> 
+> />//>/And HanabishiRecca noticed that EEE somehow gets enabled even when 
+> the receiving side has it disabled. />/<https://github.com/openwrt/openwrt/issues/17351#issuecomment-2799921359> 
+> />//>/Do their posts somehow shine a different light on the matter or do 
+> you have an idea what could be at fault? /
+> No, it doesn't shine a different light.
+>
+> >/Does EEE itself work fine but gets enabled when it shouldn't be? /
+> I can't say for certain. I don't think it matters to do so anyway, for the
+> issue at hand.
+>
+> >//>/I know you are maintaining only the mt7530 part and not all related 
+> code so I don't expect you to change anything upstream. Though your 
+> opinion on the matter would be very valuable to us here. :) /
+> My opinion hasn't changed. I still suspect the same thing that I stated on
+> the GitHub issue [1]:
+>
+> >/I'm going to refrain from disabling EEE for now as I see reports here /that suggest that it is not EEE that is the cause of the problem, but
+> rather it reveals an issue of race condition of sorts when EEE is enabled.
+> Perhaps the cause is in the MediaTek ethernet driver...
+
+Hello,
+
+I have been working on this issue and trying to debug it.
+
+I have been following this bug report closely and I think that every 
+credible
+report there (that cannot be explained by another cause) has
+been on ramips/mt7621.
+
+That report by Florian Maurer [1] on Netgear WAX206 which you quoted
+previously turned out to be a different issue and has already been fixed 
+[2].
+
+There was also a report from @raenye, which turned out to be
+caused by a bad cable. @lorand-horvath described a problem on RT-AX59U,
+(ARM / mediatek target) with the mt7531 external switch, however the
+symptoms were very atypical (several flaps during a minute) and
+happened only once.
+
+There has also been a report by barcell1 of apparent hardware damage
+just after flashing OpenWRT 24.10, which persisted after reverting to 23.05:
+
+|[ 2.774046] mt7530-mdio mdio-bus:1f: reset timeout [ 2.778946] 
+mt7530-mdio: probe of mdio-bus:1f failed with error -145|
+
+> Get someone from MediaTek involved. I've got nothing else to add.
+
+Back in 2021,?Landen Chao from MediaTek described why disabling EEE is
+recommended [4]:
+
+W dniu 20.05.2021 o?09:13, Landen Chao pisze:
+> On Thu, 2021-05-20 at 10:38 +0800, DENG Qingfang wrote:
+>> On Thu, May 20, 2021 at 02:59:21AM +0200, Andrew Lunn wrote:
+>>> > +static void mtk_gephy_config_init(struct phy_device *phydev) > +{ > + /* Disable EEE */ > + phy_write_mmd(phydev, MDIO_MMD_AN, 
+>>> MDIO_AN_EEE_ADV, 0);
+>>> Is EEE broken on this PHY? Or is this just to get it into a defined
+>>> state?
+>> As I said in commit message, the initialization (including EEE) is
+>> from the vendor driver.
+>> I have also tested it with EEE enabled by default on one of my APs,
+>> and got occasional link drops.
+>>
+> EEE of the 10-year-old MT7530 internal gephy has many IOT problems, so
+> it is recommended to disable its EEE.
+> EEE of the MT7531 internal gephy has been updated, but it is not yet
+> widely used.
+> Therefore, EEE is disabled in vendor driver.
+>
+> Landen
+
+Apparently the way EEE has been disabled for mt7530 stopped working
+somewhere between Linux 5.15 and 6.6. The present way to disable EEE in
+a PHY driver appears appears to be in drivers/net/phy/micrel.c:
+
+ > phydev 
+<https://elixir.bootlin.com/linux/v6.6.83/C/ident/phydev>->eee_broken_modes 
+<https://elixir.bootlin.com/linux/v6.6.83/C/ident/eee_broken_modes>=-1;
+
+I'm going to reconfirm at Mediatek, but in the end I will probably just
+post a patch to mark EEE as broken in the devicetree.
+
+Greetings,
+
+Mateusz
+
+[1] https://github.com/openwrt/openwrt/issues/17351#issuecomment-2608342255
+
+[2] https://github.com/openwrt/openwrt/pull/17701
+
+[3] https://github.com/openwrt/openwrt/issues/17351#issuecomment-2773185300
+
+[4] 
+https://lore.kernel.org/all/0adde34f936a2dafca40b06b408d82afe0852327.camel at mediatek.com/
+
+
+
+From jan.kardell at telliq.com  Tue Apr 22 02:14:30 2025
+From: jan.kardell at telliq.com (Jan Kardell)
+Date: Tue, 22 Apr 2025 11:14:30 +0200
+Subject: On omap, the sdhci.omap driver may kill eMMC
+Message-ID: <1d071863-537d-ca69-7632-b62e3f5e931f@telliq.com>
+
+It is reported that in some circumstances aggressive PM in shdci-omap in
+kernels from 6.1.x can kill an eMMC.
+
+https://lore.kernel.org/all/9168d127-06a7-46e6-a7a2-f2e60032a50e at gmail.com/T/
+
+The change that caused it was reverted in 6.6.87, although the
+underlying problem may be something else.
+
+https://lore.kernel.org/lkml/CAOCHtYjGuw9szeChihrDZ39_2+w5xOverbp6mAjjLjR=QkK1zg at mail.gmail.com/T/
+
+Unfortunately the recently released OpenWrt 24.10.1 has kernel 6.6.86,
+and is affected by the bug. I suppose the next OpenWrt service release
+will have a newer kernel with the fix applied. So this is just a warning
+to people running the current release on omap, and that they may want to
+apply the patch.
+
+//Jan
+
+
+
+
+From e9hack at gmail.com  Tue Apr 22 13:55:09 2025
+From: e9hack at gmail.com (e9hack)
+Date: Tue, 22 Apr 2025 22:55:09 +0200
+Subject: build is broken
+Message-ID: <CALxbwRrRq1hzm+WPuupMxz0XWQ=hfJ=MJhFAL2MkeA71bzChnA@mail.gmail.com>
+
+Hi,
+
+commit 8865dadea7b94e7859b416d3b1931b897ea43c48 (kernel: move kernel
+version files to linux/generic directory) breaks the build:
+
+hb at hyper-v-debian:~/src/OpenWRT/RT-AX53U-6.6.x$ make -j12
+package/kernel/bpf-headers/compile V=s
+snip ....
+make[2]: Entering directory
+'/home/hb/src/OpenWRT/RT-AX53U-6.6.x/package/kernel/bpf-headers'
+Makefile:18: /home/hb/src/OpenWRT/RT-AX53U-6.6.x/include/kernel-6.6:
+No such file or directory
+make[2]: *** No rule to make target
+'/home/hb/src/OpenWRT/RT-AX53U-6.6.x/include/kernel-6.6'.  Stop.
+make[2]: Leaving directory
+'/home/hb/src/OpenWRT/RT-AX53U-6.6.x/package/kernel/bpf-headers'
+time: package/kernel/bpf-headers/compile#0.47#0.07#0.67
+    ERROR: package/kernel/bpf-headers failed to build.
+make[1]: *** [package/Makefile:189: package/kernel/bpf-headers/compile] Error 1
+make[1]: Leaving directory '/home/hb/src/OpenWRT/RT-AX53U-6.6.x'
+make: *** [/home/hb/src/OpenWRT/RT-AX53U-6.6.x/include/toplevel.mk:233:
+package/kernel/bpf-headers/compile] Error 2
+
+Regards,
+Hartmut
+
+
+From e9hack at gmail.com  Tue Apr 22 15:34:06 2025
+From: e9hack at gmail.com (e9hack)
+Date: Wed, 23 Apr 2025 00:34:06 +0200
+Subject: build is broken
+In-Reply-To: <CALxbwRrRq1hzm+WPuupMxz0XWQ=hfJ=MJhFAL2MkeA71bzChnA@mail.gmail.com>
+References: <CALxbwRrRq1hzm+WPuupMxz0XWQ=hfJ=MJhFAL2MkeA71bzChnA@mail.gmail.com>
+Message-ID: <CALxbwRrABUH2P4u7mige7BVxzTTRubvUTTK0xshfM1UORAxXCQ@mail.gmail.com>
+
+Hi,
+
+it looks like the following is missing:
+
+diff --git a/package/kernel/bpf-headers/Makefile
+b/package/kernel/bpf-headers/Makefile
+index a644f47ab7..057f47e2c2 100644
+--- a/package/kernel/bpf-headers/Makefile
++++ b/package/kernel/bpf-headers/Makefile
+@@ -15,7 +15,7 @@ include $(INCLUDE_DIR)/kernel.mk
+ PKG_NAME:=linux
+ PKG_PATCHVER:=6.6
+ # Manually include kernel version and hash from kernel details file
+-include $(INCLUDE_DIR)/kernel-$(PKG_PATCHVER)
++include $(GENERIC_PLATFORM_DIR)/kernel-$(PKG_PATCHVER)
+
+ PKG_VERSION:=$(PKG_PATCHVER)$(strip $(LINUX_VERSION-$(PKG_PATCHVER)))
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+
+Regards,
+Hartmut
+
+
+Am Di., 22. Apr. 2025 um 22:55 Uhr schrieb e9hack <e9hack at gmail.com>:
+>
+> Hi,
+>
+> commit 8865dadea7b94e7859b416d3b1931b897ea43c48 (kernel: move kernel
+> version files to linux/generic directory) breaks the build:
+>
+> hb at hyper-v-debian:~/src/OpenWRT/RT-AX53U-6.6.x$ make -j12
+> package/kernel/bpf-headers/compile V=s
+> snip ....
+> make[2]: Entering directory
+> '/home/hb/src/OpenWRT/RT-AX53U-6.6.x/package/kernel/bpf-headers'
+> Makefile:18: /home/hb/src/OpenWRT/RT-AX53U-6.6.x/include/kernel-6.6:
+> No such file or directory
+> make[2]: *** No rule to make target
+> '/home/hb/src/OpenWRT/RT-AX53U-6.6.x/include/kernel-6.6'.  Stop.
+> make[2]: Leaving directory
+> '/home/hb/src/OpenWRT/RT-AX53U-6.6.x/package/kernel/bpf-headers'
+> time: package/kernel/bpf-headers/compile#0.47#0.07#0.67
+>     ERROR: package/kernel/bpf-headers failed to build.
+> make[1]: *** [package/Makefile:189: package/kernel/bpf-headers/compile] Error 1
+> make[1]: Leaving directory '/home/hb/src/OpenWRT/RT-AX53U-6.6.x'
+> make: *** [/home/hb/src/OpenWRT/RT-AX53U-6.6.x/include/toplevel.mk:233:
+> package/kernel/bpf-headers/compile] Error 2
+>
+> Regards,
+> Hartmut
+
+
+From andrew at lunn.ch  Wed Apr 23 12:27:55 2025
+From: andrew at lunn.ch (Andrew Lunn)
+Date: Wed, 23 Apr 2025 21:27:55 +0200
+Subject: Mediatek: EEE problems with the MT7530 PHYs on OpenWRT 24.10
+In-Reply-To: <c0411979-bf71-4695-ab7e-9213c339603e@o2.pl>
+References: <c0411979-bf71-4695-ab7e-9213c339603e@o2.pl>
+Message-ID: <d3bea25e-a479-4800-8bd2-8a6dbc0f30a3@lunn.ch>
+
+> 3. In Linux 6.6, the PHY driver tries to disable EEE in
+>    mtk_gephy_config_init() in drivers/net/phy/mediatek-ge.c:
+> 
+> ???     /* Disable EEE */
+> ???     phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
+> 
+>    but this is later overridden by a subsequent execution of the
+>    genphy_c45_write_eee_adv() function, which enables every EEE mode
+>    supported.
+
+Ar?n? ?NAL <arinc.unal at arinc9.com> noticed the same:
+
+commit af3b4b0e59decfc4db2eafbb4e0d0658529019f6
+Author: Ar?n? ?NAL <arinc.unal at arinc9.com>
+Date:   Sun Apr 14 00:08:13 2024 +0300
+
+    net: phy: mediatek-ge: do not disable EEE advertisement
+    
+    The mediatek-ge PHY driver already disables EEE advertisement on the switch
+    PHYs but my testing [1] shows that it is somehow enabled afterwards.
+    Disabling EEE advertisement before the PHY driver initialises keeps it off.
+    Therefore, remove disabling EEE advertisement here as it's useless.
+    
+    Link: https://lore.kernel.org/netdev/d286ea27-e911-4dcb-9037-b75f22b437b8 at arinc9.com/ [1]
+    Signed-off-by: Ar?n? ?NAL <arinc.unal at arinc9.com>
+    Signed-off-by: David S. Miller <davem at davemloft.net>
+
+diff --git a/drivers/net/phy/mediatek-ge.c b/drivers/net/phy/mediatek-ge.c
+index a493ae01b267..54ea64a37ab3 100644
+--- a/drivers/net/phy/mediatek-ge.c
++++ b/drivers/net/phy/mediatek-ge.c
+@@ -23,9 +23,6 @@ static int mtk_gephy_write_page(struct phy_device *phydev, int page)
+ 
+ static void mtk_gephy_config_init(struct phy_device *phydev)
+ {
+-       /* Disable EEE */
+-       phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
+-
+        /* Enable HW auto downshift */
+        phy_modify_paged(phydev, MTK_PHY_PAGE_EXTENDED, 0x14, 0, BIT(4));
+
+
+> 
+> In 2021, Landen Chao wrote [2]:
+> 
+> > EEE of the 10-year-old MT7530 internal gephy has many IOT problems, so
+> > it is recommended to disable its EEE.
+> 
+> I'd like to ask Mediatek to clarify whether it is possible to fine-tune
+> the EEE of this PHY in some way, or rather that it should be hard-disabled
+> by setting:
+> 
+> ??? phydev->eee_broken_modes = -1;
+
+You are looking at old code, at least for mainline:
+
+        /* According to KSZ9477 Errata DS80000754C (Module 4) all EEE modes
+         * in this switch shall be regarded as broken.
+         */
+        if (phydev->dev_flags & MICREL_NO_EEE)
+                phy_disable_eee(phydev);
+
+Andrew
+
+
+From mat.jonczyk at o2.pl  Wed Apr 23 12:11:36 2025
+From: mat.jonczyk at o2.pl (=?UTF-8?Q?Mateusz_Jo=C5=84czyk?=)
+Date: Wed, 23 Apr 2025 21:11:36 +0200
+Subject: Mediatek: EEE problems with the MT7530 PHYs on OpenWRT 24.10
+Message-ID: <c0411979-bf71-4695-ab7e-9213c339603e@o2.pl>
+
+Hello,
+
+Multiple users have reported a regression [1] in OpenWRT 24.10
+(Linux 6.6) with the ramips/mt7621 target and the MT7530 PHYs:
+the Ethernet link is periodically going down for a brief period
+of time. It was determined that:
+
+1. The symptoms stop after disabling EEE.
+
+2. EEE is enabled by default for these devices in OpenWRT 24.10
+    whereas in the previous version (OpenWRT 23.05, Linux 5.15) it
+    was not.
+
+3. In Linux 6.6, the PHY driver tries to disable EEE in
+    mtk_gephy_config_init() in drivers/net/phy/mediatek-ge.c:
+
+ ???     /* Disable EEE */
+ ???     phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
+
+    but this is later overridden by a subsequent execution of the
+    genphy_c45_write_eee_adv() function, which enables every EEE mode
+    supported.
+
+In 2021, Landen Chao wrote [2]:
+
+> EEE of the 10-year-old MT7530 internal gephy has many IOT problems, so
+> it is recommended to disable its EEE.
+
+I'd like to ask Mediatek to clarify whether it is possible to fine-tune
+the EEE of this PHY in some way, or rather that it should be hard-disabled
+by setting:
+
+ ??? phydev->eee_broken_modes = -1;
+
+in the PHY driver, like it is in ksz9477_config_init() in
+drivers/net/phy/micrel.c.
+
+Greetings,
+
+Mateusz
+
+[1] https://github.com/openwrt/openwrt/issues/17351
+
+[2] https://lore.kernel.org/all/0adde34f936a2dafca40b06b408d82afe0852327.camel at mediatek.com/
+
+
+
+From fe at dev.tdt.de  Fri Apr 25 05:41:21 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Fri, 25 Apr 2025 14:41:21 +0200
+Subject: [PATCH] lantiq: fix vr9_avm_fritz736x.dtsi syntax error
+Message-ID: <20250425124121.70992-1-fe@dev.tdt.de>
+
+Fixes syntax error during dtb compilation.
+
+Fixes: 8f15869f125f ("lantiq: Improve support for LED's fritz736x")
+
+Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+---
+ .../arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi   | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi b/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+index 95340c1983..45a5ccb6ec 100644
+--- a/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
++++ b/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+@@ -56,7 +56,7 @@
+ 		};
+ 
+ 		fon {
+-			function = "fon"
++			function = "fon";
+ 			color = <LED_COLOR_ID_GREEN>;
+ 			gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
+ 		};
+@@ -68,7 +68,7 @@
+ 		};
+ 
+ 		led_info_green: info_green {
+-			function = "info"
++			function = "info";
+ 			color = <LED_COLOR_ID_GREEN>;
+ 			gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
+ 		};
+@@ -80,13 +80,13 @@
+ 		};
+ 
+ 		info_red {
+-			function = "info"
+-			color = <LED_COLOR_ID_RED
++			function = "info";
++			color = <LED_COLOR_ID_RED>;
+ 			gpios = <&gpio 34 GPIO_ACTIVE_LOW>;
+ 		};
+ 
+ 		dect {
+-			function = "dect"
++			function = "dect";
+ 			color = <LED_COLOR_ID_GREEN>;
+ 			gpios = <&gpio 35 GPIO_ACTIVE_LOW>;
+ 		};
+-- 
+2.39.5
+
+
+
+From robimarko at gmail.com  Fri Apr 25 06:34:18 2025
+From: robimarko at gmail.com (Robert Marko)
+Date: Fri, 25 Apr 2025 15:34:18 +0200
+Subject: [PATCH] lantiq: fix vr9_avm_fritz736x.dtsi syntax error
+In-Reply-To: <20250425124121.70992-1-fe@dev.tdt.de>
+References: <20250425124121.70992-1-fe@dev.tdt.de>
+Message-ID: <CAOX2RU6WiZK0NUMsU-YCVz9j+qPW6ZRW+k2kq16pKm882vUuzA@mail.gmail.com>
+
+On Fri, 25 Apr 2025 at 15:33, Florian Eckert <fe at dev.tdt.de> wrote:
+>
+> Fixes syntax error during dtb compilation.
+>
+> Fixes: 8f15869f125f ("lantiq: Improve support for LED's fritz736x")
+>
+> Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+
+Hi,
+This was just fixed via:
+https://github.com/openwrt/openwrt/commit/38b14a8308642f779cccf3ff9b7b11b6fb7859c2
+
+Regards,
+Robert
+
+> ---
+>  .../arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi   | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi b/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+> index 95340c1983..45a5ccb6ec 100644
+> --- a/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+> +++ b/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+> @@ -56,7 +56,7 @@
+>                 };
+>
+>                 fon {
+> -                       function = "fon"
+> +                       function = "fon";
+>                         color = <LED_COLOR_ID_GREEN>;
+>                         gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
+>                 };
+> @@ -68,7 +68,7 @@
+>                 };
+>
+>                 led_info_green: info_green {
+> -                       function = "info"
+> +                       function = "info";
+>                         color = <LED_COLOR_ID_GREEN>;
+>                         gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
+>                 };
+> @@ -80,13 +80,13 @@
+>                 };
+>
+>                 info_red {
+> -                       function = "info"
+> -                       color = <LED_COLOR_ID_RED
+> +                       function = "info";
+> +                       color = <LED_COLOR_ID_RED>;
+>                         gpios = <&gpio 34 GPIO_ACTIVE_LOW>;
+>                 };
+>
+>                 dect {
+> -                       function = "dect"
+> +                       function = "dect";
+>                         color = <LED_COLOR_ID_GREEN>;
+>                         gpios = <&gpio 35 GPIO_ACTIVE_LOW>;
+>                 };
+> --
+> 2.39.5
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel at lists.openwrt.org
+> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From fe at dev.tdt.de  Fri Apr 25 06:55:10 2025
+From: fe at dev.tdt.de (Florian Eckert)
+Date: Fri, 25 Apr 2025 15:55:10 +0200
+Subject: [PATCH] lantiq: fix vr9_avm_fritz736x.dtsi syntax error
+In-Reply-To: <CAOX2RU6WiZK0NUMsU-YCVz9j+qPW6ZRW+k2kq16pKm882vUuzA@mail.gmail.com>
+References: <20250425124121.70992-1-fe@dev.tdt.de>
+ <CAOX2RU6WiZK0NUMsU-YCVz9j+qPW6ZRW+k2kq16pKm882vUuzA@mail.gmail.com>
+Message-ID: <5bf02968d4b8516894448a3ed079d1f9@dev.tdt.de>
+
+Thanks
+
+On 2025-04-25 15:34, Robert Marko wrote:
+> On Fri, 25 Apr 2025 at 15:33, Florian Eckert <fe at dev.tdt.de> wrote:
+>> 
+>> Fixes syntax error during dtb compilation.
+>> 
+>> Fixes: 8f15869f125f ("lantiq: Improve support for LED's fritz736x")
+>> 
+>> Signed-off-by: Florian Eckert <fe at dev.tdt.de>
+> 
+> Hi,
+> This was just fixed via:
+> https://github.com/openwrt/openwrt/commit/38b14a8308642f779cccf3ff9b7b11b6fb7859c2
+> 
+> Regards,
+> Robert
+> 
+>> ---
+>>  .../arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi   | 10 
+>> +++++-----
+>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>> 
+>> diff --git 
+>> a/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi 
+>> b/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+>> index 95340c1983..45a5ccb6ec 100644
+>> --- 
+>> a/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+>> +++ 
+>> b/target/linux/lantiq/files/arch/mips/boot/dts/lantiq/vr9_avm_fritz736x.dtsi
+>> @@ -56,7 +56,7 @@
+>>                 };
+>> 
+>>                 fon {
+>> -                       function = "fon"
+>> +                       function = "fon";
+>>                         color = <LED_COLOR_ID_GREEN>;
+>>                         gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
+>>                 };
+>> @@ -68,7 +68,7 @@
+>>                 };
+>> 
+>>                 led_info_green: info_green {
+>> -                       function = "info"
+>> +                       function = "info";
+>>                         color = <LED_COLOR_ID_GREEN>;
+>>                         gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
+>>                 };
+>> @@ -80,13 +80,13 @@
+>>                 };
+>> 
+>>                 info_red {
+>> -                       function = "info"
+>> -                       color = <LED_COLOR_ID_RED
+>> +                       function = "info";
+>> +                       color = <LED_COLOR_ID_RED>;
+>>                         gpios = <&gpio 34 GPIO_ACTIVE_LOW>;
+>>                 };
+>> 
+>>                 dect {
+>> -                       function = "dect"
+>> +                       function = "dect";
+>>                         color = <LED_COLOR_ID_GREEN>;
+>>                         gpios = <&gpio 35 GPIO_ACTIVE_LOW>;
+>>                 };
+>> --
+>> 2.39.5
+>> 
+>> 
+>> _______________________________________________
+>> openwrt-devel mailing list
+>> openwrt-devel at lists.openwrt.org
+>> https://lists.openwrt.org/mailman/listinfo/openwrt-devel
+
+
+From noreply at github.com  Sun Apr 27 09:55:57 2025
+From: noreply at github.com (Stephen Walker)
+Date: Sun, 27 Apr 2025 09:55:57 -0700
+Subject: [sdwalker/sdwalker.github.io] 4a305b: This week's update
+Message-ID: <sdwalker/sdwalker.github.io/push/refs/heads/master/6f8aa4-4a305b@github.com>
+
+  Branch: refs/heads/master
+  Home:   https://github.com/sdwalker/sdwalker.github.io
+  Commit: 4a305ba55fbefa2ae55832c47f15413a4ff9a333
+      https://github.com/sdwalker/sdwalker.github.io/commit/4a305ba55fbefa2ae55832c47f15413a4ff9a333
+  Author: Stephen Walker <stephendwalker+github at gmail.com>
+  Date:   2025-04-27 (Sun, 27 Apr 2025)
+
+  Changed paths:
+    M uscan/index-23.05.html
+    M uscan/index-24.10.html
+    M uscan/index.html
+
+  Log Message:
+  -----------
+  This week's update
+
+
+
+To unsubscribe from these emails, change your notification settings at https://github.com/sdwalker/sdwalker.github.io/settings/notifications
+
+
+From daniel.zawadzki at novetro.pl  Tue Apr 29 01:00:38 2025
+From: daniel.zawadzki at novetro.pl (Daniel Zawadzki)
+Date: Tue, 29 Apr 2025 08:00:38 GMT
+Subject: =?UTF-8?Q?Wsp=C3=B3=C5=82praca?=
+Message-ID: <20250429084501-0.1.90.1tp51.0.hcf0t4mrhl@novetro.pl>
+
+Dzie? dobry, 
+
+Czy interesuje Pa?stwa pozyskanie nowych klient?w?
+
+Zajmujemy si? profesjonalnie wsparciem firm w tym zakresie. 
+
+Nasi partnerzy zyskuj? sta?y nap?yw nowych zlece? oraz zam?wie?, a tym samym zwi?kszaj? swoje wyniki sprzeda?y.
+
+Czy mo?emy przedstawi? szczeg??y dotycz?ce zasad i mo?liwo?ci wsp??pracy?
+
+
+Pozdrawiam
+Daniel Zawadzki
+
+

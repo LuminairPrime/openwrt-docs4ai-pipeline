@@ -1,0 +1,66 @@
+From openwrt-bugs at lists.openwrt.org  Tue Dec 20 23:19:51 2022
+From: openwrt-bugs at lists.openwrt.org (OpenWrt Bugs)
+Date: Wed, 21 Dec 2022 07:19:51 +0000
+Subject: Host dependency issues 
+Message-ID: <mailman.48630.1671607212.4154159.openwrt-bugs@lists.openwrt.org>
+
+Hi  Developers,
+Hope all is well ? 
+
+We are trying to enable selinux ,   21.02   where the default mtd-utils  (for NAND /ubifs ) are not supporting selinux . 
+So  we moved to  mtd-utils 2.1.5 , where its fixed but we are seeing this build time  failure. 
+
+Problem :
+During mkfs.ubifs  host utility compilation   make system /autoconfig  is checking for the    following  depenecy as these are the first to get compile   (libselinux is much later )
+LIBSELINUX , 
+SELinux/selinux.h
+Selinux/label.h
+
+So when compiling mtd-utils  this artifacts are  not found in the expected path  and  autoconfig  is assuming no-selinux and  disable SELinux . 
+Where most of the include / Lib are in hostpkg which is not even created at that point of  time .
+If I compile just mtd-utils post libselinux ( clean mtd-utils )  it works .
+  . 
+
+//////LOG for config 
+ #include <selinux/selinux.h>
+configure:15186: result: no
+configure:15186: WARNING: selinux/selinux.h: accepted by the compiler, rejected by the preprocessor!
+configure:15186: WARNING: selinux/selinux.h: proceeding with the compiler's result
+configure:15186: checking for selinux/selinux.h
+configure:15186: result: yes
+configure:15200: checking selinux/label.h usability
+configure:15200: gcc -c -O2 -I/local/mnt/workspace/rsiddoji/OWRT_Workspace/owrt/staging_dir/host/include  -I/local/mnt/workspace/rsiddoji/OWRT_Workspace/owrt/staging_dir/hostpkg/include -I/local/mnt/workspace/rsiddoji/OWRT_Workspace/owrt/staging_dir/host/include  conftest.c >&5
+configure:15200: $? = 0
+configure:15200: result: yes
+configure:15200: checking selinux/label.h presence
+configure:15200: gcc -E -I/local/mnt/workspace/rsiddoji/OWRT_Workspace/owrt/staging_dir/host/include  conftest.c
+conftest.c:25:10: fatal error: selinux/label.h: No such file or directory
+#include <selinux/label.h>
+          ^~~~~~~~~~~~~~~~~
+compilation terminated.
+configure:15200: $? = 1
+configure: failed program was:
+| /* confdefs.h */
+| #define PACKAGE_NAME "mtd-utils"
+| #define PACKAGE_TARNAME "mtd-utils"
+| #define PACKAGE_VERSION "2.1.5"
+| #define PACKAGE_STRING "mtd-utils 2.1.5"
+| #define PACKAGE_BUGREPORT linux-mtd at lists.infradead.org
+//// End of log 
+
+
+What we had tried :  
+
+HOST_BUILD_DEPENDS:=libselinux/host
+DEPENDS:=libselinux
+
+## under define Package/mtd-utils/Default
+DEPENDS:=@NAND_SUPPORT  +libselinux
+But all this options seem to be used in enabling and disabling options at menuconfig level ,  
+
+Is there a way that we can create a inter dependent , or make  selinux compile first and later the mtd-utils ? 
+
+
+Regards,
+Ravi, Prashanth.
+
