@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 5280
 source_file: L1-raw/openwrt-core/makefile_meta-category-libs.md
-last_pipeline_run: '2026-03-28T09:11:39.723949+00:00'
+last_pipeline_run: '2026-03-28T10:24:28.004030+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/libs
 source_locator: package/libs
@@ -646,7 +646,7 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 | Field | Value |
 |---|---|
-| Version | 5.8.4 |
+| Version | 5.9.0 |
 | License | GPL-3.0-or-later |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://github.com/wolfSSL/wolfssl/archive/v$(PKG_REAL_VERSION) |

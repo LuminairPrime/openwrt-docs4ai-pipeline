@@ -3,7 +3,7 @@ module: openwrt-core
 total_token_count: 23147
 section_count: 7
 is_monolithic: true
-generated: '2026-03-28T09:11:56.933689+00:00'
+generated: '2026-03-28T10:24:44.965337+00:00'
 ---
 
 # openwrt-core Bundled Reference
@@ -1661,7 +1661,7 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 | Field | Value |
 |---|---|
-| Version | 5.8.4 |
+| Version | 5.9.0 |
 | License | GPL-3.0-or-later |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://github.com/wolfSSL/wolfssl/archive/v$(PKG_REAL_VERSION) |
