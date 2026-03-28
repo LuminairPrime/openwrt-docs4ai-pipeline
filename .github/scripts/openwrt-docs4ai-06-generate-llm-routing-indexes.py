@@ -236,6 +236,10 @@ def rewrite_release_module_llms(content, module):
                 f"{module}.d.ts",
                 f"{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
             ),
+            (
+                f"{module}-env.d.ts",
+                f"{config.MODULE_TYPES_DIRNAME}/{module}-env.d.ts",
+            ),
             (f"./{module}-skeleton.md", f"./{config.MODULE_MAP_FILENAME}"),
             (
                 f"./{module}-complete-reference.md",
@@ -252,6 +256,10 @@ def rewrite_release_module_llms(content, module):
             (
                 f"./{module}.d.ts",
                 f"./{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
+            ),
+            (
+                f"./{module}-env.d.ts",
+                f"./{config.MODULE_TYPES_DIRNAME}/{module}-env.d.ts",
             ),
         ],
     )
@@ -281,6 +289,10 @@ def rewrite_release_llms_full(content, modules):
                 (
                     f"./{module}/{module}.d.ts",
                     f"./{module}/{config.MODULE_TYPES_DIRNAME}/{module}.d.ts",
+                ),
+                (
+                    f"./{module}/{module}-env.d.ts",
+                    f"./{module}/{config.MODULE_TYPES_DIRNAME}/{module}-env.d.ts",
                 ),
             ]
         )
