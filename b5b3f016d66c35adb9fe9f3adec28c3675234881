@@ -1,0 +1,73 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "b5b3f016d66c35adb9fe9f3adec28c3675234881",
+  "prompts": {
+    "255a38c9cfbb88de": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "2e18b8b7-dc8d-4dd0-85c2-bce656a0d360",
+        "model": "copilot/auto"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 48,
+      "total_deletions": 0,
+      "accepted_lines": 48,
+      "overriden_lines": 0
+    },
+    "353a8f1976120431": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "e34eaec2-1740-4bfe-9480-e17b06132c9a",
+        "model": "copilot/oswe-vscode-prime"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 106,
+      "total_deletions": 17,
+      "accepted_lines": 100,
+      "overriden_lines": 0
+    },
+    "3d01e47968756c2a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "2ab920b9-e948-4a71-bfb6-52c2567909a0",
+        "model": "copilot/gemini-3-flash-preview"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 24,
+      "total_deletions": 0,
+      "accepted_lines": 24,
+      "overriden_lines": 0
+    },
+    "633707fd2e740d7b": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "575af8e7-aa65-439d-88ab-6e7440b71039",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 51,
+      "total_deletions": 0,
+      "accepted_lines": 51,
+      "overriden_lines": 0
+    },
+    "d528c0e6b5f4b140": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "cea74636-00d9-4196-b1c1-c266d53f0d6c",
+        "model": "copilot/gemini-3-flash-preview"
+      },
+      "human_author": "LuminairPrime <luminair@gmail.com>",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 0,
+      "accepted_lines": 32,
+      "overriden_lines": 0
+    }
+  }
+}
