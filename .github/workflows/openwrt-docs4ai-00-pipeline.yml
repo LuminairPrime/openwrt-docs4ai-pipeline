@@ -756,17 +756,17 @@ jobs:
 
           missing = [path.as_posix() for path in required_paths if not (outdir / path).is_file()]
 
-            l1_md = len(list((processed_dir / "L1-raw").glob("**/*.md"))) if (processed_dir / "L1-raw").exists() else 0
-            l1_meta = len(list((processed_dir / "L1-raw").glob("**/*.meta.json"))) if (processed_dir / "L1-raw").exists() else 0
-            l2_md = len(list((processed_dir / "L2-semantic").glob("**/*.md"))) if (processed_dir / "L2-semantic").exists() else 0
+          l1_md = len(list((processed_dir / "L1-raw").glob("**/*.md"))) if (processed_dir / "L1-raw").exists() else 0
+          l1_meta = len(list((processed_dir / "L1-raw").glob("**/*.meta.json"))) if (processed_dir / "L1-raw").exists() else 0
+          l2_md = len(list((processed_dir / "L2-semantic").glob("**/*.md"))) if (processed_dir / "L2-semantic").exists() else 0
           release_tree = outdir / "release-tree"
           support_tree = outdir / "support-tree"
           module_refs = len(list(release_tree.glob("*/bundled-reference.md"))) if release_tree.exists() else 0
-            package_zips = sorted((outdir / "packages").glob("*.zip")) if (outdir / "packages").exists() else []
+          package_zips = sorted((outdir / "packages").glob("*.zip")) if (outdir / "packages").exists() else []
 
-            if len(package_zips) != 1:
+          if len(package_zips) != 1:
               missing.append("packages/*.zip")
-            elif package_zips[0].stat().st_size == 0:
+          elif package_zips[0].stat().st_size == 0:
               missing.append("packages/*.zip (empty)")
 
           ai_log_path = summary_dir / "ai-stage.log"
