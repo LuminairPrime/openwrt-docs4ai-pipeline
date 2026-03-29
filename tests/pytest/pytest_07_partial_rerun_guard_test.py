@@ -60,24 +60,24 @@ def test_stage03_promotion_blocks_partial_rerun_before_clobber(tmp_path: Path, m
 
     l1_dir = tmp_path / "work" / "L1-raw"
     l2_dir = tmp_path / "work" / "L2-semantic"
-    outdir = tmp_path / "out"
+    processed_dir = tmp_path / "processed"
 
     (l1_dir / "cookbook").mkdir(parents=True)
     (l2_dir / "cookbook").mkdir(parents=True)
-    (outdir / "L1-raw" / "cookbook").mkdir(parents=True)
-    (outdir / "L1-raw" / "wiki").mkdir()
-    (outdir / "L2-semantic" / "cookbook").mkdir(parents=True)
-    (outdir / "L2-semantic" / "wiki").mkdir()
+    (processed_dir / "L1-raw" / "cookbook").mkdir(parents=True)
+    (processed_dir / "L1-raw" / "wiki").mkdir()
+    (processed_dir / "L2-semantic" / "cookbook").mkdir(parents=True)
+    (processed_dir / "L2-semantic" / "wiki").mkdir()
 
     monkeypatch.setattr(stage03, "L1_DIR", str(l1_dir))
     monkeypatch.setattr(stage03, "L2_DIR", str(l2_dir))
-    monkeypatch.setattr(stage03.config, "OUTDIR", str(outdir))
+    monkeypatch.setattr(stage03.config, "PROCESSED_DIR", str(processed_dir))
 
     exit_code = stage03.main([])
 
     assert exit_code == 1
-    assert (outdir / "L1-raw" / "wiki").is_dir()
-    assert (outdir / "L2-semantic" / "wiki").is_dir()
+    assert (processed_dir / "L1-raw" / "wiki").is_dir()
+    assert (processed_dir / "L2-semantic" / "wiki").is_dir()
 
 
 def test_stage05a_rebuild_blocks_partial_rerun_before_clobber(tmp_path: Path, monkeypatch) -> None:

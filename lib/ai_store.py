@@ -2,12 +2,12 @@
 AI summary data store for openwrt-docs4ai.
 
 Manages reading and writing of AI-generated summaries from the structured
-data store under data/base/ and data/override/.
+data store under static/data/base/ and static/data/override/.
 
 Resolution order:
-  data/override/{module}/{slug}.json  (highest priority)
-  data/base/{module}/{slug}.json      (pipeline-generated or seeded)
-  None                                (no record found)
+        static/data/override/{module}/{slug}.json  (highest priority)
+        static/data/base/{module}/{slug}.json      (pipeline-generated or seeded)
+        None                                       (no record found)
 
 content_hash semantics:
   null / None   Human-authored entry. Always treated as valid regardless of
@@ -132,7 +132,7 @@ def save_summary(
       ai_summary, ai_when_to_use, ai_related_topics,
       model, pipeline_version
 
-    Writes to data/override/ when to_override=True, else data/base/.
+    Writes to static/data/override/ when to_override=True, else static/data/base/.
     Always writes saved_at timestamp and ensures pipeline_version is set.
     """
     store_dir = AI_DATA_OVERRIDE_DIR if to_override else AI_DATA_BASE_DIR
@@ -159,7 +159,7 @@ def create_override_from_base(module: str, slug: str) -> bool:
 
     Usage pattern:
       1. Call create_override_from_base(module, slug)
-      2. Edit data/override/{module}/{slug}.json manually
+            2. Edit static/data/override/{module}/{slug}.json manually
       3. The override is picked up automatically on the next pipeline run.
     """
     base_path = _json_path(AI_DATA_BASE_DIR, module, slug)

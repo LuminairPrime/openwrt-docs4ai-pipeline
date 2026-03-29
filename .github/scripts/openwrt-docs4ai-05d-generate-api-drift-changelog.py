@@ -2,7 +2,7 @@
 Purpose: Generates telemetry tracking API drift (changelog.json).
 Phase: Telemetry
 Layers: L5
-Inputs: OUTDIR/ (Current Run), baseline/signature-inventory.json (Baseline)
+Inputs: PROCESSED_DIR/manifests/cross-link-registry.json, baseline/signature-inventory.json (Baseline)
 Outputs: OUTDIR/changelog.json, OUTDIR/CHANGES.md, OUTDIR/signature-inventory.json
 Environment Variables: OUTDIR
 Dependencies: lib.config
@@ -20,7 +20,7 @@ from lib import config
 sys.stdout.reconfigure(line_buffering=True)
 
 OUTDIR = config.OUTDIR
-REGISTRY_PATH = os.path.join(OUTDIR, "cross-link-registry.json")
+REGISTRY_PATH = config.CROSS_LINK_REGISTRY
 
 
 def resolve_baseline_dir():

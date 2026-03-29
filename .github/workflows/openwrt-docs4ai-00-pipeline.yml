@@ -29,9 +29,11 @@ permissions:
   contents: read
 
 env:
-  PUBLISH_DIR: openwrt-condensed-docs
-  WORKDIR: ${{ github.workspace }}/tmp
-  OUTDIR: ${{ github.workspace }}/staging
+  PIPELINE_RUN_DIR: ${{ github.workspace }}/tmp/pipeline-ci
+  WORKDIR: ${{ github.workspace }}/tmp/pipeline-ci/downloads
+  PROCESSED_DIR: ${{ github.workspace }}/tmp/pipeline-ci/processed
+  STAGED_DIR: ${{ github.workspace }}/tmp/pipeline-ci/staged
+  OUTDIR: ${{ github.workspace }}/tmp/pipeline-ci/staged
   DIST_PAGES_REPO: openwrt-docs4ai/openwrt-docs4ai.github.io
   DIST_RELEASE_REPO: openwrt-docs4ai/corpus
   DIST_TARGET_BRANCH: main
@@ -51,7 +53,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r .github/scripts/requirements.txt
       - name: Create directories
-        run: mkdir -p "$WORKDIR"
+        run: mkdir -p "$PIPELINE_RUN_DIR" "$WORKDIR" "$PROCESSED_DIR" "$STAGED_DIR"
       - name: Clone repositories
         env:
           SKIP_BUILDROOT: ${{ inputs.skip_buildroot || 'false' }}
@@ -87,7 +89,7 @@ jobs:
         with:
           path: |
             ${{ env.WORKDIR }}/.cache
-            ${{ env.WORKDIR }}/L1-raw/wiki
+            ${{ env.PROCESSED_DIR }}/L1-raw/wiki
           key: wiki-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             wiki-cache-${{ runner.os }}-
@@ -111,7 +113,7 @@ jobs:
           ended_epoch="$(date +%s)"
           duration_seconds=$(( ended_epoch - started_epoch ))
 
-          module_dir="$WORKDIR/L1-raw/$MODULE_NAME"
+          module_dir="$PROCESSED_DIR/L1-raw/$MODULE_NAME"
           md_count=0
           meta_count=0
           if [ -d "$module_dir" ]; then
@@ -184,7 +186,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: L1-02a-scrape-wiki.py
-          path: ${{ env.WORKDIR }}/L1-raw/
+          path: ${{ env.PROCESSED_DIR }}/L1-raw/
           retention-days: 1
           if-no-files-found: ignore
       - name: Upload extractor status (02a)
@@ -231,7 +233,7 @@ jobs:
           ended_epoch="$(date +%s)"
           duration_seconds=$(( ended_epoch - started_epoch ))
 
-          module_dir="$WORKDIR/L1-raw/$MODULE_NAME"
+          module_dir="$PROCESSED_DIR/L1-raw/$MODULE_NAME"
           md_count=0
           meta_count=0
           if [ -d "$module_dir" ]; then
@@ -293,7 +295,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: L1-02i-ingest-cookbook.py
-          path: ${{ env.WORKDIR }}/L1-raw/
+          path: ${{ env.PROCESSED_DIR }}/L1-raw/
           retention-days: 1
           if-no-files-found: ignore
       - name: Upload extractor status (02i)
@@ -379,7 +381,7 @@ jobs:
           ended_epoch="$(date +%s)"
           duration_seconds=$(( ended_epoch - started_epoch ))
 
-          module_dir="$WORKDIR/L1-raw/$MODULE_NAME"
+          module_dir="$PROCESSED_DIR/L1-raw/$MODULE_NAME"
           md_count=0
           meta_count=0
           if [ -d "$module_dir" ]; then
@@ -452,7 +454,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: L1-${{ matrix.script }}
-          path: ${{ env.WORKDIR }}/L1-raw/
+          path: ${{ env.PROCESSED_DIR }}/L1-raw/
           retention-days: 1
           if-no-files-found: ignore
       - name: Upload extractor status (${{ matrix.script }})
@@ -610,7 +612,7 @@ jobs:
         uses: actions/download-artifact@main
         with:
           pattern: L1-*
-          path: ${{ env.WORKDIR }}/L1-raw/
+          path: ${{ env.PROCESSED_DIR }}/L1-raw/
           merge-multiple: true
       - name: Download extract summary
         continue-on-error: true
@@ -628,11 +630,11 @@ jobs:
       - name: Prepare Baseline
         run: |
           mkdir -p baseline
-          if [ -f "$PUBLISH_DIR/signature-inventory.json" ]; then
-            cp "$PUBLISH_DIR/signature-inventory.json" baseline/
+          if [ -f "$STAGED_DIR/signature-inventory.json" ]; then
+            cp "$STAGED_DIR/signature-inventory.json" baseline/
             echo "Baseline inventory found and staged."
           else
-            echo "No baseline inventory found in $PUBLISH_DIR."
+            echo "No baseline inventory found in $STAGED_DIR."
           fi
       - name: Build ucode validation binary
         run: |
@@ -707,6 +709,11 @@ jobs:
           _T=$(date +%s)
           python .github/scripts/openwrt-docs4ai-08-validate-output.py
           echo "PROC_TIMER_08=$(($(date +%s) - _T))" >> "$GITHUB_ENV"
+      - name: Build distribution packages (09)
+        run: |
+          _T=$(date +%s)
+          python .github/scripts/openwrt-docs4ai-09-build-packages.py --ci
+          echo "PROC_TIMER_09=$(($(date +%s) - _T))" >> "$GITHUB_ENV"
       - name: Validate staging contract and build process summary
         id: process_contract
         if: ${{ always() }}
@@ -720,6 +727,7 @@ jobs:
           from pathlib import Path
 
           outdir = Path(os.environ["OUTDIR"])
+          processed_dir = Path(os.environ["PROCESSED_DIR"])
           workdir = Path(os.environ["WORKDIR"])
           validate_output_outcome = "${{ steps.validate_output.outcome }}" or "unknown"
           summary_dir = workdir / "run-summary"
@@ -731,8 +739,6 @@ jobs:
               Path("llms.txt"),
               Path("llms-full.txt"),
               Path("index.html"),
-              Path("repo-manifest.json"),
-              Path("cross-link-registry.json"),
               Path("signature-inventory.json"),
               Path("CHANGES.md"),
               Path("changelog.json"),
@@ -750,14 +756,18 @@ jobs:
 
           missing = [path.as_posix() for path in required_paths if not (outdir / path).is_file()]
 
-          l1_md = len(list((outdir / "L1-raw").glob("**/*.md"))) if (outdir / "L1-raw").exists() else 0
-          l1_meta = len(list((outdir / "L1-raw").glob("**/*.meta.json"))) if (outdir / "L1-raw").exists() else 0
-          l2_md = len(list((outdir / "L2-semantic").glob("**/*.md"))) if (outdir / "L2-semantic").exists() else 0
+            l1_md = len(list((processed_dir / "L1-raw").glob("**/*.md"))) if (processed_dir / "L1-raw").exists() else 0
+            l1_meta = len(list((processed_dir / "L1-raw").glob("**/*.meta.json"))) if (processed_dir / "L1-raw").exists() else 0
+            l2_md = len(list((processed_dir / "L2-semantic").glob("**/*.md"))) if (processed_dir / "L2-semantic").exists() else 0
           release_tree = outdir / "release-tree"
           support_tree = outdir / "support-tree"
           module_refs = len(list(release_tree.glob("*/bundled-reference.md"))) if release_tree.exists() else 0
-          support_raw_md = len(list((support_tree / "raw").glob("**/*.md"))) if (support_tree / "raw").exists() else 0
-          support_semantic_md = len(list((support_tree / "semantic-pages").glob("**/*.md"))) if (support_tree / "semantic-pages").exists() else 0
+            package_zips = sorted((outdir / "packages").glob("*.zip")) if (outdir / "packages").exists() else []
+
+            if len(package_zips) != 1:
+              missing.append("packages/*.zip")
+            elif package_zips[0].stat().st_size == 0:
+              missing.append("packages/*.zip (empty)")
 
           ai_log_path = summary_dir / "ai-stage.log"
           ai: dict[str, object] = {
@@ -814,12 +824,11 @@ jobs:
               "missing_required_files": missing,
               "validate_output_outcome": validate_output_outcome,
               "counts": {
-                  "l1_markdown": l1_md,
+                  "l1_raw_markdown": l1_md,
                   "l1_metadata": l1_meta,
-                  "l2_markdown": l2_md,
+                  "l2_semantic_markdown": l2_md,
                   "module_bundled_references": module_refs,
-                  "support_raw_markdown": support_raw_md,
-                  "support_semantic_markdown": support_semantic_md,
+                  "package_zip_count": len(package_zips),
               },
               "ai": ai,
           }
@@ -835,6 +844,7 @@ jobs:
               ("PROC_TIMER_06",    "06-llm-indexes"),
               ("PROC_TIMER_07",    "07-web-index"),
               ("PROC_TIMER_08",    "08-validate"),
+                ("PROC_TIMER_09",    "09-packages"),
           ]
           stage_timings: dict[str, int] = {}
           for env_key, label in stage_timer_keys:
@@ -851,12 +861,11 @@ jobs:
               "",
               f"- contract_ok: {str(payload['contract_ok']).lower()}",
               f"- validate_output_outcome: {validate_output_outcome}",
-              f"- l1_markdown: {l1_md}",
+              f"- l1_raw_markdown: {l1_md}",
               f"- l1_metadata: {l1_meta}",
-              f"- l2_markdown: {l2_md}",
+              f"- l2_semantic_markdown: {l2_md}",
               f"- module_bundled_references: {module_refs}",
-              f"- support_raw_markdown: {support_raw_md}",
-              f"- support_semantic_markdown: {support_semantic_md}",
+              f"- package_zip_count: {len(package_zips)}",
               f"- ai_status: {ai.get('status', 'not-available')}",
               f"- ai_total_seconds: {ai_timers.get('total_seconds', 'n/a')}",
               f"- ai_api_calls: {ai_timers.get('api_calls', 'n/a')}",
@@ -933,11 +942,7 @@ jobs:
         uses: actions/download-artifact@main
         with:
           name: final-staging
-          path: ${{ env.OUTDIR }}
-      - name: Promote staging to workspace
-        run: |
-          echo "Promoting staging to $PUBLISH_DIR"
-          python tools/sync_tree.py promote-generated --src "$OUTDIR" --dest "$GITHUB_WORKSPACE/$PUBLISH_DIR"
+          path: ${{ env.STAGED_DIR }}
       # --- Publication targets ---
       # The gh-pages push below triggers GitHub's built-in pages-build-deployment
       # on LuminairPrime/openwrt-docs4ai-pipeline (test preview).
@@ -953,11 +958,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          publish_root="$GITHUB_WORKSPACE/$PUBLISH_DIR"
+          release_tree="$STAGED_DIR/release-tree"
+          pages_include_dir="$GITHUB_WORKSPACE/static/release-inputs/pages-include"
           branch_dir="$RUNNER_TEMP/gh-pages-worktree"
 
-          if [ ! -d "$publish_root" ]; then
-            echo "FAIL: publish root not found: $publish_root"
+          if [ ! -d "$release_tree" ]; then
+            echo "FAIL: release-tree not found: $release_tree"
             exit 1
           fi
 
@@ -975,7 +981,10 @@ jobs:
             )
           fi
 
-          python tools/sync_tree.py mirror-tree --src "$publish_root" --dest "$branch_dir" --exclude .git
+          python tools/sync_tree.py mirror-tree --src "$release_tree" --dest "$branch_dir" --exclude .git
+          if [ -d "$pages_include_dir" ]; then
+            python tools/sync_tree.py overlay-tree --src "$pages_include_dir" --dest "$branch_dir"
+          fi
           touch "$branch_dir/.nojekyll"
 
           (
@@ -1043,7 +1052,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          release_tree="$OUTDIR/release-tree"
+          release_tree="$STAGED_DIR/release-tree"
 
           if [ ! -d "$release_tree" ]; then
             echo "FAIL: release-tree missing: $release_tree"
@@ -1076,26 +1085,31 @@ jobs:
             echo "FAIL: release-tree contains legacy paths"
             exit 1
           fi
-      - name: Build dated distribution ZIP
+      - name: Resolve staged distribution ZIP
         if: steps.distribution_gate.outputs.enabled == 'true'
         id: distribution_zip
         run: |
           set -euo pipefail
 
-          release_tree="$OUTDIR/release-tree"
-          zip_stage="$RUNNER_TEMP/dist-zip"
-          zip_root="$zip_stage/$DIST_ZIP_ROOT_DIR"
-          zip_path="$RUNNER_TEMP/${{ steps.distribution_meta.outputs.zip_name }}"
+          packages_dir="$STAGED_DIR/packages"
+          expected_name="${{ steps.distribution_meta.outputs.zip_name }}"
 
-          rm -rf "$zip_stage"
-          mkdir -p "$zip_root"
-          python tools/sync_tree.py mirror-tree --src "$release_tree" --dest "$zip_root"
-          rm -f "$zip_path"
+          mapfile -t zip_files < <(find "$packages_dir" -maxdepth 1 -type f -name '*.zip' | sort)
+          if [ "${#zip_files[@]}" -ne 1 ]; then
+            echo "FAIL: expected exactly one staged distribution zip in $packages_dir"
+            exit 1
+          fi
 
-          (
-            cd "$zip_stage"
-            zip -qr "$zip_path" "$DIST_ZIP_ROOT_DIR"
-          )
+          zip_path="${zip_files[0]}"
+          zip_name="$(basename "$zip_path")"
+          if [ "$zip_name" != "$expected_name" ]; then
+            echo "FAIL: expected staged zip $expected_name, found $zip_name"
+            exit 1
+          fi
+          if [ ! -s "$zip_path" ]; then
+            echo "FAIL: staged zip is empty: $zip_path"
+            exit 1
+          fi
 
           echo "zip_path=$zip_path" >> "$GITHUB_OUTPUT"
       - name: Create corpus distribution token
@@ -1122,7 +1136,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          release_tree="$OUTDIR/release-tree"
+          release_tree="$STAGED_DIR/release-tree"
           repo_dir="$GITHUB_WORKSPACE/external-targets/corpus"
 
           git -C "$repo_dir" config user.name "github-actions[bot]"
@@ -1184,9 +1198,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          release_tree="$OUTDIR/release-tree"
+          release_tree="$STAGED_DIR/release-tree"
           repo_dir="$GITHUB_WORKSPACE/external-targets/pages"
-          pages_include_dir="$GITHUB_WORKSPACE/release-inputs/pages-include"
+          pages_include_dir="$GITHUB_WORKSPACE/static/release-inputs/pages-include"
 
           git -C "$repo_dir" config user.name "github-actions[bot]"
           git -C "$repo_dir" config user.email "github-actions[bot]@users.noreply.github.com"

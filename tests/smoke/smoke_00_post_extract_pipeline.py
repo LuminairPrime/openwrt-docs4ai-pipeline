@@ -49,22 +49,33 @@ def main():
 
     temp_dir_obj = tempfile.TemporaryDirectory(prefix="fixture-smoke-", dir=base_tmp)
     temp_dir = temp_dir_obj.name
-    workdir = temp_dir
-    outdir = os.path.join(temp_dir, "out")
+    workdir = os.path.join(temp_dir, "downloads")
+    processed_dir = os.path.join(temp_dir, "processed")
+    outdir = os.path.join(temp_dir, "staged")
+    os.makedirs(workdir, exist_ok=True)
+    os.makedirs(processed_dir, exist_ok=True)
     os.makedirs(outdir, exist_ok=True)
 
     print(f"Starting deterministic v12 smoke test. Logging to {log_file}")
     print(f"WORKDIR={workdir}")
+    print(f"PROCESSED_DIR={processed_dir}")
     print(f"OUTDIR={outdir}")
 
     try:
-        seed_l1_fixtures(workdir)
+        seed_l1_fixtures(workdir, processed_dir)
         extra_env = None
         if args.run_ai:
             cache_path = os.path.join(temp_dir, "ai-summaries-cache.json")
             seed_ai_cache(cache_path)
             extra_env = {"AI_CACHE_PATH": cache_path}
-        env = build_env(workdir, outdir, run_ai=args.run_ai, extra_env=extra_env)
+        env = build_env(
+            workdir,
+            outdir,
+            run_ai=args.run_ai,
+            extra_env=extra_env,
+            processed_dir=processed_dir,
+            pipeline_run_dir=temp_dir,
+        )
 
         for script in scripts:
             extra_args = ["--warn-only"] if script.endswith("08-validate-output.py") else []
@@ -76,7 +87,7 @@ def main():
                 raise SystemExit(result.returncode)
 
         if args.only is None:
-            assert_fixture_outputs(outdir, expect_ai=args.run_ai)
+            assert_fixture_outputs(outdir, processed_dir, expect_ai=args.run_ai)
         print("Deterministic smoke test completed successfully.")
     finally:
         if args.keep_temp:

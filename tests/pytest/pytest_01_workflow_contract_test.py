@@ -162,14 +162,15 @@ def test_process_summary_depends_on_validate_output_outcome():
     )
 
 
-def test_deploy_promotes_with_python_sync_tool():
-    """The source-repo promotion step must use tools/sync_tree.py, not rsync."""
+def test_deploy_publishes_pages_from_staged_release_tree():
+    """The deploy job should publish pages directly from staged/release-tree."""
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     deploy_block = get_workflow_job_block(workflow_text, "deploy")
 
-    assert "tools/sync_tree.py promote-generated" in deploy_block
-    # Confirm the old rsync promotion is gone
-    assert 'rsync -a --delete "$OUTDIR/"' not in deploy_block
+    assert "tools/sync_tree.py promote-generated" not in deploy_block
+    assert "$STAGED_DIR/release-tree" in deploy_block
+    assert "static/release-inputs/pages-include" in deploy_block
+    assert "PUBLISH_DIR" not in deploy_block
 
 
 def test_pipeline_summary_reports_validate_output_outcome():

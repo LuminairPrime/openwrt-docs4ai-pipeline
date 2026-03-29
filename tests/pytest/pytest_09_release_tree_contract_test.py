@@ -8,6 +8,14 @@ from tests.support.pytest_pipeline_support import load_script_module
 MODULES = ["procd", "uci", "ucode", "wiki"]
 
 
+def configure_processed_layout(module, processed_dir: Path) -> None:
+    module.config.PROCESSED_DIR = str(processed_dir)
+    module.config.L1_RAW_WORKDIR = str(processed_dir / "L1-raw")
+    module.config.L2_SEMANTIC_WORKDIR = str(processed_dir / "L2-semantic")
+    module.config.REPO_MANIFEST_PATH = str(processed_dir / "manifests" / "repo-manifest.json")
+    module.config.CROSS_LINK_REGISTRY = str(processed_dir / "manifests" / "cross-link-registry.json")
+
+
 def build_release_tree(outdir: Path, validate, modules: list[str] | None = None) -> Path:
     modules = modules or MODULES
     release_tree = outdir / Path(validate.config.RELEASE_TREE_DIR).name
@@ -122,11 +130,13 @@ def build_release_tree(outdir: Path, validate, modules: list[str] | None = None)
     return release_tree
 
 
-def seed_support_tree_sources(outdir: Path) -> None:
-    l1_raw = outdir / "L1-raw" / "ucode"
-    l2_semantic = outdir / "L2-semantic" / "wiki"
+def seed_support_tree_sources(outdir: Path, processed_dir: Path) -> None:
+    l1_raw = processed_dir / "L1-raw" / "ucode"
+    l2_semantic = processed_dir / "L2-semantic" / "wiki"
+    manifests_dir = processed_dir / "manifests"
     l1_raw.mkdir(parents=True, exist_ok=True)
     l2_semantic.mkdir(parents=True, exist_ok=True)
+    manifests_dir.mkdir(parents=True, exist_ok=True)
 
     l1_raw.joinpath("c_source-api-fs.md").write_text("# raw\n", encoding="utf-8")
     l1_raw.joinpath("c_source-api-fs.meta.json").write_text("{}\n", encoding="utf-8")
@@ -134,34 +144,20 @@ def seed_support_tree_sources(outdir: Path) -> None:
         "---\ntitle: wiki\nmodule: wiki\norigin_type: wiki\ntoken_count: 1\nsource_commit: abc1234\n---\n",
         encoding="utf-8",
     )
-    outdir.joinpath("cross-link-registry.json").write_text("{}\n", encoding="utf-8")
-    outdir.joinpath("repo-manifest.json").write_text("{}\n", encoding="utf-8")
+    manifests_dir.joinpath("cross-link-registry.json").write_text("{}\n", encoding="utf-8")
+    manifests_dir.joinpath("repo-manifest.json").write_text("{}\n", encoding="utf-8")
     outdir.joinpath("CHANGES.md").write_text("# changes\n", encoding="utf-8")
     outdir.joinpath("changelog.json").write_text("{}\n", encoding="utf-8")
     outdir.joinpath("signature-inventory.json").write_text("{}\n", encoding="utf-8")
 
 
-def build_support_tree(outdir: Path, validate) -> Path:
-    seed_support_tree_sources(outdir)
+def build_support_tree(outdir: Path, processed_dir: Path, validate) -> Path:
+    seed_support_tree_sources(outdir, processed_dir)
 
     support_tree = outdir / Path(validate.config.SUPPORT_TREE_DIR).name
-    (support_tree / "raw" / "ucode").mkdir(parents=True, exist_ok=True)
-    (support_tree / "semantic-pages" / "wiki").mkdir(parents=True, exist_ok=True)
     (support_tree / "manifests").mkdir(parents=True, exist_ok=True)
     (support_tree / "telemetry").mkdir(parents=True, exist_ok=True)
 
-    (support_tree / "raw" / "ucode" / "c_source-api-fs.md").write_text(
-        "# raw\n",
-        encoding="utf-8",
-    )
-    (support_tree / "raw" / "ucode" / "c_source-api-fs.meta.json").write_text(
-        "{}\n",
-        encoding="utf-8",
-    )
-    (support_tree / "semantic-pages" / "wiki" / "wiki_page-service-events.md").write_text(
-        "---\ntitle: wiki\nmodule: wiki\norigin_type: wiki\ntoken_count: 1\nsource_commit: abc1234\n---\n",
-        encoding="utf-8",
-    )
     (support_tree / "manifests" / "cross-link-registry.json").write_text("{}\n", encoding="utf-8")
     (support_tree / "manifests" / "repo-manifest.json").write_text("{}\n", encoding="utf-8")
     (support_tree / "telemetry" / "CHANGES.md").write_text("# changes\n", encoding="utf-8")
@@ -190,21 +186,23 @@ def test_validate_release_tree_contract_accepts_minimal_release_tree(
     assert hard_failures == []
 
 
-def test_validate_support_tree_contract_rejects_mirror_mismatch(tmp_path: Path) -> None:
+def test_validate_processed_layer_rejects_missing_markdown(tmp_path: Path) -> None:
     validate = load_script_module(
-        "validator_support_tree_contract_mismatch",
+        "validator_processed_layer_missing_markdown",
         "openwrt-docs4ai-08-validate-output.py",
     )
     outdir = tmp_path / "out"
+    processed_dir = tmp_path / "processed"
     outdir.mkdir()
+    configure_processed_layout(validate, processed_dir)
 
-    build_support_tree(outdir, validate)
-    (outdir / "L1-raw" / "ucode" / "extra.md").write_text("# extra\n", encoding="utf-8")
+    seed_support_tree_sources(outdir, processed_dir)
+    (processed_dir / "L1-raw" / "ucode" / "c_source-api-fs.md").unlink()
 
     hard_failures: list[str] = []
-    validate.validate_support_tree_contract(outdir, hard_failures.append, lambda _msg: None)
+    validate.validate_processed_layer(hard_failures.append)
 
-    assert any("support-tree raw/ missing mirrored files" in failure for failure in hard_failures)
+    assert any("Processed layer contains no markdown files: L1-raw" in failure for failure in hard_failures)
 
 
 def test_validate_support_tree_contract_rejects_manifest_content_mismatch(tmp_path: Path) -> None:
@@ -213,9 +211,11 @@ def test_validate_support_tree_contract_rejects_manifest_content_mismatch(tmp_pa
         "openwrt-docs4ai-08-validate-output.py",
     )
     outdir = tmp_path / "out"
+    processed_dir = tmp_path / "processed"
     outdir.mkdir()
+    configure_processed_layout(validate, processed_dir)
 
-    support_tree = build_support_tree(outdir, validate)
+    support_tree = build_support_tree(outdir, processed_dir, validate)
     (support_tree / "manifests" / "cross-link-registry.json").write_text(
         '{"stale": true}\n',
         encoding="utf-8",
@@ -267,9 +267,11 @@ def test_validate_support_tree_contract_accepts_materialized_support_tree(tmp_pa
         "openwrt-docs4ai-08-validate-output.py",
     )
     outdir = tmp_path / "out"
+    processed_dir = tmp_path / "processed"
     outdir.mkdir()
+    configure_processed_layout(validate, processed_dir)
 
-    build_support_tree(outdir, validate)
+    build_support_tree(outdir, processed_dir, validate)
 
     hard_failures: list[str] = []
     validate.validate_support_tree_contract(outdir, hard_failures.append, lambda _msg: None)
@@ -289,9 +291,12 @@ def test_copy_support_tree_materializes_validator_compatible_support_tree(
         "openwrt-docs4ai-08-validate-output.py",
     )
     outdir = tmp_path / "out"
+    processed_dir = tmp_path / "processed"
     outdir.mkdir()
+    configure_processed_layout(release_tree_index, processed_dir)
+    configure_processed_layout(validate, processed_dir)
 
-    seed_support_tree_sources(outdir)
+    seed_support_tree_sources(outdir, processed_dir)
 
     support_tree = outdir / Path(validate.config.SUPPORT_TREE_DIR).name
     release_tree_index.copy_support_tree(outdir=outdir, support_tree_dir=support_tree)
@@ -313,9 +318,11 @@ def test_validate_release_tree_contract_requires_module_set_match(tmp_path: Path
         "validator_release_tree_contract_module_set",
         "openwrt-docs4ai-08-validate-output.py",
     )
+    processed_dir = tmp_path / "processed"
+    configure_processed_layout(validate, processed_dir)
 
     for module in MODULES:
-        module_dir = tmp_path / "L2-semantic" / module
+        module_dir = processed_dir / "L2-semantic" / module
         module_dir.mkdir(parents=True, exist_ok=True)
         module_dir.joinpath("topic.md").write_text("# topic\n", encoding="utf-8")
 
@@ -347,11 +354,11 @@ def test_validate_index_html_contract_ignores_release_and_support_trees(
 <!DOCTYPE html>
 <html lang="en">
 <body>
-  <a href="README.md">./openwrt-condensed-docs/README.md</a>
-  <a href="AGENTS.md">./openwrt-condensed-docs/AGENTS.md</a>
-  <a href="llms.txt">./openwrt-condensed-docs/llms.txt</a>
-  <a href="llms-full.txt">./openwrt-condensed-docs/llms-full.txt</a>
-  <a href="index.html">./openwrt-condensed-docs/index.html</a>
+    <a href="README.md">./README.md</a>
+    <a href="AGENTS.md">./AGENTS.md</a>
+    <a href="llms.txt">./llms.txt</a>
+    <a href="llms-full.txt">./llms-full.txt</a>
+    <a href="index.html">./index.html</a>
 </body>
 </html>
 """.strip(),

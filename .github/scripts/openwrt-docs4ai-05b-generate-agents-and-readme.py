@@ -2,7 +2,7 @@
 Purpose: Generates the repository interaction map (AGENTS.md) and human README.md.
 Phase: Indexing
 Layers: L3
-Inputs: OUTDIR/L2-semantic/, OUTDIR/cross-link-registry.json
+Inputs: PROCESSED_DIR/L2-semantic/, PROCESSED_DIR/manifests/cross-link-registry.json
 Outputs: OUTDIR/AGENTS.md, OUTDIR/README.md
 Environment Variables: OUTDIR
 Dependencies: lib.config, pyyaml
@@ -21,8 +21,8 @@ from lib import config
 sys.stdout.reconfigure(line_buffering=True)
 
 OUTDIR = config.OUTDIR
-REGISTRY_PATH = os.path.join(OUTDIR, "cross-link-registry.json")
-L2_DIR = os.path.join(OUTDIR, "L2-semantic")
+REGISTRY_PATH = config.CROSS_LINK_REGISTRY
+L2_DIR = config.L2_SEMANTIC_WORKDIR
 RELEASE_TREE_DIR = config.RELEASE_TREE_DIR
 TS = datetime.datetime.now(datetime.UTC).isoformat()
 

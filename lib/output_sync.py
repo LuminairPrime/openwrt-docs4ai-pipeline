@@ -1,9 +1,9 @@
-"""Shared tree-sync logic for output staging and promotion.
+"""Shared tree-sync logic for output staging and publication overlays.
 
 This module owns the file-tree mutation semantics used by the pipeline's
-promote, mirror, and overlay operations. It is intentionally narrow — stage 08
-remains the authoritative contract validator. This module only enforces path
-safety and a lightweight shape check before allowing a tree sync.
+mirror and overlay operations. It is intentionally narrow: stage 08 remains
+the authoritative contract validator, while this module only enforces safe
+path handling and deterministic tree mutation behavior.
 
 All public functions are cross-platform (Windows and Linux). They use pathlib
 and shutil throughout. No subprocess or shell utility calls are made.
@@ -14,48 +14,6 @@ from __future__ import annotations
 import shutil
 import sys
 from pathlib import Path
-
-
-# ---------------------------------------------------------------------------
-# Generated-root shape specification
-#
-# Keep in sync with:
-#   - the staging-contract required_paths in the workflow
-#     (.github/workflows/openwrt-docs4ai-00-pipeline.yml lines 728-758)
-#   - stage 08 validate_release_tree_contract()
-#
-# This list is a strict subset of what stage 08 checks. It is intentionally
-# minimal — enough to prove the tree is a plausible complete generated output.
-# ---------------------------------------------------------------------------
-
-GENERATED_ROOT_REQUIRED_FILES: list[str] = [
-    "AGENTS.md",
-    "README.md",
-    "llms.txt",
-    "llms-full.txt",
-    "index.html",
-    "repo-manifest.json",
-    "cross-link-registry.json",
-    "release-tree/llms.txt",
-    "release-tree/index.html",
-    "release-tree/AGENTS.md",
-    "release-tree/README.md",
-    "support-tree/manifests/repo-manifest.json",
-    "support-tree/manifests/cross-link-registry.json",
-    "support-tree/telemetry/CHANGES.md",
-    "support-tree/telemetry/changelog.json",
-    "support-tree/telemetry/signature-inventory.json",
-]
-
-GENERATED_ROOT_REQUIRED_DIRS: list[str] = [
-    "L1-raw",
-    "L2-semantic",
-    "release-tree",
-    "support-tree",
-]
-
-# Minimum number of module subdirectories expected under release-tree/
-RELEASE_TREE_MIN_MODULES: int = 4
 
 
 # ---------------------------------------------------------------------------
@@ -132,59 +90,6 @@ def assert_safe_tree_sync(source: Path, destination: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Shape validation
-# ---------------------------------------------------------------------------
-
-
-def validate_generated_root(source: Path) -> list[str]:
-    """Validate that *source* has the minimum required shape for promotion.
-
-    Returns a list of error description strings. An empty list means the tree
-    passes the shape check. The caller decides whether to abort or warn.
-
-    This is intentionally a lightweight check — not a full contract validation.
-    Stage 08 owns the authoritative validation gate.
-    """
-    errors: list[str] = []
-    root = source.resolve()
-
-    if not root.exists():
-        return [f"source does not exist: {root}"]
-
-    # Check required files exist and are non-empty
-    for rel_path in GENERATED_ROOT_REQUIRED_FILES:
-        full_path = root / rel_path
-        if not full_path.exists():
-            errors.append(f"required file missing: {rel_path}")
-        elif not full_path.is_file():
-            errors.append(f"required file path is not a file: {rel_path}")
-        elif full_path.stat().st_size == 0:
-            errors.append(f"required file is empty: {rel_path}")
-
-    # Check required directories exist and are non-empty
-    for rel_dir in GENERATED_ROOT_REQUIRED_DIRS:
-        full_path = root / rel_dir
-        if not full_path.exists():
-            errors.append(f"required directory missing: {rel_dir}")
-        elif not full_path.is_dir():
-            errors.append(f"required directory path is not a directory: {rel_dir}")
-        elif not any(full_path.iterdir()):
-            errors.append(f"required directory is empty: {rel_dir}")
-
-    # Check release-tree module count
-    release_tree = root / "release-tree"
-    if release_tree.is_dir():
-        module_dirs = [p for p in release_tree.iterdir() if p.is_dir()]
-        if len(module_dirs) < RELEASE_TREE_MIN_MODULES:
-            errors.append(
-                f"release-tree has {len(module_dirs)} module directories; "
-                f"expected at least {RELEASE_TREE_MIN_MODULES}"
-            )
-
-    return errors
-
-
-# ---------------------------------------------------------------------------
 # Core tree sync
 # ---------------------------------------------------------------------------
 
@@ -239,6 +144,18 @@ def sync_tree(
     return copied
 
 
+def _safe_remove_entry(path: Path) -> None:
+    """Remove *path* without following a directory symlink target."""
+    if path.is_symlink():
+        path.unlink()
+        return
+    if path.is_dir():
+        shutil.rmtree(path)
+        return
+    if path.exists():
+        path.unlink()
+
+
 def _sync_recursive(
     src_dir: Path,
     dst_dir: Path,
@@ -279,10 +196,7 @@ def _sync_recursive(
             src_is_dir = src_entry.is_dir()
             dst_is_dir = dst_entry.is_dir()
             if src_is_dir != dst_is_dir:
-                if dst_entry.is_symlink() or not dst_is_dir:
-                    dst_entry.unlink()
-                else:
-                    shutil.rmtree(dst_entry)
+                _safe_remove_entry(dst_entry)
 
         if src_entry.is_dir():
             dst_entry.mkdir(exist_ok=True)
@@ -299,10 +213,7 @@ def _sync_recursive(
                 # Never delete excluded names
                 continue
             if dst_entry.name not in src_entries:
-                if dst_entry.is_dir():
-                    shutil.rmtree(dst_entry)
-                else:
-                    dst_entry.unlink()
+                _safe_remove_entry(dst_entry)
 
     return copied
 

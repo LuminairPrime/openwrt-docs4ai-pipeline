@@ -32,7 +32,7 @@ RELEASE_TREE_DIR = Path(config.RELEASE_TREE_DIR)
 SUPPORT_TREE_DIR = Path(config.SUPPORT_TREE_DIR)
 RELEASE_INCLUDE_DIR = Path(config.RELEASE_INCLUDE_DIR)
 TS = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC")
-PUBLISH_PREFIX = "./openwrt-condensed-docs"  # Display-path prefix for source-repo root index.html (not the generation target)
+PUBLISH_PREFIX = "."  # Display-path prefix for the staged root index.html
 ROOT_SECTION = "__root__"
 RELEASE_TREE_ROOT_SECTION = "__root__"
 RELEASE_TREE_ROOT_FILES = [
@@ -44,8 +44,6 @@ RELEASE_TREE_ROOT_FILES = [
 ]
 TOP_LEVEL_ORDER = [
     ROOT_SECTION,
-    "L1-raw",
-    "L2-semantic",
     "luci",
     "luci-examples",
     "openwrt-core",
@@ -59,14 +57,6 @@ SECTION_DESCRIPTIONS = {
     ROOT_SECTION: (
         "Top-level catalogs, routing files, telemetry, and release metadata "
         "for the published OpenWrt corpus."
-    ),
-    "L1-raw": (
-        "Normalized raw Markdown plus extractor sidecar metadata captured "
-        "before semantic cleanup."
-    ),
-    "L2-semantic": (
-        "Semantically normalized Markdown with YAML frontmatter, stable "
-        "titles, and generated cross-links."
     ),
     "luci": (
         "LuCI JavaScript references, skeletons, and complete-reference "
@@ -152,17 +142,12 @@ def section_file_sort_key(rel_path: str) -> tuple[tuple[int, str], str]:
     """Sort files by immediate area and then by human-first file role."""
     parts = rel_path.split("/")
     filename = parts[-1]
-    module_name = parts[1] if parts[0] in {"L1-raw", "L2-semantic"} and len(parts) > 2 else parts[0]
+    module_name = parts[0]
 
     try:
         module_rank = TOP_LEVEL_ORDER.index(module_name)
     except ValueError:
         module_rank = len(TOP_LEVEL_ORDER)
-
-    if parts[0] in {"L1-raw", "L2-semantic"}:
-        stem = filename.removesuffix(".meta.json").removesuffix(".md")
-        extension_rank = 0 if filename.endswith(".md") else 1
-        return ((module_rank, module_name), f"{stem}:{extension_rank}:{filename}")
 
     preferred = [
         "llms.txt",
@@ -579,18 +564,12 @@ def copy_support_tree(
     """Materialize support-tree from the staged internal outputs."""
     reset_directory(support_tree_dir)
 
-    raw_root = outdir / "L1-raw"
-    semantic_root = outdir / "L2-semantic"
+    manifests_source_dir = Path(config.PROCESSED_DIR) / "manifests"
     manifests_dir = support_tree_dir / "manifests"
     telemetry_dir = support_tree_dir / "telemetry"
 
-    if raw_root.is_dir():
-        copy_tree(raw_root, support_tree_dir / "raw")
-    if semantic_root.is_dir():
-        copy_tree(semantic_root, support_tree_dir / "semantic-pages")
-
-    copy_optional_file(outdir / "cross-link-registry.json", manifests_dir / "cross-link-registry.json")
-    copy_optional_file(outdir / "repo-manifest.json", manifests_dir / "repo-manifest.json")
+    copy_optional_file(manifests_source_dir / "cross-link-registry.json", manifests_dir / "cross-link-registry.json")
+    copy_optional_file(manifests_source_dir / "repo-manifest.json", manifests_dir / "repo-manifest.json")
     copy_optional_file(outdir / "CHANGES.md", telemetry_dir / "CHANGES.md")
     copy_optional_file(outdir / "changelog.json", telemetry_dir / "changelog.json")
     copy_optional_file(outdir / "signature-inventory.json", telemetry_dir / "signature-inventory.json")
@@ -651,7 +630,7 @@ def build_html(root: Path) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>openwrt-condensed-docs staging tree</title>
+    <title>openwrt-docs4ai staged tree</title>
   <style>
     :root {{
       color-scheme: light;
@@ -758,7 +737,7 @@ def build_html(root: Path) -> str:
 </head>
 <body>
   <main>
-        <h1>openwrt-condensed-docs staging tree</h1>
+        <h1>openwrt-docs4ai staged tree</h1>
     <p>
             This page is a filesystem-derived browse index for the staged
             openwrt-docs4ai output tree. The link text mirrors the packaged layout
@@ -767,8 +746,8 @@ def build_html(root: Path) -> str:
     </p>
         <p>
                         The current staged snapshot contains {publish_file_count} files across
-                        {len(sections)} top-level sections, including the retained L1 and L2
-                        layers used for local inspection, validation, and diagnostics.
+                        {len(sections)} top-level sections, including release-ready routing
+                        surfaces, telemetry files, and internal staging artifacts.
         </p>
         <nav class="section-nav" aria-label="Section navigation">
             <h2>Jump to section</h2>

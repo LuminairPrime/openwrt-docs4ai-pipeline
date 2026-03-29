@@ -62,7 +62,7 @@ These runners are intentionally local-first. Remote GitHub Actions validation st
 
 Do not treat a cookbook-only content edit as permission to freely rerun broad generation stages in a dirty working tree.
 
-- `03`, `05a`, and downstream stages can rewrite or remove unrelated generated module trees under `staging/release-tree/` and `staging/support-tree/` if the local tree is incomplete or already drifted.
+- `03`, `05a`, and downstream stages can rewrite or remove unrelated generated module trees under `tmp/pipeline-*/staged/release-tree/` and `tmp/pipeline-*/staged/support-tree/` if the local tree is incomplete or already drifted.
 - If the intended change is cookbook-only and the non-cookbook generated corpus should remain as-is, restore unrelated generated paths from `HEAD` before validating, then rerun only the minimal root-surface stages needed after the cookbook pass, typically `06 -> 07 -> 08`.
 - If a cookbook-local rerun suddenly produces missing module directories, missing `source_commit` fields in unrelated L2 content, or support-tree mirror mismatches, treat that as collateral regeneration damage and restore the non-cookbook generated paths instead of patching around the symptoms.
 
@@ -96,7 +96,7 @@ Before editing pipeline scripts, generated outputs, or workflow behavior:
 
 1. Decide whether the change affects maintainer docs, generated-corpus contracts, workflow execution, or only local tests.
 2. Read this file, `docs/ARCHITECTURE.md`, `docs/specs/schema-definitions.md`, and `docs/specs/pipeline-stage-catalog.md` before changing numbered scripts or the workflow.
-3. If the change touches scripts `05b` through `08`, inspect the currently generated AI-facing outputs first: `staging/llms.txt`, `staging/llms-full.txt`, `staging/AGENTS.md`, and at least one representative `staging/{module}/llms.txt` (generate fresh output if needed).
+3. If the change touches scripts `05b` through `09`, inspect the currently generated AI-facing outputs first: the active staged root `tmp/pipeline-*/staged/llms.txt`, `llms-full.txt`, `AGENTS.md`, and at least one representative `tmp/pipeline-*/staged/release-tree/{module}/llms.txt` (generate fresh output if needed).
 4. If the change touches `.github/workflows/openwrt-docs4ai-00-pipeline.yml`, map the intended behavior to a specific trigger path: push on `main`, monthly schedule, or `workflow_dispatch` with explicit inputs.
 5. Run the smallest local proof first. Only use remote GitHub Actions runs after local validation passes.
 
@@ -105,7 +105,7 @@ Before editing pipeline scripts, generated outputs, or workflow behavior:
 This repository has two LLM-relevant surfaces and they should not be conflated:
 
 - The source repository is the implementation and maintainer-doc surface. Its authoritative docs live under `docs/`, `README.md`, and `DEVELOPMENT.md`.
-- The generated corpus published externally is the AI navigation surface consumed by downstream tools and models. Locally it is generated into the ephemeral `staging/` directory (gitignored).
+- The generated corpus published externally is the AI navigation surface consumed by downstream tools and models. Locally it is generated into the active `tmp/pipeline-*/staged/` directory (gitignored through the parent `tmp/`).
 
 The strict routing contract for generated `llms.txt`, `llms-full.txt`, module `llms.txt`, and `AGENTS.md` lives in `docs/specs/schema-definitions.md`.
 
@@ -115,8 +115,9 @@ A source-repo root `llms.txt` remains intentionally out of scope for the current
 
 ## Repository Rules
 
-- `staging/` is the gitignored scratch output root where pipeline scripts generate into by default.
-- `staging/release-tree/` is the publishable output root inside the ephemeral staging tree. External publish targets receive that subtree as the direct-root `release-tree/` layout.
+- `tmp/pipeline-*/staged/` is the local staged output root for the active run.
+- `tmp/pipeline-*/processed/` holds the canonical `L1-raw/` and `L2-semantic/` trees for the active run.
+- `tmp/pipeline-*/staged/release-tree/` is the publishable output root inside the staged tree. External publish targets receive that subtree as the direct-root `release-tree/` layout.
 - `tmp/` is ephemeral and never authoritative.
 - `L1-raw` and `L2-semantic` are the standard intermediate layer names.
 - Script numbering denotes stage families and dependency boundaries. Letter suffixes denote sibling scripts inside the same stage family.
@@ -154,7 +155,7 @@ These entry points are maintained as first-class engineering assets. Use `tests/
 Real AI-summary work is intentionally AI-store first and scratch first.
 
 - `data/base/` and `data/override/` are the authoritative AI-summary surfaces.
-- `staging/` is downstream generated evidence, never committed.
+- `tmp/pipeline-*/staged/` is downstream generated evidence, never committed.
 - The permanent workflow lives in [docs/guides/runbook-ai-summary-operations.md](docs/guides/runbook-ai-summary-operations.md).
 - The only numbered AI stage is `.github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py`.
 - Script `04` performs its own library-backed preflight against the selected AI store before applying or generating summaries.
@@ -167,11 +168,10 @@ Use the cache-backed smoke paths for regression proof, and use the runbook plus 
 
 ## Remote Publish Policy
 
-- The workflow builds generated artifacts into `staging/` first and only promotes them in the `deploy` job.
+- The workflow builds generated artifacts into `tmp/pipeline-ci/{downloads,processed,staged}` and deploys directly from `tmp/pipeline-ci/staged/`.
 - Hosted extraction now runs `02a` in parallel with `01`, while `02b` through `02h` remain clone-gated.
-- On push, schedule, and manual runs, the deploy job reads `staging/release-tree/` from the build artifact and publishes to external targets (corpus repo, release ZIP, org GitHub Pages). The full staging tree is also mirrored to the `gh-pages` branch for test preview on the source repo's GitHub Pages.
+- On push, schedule, and manual runs, the deploy job reads `tmp/pipeline-ci/staged/release-tree/` from the build artifact and publishes to external targets (corpus repo, release ZIP, org GitHub Pages). The source-repo `gh-pages` preview now mirrors that same release-tree plus `static/release-inputs/pages-include/` overlay.
 - If the promoted tree changed, GitHub Actions writes a bot-authored commit in the form `docs: v12 auto-update YYYY-MM-DD`.
-- GitHub Pages publishes a `public/` copy of staging that excludes `L1-raw` and `L2-semantic`.
 - Workflow diagnostics now include `extract-summary`, `process-summary`, and `pipeline-summary` artifacts for first-stop triage.
 - Avoid hand-editing generated outputs if the next workflow run is expected to republish them.
 
@@ -272,8 +272,10 @@ dispatch exposes `skip_ai=false` by default.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `WORKDIR` | `tmp` | Scratch area for cloned repos and intermediate layers |
-| `OUTDIR` | `staging` | Scratch generated output root. Pipeline scripts generate into `staging/` (gitignored). Tests read from `staging/` to validate fresh output. CI publishes `staging/release-tree/` to external targets. |
+| `PIPELINE_RUN_DIR` | `tmp/pipeline-YYYYMMDD-HHMMUTC-<hex>` locally, `tmp/pipeline-ci` on CI | Root directory for one pipeline run |
+| `WORKDIR` | `{PIPELINE_RUN_DIR}/downloads` | Scratch area for cloned repos and transient download artifacts |
+| `PROCESSED_DIR` | `{PIPELINE_RUN_DIR}/processed` | Canonical `L1-raw/`, `L2-semantic/`, and manifest outputs |
+| `OUTDIR` | `{PIPELINE_RUN_DIR}/staged` | Staged generated output root. CI publishes `{OUTDIR}/release-tree/` to external targets. |
 | `SKIP_WIKI` | `false` | Skip wiki extraction |
 | `SKIP_AI` | `true` | Disable optional AI enrichment by default |
 | `WRITE_AI` | `true` | Allow script `04` to create missing base records when AI is enabled |
@@ -282,8 +284,8 @@ dispatch exposes `skip_ai=false` by default.
 | `VALIDATE_MODE` | `hard` | Validation severity mode |
 | `GITHUB_TOKEN` | empty | Remote-only integrations and telemetry fallback retrieval |
 | `LOCAL_DEV_TOKEN` | empty | Local override token for optional AI enrichment |
-| `AI_DATA_BASE_DIR` | `data/base` | Base AI summary store root |
-| `AI_DATA_OVERRIDE_DIR` | `data/override` | Override AI summary store root |
+| `AI_DATA_BASE_DIR` | `static/data/base` | Base AI summary store root |
+| `AI_DATA_OVERRIDE_DIR` | `static/data/override` | Override AI summary store root |
 
 ## Documentation And Reporting Conventions
 
@@ -297,7 +299,7 @@ dispatch exposes `skip_ai=false` by default.
 If a new extractor is added or a current extractor is materially changed:
 
 1. Keep it in `.github/scripts/` with the numbered naming convention.
-2. Make sure it writes only to `WORKDIR/L1-raw/{module}/`.
+2. Make sure it writes only to `PROCESSED_DIR/L1-raw/{module}/`.
 3. Write `.meta.json` sidecars through shared helper logic instead of ad hoc metadata code.
 4. Update the deterministic tests and the sequential smoke runner.
 5. Update `docs/ARCHITECTURE.md` and active v12 specs if the contract changed.

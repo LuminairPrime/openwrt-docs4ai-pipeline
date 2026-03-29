@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.support.pytest_pipeline_support import OUTDIR, PROJECT_ROOT, load_script_module
+from tests.support.pytest_pipeline_support import PROCESSED_DIR, PROJECT_ROOT, load_script_module
 
 
 # ---------------------------------------------------------------------------
@@ -238,7 +238,7 @@ def test_copy_release_chunked_pages_no_fabricated_url_when_source_absent(tmp_pat
 
 def test_l2_files_do_not_contain_provenance_block() -> None:
     """L2 source files must not contain the visible provenance block (it is only in release output)."""
-    l2_dir = OUTDIR / "L2-semantic"
+    l2_dir = PROCESSED_DIR / "L2-semantic"
     if not l2_dir.is_dir():
         pytest.skip(f"no pipeline output at {l2_dir}")
 

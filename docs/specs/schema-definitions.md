@@ -9,33 +9,36 @@ This document defines the active filesystem and data contracts for the current p
 | Path | Role |
 | --- | --- |
 | `docs/` | Maintainer documentation only |
-| `content/cookbook-source/` | Hand-authored cookbook source |
-| `release-inputs/` | Overlay inputs for final publication |
+| `static/cookbook-source/` | Hand-authored cookbook source |
+| `static/release-inputs/` | Overlay inputs for final publication |
 | `tmp/` | Ephemeral local working area |
-| `staging/` | Default local generated output root (gitignored) |
-| `staging/release-tree/` | Local representation of the public output contract |
-| `staging/support-tree/` | Internal support and telemetry outputs |
+| `tmp/pipeline-*/processed/` | Canonical local L1/L2/manifests output for the active run |
+| `tmp/pipeline-*/staged/` | Local staged output root for the active run |
+| `tmp/pipeline-*/staged/release-tree/` | Local representation of the public output contract |
+| `tmp/pipeline-*/staged/support-tree/` | Internal support and telemetry outputs |
 
-`WORKDIR` is ephemeral. Locally it defaults to `tmp/`. In hosted workflow runs it is set to `${{ github.workspace }}/tmp`.
+`WORKDIR` is ephemeral. Locally it defaults to the active run's `tmp/pipeline-*/downloads/`. In hosted workflow runs it is set to `${{ github.workspace }}/tmp/pipeline-ci/downloads`.
 
-`OUTDIR` is the output root for a run. It always defaults to `staging/`. Tests read from `staging/` to validate fresh pipeline output. The source repository does not track generated output.
+`PROCESSED_DIR` is the canonical intermediate root for a run. It defaults to the active run's `tmp/pipeline-*/processed/` locally and `${{ github.workspace }}/tmp/pipeline-ci/processed` on CI.
+
+`OUTDIR` is the staged output root for a run. It defaults to the active run's `tmp/pipeline-*/staged/` locally and `${{ github.workspace }}/tmp/pipeline-ci/staged` on CI. The source repository does not track generated output.
 
 ## Documentation Boundary
 
 The source repository and the generated corpus are separate contract surfaces:
 
 - The source repository is the maintainer and implementation surface. Its authoritative docs live in `README.md`, `DEVELOPMENT.md`, `CLAUDE.md`, and the active files under `docs/`.
-- The generated corpus under `OUTDIR/release-tree/` is the published navigation surface for humans, tools, and LLMs. Locally it generates into `staging/` (gitignored); externally it is published to distribution targets.
+- The generated corpus under `OUTDIR/release-tree/` is the published navigation surface for humans, tools, and LLMs. Locally it generates into the active staged run tree; externally it is published to distribution targets.
 
 ## Layer Contracts
 
 | Layer | Location | Contract |
 | --- | --- | --- |
 | `L0` | `WORKDIR/repo-*` | Upstream clones and fetched inputs; never published |
-| `L1` | `WORKDIR/L1-raw/{module}/` | Raw normalized Markdown plus `.meta.json` sidecars |
-| `L2` | `OUTDIR/L2-semantic/{module}/` | Semantic Markdown with YAML frontmatter and cross-links |
+| `L1` | `PROCESSED_DIR/L1-raw/{module}/` | Raw normalized Markdown plus `.meta.json` sidecars |
+| `L2` | `PROCESSED_DIR/L2-semantic/{module}/` | Semantic Markdown with YAML frontmatter and cross-links |
 | `L3/L4` | `OUTDIR/release-tree/` | Published routing, reference, and IDE surfaces |
-| `L5` | `OUTDIR/support-tree/telemetry/` | Internal telemetry and drift outputs |
+| `L5` | `OUTDIR/` root and `OUTDIR/support-tree/telemetry/` | Internal telemetry and drift outputs |
 
 ## L1 Sidecar Contract
 

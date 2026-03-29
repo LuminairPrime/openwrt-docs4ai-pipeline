@@ -3,12 +3,12 @@ Purpose: Apply AI summaries to L2 documentation from the structured data store
                  and optionally generate new summaries via GitHub Models API.
 Phase: AI Enrichment (Optional)
 Layers: L2 -> L2 (In-place frontmatter mutation)
-Inputs:  - OUTDIR/L2-semantic/                          (required L2 source)
-                 - data/base/{module}/{slug}.json               (base data store)
-                 - data/override/{module}/{slug}.json           (override data store)
+Inputs:  - PROCESSED_DIR/L2-semantic/                   (required L2 source)
+                 - static/data/base/{module}/{slug}.json        (base data store)
+                 - static/data/override/{module}/{slug}.json    (override data store)
                  - ai-summaries-cache.json                      (legacy; migrated on run)
-Outputs: - OUTDIR/L2-semantic/{module}/*.md             (mutated: ai fields added)
-                 - data/base/{module}/{slug}.json               (new entries when WRITE_AI)
+Outputs: - PROCESSED_DIR/L2-semantic/{module}/*.md      (mutated: ai fields added)
+                 - static/data/base/{module}/{slug}.json        (new entries when WRITE_AI)
 Environment Variables:
     SKIP_AI          Skip entire step cleanly. Default: true for direct local
                                      execution; the hosted workflow sets it explicitly.
@@ -17,18 +17,18 @@ Environment Variables:
     GITHUB_TOKEN     GitHub Models API bearer token.
     LOCAL_DEV_TOKEN  Local development token (fallback when GITHUB_TOKEN absent).
     AI_CACHE_PATH    Optional override for legacy ai-summaries-cache.json path.
-    AI_DATA_BASE_DIR Override default data/base/ location.
-    AI_DATA_OVERRIDE_DIR Override default data/override/ location.
+    AI_DATA_BASE_DIR Override default static/data/base/ location.
+    AI_DATA_OVERRIDE_DIR Override default static/data/override/ location.
     AI_VALIDATE_PAYLOAD  Validate AI payloads before injection. Default: true.
                                              Set to false only when debugging malformed API
                                              responses locally.
 Dependencies: requests, pyyaml, lib.config, lib.ai_store
 
 =========================== MANUAL AI GENERATION PROMPT ===========================
-Use this block to generate a data/base/{module}/{slug}.json file manually.
+Use this block to generate a static/data/base/{module}/{slug}.json file manually.
 Paste an L2 file below the divider line, run the prompt in any capable LLM
 (GitHub Copilot Chat, Claude, ChatGPT, etc.), then copy the JSON output into
-data/base/{module}/{slug}.json.
+static/data/base/{module}/{slug}.json.
 
 ## Task: openwrt-docs4ai AI Summary Generation
 
@@ -71,7 +71,7 @@ from lib import ai_enrichment, config
 
 cast(Any, sys.stdout).reconfigure(line_buffering=True)
 
-OUTDIR = config.OUTDIR
+PROCESSED_DIR = config.PROCESSED_DIR
 SKIP_AI = os.environ.get("SKIP_AI", "true").lower() == "true"
 WRITE_AI = os.environ.get("WRITE_AI", "true").lower() == "true"
 MAX_FILES = int(os.environ.get("MAX_AI_FILES", "40"))
@@ -89,7 +89,7 @@ _LEGACY_CACHE_PATH = os.path.abspath(
 def main() -> int:
     """Run the stage-04 AI enrichment step against the configured output tree."""
     return ai_enrichment.run_ai_enrichment(
-        outdir=OUTDIR,
+        outdir=PROCESSED_DIR,
         base_dir=os.environ.get("AI_DATA_BASE_DIR", config.AI_DATA_BASE_DIR),
         override_dir=os.environ.get(
             "AI_DATA_OVERRIDE_DIR",

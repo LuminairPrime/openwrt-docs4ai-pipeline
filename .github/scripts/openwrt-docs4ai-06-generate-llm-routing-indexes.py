@@ -2,7 +2,7 @@
 Purpose: Generates the L3 navigational maps (llms.txt and llms-full.txt).
 Phase: Aggregation / Indexing
 Layers: L4 -> L3
-Inputs: OUTDIR/
+Inputs: PROCESSED_DIR/L2-semantic/, OUTDIR/ publish surfaces
 Outputs: OUTDIR/llms.txt, OUTDIR/llms-full.txt, OUTDIR/{module}/llms.txt
 Environment Variables: OUTDIR, OPENWRT_COMMIT, LUCI_COMMIT, WORKDIR
 Dependencies: pyyaml, lib.config, lib.repo_manifest
@@ -33,7 +33,7 @@ except ImportError:
     tiktoken = None
 
 OUTDIR = config.OUTDIR
-L2_DIR = os.path.join(OUTDIR, "L2-semantic")
+L2_DIR = config.L2_SEMANTIC_WORKDIR
 RELEASE_TREE_DIR = config.RELEASE_TREE_DIR
 RELEASE_PART_PREFIX = config.MODULE_BUNDLED_REF_FILENAME.removesuffix(".md") + ".part-"
 DESCRIPTION_FALLBACK = "Description unavailable."
@@ -84,10 +84,7 @@ def build_version_string(env=None):
     missing = [key for key, value in env_snapshot.items() if not value]
     commits, manifest_path = repo_manifest.resolve_commit_environment(
         env=env_snapshot,
-        extra_manifest_paths=[
-            config.REPO_MANIFEST_PATH,
-            os.path.join(OUTDIR, "repo-manifest.json"),
-        ],
+        extra_manifest_paths=[config.REPO_MANIFEST_PATH],
     )
 
     versions = [

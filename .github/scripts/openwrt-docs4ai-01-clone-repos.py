@@ -2,7 +2,7 @@
 openwrt-docs4ai-01-clone-repos.py
 
 Purpose  : Clone upstream source repositories needed by the scraper scripts.
-Env Vars : WORKDIR (default: ./tmp) — where to clone repos
+Env Vars : WORKDIR (legacy alias for DOWNLOADS_DIR) — where to clone repos
            SKIP_BUILDROOT ("true" to skip the large openwrt/openwrt clone)
 Outputs  : $WORKDIR/repo-ucode/    (jow-/ucode, depth=1)
            $WORKDIR/repo-luci/     (openwrt/luci, depth=1)
@@ -23,9 +23,9 @@ import json
 sys.stdout.reconfigure(line_buffering=True)
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from lib import repo_manifest  # noqa: E402
+from lib import config, repo_manifest  # noqa: E402
 
-WORKDIR = os.environ.get("WORKDIR", os.path.join(os.getcwd(), "tmp"))
+WORKDIR = config.DOWNLOADS_DIR
 SKIP_BUILDROOT = os.environ.get("SKIP_BUILDROOT", "false").lower() == "true"
 GITHUB_ENV = os.environ.get("GITHUB_ENV")
 MANIFEST_PATH = os.path.join(WORKDIR, "repo-manifest.json")

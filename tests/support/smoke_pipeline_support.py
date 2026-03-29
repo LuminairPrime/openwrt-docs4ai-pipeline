@@ -21,6 +21,7 @@ POST_EXTRACT_PIPELINE = [
     "openwrt-docs4ai-06-generate-llm-routing-indexes.py",
     "openwrt-docs4ai-07-generate-web-index.py",
     "openwrt-docs4ai-08-validate-output.py",
+    "openwrt-docs4ai-09-build-packages.py",
 ]
 
 FULL_PIPELINE = [
@@ -143,15 +144,27 @@ def get_local_log_path(filename):
     return os.path.join(log_dir, filename)
 
 
-def build_env(workdir, outdir, run_ai=False, extra_env=None):
+def build_env(downloads_dir, staged_dir, run_ai=False, extra_env=None, processed_dir=None, pipeline_run_dir=None):
     env = os.environ.copy()
-    env["WORKDIR"] = workdir
-    env["OUTDIR"] = outdir
+    if processed_dir is None:
+        processed_dir = os.path.join(os.path.dirname(staged_dir), "processed")
+    if pipeline_run_dir is None:
+        pipeline_run_dir = os.path.dirname(downloads_dir)
+
+    env["PIPELINE_RUN_DIR"] = pipeline_run_dir
+    env["DOWNLOADS_DIR"] = downloads_dir
+    env["WORKDIR"] = downloads_dir
+    env["PROCESSED_DIR"] = processed_dir
+    env["STAGED_DIR"] = staged_dir
+    env["OUTDIR"] = staged_dir
     env["SKIP_AI"] = "false" if run_ai else "true"
-    env["AI_DATA_BASE_DIR"] = os.path.join(workdir, "ai-data", "base")
-    env["AI_DATA_OVERRIDE_DIR"] = os.path.join(workdir, "ai-data", "override")
+    env["AI_DATA_BASE_DIR"] = os.path.join(pipeline_run_dir, "ai-data", "base")
+    env["AI_DATA_OVERRIDE_DIR"] = os.path.join(pipeline_run_dir, "ai-data", "override")
     env["VALIDATE_MODE"] = env.get("VALIDATE_MODE", "hard")
 
+    os.makedirs(downloads_dir, exist_ok=True)
+    os.makedirs(processed_dir, exist_ok=True)
+    os.makedirs(staged_dir, exist_ok=True)
     os.makedirs(env["AI_DATA_BASE_DIR"], exist_ok=True)
     os.makedirs(env["AI_DATA_OVERRIDE_DIR"], exist_ok=True)
 
@@ -193,8 +206,8 @@ def run_named_script(script_name, env, cwd, log_file=None, extra_args=None, time
     return result
 
 
-def seed_l1_fixtures(workdir):
-    l1_root = os.path.join(workdir, "L1-raw")
+def seed_l1_fixtures(downloads_dir, processed_dir):
+    l1_root = os.path.join(processed_dir, "L1-raw")
     os.makedirs(l1_root, exist_ok=True)
 
     for doc in FIXTURE_DOCS:
@@ -226,7 +239,7 @@ def seed_l1_fixtures(workdir):
         "ucode": "3333333",
         "timestamp": "2026-03-09T00:00:00Z",
     }
-    with open(os.path.join(workdir, "repo-manifest.json"), "w", encoding="utf-8", newline="\n") as handle:
+    with open(os.path.join(downloads_dir, "repo-manifest.json"), "w", encoding="utf-8", newline="\n") as handle:
         json.dump(manifest, handle, indent=2)
 
 
@@ -256,20 +269,26 @@ def support_root(outdir):
     return os.path.join(outdir, "support-tree")
 
 
-def expected_outputs(outdir):
+def processed_root(outdir):
+    return os.path.join(os.path.dirname(outdir), "processed")
+
+
+def expected_outputs(outdir, processed_dir=None):
     publish_dir = publish_root(outdir)
     support_dir = support_root(outdir)
+    if processed_dir is None:
+        processed_dir = processed_root(outdir)
 
     return [
         os.path.join(
-            support_dir,
-            "raw",
+            processed_dir,
+            "L1-raw",
             "ucode",
             "c_source-api-fs.md",
         ),
         os.path.join(
-            support_dir,
-            "semantic-pages",
+            processed_dir,
+            "L2-semantic",
             "wiki",
             "wiki_page-service-events.md",
         ),
@@ -293,15 +312,26 @@ def expected_outputs(outdir):
     ]
 
 
-def assert_fixture_outputs(outdir, expect_ai=False):
+def assert_fixture_outputs(outdir, processed_dir=None, expect_ai=False):
     publish_dir = publish_root(outdir)
-    support_dir = support_root(outdir)
-    semantic_root = os.path.join(support_dir, "semantic-pages")
+    if processed_dir is None:
+        processed_dir = processed_root(outdir)
+    semantic_root = os.path.join(processed_dir, "L2-semantic")
 
-    missing = [path for path in expected_outputs(outdir) if not os.path.exists(path)]
+    missing = [path for path in expected_outputs(outdir, processed_dir) if not os.path.exists(path)]
     if missing:
         joined = "\n".join(missing)
         raise AssertionError(f"Missing expected output files:\n{joined}")
+
+    packages_dir = os.path.join(outdir, "packages")
+    zip_files = sorted(
+        file_name for file_name in os.listdir(packages_dir) if file_name.endswith(".zip")
+    ) if os.path.isdir(packages_dir) else []
+    if len(zip_files) != 1:
+        raise AssertionError(f"Expected exactly one package zip in {packages_dir}, found: {zip_files}")
+    zip_path = os.path.join(packages_dir, zip_files[0])
+    if os.path.getsize(zip_path) == 0:
+        raise AssertionError(f"Expected non-empty package zip: {zip_path}")
 
     procd_l2 = read_text(os.path.join(semantic_root, "procd", "c_source-init-service.md"))
     if "../uci/c_source-api-config.md" not in procd_l2:

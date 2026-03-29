@@ -302,6 +302,46 @@ def test_normalize_resolve_pipeline_commits_reads_manifest_when_env_missing(
     assert commits["ucode"] == "3333333"
 
 
+def test_normalize_resolve_pipeline_commits_falls_back_to_workdir_manifest(
+    tmp_path, monkeypatch
+):
+    normalize = load_script_module(
+        "normalize_semantic_workdir_manifest", "openwrt-docs4ai-03-normalize-semantic.py"
+    )
+    workdir = tmp_path / "downloads"
+    workdir.mkdir(parents=True)
+    manifest_path = workdir / "repo-manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "openwrt": "aaaaaaa",
+                "luci": "bbbbbbb",
+                "ucode": "ccccccc",
+                "timestamp": "2026-03-09T00:00:00Z",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    for key in ["OPENWRT_COMMIT", "LUCI_COMMIT", "UCODE_COMMIT"]:
+        monkeypatch.delenv(key, raising=False)
+
+    monkeypatch.setattr(normalize, "WORKDIR", str(workdir))
+    monkeypatch.setattr(normalize.config, "WORKDIR", str(workdir))
+    monkeypatch.setattr(
+        normalize.config,
+        "REPO_MANIFEST_PATH",
+        str(tmp_path / "processed" / "manifests" / "repo-manifest.json"),
+    )
+    monkeypatch.setattr(normalize.config, "OUTDIR", str(tmp_path / "staged"))
+
+    commits = normalize.resolve_pipeline_commits()
+
+    assert commits["openwrt-core"] == "aaaaaaa"
+    assert commits["luci"] == "bbbbbbb"
+    assert commits["ucode"] == "ccccccc"
+
+
 def test_ai_store_workflow_expand_option_sequence_supports_review_and_full_modes():
     assert ai_store_workflow.expand_option_sequence("review") == [
         "prepare",

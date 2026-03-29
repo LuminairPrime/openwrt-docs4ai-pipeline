@@ -2,11 +2,6 @@
 
 Usage
 -----
-Promote a generated scratch tree into the tracked publish tree (with shape
-preflight):
-
-    python tools/sync_tree.py promote-generated --src staging --dest openwrt-condensed-docs
-
 Mirror a tree into a destination (equivalent to rsync -a --delete):
 
     python tools/sync_tree.py mirror-tree --src <path> --dest <path> [--exclude .git]
@@ -37,40 +32,7 @@ from lib.output_sync import (  # noqa: E402
     assert_safe_tree_sync,
     resolve_tree,
     sync_tree,
-    validate_generated_root,
 )
-
-
-def _cmd_promote_generated(args: argparse.Namespace) -> int:
-    """Promote a validated generated scratch tree into the tracked publish tree."""
-    try:
-        source = resolve_tree(args.src)
-        destination = resolve_tree(args.dest)
-    except ValueError as exc:
-        print(f"[sync_tree] ERROR: {exc}", file=sys.stderr)
-        return 1
-
-    try:
-        assert_safe_tree_sync(source, destination)
-    except ValueError as exc:
-        print(f"[sync_tree] ERROR: unsafe paths: {exc}", file=sys.stderr)
-        return 1
-
-    errors = validate_generated_root(source)
-    if errors:
-        print("[sync_tree] ERROR: source tree failed shape check:", file=sys.stderr)
-        for error in errors:
-            print(f"  - {error}", file=sys.stderr)
-        return 1
-
-    try:
-        n = sync_tree(source, destination, delete_extraneous=True)
-    except Exception as exc:
-        print(f"[sync_tree] ERROR: sync failed: {exc}", file=sys.stderr)
-        return 1
-
-    print(f"[sync_tree] Promoted {n} files from {source} to {destination}")
-    return 0
 
 
 def _cmd_mirror_tree(args: argparse.Namespace) -> int:
@@ -136,15 +98,6 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Tree sync utility for pipeline output staging and promotion.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-
-    # promote-generated
-    p_promote = subparsers.add_parser(
-        "promote-generated",
-        help="Validate and promote a generated scratch tree into the tracked publish tree.",
-    )
-    p_promote.add_argument("--src", required=True, help="Source generated tree path.")
-    p_promote.add_argument("--dest", required=True, help="Destination tracked publish path.")
-    p_promote.set_defaults(func=_cmd_promote_generated)
 
     # mirror-tree
     p_mirror = subparsers.add_parser(

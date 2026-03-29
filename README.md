@@ -19,16 +19,17 @@ The current maintainer surface is the V13 documentation set under `docs/`. The c
 - `jow-/ucode`
 - `openwrt/luci`
 - `openwrt/openwrt`
-- hand-authored cookbook content under `content/cookbook-source/`
+- hand-authored cookbook content under `static/cookbook-source/`
 
 ## Output Model
 
-Generated artifacts live under `openwrt-condensed-docs/` locally.
+Generated artifacts live under the active run root in `tmp/pipeline-*/` locally.
 
-- `L1-raw/` contains normalized raw Markdown plus sidecar metadata.
-- `L2-semantic/` contains semantic Markdown with YAML frontmatter and cross-links.
-- `release-tree/` is the only publishable surface.
-- `support-tree/` is internal pipeline state and is never published.
+- `processed/L1-raw/` contains normalized raw Markdown plus sidecar metadata.
+- `processed/L2-semantic/` contains semantic Markdown with YAML frontmatter and cross-links.
+- `staged/release-tree/` is the only publishable surface.
+- `staged/support-tree/` is internal pipeline state; it now carries only `manifests/` and `telemetry/`.
+- `staged/packages/` contains the generated distribution zip.
 
 The exact output layout is defined in `docs/specs/release-tree-contract.md`.
 

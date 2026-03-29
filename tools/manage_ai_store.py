@@ -1,15 +1,14 @@
 """
 Purpose: Orchestrate scratch-first AI summary store operations from one CLI.
 Phase: AI Maintenance / Operations
-Layers: data/base + data/override + L2 -> scratch store -> optional promotion
-Inputs:  - data/base/                         (authoritative base store)
-         - data/override/                     (authoritative override store)
-         - OUTDIR/L2-semantic/                (current L2 source corpus)
+Layers: static/data/base + static/data/override + L2 -> scratch store -> optional promotion
+Inputs:  - static/data/base/                  (authoritative base store)
+         - static/data/override/              (authoritative override store)
+         - PROCESSED_DIR/L2-semantic/          (current L2 source corpus)
          - LOCAL_DEV_TOKEN / GITHUB_TOKEN     (optional live API token)
 Outputs: - scratch area under tmp/ai-summary-run/
-         - optional promoted JSON updates in data/base/
+         - optional promoted JSON updates in static/data/base/
 Environment Variables:
-  OUTDIR               Source L2 root parent for scratch preparation.
   AI_DATA_BASE_DIR     Permanent base store root.
   AI_DATA_OVERRIDE_DIR Permanent override store root.
   LOCAL_DEV_TOKEN      Preferred local token for live AI generation.

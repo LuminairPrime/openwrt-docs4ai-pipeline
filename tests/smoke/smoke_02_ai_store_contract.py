@@ -2,7 +2,7 @@
 smoke_02_ai_store_contract.py
 
 Purpose  : Validate AI-V1 data store schema, prompt contract, and ai_store helpers.
-Inputs   : data/base/**/*.json, script 04 prompt block, data/base/README prompt block.
+Inputs   : static/data/base/**/*.json, script 04 prompt block, static/data/base/README prompt block.
 Outputs  : Prints pass/fail checks to stdout and exits non-zero on failure.
 Notes    : Does not require network access or API tokens.
 """
@@ -46,8 +46,8 @@ def _read_text(path: str) -> str:
 
 
 def validate_base_store_schema() -> tuple[int, dict[str, int]]:
-    base_root = os.path.join(str(PROJECT_ROOT), "data", "base")
-    _assert(os.path.isdir(base_root), f"Missing data/base directory: {base_root}")
+    base_root = ai_store.AI_DATA_BASE_DIR
+    _assert(os.path.isdir(base_root), f"Missing AI base store directory: {base_root}")
 
     total = 0
     counts: dict[str, int] = {}
@@ -97,15 +97,16 @@ def validate_base_store_schema() -> tuple[int, dict[str, int]]:
         if module_count > 0:
             counts[module] = module_count
 
-    _assert(total > 0, "No JSON records found under data/base")
+    _assert(total > 0, f"No JSON records found under {base_root}")
     return total, counts
 
 
 def validate_prompt_contract() -> None:
+    base_root = ai_store.AI_DATA_BASE_DIR
     script_04 = _read_text(
         os.path.join(str(PROJECT_ROOT), ".github", "scripts", "openwrt-docs4ai-04-generate-ai-summaries.py")
     )
-    base_readme = _read_text(os.path.join(str(PROJECT_ROOT), "data", "base", "README.md"))
+    base_readme = _read_text(os.path.join(base_root, "README.md"))
 
     expected_fragments = (
         "Sentence 1",
@@ -115,7 +116,7 @@ def validate_prompt_contract() -> None:
 
     for fragment in expected_fragments:
         _assert(fragment in script_04, f"Prompt contract fragment missing in script 04: {fragment}")
-        _assert(fragment in base_readme, f"Prompt contract fragment missing in data/base/README.md: {fragment}")
+        _assert(fragment in base_readme, f"Prompt contract fragment missing in {base_root}/README.md: {fragment}")
 
 
 def validate_ai_store_roundtrip() -> None:

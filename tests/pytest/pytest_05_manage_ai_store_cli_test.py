@@ -12,10 +12,10 @@ from lib.ai_store_workflow import OperationPaths
 
 def _make_operation_paths(tmp_path: Path) -> OperationPaths:
     repo_root = tmp_path / "repo"
-    source_outdir = repo_root / "openwrt-condensed-docs"
-    permanent_l2_root = source_outdir / "L2-semantic"
-    permanent_base_dir = repo_root / "data" / "base"
-    permanent_override_dir = repo_root / "data" / "override"
+    source_outdir = repo_root / "tmp" / "pipeline-test" / "staged"
+    permanent_l2_root = repo_root / "tmp" / "pipeline-test" / "processed" / "L2-semantic"
+    permanent_base_dir = repo_root / "static" / "data" / "base"
+    permanent_override_dir = repo_root / "static" / "data" / "override"
     scratch_root = tmp_path / "scratch"
     scratch_outdir = scratch_root / "out"
     scratch_l2_root = scratch_outdir / "L2-semantic"

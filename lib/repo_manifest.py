@@ -39,7 +39,7 @@ def iter_manifest_paths(extra_paths: list[str] | None = None) -> Iterator[str]:
     candidates.extend(
         [
             config.REPO_MANIFEST_PATH,
-            os.path.join(config.OUTDIR, "repo-manifest.json"),
+            os.path.join(config.WORKDIR, "repo-manifest.json"),
         ]
     )
 

@@ -1,6 +1,7 @@
 import importlib.util
 import os
 import re
+import json
 from pathlib import Path
 
 import yaml
@@ -10,8 +11,41 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS_DIR = PROJECT_ROOT / ".github" / "scripts"
 SMOKE_SUPPORT_PATH = PROJECT_ROOT / "tests" / "support" / "smoke_pipeline_support.py"
 WORKFLOW_PATH = PROJECT_ROOT / ".github" / "workflows" / "openwrt-docs4ai-00-pipeline.yml"
-OUTDIR = PROJECT_ROOT / os.environ.get("OUTDIR", "staging")
-WIKI_L2_DIR = OUTDIR / "L2-semantic" / "wiki"
+
+
+def _resolve_workspace_path(raw_path: str | None, fallback: Path) -> Path:
+    if raw_path:
+        candidate = Path(raw_path)
+        return candidate if candidate.is_absolute() else PROJECT_ROOT / candidate
+    return fallback
+
+
+def _load_pipeline_run_dir() -> Path | None:
+    state_path = PROJECT_ROOT / "tmp" / "pipeline-run-state.json"
+    if not state_path.is_file():
+        return None
+    try:
+        payload = json.loads(state_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    raw_path = payload.get("pipeline_run_dir")
+    if not isinstance(raw_path, str) or not raw_path.strip():
+        return None
+    candidate = Path(raw_path)
+    return candidate if candidate.is_absolute() else PROJECT_ROOT / candidate
+
+
+PIPELINE_RUN_DIR = _load_pipeline_run_dir()
+STAGED_DIR = _resolve_workspace_path(
+    os.environ.get("STAGED_DIR") or os.environ.get("OUTDIR"),
+    (PIPELINE_RUN_DIR / "staged") if PIPELINE_RUN_DIR else (PROJECT_ROOT / "staging"),
+)
+PROCESSED_DIR = _resolve_workspace_path(
+    os.environ.get("PROCESSED_DIR"),
+    (PIPELINE_RUN_DIR / "processed") if PIPELINE_RUN_DIR else (PROJECT_ROOT / "processed"),
+)
+OUTDIR = STAGED_DIR
+WIKI_L2_DIR = PROCESSED_DIR / "L2-semantic" / "wiki"
 
 WIKI_ARTIFACT_PATTERNS = {
     "wrap": re.compile(r"(?:\\<|&lt;|<)\s*/?wrap\b", re.IGNORECASE),

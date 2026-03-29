@@ -83,23 +83,33 @@ def main():
     os.makedirs(base_tmp, exist_ok=True)
 
     temp_dir = tempfile.mkdtemp(prefix="smoke-test-", dir=base_tmp)
-    work_dir = os.path.join(temp_dir, "work")
-    out_dir = os.path.join(temp_dir, "openwrt-condensed-docs")
+    work_dir = os.path.join(temp_dir, "downloads")
+    processed_dir = os.path.join(temp_dir, "processed")
+    out_dir = os.path.join(temp_dir, "staged")
     os.makedirs(work_dir, exist_ok=True)
+    os.makedirs(processed_dir, exist_ok=True)
     os.makedirs(out_dir, exist_ok=True)
 
     print(f"Temp dir: {temp_dir}")
     print(f"WORKDIR:  {work_dir}")
+    print(f"PROCESSED_DIR: {processed_dir}")
     print(f"OUTDIR:   {out_dir}")
     print()
 
-    seed_l1_fixtures(work_dir)
+    seed_l1_fixtures(work_dir, processed_dir)
     extra_env = None
     if args.run_ai:
         cache_path = os.path.join(temp_dir, "ai-summaries-cache.json")
         seed_ai_cache(cache_path)
         extra_env = {"AI_CACHE_PATH": cache_path}
-    env = build_env(work_dir, out_dir, run_ai=args.run_ai, extra_env=extra_env)
+    env = build_env(
+        work_dir,
+        out_dir,
+        run_ai=args.run_ai,
+        extra_env=extra_env,
+        processed_dir=processed_dir,
+        pipeline_run_dir=temp_dir,
+    )
 
     results = []
     total_start = time.time()
@@ -134,7 +144,7 @@ def main():
     overall = "PASS"
     if args.only is None:
         try:
-            assert_fixture_outputs(out_dir, expect_ai=args.run_ai)
+            assert_fixture_outputs(out_dir, processed_dir, expect_ai=args.run_ai)
         except AssertionError as exc:
             overall = "FAIL"
             results.append(("fixture assertions", "FAIL", 0.0))

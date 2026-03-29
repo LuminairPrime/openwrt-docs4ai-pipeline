@@ -2,7 +2,7 @@
 Purpose: Assemble L4 references and L3 skeletons from L2 semantics.
 Phase: Assembly
 Layers: L2 -> L3/L4
-Inputs: OUTDIR/L2-semantic/
+Inputs: PROCESSED_DIR/L2-semantic/
 Outputs: OUTDIR/{module}/{module}-complete-reference.md,
          OUTDIR/{module}/{module}-complete-reference.part-*.md,
          OUTDIR/{module}/{module}-skeleton.md
@@ -35,7 +35,7 @@ except ImportError:
     sys.exit(1)
 
 OUTDIR = config.OUTDIR
-L2_DIR = os.path.join(OUTDIR, "L2-semantic")
+L2_DIR = config.L2_SEMANTIC_WORKDIR
 MAX_MONOLITH_TOKENS = 100_000
 RELEASE_TREE_DIR = config.RELEASE_TREE_DIR
 RELEASE_PART_PREFIX = config.MODULE_BUNDLED_REF_FILENAME.removesuffix(".md") + ".part-"

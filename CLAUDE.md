@@ -36,9 +36,9 @@ python tools/manage_ai_store.py --option full --keep-scratch
 
 ## Cookbook Regeneration Guardrail
 
-Do not assume a cookbook-only source edit is isolated just because the authored files live under `content/cookbook-source/`.
+Do not assume a cookbook-only source edit is isolated just because the authored files live under `static/cookbook-source/`.
 
-- A local rerun through `03` and `05a` can dirty or truncate unrelated generated trees under `staging/`, `release-tree/`, and `support-tree/` when the working tree is already partial.
+- A local rerun through `03` and `05a` can dirty or truncate unrelated generated trees under `tmp/pipeline-*/staged/release-tree/` and `tmp/pipeline-*/staged/support-tree/` when the working tree is already partial.
 - For cookbook authoring fixes, prefer the smallest proof first. If cookbook outputs are already present and only root routing surfaces need refresh, restore unrelated generated paths from `HEAD` and rerun only `06 -> 07 -> 08` after preserving the cookbook slice.
 - If validation starts failing on unrelated modules after a cookbook-only rerun, restore non-cookbook generated paths instead of editing unrelated generated content.
 
@@ -78,12 +78,12 @@ gh run view <run_id> --log-failed                       # only if artifacts don'
 
 | Layer | Location | Purpose | Lifetime |
 | ----- | -------- | ------- | -------- |
-| L0 | `tmp/repo-*` | Upstream source clones | Ephemeral |
-| L1 | `L1-raw/{module}/` | Raw normalized markdown + `.meta.json` sidecars | Generated |
-| L2 | `L2-semantic/{module}/` | Semantic markdown + YAML frontmatter + cross-links | Generated |
-| L3/L4 | `release-tree/{module}/` | Published references, maps, routing indexes, and IDE surfaces | Published |
+| L0 | `tmp/pipeline-*/downloads/repo-*` | Upstream source clones | Ephemeral |
+| L1 | `tmp/pipeline-*/processed/L1-raw/{module}/` | Raw normalized markdown + `.meta.json` sidecars | Generated |
+| L2 | `tmp/pipeline-*/processed/L2-semantic/{module}/` | Semantic markdown + YAML frontmatter + cross-links | Generated |
+| L3/L4 | `tmp/pipeline-*/staged/release-tree/{module}/` | Published references, maps, routing indexes, and IDE surfaces | Published |
 
-Pipeline scripts generate into `staging/` (the default `OUTDIR`, gitignored). Tests read from `staging/` to validate fresh output. CI generates into `staging/`, then publishes `staging/release-tree/` to external distribution targets and mirrors the full tree to `gh-pages` for test preview.
+Pipeline scripts generate into `tmp/pipeline-*/{downloads,processed,staged}` locally and `tmp/pipeline-ci/{downloads,processed,staged}` on CI. Tests resolve the active run root through env vars or `tmp/pipeline-run-state.json`. CI publishes `tmp/pipeline-ci/staged/release-tree/` to external distribution targets and mirrors the same release-tree-plus-overlay surface to `gh-pages` for test preview.
 
 There is no tracked publish root in the source repository. External publication ships the `release-tree/` subtree as the direct-root `release-tree/` layout. `tmp/` is ephemeral scratch, never authoritative.
 
@@ -95,9 +95,9 @@ Scripts in `.github/scripts/` execute in numbered order. Letter suffixes (e.g., 
 | ------ | ----- | ---- |
 | `01-clone-repos.py` | L0 | Shallow-clone ucode, luci, openwrt repos; emit `repo-manifest.json` |
 | `02a-scrape-wiki.py` | L1 | Wiki extraction (runs in parallel with `01` on CI) |
-| `02b` – `02h` | L1 | Source-specific extractors (clone-gated); each writes to `L1-raw/{module}/` |
+| `02b` – `02h` | L1 | Source-specific extractors (clone-gated); each writes to `processed/L1-raw/{module}/` |
 | `03-normalize-semantic.py` | L2 | Add YAML frontmatter, cross-links, token counts |
-| `04-generate-ai-summaries.py` | L2 | Optional AI enrichment; reads/writes `data/base/` AI store |
+| `04-generate-ai-summaries.py` | L2 | Optional AI enrichment; reads/writes `static/data/base/` AI store |
 | `05a-assemble-references.py` | L4 | Build internal references plus release-tree bundled references and maps |
 | `05b-generate-agents-and-readme.py` | L3 | Generate `AGENTS.md` and root `README.md` for the corpus |
 | `05c-generate-ucode-ide-schemas.py` | L3 | TypeScript `.d.ts` IDE schemas |
@@ -114,9 +114,9 @@ Shared Python libraries live in `lib/` (`config.py`, `ai_store.py`, `ai_enrichme
 This repo has two distinct LLM-relevant surfaces — do not conflate them:
 
 - **Source repo** (`docs/`, `DEVELOPMENT.md`, `README.md`): Maintainer docs and implementation.
-- **Generated corpus** (`staging/release-tree/` locally, `release-tree/` externally): Published AI navigation surface consumed by downstream tools. Routing contracts defined in `docs/specs/schema-definitions.md`.
+- **Generated corpus** (`tmp/pipeline-*/staged/release-tree/` locally, `release-tree/` externally): Published AI navigation surface consumed by downstream tools. Routing contracts defined in `docs/specs/schema-definitions.md`.
 
-The source repository does not track generated output. All generated content lives in `staging/` (gitignored) or external distribution targets.
+The source repository does not track generated output. All generated content lives in the active `tmp/pipeline-*/` run directory or external distribution targets.
 
 A source-repo root `llms.txt` is intentionally out of scope. Do not create one.
 
@@ -125,14 +125,14 @@ A source-repo root `llms.txt` is intentionally out of scope. Do not create one.
 Before editing numbered scripts or the workflow:
 
 1. Read `docs/ARCHITECTURE.md`, `docs/specs/schema-definitions.md`, and `docs/specs/pipeline-stage-catalog.md`.
-2. For `05b`–`08` changes: inspect current `staging/llms.txt`, `staging/llms-full.txt`, and `staging/AGENTS.md` first (generate fresh output if needed).
+2. For `05b`–`09` changes: inspect the active staged root (`tmp/pipeline-*/staged/llms.txt`, `llms-full.txt`, `AGENTS.md`) plus at least one representative `tmp/pipeline-*/staged/release-tree/{module}/llms.txt` first (generate fresh output if needed).
 3. For workflow changes: map the change to a specific trigger path (push/schedule/dispatch).
 
 ## Key Conventions
 
 - **Logging prefix:** `[02a] OK: scraped 15 pages` / `[08] FAIL: missing llms.txt`
 - **Intermediate names:** `L1-raw` and `L2-semantic` — no leading dots, no hidden dirs (Windows compat)
-- **New extractors:** write only to `WORKDIR/L1-raw/{module}/`, use shared helper for `.meta.json` sidecars, update tests and `docs/ARCHITECTURE.md`
+- **New extractors:** write only to `config.L1_RAW_WORKDIR/{module}/`, use shared helper for `.meta.json` sidecars, update tests and `docs/ARCHITECTURE.md`
 - **Dependencies:** Keep `requirements.txt` as a small direct list; do not pin by default
 - **Docs cross-links:** Use relative Markdown links, not inline code spans, for navigational references
 - **Public contract:** `release-tree/` is the only publishable layout; `support-tree/` is internal-only support state.

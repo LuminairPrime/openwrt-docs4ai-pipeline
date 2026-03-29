@@ -11,7 +11,7 @@ The active operating model is Windows-first local validation with GitHub Actions
 This repository has two distinct documentation surfaces:
 
 - The source repository is the maintainer surface. Authoritative docs live in `README.md`, `DEVELOPMENT.md`, `CLAUDE.md`, and the active files under `docs/`.
-- The generated corpus is the published navigation surface. Locally it generates into the ephemeral `staging/` directory (gitignored); externally it is shipped as the direct-root `release-tree/` layout to distribution targets.
+- The generated corpus is the published navigation surface. Locally it generates into the active `tmp/pipeline-*/staged/` tree; externally it is shipped as the direct-root `release-tree/` layout to distribution targets.
 
 ## Repository Zones
 
@@ -22,11 +22,11 @@ This repository has two distinct documentation surfaces:
 | `lib/` | Shared Python support code | Shared config, provenance helpers, AI-store helpers, and extraction utilities. |
 | `tools/` | Non-numbered maintainer utilities | Local support CLIs such as `manage_ai_store.py`. |
 | `tests/` | Local verification surface | Focused pytest suites, smoke runners, and lint wrappers. |
-| `content/cookbook-source/` | Hand-authored cookbook source | Ingested by stage `02i` into the cookbook module. |
-| `release-inputs/` | Overlay inputs | `release-include/` for common overlays, plus Pages-only and release-repo-only overlays. |
+| `static/cookbook-source/` | Hand-authored cookbook source | Ingested by stage `02i` into the cookbook module. |
+| `static/release-inputs/` | Overlay inputs | `release-include/` for common overlays, plus Pages-only and release-repo-only overlays. |
 | `docs/` | Active maintainer docs | Overview, getting started, architecture, active specs, guides, roadmap, plans, and archive. |
 | `docs/archive/` | Historical material | Preserved for context only; never authoritative over active docs. |
-| `staging/` | Generated output root | Ephemeral scratch space where pipeline scripts generate output. Gitignored, never committed. |
+| `tmp/pipeline-*/` | Active run root | Per-run downloads, processed, staged, and package output trees. |
 | `tmp/` | Ephemeral working area | Scratch space for local runs, CI artifacts, and rollback snapshots. |
 | `templates/` | Static templates | Keep only templates that still have a real consumer. |
 
@@ -34,14 +34,14 @@ This repository has two distinct documentation surfaces:
 
 | Layer | Meaning | Primary location | Lifetime |
 | --- | --- | --- | --- |
-| `L0` | Upstream source clones and fetched inputs | `tmp/repo-*` | Ephemeral |
-| `L1` | Raw normalized Markdown plus `.meta.json` sidecars | `WORKDIR/L1-raw/{module}/` | Generated |
-| `L2` | Semantic Markdown with YAML frontmatter and cross-links | `OUTDIR/L2-semantic/{module}/` | Generated |
-| `L3` | Published navigation surfaces | `OUTDIR/release-tree/` | Published |
-| `L4` | Published reference surfaces | `OUTDIR/release-tree/{module}/` | Published |
-| `L5` | Telemetry and drift outputs | `OUTDIR/support-tree/telemetry/` | Internal |
+| `L0` | Upstream source clones and fetched inputs | `PIPELINE_RUN_DIR/downloads/repo-*` | Ephemeral |
+| `L1` | Raw normalized Markdown plus `.meta.json` sidecars | `PROCESSED_DIR/L1-raw/{module}/` | Generated |
+| `L2` | Semantic Markdown with YAML frontmatter and cross-links | `PROCESSED_DIR/L2-semantic/{module}/` | Generated |
+| `L3` | Published navigation surfaces | `STAGED_DIR/release-tree/` | Published |
+| `L4` | Published reference surfaces | `STAGED_DIR/release-tree/{module}/` | Published |
+| `L5` | Telemetry and drift outputs | `STAGED_DIR/` root plus `STAGED_DIR/support-tree/telemetry/` | Internal |
 
-For both direct local runs and hosted workflow runs, the default `OUTDIR` is `staging/`. This is the scratch generated output root — it is gitignored and safe to overwrite. Tests read from `staging/` to validate fresh pipeline output. The source repository does not track generated output.
+For direct local runs, the active output root is `tmp/pipeline-*/staged/` and the canonical intermediate layers live beside it under `tmp/pipeline-*/processed/`. Hosted workflow runs use the fixed `tmp/pipeline-ci/{downloads,processed,staged}` layout. The source repository does not track generated output.
 
 ## Pipeline Shape
 
@@ -80,9 +80,9 @@ Use `docs/specs/pipeline-stage-catalog.md` for stage ordering and rerun sequence
 ## Remote Publication Contract
 
 - Hosted workflow runs build into `staging/` and validate there first.
-- Successful deploys publish the validated `release-tree/` from staging to external targets.
+- Successful deploys publish the validated `release-tree/` from the staged run root to external targets.
 - External publication targets receive only the `release-tree/` subtree plus the appropriate overlay material.
-- The `gh-pages` branch provides a test preview mirror of the full staging tree.
+- The `gh-pages` branch provides a test preview mirror of the same release-tree plus Pages overlay used for production Pages publication.
 
 ## Archive Policy
 

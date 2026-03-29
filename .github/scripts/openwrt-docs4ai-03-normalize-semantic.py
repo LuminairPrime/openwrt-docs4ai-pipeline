@@ -1,12 +1,12 @@
 """
 Purpose: Parallel L2 Semantic Normalization & Staging Promotion.
 Phase: Process
-Layers: L1 -> L2 (Normalization) -> Staging (Promotion)
-Inputs: tmp/L1-raw/
-Outputs: staging/L1-raw/, staging/L2-semantic/, staging/cross-link-registry.json
+Layers: L1 -> L2 (Normalization) -> Processed manifests
+Inputs: processed/L1-raw/
+Outputs: processed/L2-semantic/, processed/manifests/*.json
 Environment Variables: WORKDIR, OUTDIR, OPENWRT_COMMIT, LUCI_COMMIT, UCODE_COMMIT
 Dependencies: tiktoken, lib.config, shutil
-Notes: Pass 1/2 handles normalization. Final block promotes intermediates to staging.
+Notes: Pass 1/2 handles normalization. Final block promotes manifests into processed/.
 """
 
 import os
@@ -697,7 +697,7 @@ def resolve_pipeline_commits() -> dict[str, str]:
     missing = [key for key, value in env_snapshot.items() if not value]
     commits, manifest_path = repo_manifest.resolve_commit_environment(
         env=env_snapshot,
-        extra_manifest_paths=[config.REPO_MANIFEST_PATH, os.path.join(config.OUTDIR, "repo-manifest.json")],
+        extra_manifest_paths=[config.REPO_MANIFEST_PATH],
     )
 
     if missing and manifest_path:
@@ -751,7 +751,7 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
                     with open(mermaid_tmpl, "r", encoding="utf-8") as tmpl_f:
                         content = content.replace("---\n\n", "---\n\n" + tmpl_f.read().strip() + "\n\n", 1)
 
-            l1_rel = os.path.relpath(md_path, WORKDIR).replace("\\", "/")
+            l1_rel = os.path.relpath(md_path, config.PROCESSED_DIR).replace("\\", "/")
             y_meta: dict[str, Any] = {
                 "title": title, "module": module, "origin_type": o_type,
                 "token_count": count_tokens(content),
@@ -896,17 +896,19 @@ def pass_3_deprecation_warnings(l2_files: list[dict[str, Any]], registry: dict[s
                 f.write(content)
 
 def promote_to_staging(registry_path: str) -> None:
-    print("[03] Promoting to staging OUTDIR")
-    dst_root = config.OUTDIR
-    os.makedirs(dst_root, exist_ok=True)
-    for d in [("L1-raw", L1_DIR), ("L2-semantic", L2_DIR)]:
-        dst = os.path.join(dst_root, d[0])
-        if os.path.exists(dst):
-            shutil.rmtree(dst)
-        shutil.copytree(d[1], dst)
-    for f in [registry_path, os.path.join(WORKDIR, "repo-manifest.json")]:
-        if os.path.isfile(f):
-            shutil.copy2(f, os.path.join(dst_root, os.path.basename(f)))
+    print("[03] Promoting manifests to processed/")
+    manifests_dir = os.path.join(config.PROCESSED_DIR, "manifests")
+    os.makedirs(manifests_dir, exist_ok=True)
+
+    manifest_targets = [
+        (registry_path, config.CROSS_LINK_REGISTRY),
+        (os.path.join(WORKDIR, "repo-manifest.json"), config.REPO_MANIFEST_PATH),
+    ]
+    for source_path, target_path in manifest_targets:
+        if not os.path.isfile(source_path):
+            continue
+        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+        shutil.copy2(source_path, target_path)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -926,7 +928,7 @@ def fail_if_partial_staging_promotion(incoming_modules: set[str], allow_partial:
         return 0
 
     for label in ("L1-raw", "L2-semantic"):
-        existing_root = os.path.join(config.OUTDIR, label)
+        existing_root = os.path.join(config.PROCESSED_DIR, label)
         missing_modules = partial_rerun_guard.find_missing_modules_for_partial_rerun(
             incoming_modules,
             existing_root,

@@ -50,8 +50,8 @@ def test_workflow_uses_node24_native_action_majors() -> None:
     assert "git worktree add" in workflow_text
     assert "openwrt-docs4ai/corpus" in workflow_text
     assert "openwrt-docs4ai/openwrt-docs4ai.github.io" in workflow_text
-    assert "release-inputs/pages-include" in workflow_text
-    assert "Build dated distribution ZIP" in workflow_text
+    assert "static/release-inputs/pages-include" in workflow_text
+    assert "Build distribution packages (09)" in workflow_text
     assert "gh release upload" in workflow_text
     assert "--clobber" in workflow_text
 

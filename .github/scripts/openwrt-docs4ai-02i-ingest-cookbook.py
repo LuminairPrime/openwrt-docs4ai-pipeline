@@ -1,8 +1,8 @@
 """
 Purpose: Ingest hand-authored cookbook content into L1-raw.
 Phase: Collection
-Layers: content/cookbook-source/ -> L1-raw/cookbook/
-Inputs: content/cookbook-source/*.md (YAML frontmatter required)
+Layers: static/cookbook-source/ -> L1-raw/cookbook/
+Inputs: static/cookbook-source/*.md (YAML frontmatter required)
 Outputs: L1-raw/cookbook/*.md, L1-raw/cookbook/*.meta.json
 Dependencies: lib.config, pyyaml
 Notes: Derives topic_slug from filename. Fails fast if required authored
@@ -22,7 +22,7 @@ from lib import config
 sys.stdout.reconfigure(line_buffering=True)
 
 COOKBOOK_SOURCE_DIR = os.path.join(
-    os.path.dirname(__file__), "..", "..", "content", "cookbook-source"
+    os.path.dirname(__file__), "..", "..", "static", "cookbook-source"
 )
 
 REQUIRED_AUTHORED_FIELDS = [
@@ -45,7 +45,7 @@ if not os.path.isdir(source_dir):
     print(f"[02i] FAIL: cookbook source directory not found: {source_dir}")
     sys.exit(1)
 
-out_dir = os.path.join(config.WORKDIR, "L1-raw", "cookbook")
+out_dir = os.path.join(config.L1_RAW_WORKDIR, "cookbook")
 os.makedirs(out_dir, exist_ok=True)
 
 source_files = sorted(
@@ -57,7 +57,7 @@ SKIP_FILES = {"era-guide-evidence-needed.md"}
 source_files = [f for f in source_files if f not in SKIP_FILES]
 
 if not source_files:
-    print("[02i] FAIL: No cookbook source files found in content/cookbook-source/")
+    print("[02i] FAIL: No cookbook source files found in static/cookbook-source/")
     sys.exit(1)
 
 processed = 0
@@ -108,7 +108,7 @@ for filename in source_files:
         "module": "cookbook",
         "origin_type": "authored",
         "slug": topic_slug,
-        "source_locator": f"content/cookbook-source/{filename}",
+        "source_locator": f"static/cookbook-source/{filename}",
         "title": fm["title"],
         "description": fm["description"],
         "when_to_use": fm["when_to_use"],

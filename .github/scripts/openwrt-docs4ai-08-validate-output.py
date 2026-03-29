@@ -166,12 +166,6 @@ def validate_index_html_contract(outdir, hard_fail):
         return
 
     content = open(path, "r", encoding="utf-8").read()
-    if "./openwrt-condensed-docs/" not in content:
-        hard_fail("index.html missing the mirrored display-path prefix")
-    # Note: the check above validates that root index.html renders paths using the
-    # tracked publish root display prefix (openwrt-condensed-docs/). This is a
-    # publish-contract check, not an OUTDIR check. It must remain regardless of
-    # what OUTDIR defaults to.
 
     actual_links = {
         normalized
@@ -202,9 +196,6 @@ def validate_release_index_html_contract(release_tree_dir, hard_fail):
         return
 
     content = open(path, "r", encoding="utf-8").read()
-    if "./openwrt-condensed-docs/" in content:
-        hard_fail("release-tree index.html leaks the legacy display-path prefix")
-
     actual_links = {
         normalized
         for href in HTML_HREF_RE.findall(content)
@@ -228,7 +219,7 @@ def validate_release_index_html_contract(release_tree_dir, hard_fail):
 
 
 def expected_module_names(outdir):
-    l2_root = os.path.join(outdir, "L2-semantic")
+    l2_root = config.L2_SEMANTIC_WORKDIR
     if not os.path.isdir(l2_root):
         return []
     return sorted(
@@ -262,7 +253,7 @@ def relative_file_set(root_dir):
 
 def validate_mirrored_tree(source_dir, mirror_dir, label, hard_fail):
     if not os.path.isdir(source_dir):
-        hard_fail(f"missing staged source directory for support-tree mirror: {label}")
+        hard_fail(f"missing source directory for support-tree mirror: {label}")
         return
 
     source_files = relative_file_set(source_dir)
@@ -292,7 +283,7 @@ def validate_mirrored_tree(source_dir, mirror_dir, label, hard_fail):
 
 def validate_mirrored_file(source_path, mirror_path, label, hard_fail):
     if not os.path.isfile(source_path):
-        hard_fail(f"missing staged source file for support-tree mirror: {label}")
+        hard_fail(f"missing source file for support-tree mirror: {label}")
         return
     if not os.path.isfile(mirror_path):
         hard_fail(f"support-tree missing mirrored file: {label}")
@@ -304,6 +295,30 @@ def validate_mirrored_file(source_path, mirror_path, label, hard_fail):
         mirror_bytes = mirror_handle.read()
     if source_bytes != mirror_bytes:
         hard_fail(f"support-tree content mismatch: {label}")
+
+
+def validate_processed_layer(hard_fail):
+    processed_roots = [
+        ("L1-raw", config.L1_RAW_WORKDIR),
+        ("L2-semantic", config.L2_SEMANTIC_WORKDIR),
+    ]
+    for label, root_dir in processed_roots:
+        if not os.path.isdir(root_dir):
+            hard_fail(f"Processed layer missing directory: {label}")
+            continue
+
+        module_dirs = [
+            name
+            for name in os.listdir(root_dir)
+            if os.path.isdir(os.path.join(root_dir, name))
+        ]
+        if not module_dirs:
+            hard_fail(f"Processed layer contains no module directories: {label}")
+            continue
+
+        markdown_files = glob.glob(os.path.join(root_dir, "**", "*.md"), recursive=True)
+        if not markdown_files:
+            hard_fail(f"Processed layer contains no markdown files: {label}")
 
 
 def check_dead_links(release_tree_dir: str, hard_fail) -> None:
@@ -464,27 +479,11 @@ def validate_support_tree_contract(outdir, hard_fail, soft_warn):
         hard_fail(f"Support tree not present: {support_tree_name}")
         return
 
-    required_dirs = ["raw", "semantic-pages", "manifests", "telemetry"]
+    required_dirs = ["manifests", "telemetry"]
     for dir_name in required_dirs:
         path = os.path.join(support_tree_dir, dir_name)
         if not os.path.isdir(path):
             hard_fail(f"support-tree missing directory: {support_tree_name}/{dir_name}")
-
-    raw_dir = os.path.join(support_tree_dir, "raw")
-    staged_raw_dir = os.path.join(outdir, "L1-raw")
-    if os.path.isdir(raw_dir):
-        raw_docs = glob.glob(os.path.join(raw_dir, "**", "*.md"), recursive=True)
-        if not raw_docs:
-            hard_fail("support-tree raw/ contains no markdown files")
-    validate_mirrored_tree(staged_raw_dir, raw_dir, "raw/", hard_fail)
-
-    semantic_dir = os.path.join(support_tree_dir, "semantic-pages")
-    staged_semantic_dir = os.path.join(outdir, "L2-semantic")
-    if os.path.isdir(semantic_dir):
-        semantic_docs = glob.glob(os.path.join(semantic_dir, "**", "*.md"), recursive=True)
-        if not semantic_docs:
-            hard_fail("support-tree semantic-pages/ contains no markdown files")
-    validate_mirrored_tree(staged_semantic_dir, semantic_dir, "semantic-pages/", hard_fail)
 
     required_manifest_files = ["cross-link-registry.json", "repo-manifest.json"]
 
@@ -493,7 +492,7 @@ def validate_support_tree_contract(outdir, hard_fail, soft_warn):
         if not os.path.isfile(path):
             hard_fail(f"support-tree missing manifest file: {support_tree_name}/manifests/{file_name}")
         validate_mirrored_file(
-            os.path.join(outdir, file_name),
+            os.path.join(config.PROCESSED_DIR, "manifests", file_name),
             path,
             f"manifests/{file_name}",
             hard_fail,
@@ -585,7 +584,7 @@ def validate_module_llms_contract(outdir, modules, hard_fail, soft_warn):
         actual_links = {entry["link"] for entry in entries}
         expected_source_links = {
             f"../L2-semantic/{module}/{os.path.basename(path)}"
-            for path in glob.glob(os.path.join(outdir, "L2-semantic", module, "*.md"))
+            for path in glob.glob(os.path.join(config.L2_SEMANTIC_WORKDIR, module, "*.md"))
         }
         missing_source_links = sorted(expected_source_links - actual_links)
         if missing_source_links:
@@ -783,7 +782,7 @@ def validate_llms_full_contract(outdir, modules, hard_fail, soft_warn):
         ):
             expected_links.add(f"./{module}/{os.path.basename(match)}")
 
-        for l2_path in glob.glob(os.path.join(outdir, "L2-semantic", module, "*.md")):
+        for l2_path in glob.glob(os.path.join(config.L2_SEMANTIC_WORKDIR, module, "*.md")):
             expected_links.add(f"./L2-semantic/{module}/{os.path.basename(l2_path)}")
 
     missing_links = sorted(expected_links - set(actual_links))
@@ -892,7 +891,7 @@ def report_source_exclusions(outdir):
         source = entry.get("source", "?")
         identifier = entry.get("identifier", "?")
         reason = entry.get("reason", "")
-        l1_glob = os.path.join(outdir, "L1-raw", source)
+        l1_glob = os.path.join(config.L1_RAW_WORKDIR, source)
         present = any(
             identifier in fname
             for fname in (os.listdir(l1_glob) if os.path.isdir(l1_glob) else [])
@@ -963,8 +962,6 @@ def validate_outdir(outdir):
         "AGENTS.md",
         "README.md",
         "index.html",
-        "repo-manifest.json",
-        "cross-link-registry.json",
         "signature-inventory.json",
         "CHANGES.md",
         "changelog.json",
@@ -975,7 +972,11 @@ def validate_outdir(outdir):
 
     import json
 
-    registry_path = os.path.join(outdir, "cross-link-registry.json")
+    for manifest_path in [config.REPO_MANIFEST_PATH, config.CROSS_LINK_REGISTRY]:
+        if not os.path.isfile(manifest_path):
+            hard_fail(f"Missing processed manifest file: {os.path.basename(manifest_path)}")
+
+    registry_path = config.CROSS_LINK_REGISTRY
     if os.path.isfile(registry_path):
         try:
             with open(registry_path, "r", encoding="utf-8") as handle:
@@ -1000,12 +1001,20 @@ def validate_outdir(outdir):
     ]
     max_file_size_mb = 2.0
 
-    all_md = glob.glob(os.path.join(outdir, "**", "*.md"), recursive=True)
+    staged_md = glob.glob(os.path.join(outdir, "**", "*.md"), recursive=True)
+    processed_l2_md = glob.glob(
+        os.path.join(config.L2_SEMANTIC_WORKDIR, "**", "*.md"),
+        recursive=True,
+    )
+    all_md = sorted(set(staged_md) | set(processed_l2_md))
     checked_count = 0
     skipped_ucode_ast_files = {}
 
     for fpath in all_md:
-        rel = os.path.relpath(fpath, outdir)
+        if os.path.abspath(fpath).startswith(os.path.abspath(config.L2_SEMANTIC_WORKDIR)):
+            rel = os.path.relpath(fpath, config.PROCESSED_DIR)
+        else:
+            rel = os.path.relpath(fpath, outdir)
         checked_count += 1
 
         file_size = os.path.getsize(fpath)
@@ -1070,6 +1079,7 @@ def validate_outdir(outdir):
     validate_llms_full_contract(outdir, modules, hard_fail, soft_warn)
     validate_agents_contract(outdir, hard_fail)
     validate_index_html_contract(outdir, hard_fail)
+    validate_processed_layer(hard_fail)
     validate_support_tree_contract(outdir, hard_fail, soft_warn)
     validate_release_tree_contract(outdir, hard_fail, soft_warn)
     report_source_exclusions(outdir)

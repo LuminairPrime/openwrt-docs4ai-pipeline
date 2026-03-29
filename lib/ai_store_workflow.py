@@ -52,12 +52,13 @@ def build_operation_paths(scratch_root: str) -> OperationPaths:
     """Resolve permanent and scratch paths from repo config and CLI input."""
     repo_root = Path(__file__).resolve().parents[1]
     scratch_path = _resolve_repo_path(repo_root, scratch_root)
-    source_outdir = _resolve_repo_path(repo_root, config.OUTDIR)
+    source_outdir = _resolve_repo_path(repo_root, config.STAGED_DIR)
+    permanent_l2_root = _resolve_repo_path(repo_root, config.L2_SEMANTIC_WORKDIR)
 
     return OperationPaths(
         repo_root=repo_root,
         source_outdir=source_outdir,
-        permanent_l2_root=source_outdir / "L2-semantic",
+        permanent_l2_root=permanent_l2_root,
         permanent_base_dir=_resolve_repo_path(repo_root, config.AI_DATA_BASE_DIR),
         permanent_override_dir=_resolve_repo_path(
             repo_root,

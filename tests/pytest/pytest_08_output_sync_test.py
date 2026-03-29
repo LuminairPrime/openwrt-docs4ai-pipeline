@@ -1,8 +1,8 @@
-"""Tests for lib/output_sync.py (output staging and promotion logic).
+"""Tests for lib.output_sync.py tree sync behavior.
 
-All 23 test cases specified in plan-005-unified-output-staging-and-promotion-01.md.
-Uses tmp_path for fully isolated temporary directories — never touches the real
-repo-root openwrt-condensed-docs/ or staging/.
+These tests cover safe path handling, mirror semantics, overlay semantics,
+CLI wiring, and deletion behavior. They use tmp_path throughout and never
+touch the real workspace output trees.
 """
 
 from __future__ import annotations
@@ -15,13 +15,9 @@ from pathlib import Path
 import pytest
 
 from lib.output_sync import (
-    GENERATED_ROOT_REQUIRED_DIRS,
-    GENERATED_ROOT_REQUIRED_FILES,
-    RELEASE_TREE_MIN_MODULES,
     assert_safe_tree_sync,
     resolve_tree,
     sync_tree,
-    validate_generated_root,
 )
 
 # ---------------------------------------------------------------------------
@@ -40,31 +36,21 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def _build_complete_fixture(root: Path) -> None:
-    """Seed *root* with a tree that satisfies all shape requirements."""
+def _write_files(root: Path, files: dict[str, str]) -> None:
+    """Create *files* under *root* using relative path keys."""
     root.mkdir(parents=True, exist_ok=True)
+    for rel_path, content in files.items():
+        path = root / rel_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
 
-    # Required files
-    for rel in GENERATED_ROOT_REQUIRED_FILES:
-        p = root / rel
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(f"fixture content for {rel}\n", encoding="utf-8")
 
-    # Required dirs (ensure non-empty beyond what required-files already cover)
-    for rel_dir in GENERATED_ROOT_REQUIRED_DIRS:
-        d = root / rel_dir
-        d.mkdir(parents=True, exist_ok=True)
-        # Ensure the dir has at least one entry
-        placeholder = d / ".keep"
-        if not any(d.iterdir()):
-            placeholder.write_text("", encoding="utf-8")
-
-    # release-tree needs at least RELEASE_TREE_MIN_MODULES module subdirs
-    release_tree = root / "release-tree"
-    for i in range(RELEASE_TREE_MIN_MODULES):
-        module = release_tree / f"module-{i:02d}"
-        module.mkdir(exist_ok=True)
-        (module / "llms.txt").write_text(f"module {i}\n", encoding="utf-8")
+def _create_directory_symlink(link_path: Path, target_path: Path) -> None:
+    """Create a directory symlink or skip when the platform disallows it."""
+    try:
+        link_path.symlink_to(target_path, target_is_directory=True)
+    except (NotImplementedError, OSError) as exc:
+        pytest.skip(f"directory symlinks unsupported in this environment: {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -107,64 +93,7 @@ def test_assert_safe_accepts_sibling_paths(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Shape validation tests (5-9)
-# ---------------------------------------------------------------------------
-
-
-def test_validate_generated_root_passes_complete_tree(tmp_path: Path) -> None:
-    root = tmp_path / "src"
-    _build_complete_fixture(root)
-    errors = validate_generated_root(root)
-    assert errors == [], f"Expected no errors, got: {errors}"
-
-
-def test_validate_generated_root_fails_missing_file(tmp_path: Path) -> None:
-    root = tmp_path / "src"
-    _build_complete_fixture(root)
-    (root / "llms.txt").unlink()
-    errors = validate_generated_root(root)
-    assert any("llms.txt" in e for e in errors), f"Expected llms.txt error, got: {errors}"
-
-
-def test_validate_generated_root_fails_empty_file(tmp_path: Path) -> None:
-    root = tmp_path / "src"
-    _build_complete_fixture(root)
-    (root / "llms.txt").write_bytes(b"")
-    errors = validate_generated_root(root)
-    assert any("llms.txt" in e and "empty" in e for e in errors), (
-        f"Expected empty file error for llms.txt, got: {errors}"
-    )
-
-
-def test_validate_generated_root_fails_missing_directory(tmp_path: Path) -> None:
-    root = tmp_path / "src"
-    _build_complete_fixture(root)
-    # Remove and recreate release-tree as file to break the dir check
-    import shutil as _shutil
-    _shutil.rmtree(root / "release-tree")
-    errors = validate_generated_root(root)
-    assert any("release-tree" in e for e in errors), (
-        f"Expected release-tree error, got: {errors}"
-    )
-
-
-def test_validate_generated_root_fails_insufficient_release_modules(tmp_path: Path) -> None:
-    root = tmp_path / "src"
-    _build_complete_fixture(root)
-    # Remove all but 2 module dirs from release-tree
-    release_tree = root / "release-tree"
-    module_dirs = sorted(p for p in release_tree.iterdir() if p.is_dir())
-    import shutil as _shutil
-    for d in module_dirs[2:]:
-        _shutil.rmtree(d)
-    errors = validate_generated_root(root)
-    assert any("module" in e or "release-tree" in e for e in errors), (
-        f"Expected module count error, got: {errors}"
-    )
-
-
-# ---------------------------------------------------------------------------
-# Mirror tests (10-15)
+# Mirror tests (5-10)
 # ---------------------------------------------------------------------------
 
 
@@ -258,7 +187,7 @@ def test_sync_tree_updates_changed_files(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Overlay tests (16-17)
+# Overlay tests (11-12)
 # ---------------------------------------------------------------------------
 
 
@@ -294,35 +223,31 @@ def test_overlay_updates_existing_files_from_source(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# CLI tests (18-21)
+# CLI tests (13-16)
 # ---------------------------------------------------------------------------
 
 
-def test_cli_promote_generated_exits_zero_on_success(tmp_path: Path) -> None:
+def test_cli_mirror_tree_exits_zero_on_success(tmp_path: Path) -> None:
     src = tmp_path / "src"
     dst = tmp_path / "dst"
-    _build_complete_fixture(src)
+    _write_files(src, {"llms.txt": "hello\n", "release-tree/index.html": "<html></html>\n"})
 
-    result = _run_cli("promote-generated", "--src", str(src), "--dest", str(dst))
+    result = _run_cli("mirror-tree", "--src", str(src), "--dest", str(dst))
 
     assert result.returncode == 0, f"stdout: {result.stdout}\nstderr: {result.stderr}"
     assert dst.is_dir()
     assert (dst / "llms.txt").exists()
 
 
-def test_cli_promote_generated_exits_one_on_shape_failure(tmp_path: Path) -> None:
+def test_cli_mirror_tree_exits_one_on_missing_source(tmp_path: Path) -> None:
     src = tmp_path / "src"
     dst = tmp_path / "dst"
     dst.mkdir()
-    # Incomplete tree — only create one file
-    src.mkdir()
-    (src / "README.md").write_text("incomplete", encoding="utf-8")
 
-    result = _run_cli("promote-generated", "--src", str(src), "--dest", str(dst))
+    result = _run_cli("mirror-tree", "--src", str(src), "--dest", str(dst))
 
     assert result.returncode == 1
-    # Destination should not have been modified
-    assert not (dst / "README.md").exists()
+    assert "source does not exist" in result.stderr
 
 
 def test_cli_mirror_tree_with_exclude(tmp_path: Path) -> None:
@@ -359,7 +284,7 @@ def test_cli_overlay_tree_preserves_destination(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Edge case tests (22-23)
+# Edge case tests (17-18)
 # ---------------------------------------------------------------------------
 
 
@@ -393,44 +318,35 @@ def test_sync_tree_handles_nested_directories(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_end_to_end_promote_cycle(tmp_path: Path) -> None:
-    """Full generate → validate → promote cycle in isolation.
-
-    1. Creates an isolated scratch tree satisfying the shape spec.
-    2. Pre-populates the publish tree with an extra file.
-    3. Invokes CLI promote-generated as a subprocess.
-    4. Asserts exit code 0.
-    5. Asserts all required files exist in the publish tree.
-    6. Asserts the extraneous pre-populated file is gone after promotion.
-    """
+def test_end_to_end_mirror_cycle(tmp_path: Path) -> None:
+    """Mirror a source tree into a destination and prune stale entries."""
     scratch = tmp_path / "scratch"
     publish = tmp_path / "publish"
 
-    # Seed scratch with a complete valid fixture tree
-    _build_complete_fixture(scratch)
+    _write_files(
+        scratch,
+        {
+            "AGENTS.md": "agents\n",
+            "release-tree/index.html": "<html></html>\n",
+            "support-tree/manifests/repo-manifest.json": "{}\n",
+        },
+    )
 
-    # Pre-populate publish with an extraneous file that should be deleted
     publish.mkdir()
     (publish / "stale-artifact.txt").write_text("should be deleted", encoding="utf-8")
 
-    result = _run_cli("promote-generated", "--src", str(scratch), "--dest", str(publish))
+    result = _run_cli("mirror-tree", "--src", str(scratch), "--dest", str(publish))
 
     assert result.returncode == 0, (
-        f"promote-generated failed.\nstdout: {result.stdout}\nstderr: {result.stderr}"
+        f"mirror-tree failed.\nstdout: {result.stdout}\nstderr: {result.stderr}"
     )
-
-    # All required files must exist in the publish tree
-    for rel in GENERATED_ROOT_REQUIRED_FILES:
-        assert (publish / rel).exists(), f"Missing required file after promote: {rel}"
-
-    # The extraneous pre-populated file must be gone
-    assert not (publish / "stale-artifact.txt").exists(), (
-        "extraneous file was not removed during promote"
-    )
+    assert (publish / "AGENTS.md").exists()
+    assert (publish / "release-tree" / "index.html").exists()
+    assert not (publish / "stale-artifact.txt").exists()
 
 
 # ---------------------------------------------------------------------------
-# Regression tests for review findings (24-28)
+# Regression tests (19-24)
 # ---------------------------------------------------------------------------
 
 
@@ -496,4 +412,25 @@ def test_sync_tree_replaces_file_with_directory(tmp_path: Path) -> None:
 
     assert (dst / "item").is_dir(), "file was not replaced by directory"
     assert (dst / "item" / "child.txt").read_text(encoding="utf-8") == "child content"
+
+
+def test_sync_tree_deletes_directory_symlink_without_touching_target(tmp_path: Path) -> None:
+    """Extraneous directory symlinks should be removed without deleting targets."""
+    src = tmp_path / "src"
+    dst = tmp_path / "dst"
+    target = tmp_path / "target"
+
+    src.mkdir()
+    dst.mkdir()
+    target.mkdir()
+    (target / "keep.txt").write_text("keep", encoding="utf-8")
+
+    link = dst / "linked-dir"
+    _create_directory_symlink(link, target)
+
+    sync_tree(src, dst, delete_extraneous=True)
+
+    assert not link.exists(), "symlink should be removed from destination"
+    assert target.is_dir(), "symlink target directory should remain"
+    assert (target / "keep.txt").read_text(encoding="utf-8") == "keep"
 
