@@ -1,0 +1,123 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the LuCI JS async load-versus-render boundary.
+  required_rule: >-
+    Keep the scenario narrowly about rpc.declare plus load()/render() lifecycle separation,
+    not generic LuCI form construction.
+
+scenario:
+  scenario_id: "SCN-2026-005"
+  short_name: "luci-load-render-rpc-status"
+  title: "LuCI JS async load/render status form lifecycle"
+  category: "luci_js_async_status"
+  openwrt_boundary: "rpc.declare plus load() data fetch with render() consuming resolved values"
+  programming_family: "LuCI frontend architecture"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local LuCI views show a repeatable pattern where live rpc data and UCI state are fetched
+    in load() and only consumed in render(), a boundary generic frontend answers often flatten.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-luci-full/applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js"
+    locator: "rpc.declare plus load() Promise.all() and render() form.Map lifecycle"
+
+authority:
+  summary: >-
+    Current LuCI JS views use rpc.declare and Promise-based load() to obtain data before render().
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-luci-full/applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js"
+    locator: "callLuciWirelessDevices, load(), render([wireless_devices])"
+  why_authoritative: >-
+    This is a current local upstream LuCI JS view using the exact modern lifecycle the scenario tests.
+
+blind_prompt:
+  prompt_text: |
+    Write a modern OpenWrt LuCI JS view snippet that loads live status data from ubus with rpc.declare() during load(), also loads its UCI config, and then renders a form.Map page from that resolved data. Do not fetch RPC data directly inside render().
+  prompt_notes:
+    - "Keep the task about lifecycle separation, not specific widgets."
+    - "Do not mention Promise.all explicitly in the prompt."
+
+scoring:
+  expected_paradigms:
+    - "rpc.declare"
+    - "load()"
+    - "Promise.all or equivalent async pre-render fetch"
+    - "form.Map"
+  explicit_falsenesses:
+    - "fetch() or XMLHttpRequest"
+    - "live RPC call issued directly inside render()"
+    - "legacy Lua CBI"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-LUCI-JS"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates a missing async lifecycle lesson inside the LuCI JS family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/luci-form-with-uci.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    Existing LuCI coverage is adjacent but does not explicitly own the load/render async status lifecycle.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "extend-existing-page"
+  target_pages:
+    - "static/cookbook-source/luci-form-with-uci.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "discovery"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "eta"
+    do_not_batch_with_scenarios:
+      - "04"
+      - "05"
+    do_not_batch_with_categories:
+      - "luci_js_frontend"
+    rationale: "Keep LuCI async lifecycle isolated from adjacent LuCI frontend prompts."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Source-backed from local LuCI JS examples and admitted as a net-new scenario concept."

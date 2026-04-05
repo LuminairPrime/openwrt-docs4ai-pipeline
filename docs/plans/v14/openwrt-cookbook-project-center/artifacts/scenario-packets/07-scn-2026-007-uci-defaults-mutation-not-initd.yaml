@@ -1,0 +1,125 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the mutation-only uci-defaults firstboot boundary.
+  required_rule: >-
+    Keep the scenario explicitly away from init.d execution or service reload logic.
+
+scenario:
+  scenario_id: "SCN-2026-007"
+  short_name: "uci-defaults-mutation-not-initd"
+  title: "Firstboot uci-defaults mutation without init.d side effects"
+  category: "shell_uci_defaults_mutation"
+  openwrt_boundary: "uci-defaults as config mutation boundary only"
+  programming_family: "Firstboot persistence"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local package Makefiles consistently ship firstboot defaults into /etc/uci-defaults, reinforcing that the mechanism is a one-shot mutation boundary rather than a service-control hook.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-packages/net/adblock-fast/Makefile"
+    locator: "installing defaults into /etc/uci-defaults"
+
+authority:
+  summary: >-
+    The firstboot contract is explicit: mutate config in /etc/uci-defaults and exit successfully so the script self-cleans.
+  primary_source:
+    source_type: "frozen_test_packet"
+    path_or_url: "docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md"
+    locator: "Scenario 10 truths and falses"
+  supporting_sources:
+    - source_type: "upstream_code"
+      path_or_url: "tmp/authoring-repos/repo-packages/net/adblock-fast/Makefile"
+      locator: "package install of /etc/uci-defaults asset"
+  why_authoritative: >-
+    The inherited truth surface already defines the contract, and local package sources confirm how the mechanism is installed in practice.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt /etc/uci-defaults/ script snippet that enables a service config option named enabled on first boot, commits the change, and exits correctly. Do not start or reload the service from this script.
+  prompt_notes:
+    - "The test is about one-shot firstboot config mutation only."
+
+scoring:
+  expected_paradigms:
+    - "/etc/uci-defaults"
+    - "uci set"
+    - "uci commit"
+    - "exit 0"
+  explicit_falsenesses:
+    - "/etc/init.d/"
+    - "marker file"
+    - "service reload from inside the script"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-FIRSTBOOT"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates the mutation-only contract inside the broader firstboot family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/firstboot-uci-defaults-pattern.md"
+  already_adequately_covered: true
+  coverage_rationale: >-
+    Existing firstboot coverage should already answer this, so the scenario is a verification-oriented expansion.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "golden-key-only"
+  target_pages:
+    - "static/cookbook-source/firstboot-uci-defaults-pattern.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "iota"
+    do_not_batch_with_scenarios:
+      - "10"
+      - "21"
+    do_not_batch_with_categories:
+      - "shell_uci_defaults"
+      - "shell_ucidef_helpers"
+    rationale: "Keep raw mutation-only firstboot logic separate from helper-driven firstboot prompts."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a more explicit verification-oriented firstboot mutation scenario."

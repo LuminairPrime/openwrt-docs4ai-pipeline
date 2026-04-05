@@ -1,0 +1,90 @@
+manifest_version: 1
+purpose: grouped-manual-rerun-layout
+groups:
+  - group_id: delta
+    file: artifacts/test-groups/01d-batch-slice-delta.md
+    answer_key: artifacts/test-groups/01d-batch-slice-delta-answer-key.md
+    scenarios:
+      - scenario_id: "06"
+        category: core_daemon_procd
+        source_packet: artifacts/scenario-packets/04-scn-2026-004-procd-uci-load-validate-loglevel.yaml
+      - scenario_id: "12"
+        category: c_uloop_daemon
+        source_packet: artifacts/scenario-packets/03-scn-2026-003-c-libubus-daemon-skeleton.yaml
+    grouping_rationale: >-
+      Distinct enough to share a batch without one question directly teaching the
+      answer path for the other.
+  - group_id: epsilon
+    file: artifacts/test-groups/01e-batch-slice-epsilon.md
+    answer_key: artifacts/test-groups/01e-batch-slice-epsilon-answer-key.md
+    scenarios:
+      - scenario_id: "13"
+        category: ucode_fs_json
+        source_packet: artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml
+    grouping_rationale: >-
+      Isolated because native file and JSON handling teaches the ucode runtime
+      boundary directly.
+  - group_id: zeta
+    file: artifacts/test-groups/01f-batch-slice-zeta.md
+    answer_key: artifacts/test-groups/01f-batch-slice-zeta-answer-key.md
+    scenarios:
+      - scenario_id: "16"
+        category: implicit_uloop_async
+        source_packet: artifacts/scenario-packets/01-scn-2026-001-ucode-async-ping-streams.yaml
+    grouping_rationale: >-
+      Isolated because the async ucode pattern is adjacent to other ucode runtime
+      lessons and should not teach later questions in the same conversation.
+  - group_id: eta
+    file: artifacts/test-groups/01g-batch-slice-eta.md
+    answer_key: artifacts/test-groups/01g-batch-slice-eta-answer-key.md
+    scenarios:
+      - scenario_id: "18"
+        category: luci_js_async_status
+        source_packet: artifacts/scenario-packets/05-scn-2026-005-luci-load-render-rpc-status.yaml
+    grouping_rationale: >-
+      Isolated because LuCI async status and load-render lifecycle questions teach a
+      distinct frontend answer path that should not bleed into adjacent slices.
+  - group_id: theta
+    file: artifacts/test-groups/01h-batch-slice-theta.md
+    answer_key: artifacts/test-groups/01h-batch-slice-theta-answer-key.md
+    scenarios:
+      - scenario_id: "19"
+        category: shell_hotplug_ubus_forward
+        source_packet: artifacts/scenario-packets/06-scn-2026-006-hotplug-json-forward-ubus.yaml
+      - scenario_id: "23"
+        category: makefile_package_install_layout
+        source_packet: artifacts/scenario-packets/10-scn-2026-010-package-install-luci-rpcd-bootstrap.yaml
+    grouping_rationale: >-
+      Intentional pair: runtime hotplug event forwarding and package install layout
+      are far enough apart that one should not teach the other, while still keeping
+      operator runs compact.
+  - group_id: iota
+    file: artifacts/test-groups/01i-batch-slice-iota.md
+    answer_key: artifacts/test-groups/01i-batch-slice-iota-answer-key.md
+    scenarios:
+      - scenario_id: "20"
+        category: shell_uci_defaults_mutation
+        source_packet: artifacts/scenario-packets/07-scn-2026-007-uci-defaults-mutation-not-initd.yaml
+    grouping_rationale: >-
+      Isolated because uci-defaults mutation boundaries are easy for models to
+      contaminate with incorrect init-script behavior when mixed with nearby firstboot topics.
+  - group_id: kappa
+    file: artifacts/test-groups/01j-batch-slice-kappa.md
+    answer_key: artifacts/test-groups/01j-batch-slice-kappa-answer-key.md
+    scenarios:
+      - scenario_id: "21"
+        category: shell_ucidef_helpers
+        source_packet: artifacts/scenario-packets/08-scn-2026-008-ucidef-helper-wan-pppoe.yaml
+    grouping_rationale: >-
+      Isolated because helper-driven board defaults should not be taught by nearby raw
+      uci-defaults mutation examples in the same conversation.
+  - group_id: lambda
+    file: artifacts/test-groups/01k-batch-slice-lambda.md
+    answer_key: artifacts/test-groups/01k-batch-slice-lambda-answer-key.md
+    scenarios:
+      - scenario_id: "22"
+        category: c_blobmsg_parse_reply
+        source_packet: artifacts/scenario-packets/09-scn-2026-009-c-blobmsg-parse-nested-reply.yaml
+    grouping_rationale: >-
+      Isolated because combined blobmsg parse plus nested reply construction is a
+      distinct native C boundary and should not borrow answer hints from simpler C slices.

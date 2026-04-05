@@ -92,7 +92,6 @@ jobs:
                   )
           else:
               lines.append("- lint-review summary unavailable")
-
           step_summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
           with step_summary.open("a", encoding="utf-8") as handle:
               handle.write("\n".join(lines) + "\n")

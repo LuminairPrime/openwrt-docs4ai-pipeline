@@ -1,0 +1,11 @@
+Imported answer-key source mapping for Scenario 13.
+
+Primary cookbook-center answer key:
+- docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-groups/01e-batch-slice-epsilon-answer-key.md
+
+Historical canonical answer reference:
+- docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/01a-batch-slice-alpha-answer-key-sonnet46.md
+
+Current pass rule summary:
+- Must use native ucode file I/O and native JSON parsing, specifically `fs.readfile()` and `json(...)`.
+- `cat`, `jq`, `jsonfilter`, `jshn`, `grep`, `awk`, and `sed` all fail the intended boundary.

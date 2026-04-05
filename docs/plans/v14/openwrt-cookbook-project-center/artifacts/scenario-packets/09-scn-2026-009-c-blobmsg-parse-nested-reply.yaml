@@ -1,0 +1,125 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the combined blobmsg parse plus nested reply boundary.
+  required_rule: >-
+    Keep the scenario about safe handler parsing and structured reply construction in one function.
+
+scenario:
+  scenario_id: "SCN-2026-009"
+  short_name: "c-blobmsg-parse-nested-reply"
+  title: "C ubus blobmsg parse with nested reply"
+  category: "c_blobmsg_parse_reply"
+  openwrt_boundary: "safe blobmsg parsing plus typed nested ubus reply construction"
+  programming_family: "Native C ubus handlers"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local hostapd ubus handlers show the parse side clearly, while the inherited bank already proves the reply side; together they form a higher-value combined contract.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-openwrt-full/package/network/services/hostapd/src/src/ap/ubus.c"
+    locator: "blobmsg_parse() with blobmsg_policy arrays in ubus handlers"
+
+authority:
+  summary: >-
+    Correct OpenWrt ubus C handlers parse typed input with blobmsg_policy and return structured blobmsg replies via blob_buf and ubus_send_reply().
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-openwrt-full/package/network/services/hostapd/src/src/ap/ubus.c"
+    locator: "blobmsg_parse() handler patterns"
+  supporting_sources:
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md"
+      locator: "Scenario 07 and Scenario 15 truths"
+  why_authoritative: >-
+    The local hostapd source anchors the parse contract, and the inherited golden key anchors the canonical reply contract.
+
+blind_prompt:
+  prompt_text: |
+    For OpenWrt, write a C ubus handler snippet that parses input attributes with blobmsg_policy and blobmsg_parse(), then replies with a nested result object containing accepted=true and the supplied address.
+  prompt_notes:
+    - "Do not mention blobmsg_open_table explicitly."
+    - "The point is the combined parse-plus-reply contract."
+
+scoring:
+  expected_paradigms:
+    - "struct blobmsg_policy"
+    - "blobmsg_parse"
+    - "struct blob_buf"
+    - "blobmsg_open_table"
+    - "ubus_send_reply"
+  explicit_falsenesses:
+    - "raw pointer casting"
+    - "sprintf JSON string"
+    - "blobmsg_add_json_from_string"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-C-BLOBMSG"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet defines the family entry for combined parse and reply semantics."
+
+coverage_check:
+  existing_pages_considered: []
+  already_adequately_covered: false
+  coverage_rationale: >-
+    The repo has adjacent C ubus coverage, but no clearly owned combined parse-plus-reply cookbook page.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "new-standalone-page"
+  target_pages: []
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "discovery"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "lambda"
+    do_not_batch_with_scenarios:
+      - "07"
+      - "15"
+    do_not_batch_with_categories:
+      - "c_plugin_libubus"
+      - "c_blobmsg_parsing"
+    rationale: "Keep the combined parse-plus-reply contract isolated from simpler C ubus slices."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a net-new native C scenario that combines two previously separate truths."

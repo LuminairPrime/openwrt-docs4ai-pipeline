@@ -1,0 +1,342 @@
+registry_version: 1
+registry_status: seeded-from-v13-findings
+seeded_at: 2026-04-05
+source_documents:
+  - docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md
+  - docs/plans/v13/openwrt-mistake-discovery/cookbook-target-shortlist-2026-03-28.md
+  - static/cookbook-source/common-ai-mistakes.md
+  - static/cookbook-source/openwrt-era-guide.md
+  - static/cookbook-source/procd-service-lifecycle.md
+  - static/cookbook-source/firstboot-uci-defaults-pattern.md
+  - static/cookbook-source/firstboot-wifi-policy.md
+  - static/cookbook-source/hotplug-handler-pattern.md
+  - static/cookbook-source/uci-read-write-from-ucode.md
+  - static/cookbook-source/luci-form-with-uci.md
+  - static/cookbook-source/inter-component-communication-map.md
+  - static/cookbook-source/ubus-observability-pattern.md
+  - static/cookbook-source/runtime-device-identity-via-ubus.md
+  - static/cookbook-source/minimal-openwrt-package-makefile.md
+families:
+  - family_id: FAM-ERA
+    programming_family: Era mismatch
+    openwrt_boundary: Current-era versus legacy OpenWrt development patterns
+    severity: structural
+    confidence_state: confirmed
+    current_status: covered-by-existing-page
+    first_triggering_scenarios:
+      - Scenario 04
+      - Scenario 05
+      - Scenario 14
+    representative_wrong_patterns:
+      - Lua CBI for new LuCI development
+      - legacy menu controller patterns
+      - pre-ucode assumptions presented as current practice
+    evidence_summary:
+      summary_type: cross-batch-and-corpus
+      notes:
+        - Current cookbook corpus already includes an era guide and common AI mistakes hub.
+        - Era guidance still has external evidence debt recorded separately.
+    authority_sources:
+      - static/cookbook-source/openwrt-era-guide.md
+      - static/cookbook-source/era-guide-evidence-needed.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/openwrt-era-guide.md
+        - static/cookbook-source/common-ai-mistakes.md
+      gaps: []
+    next_action: evidence-review-and-benchmark-use
+
+  - family_id: FAM-INIT-PROCD
+    programming_family: Service lifecycle and supervision
+    openwrt_boundary: procd init, reload, validation, and daemon supervision
+    severity: structural
+    confidence_state: confirmed
+    current_status: partially-covered-needs-extension
+    first_triggering_scenarios:
+      - Scenario 01
+      - Scenario 06
+    representative_wrong_patterns:
+      - SysV-style init scripts
+      - PID file management
+      - manual watchdog loops
+      - missing uci_load_validate discipline
+    evidence_summary:
+      summary_type: golden-key-and-synthesis
+      notes:
+        - Cross-batch synthesis explicitly called out the need for a complete uci_load_validate cookbook treatment.
+        - Golden key records procd and validation as mandatory structural truths.
+    authority_sources:
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+      - static/cookbook-source/procd-service-lifecycle.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/procd-service-lifecycle.md
+      gaps:
+        - complete-uci-load-validate-treatment
+    next_action: extend-existing-page
+
+  - family_id: FAM-UCI-PERSISTENCE
+    programming_family: Config storage and persistence
+    openwrt_boundary: UCI as authoritative persistent configuration surface
+    severity: structural
+    confidence_state: confirmed
+    current_status: covered-by-existing-page
+    first_triggering_scenarios:
+      - Scenario 08
+    representative_wrong_patterns:
+      - editing /etc/config files directly
+      - missing save or commit semantics
+      - file-based config mutation instead of UCI APIs
+    evidence_summary:
+      summary_type: scenario-and-corpus
+      notes:
+        - Current cookbook coverage for UCI mutation from ucode is already strong.
+    authority_sources:
+      - static/cookbook-source/uci-read-write-from-ucode.md
+      - static/cookbook-source/package-config-bootstrap-pattern.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/uci-read-write-from-ucode.md
+        - static/cookbook-source/package-config-bootstrap-pattern.md
+      gaps: []
+    next_action: verification-rerun-only
+
+  - family_id: FAM-FIRSTBOOT
+    programming_family: One-shot boot sequencing
+    openwrt_boundary: uci-defaults mutation and first-boot policy
+    severity: structural
+    confidence_state: confirmed
+    current_status: covered-by-existing-page
+    first_triggering_scenarios:
+      - Scenario 10
+    representative_wrong_patterns:
+      - sentinel or marker files
+      - missing exit 0
+      - service reloads from inside uci-defaults
+      - treating uci-defaults as orchestration instead of config mutation
+    evidence_summary:
+      summary_type: cross-batch-and-corpus
+      notes:
+        - Cross-batch findings and the cookbook shortlist both treat first-boot mutation as a durable mistake family.
+    authority_sources:
+      - static/cookbook-source/firstboot-uci-defaults-pattern.md
+      - static/cookbook-source/firstboot-wifi-policy.md
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/firstboot-uci-defaults-pattern.md
+        - static/cookbook-source/firstboot-wifi-policy.md
+      gaps: []
+    next_action: verification-rerun-only
+
+  - family_id: FAM-HOTPLUG-EVENTS
+    programming_family: Event-driven shell behavior
+    openwrt_boundary: hotplug environment variables and event taxonomy
+    severity: operational
+    confidence_state: confirmed
+    current_status: covered-by-existing-page
+    first_triggering_scenarios:
+      - Scenario 09
+    representative_wrong_patterns:
+      - polling loops instead of hotplug
+      - failure to filter ACTION before side effects
+      - assuming only one event type matters
+    evidence_summary:
+      summary_type: shortlist-and-corpus
+      notes:
+        - The v13 shortlist retained this as a P1 topic and the page is now authored.
+    authority_sources:
+      - static/cookbook-source/hotplug-handler-pattern.md
+      - docs/plans/v13/openwrt-mistake-discovery/cookbook-target-shortlist-2026-03-28.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/hotplug-handler-pattern.md
+      gaps: []
+    next_action: verification-rerun-only
+
+  - family_id: FAM-UBUS-SURFACES
+    programming_family: IPC and runtime state surfaces
+    openwrt_boundary: ubus-first communication, observability, and runtime identity
+    severity: structural
+    confidence_state: confirmed
+    current_status: covered-by-existing-pages
+    first_triggering_scenarios:
+      - Scenario 02
+      - Scenario 03
+      - Scenario 07
+    representative_wrong_patterns:
+      - ad hoc sockets instead of ubus
+      - duplicating state in shell instead of publishing once
+      - using the wrong runtime identity surface
+    evidence_summary:
+      summary_type: shortlist-and-corpus
+      notes:
+        - The shortlist explicitly retained ubus-first state surfaces as high-value cookbook material.
+    authority_sources:
+      - static/cookbook-source/inter-component-communication-map.md
+      - static/cookbook-source/ubus-observability-pattern.md
+      - static/cookbook-source/runtime-device-identity-via-ubus.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/inter-component-communication-map.md
+        - static/cookbook-source/ubus-observability-pattern.md
+        - static/cookbook-source/runtime-device-identity-via-ubus.md
+      gaps: []
+    next_action: benchmark-use
+
+  - family_id: FAM-LUCI-JS
+    programming_family: Modern LuCI frontend architecture
+    openwrt_boundary: JavaScript view runtime, rpc.declare, L.ui, and dynamic widgets
+    severity: structural
+    confidence_state: confirmed
+    current_status: partially-covered-needs-extension
+    first_triggering_scenarios:
+      - Scenario 04
+      - Scenario 05
+      - Scenario 14
+    representative_wrong_patterns:
+      - Lua CBI for new work
+      - raw HTML forms
+      - fetch or XMLHttpRequest instead of rpc.declare
+      - missing L.ui or NetworkSelect usage
+    evidence_summary:
+      summary_type: cross-batch-confirmed
+      pass_rate_signals:
+        - scenario: Scenario 05
+          signal: 6-percent-pass-alpha
+        - scenario: Scenario 04
+          signal: 20-percent-pass-beta
+      notes:
+        - Cross-batch synthesis specifically called for stronger L.ui and widgets.NetworkSelect teaching.
+    authority_sources:
+      - static/cookbook-source/luci-form-with-uci.md
+      - static/cookbook-source/luci-uhttpd-https-auth.md
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/luci-form-with-uci.md
+        - static/cookbook-source/luci-uhttpd-https-auth.md
+      gaps:
+        - explicit-live-status-and-widget-patterns
+    next_action: extend-existing-page
+
+  - family_id: FAM-UCODE-NATIVE
+    programming_family: Native ucode runtime model
+    openwrt_boundary: modules, file I/O, JSON parsing, and native APIs
+    severity: structural
+    confidence_state: confirmed
+    current_status: new-page-needed
+    first_triggering_scenarios:
+      - Scenario 02
+      - Scenario 13
+      - Scenario 17
+    representative_wrong_patterns:
+      - require() assumptions
+      - jq or jsonfilter in ucode context
+      - shelling out to cat for file reads
+      - invented module constructors
+    evidence_summary:
+      summary_type: cross-batch-confirmed
+      pass_rate_signals:
+        - scenario: Scenario 13
+          signal: 0-percent-pass-alpha
+      notes:
+        - Cross-batch synthesis named native ucode JSON parsing as a universal blind spot.
+    authority_sources:
+      - static/cookbook-source/uci-read-write-from-ucode.md
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/uci-read-write-from-ucode.md
+      gaps:
+        - dedicated-native-file-io-and-json-page
+    next_action: author-new-page
+
+  - family_id: FAM-UCODE-ASYNC
+    programming_family: Async scripting and process multiplexing
+    openwrt_boundary: uloop-based async execution inside ucode
+    severity: structural
+    confidence_state: confirmed
+    current_status: new-page-needed
+    first_triggering_scenarios:
+      - Scenario 16
+    representative_wrong_patterns:
+      - shell background jobs
+      - FIFO hacks
+      - missing uloop.ULOOP_READ
+      - invented fs.read(proc, len) API
+    evidence_summary:
+      summary_type: cross-batch-confirmed
+      pass_rate_signals:
+        - scenario: Scenario 16
+          signal: 0-percent-pass-alpha
+      notes:
+        - Cross-batch synthesis named this the single strongest blind spot across both batches.
+    authority_sources:
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md
+    cookbook_destinations:
+      existing_pages: []
+      gaps:
+        - dedicated-ucode-async-page
+    next_action: author-new-page
+
+  - family_id: FAM-C-LIBUBUS
+    programming_family: C daemon and RPC contract discipline
+    openwrt_boundary: libubus, libubox, blobmsg, uloop, and init order
+    severity: structural
+    confidence_state: confirmed
+    current_status: partially-covered-needs-new-page
+    first_triggering_scenarios:
+      - Scenario 03
+      - Scenario 07
+      - Scenario 12
+      - Scenario 15
+    representative_wrong_patterns:
+      - raw JSON string replies
+      - fabricated libubus APIs
+      - missing ubus_add_uloop()
+      - wrong init order
+      - missing blobmsg_parse discipline
+    evidence_summary:
+      summary_type: cross-batch-confirmed
+      pass_rate_signals:
+        - scenario: Scenario 12
+          signal: 40-percent-pass-beta
+      notes:
+        - Cross-batch synthesis identified the missing ubus_add_uloop() pattern as a major blind spot and proposed a dedicated C skeleton page.
+    authority_sources:
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+      - static/cookbook-source/ucode-rpcd-service-pattern.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/ucode-rpcd-service-pattern.md
+      gaps:
+        - dedicated-c-libubus-daemon-skeleton-page
+    next_action: author-new-page
+
+  - family_id: FAM-BUILDROOT
+    programming_family: Packaging and buildroot integration
+    openwrt_boundary: OpenWrt package Makefile conventions
+    severity: operational
+    confidence_state: confirmed
+    current_status: covered-by-existing-page
+    first_triggering_scenarios:
+      - Scenario 11
+    representative_wrong_patterns:
+      - generic Makefiles
+      - missing package.mk or rules.mk
+      - missing runtime dependency declaration
+      - PKG_MD5SUM in current-era packaging
+    evidence_summary:
+      summary_type: scenario-and-corpus
+      notes:
+        - Cookbook coverage already exists for the minimal package Makefile boundary.
+    authority_sources:
+      - static/cookbook-source/minimal-openwrt-package-makefile.md
+      - docs/plans/v14/openwrt-cookbook-project-center/artifacts/test-pack/03-golden-answers-key.md
+    cookbook_destinations:
+      existing_pages:
+        - static/cookbook-source/minimal-openwrt-package-makefile.md
+      gaps: []
+    next_action: benchmark-use

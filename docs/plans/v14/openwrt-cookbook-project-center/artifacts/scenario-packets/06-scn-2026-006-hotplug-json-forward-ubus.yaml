@@ -1,0 +1,125 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the hotplug guarded structured ubus-forward boundary.
+  required_rule: >-
+    Keep the scenario about event ownership and JSON forwarding, not generic restart hooks.
+
+scenario:
+  scenario_id: "SCN-2026-006"
+  short_name: "hotplug-json-forward-ubus"
+  title: "Hotplug guarded structured ubus forwarding"
+  category: "shell_hotplug_ubus_forward"
+  openwrt_boundary: "event-filtered hotplug shell flow with structured ubus handoff"
+  programming_family: "Shell event handling"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local hotplug and event scripts show ACTION and INTERFACE filtering plus explicit event handoff,
+    a stronger boundary than the original simple service-restart hotplug scenario.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-packages/net/mwan3/files/lib/mwan3/mwan3.sh"
+    locator: "env -i ACTION=ifup/ifdown hotplug handoff patterns"
+
+authority:
+  summary: >-
+    Correct OpenWrt hotplug scripts treat the environment as the event contract and forward structured data through native tools.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-packages/net/mwan3/files/lib/mwan3/mwan3.sh"
+    locator: "ACTION and INTERFACE environment handling"
+  supporting_sources:
+    - source_type: "upstream_code"
+      path_or_url: "tmp/authoring-repos/repo-packages/net/keepalived/files/usr/libexec/keepalived/rpc/status.sh"
+      locator: "json_init/json_add_* shell JSON construction"
+  why_authoritative: >-
+    These local upstream shell examples provide both the hotplug event boundary and the structured JSON handoff surface.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt hotplug script snippet that reacts only when the wan interface comes up, builds a structured JSON payload from the hotplug environment, and forwards it to a ubus method.
+  prompt_notes:
+    - "Do not mention jshn.sh explicitly."
+    - "Do not let the task collapse into a simple firewall restart."
+
+scoring:
+  expected_paradigms:
+    - "\"$ACTION\" guard"
+    - "\"$INTERFACE\" guard"
+    - "json_init or equivalent structured JSON building"
+    - "ubus call ... \"$(json_dump)\" or equivalent structured ubus payload"
+  explicit_falsenesses:
+    - "cron"
+    - "while true polling"
+    - "unfiltered trigger on every hotplug event"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-HOTPLUG-EVENTS"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates a stronger structured-forwarding contract inside the hotplug family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/hotplug-handler-pattern.md"
+  already_adequately_covered: true
+  coverage_rationale: >-
+    Existing coverage is likely sufficient, so this packet is primarily for verification and benchmark expansion.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "golden-key-only"
+  target_pages:
+    - "static/cookbook-source/hotplug-handler-pattern.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "theta"
+    do_not_batch_with_scenarios:
+      - "09"
+    do_not_batch_with_categories:
+      - "shell_hotplug_d"
+    rationale: "Keep structured hotplug forwarding separate from simple restart-trigger hotplug questions."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a net-new scenario using current local hotplug and shell JSON patterns."

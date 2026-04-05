@@ -23,7 +23,7 @@ procd is OpenWrt's init system and process supervisor. Unlike sysvinit, procd ma
 
 Every `/etc/init.d/` script on a current OpenWrt system uses the procd API via sourcing `/lib/functions.sh` (which transitively loads the procd helper functions). The API is provided by `procd.sh` and exposes a small set of functions for declaring service instances.
 
-The lifecycle is three phases: **start_service** (declare the supervised instance), **stop_service** (optional override; procd handles SIGTERM by default), and **reload_service** or **service_triggers** (UCI-aware reload without full restart).
+The lifecycle is three phases: **start_service** (declare the supervised instance), **stop_service** (optional override; procd handles SIGTERM by default), and **reload_service** or **service_triggers** (UCI-aware reload without full restart). When the service depends on typed UCI config, the lifecycle also needs a validation boundary: `uci_load_validate` should sanitize and coerce config before procd ever launches the daemon.
 
 ## Complete Working Example
 
@@ -122,9 +122,61 @@ The three values are:
 
 Setting `max_fail 0` means infinite restarts. Setting it to 5 means the process is abandoned after 5 failures in the time window.
 
+The example values in this page are illustrative, not universal defaults. Keep the pattern, but tune the thresholds and restart timeout for the actual daemon's failure mode and recovery cost.
+
 ### `service_triggers` and `procd_add_reload_trigger`
 
 This is the UCI integration point. `procd_add_reload_trigger 'myapp'` means: whenever `uci commit myapp` is called (by any process), procd will call this service's `reload_service` function. Without this, config changes require manual `service myapp restart`.
+
+### Typed UCI validation with `uci_load_validate`
+
+Use `uci_load_validate` when the service cannot safely treat config values as unchecked strings. This is the current-era OpenWrt pattern for typed config validation inside a procd init script.
+
+```bash
+validate_myapp_section() {
+    uci_load_validate "myapp" "myapp" "$1" "$2" \
+        'enabled:bool:0' \
+        'loglevel:uinteger:4' \
+        'listen_port:port:8080'
+}
+
+load_myapp() {
+    local section="$1"
+
+    [ "$2" = 0 ] || {
+        echo "validation failed for section $section" >&2
+        return 1
+    }
+
+    [ "$enabled" = "1" ] || return 0
+
+    procd_open_instance
+    procd_set_param command /usr/bin/myapp --loglevel "$loglevel" --port "$listen_port"
+    procd_set_param respawn
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_close_instance
+}
+
+start_service() {
+    config_load "myapp"
+    config_foreach validate_myapp_section "myapp" load_myapp
+}
+
+service_triggers() {
+    procd_add_reload_trigger "myapp"
+    procd_add_validation validate_myapp_section
+}
+```
+
+What this does:
+
+- `uci_load_validate` checks the section against typed rules before launch
+- validated option values are exported into local shell variables like `$loglevel`
+- `config_foreach` ties validation and instance creation together per section
+- `procd_add_validation` registers the validator so config-driven reload paths stay aligned with the same schema
+
+Use this pattern instead of hand-written `grep`, `awk`, or regex parsing against `/etc/config/myapp`. Those generic shell checks bypass the OpenWrt validation contract and drift quickly when the config evolves.
 
 ## Anti-Patterns
 
@@ -182,6 +234,22 @@ service_triggers() {
 }
 ```
 
+### WRONG: Validating with grep or regex against `/etc/config/`
+
+```bash
+start_service() {
+    local loglevel
+    loglevel="$(grep "option loglevel" /etc/config/myapp | awk '{ print $3 }')"
+    echo "$loglevel" | grep -Eq '^[0-9]+$' || return 1
+
+    procd_open_instance
+    procd_set_param command /usr/bin/myapp --loglevel "$loglevel"
+    procd_close_instance
+}
+```
+
+**Why it fails:** UCI config is not meant to be parsed as ad hoc text inside init scripts. This bypasses the validation helpers shipped with procd, makes anonymous sections awkward, and breaks as soon as quoting, defaults, or option types evolve.
+
 ## Running user and resource limits
 
 ```bash
@@ -206,5 +274,10 @@ Drop privileges by setting `user` and `group` parameters. These are applied befo
 
 - procd API (`procd_open_service`, `procd_open_instance`, `procd_set_param`, etc.) verified against `procd/header_api-procd-api.md` in corpus
 - `procd_add_reload_trigger` function name verified from same source
+- `uci_load_validate()` helper signature verified from `tmp/authoring-repos/repo-openwrt-full/package/system/procd/files/procd.sh`
+- real `uci_load_validate` call shape verified from `tmp/authoring-repos/repo-packages/utils/rtl-ais/files/rtl_ais.init` and `tmp/authoring-repos/repo-packages/net/aria2/files/aria2.init`
 - `USE_PROCD=1` pattern and `service_triggers` function verified from `wiki/wiki_page-guide-developer-procd-init-scripts.md` file listing
 - respawn parameter order (fail_threshold, restart_timeout, max_fail) matches procd corpus documentation
+- Scenario packet reference for this extension: `docs/plans/v14/openwrt-cookbook-project-center/artifacts/scenario-packets/04-scn-2026-004-procd-uci-load-validate-loglevel.yaml`
+- Known limitation: `reviewed_by` remains `placeholder` until a human maintainer claims final reviewer ownership
+

@@ -1,0 +1,110 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Fill this packet before admitting a new scenario into the v14 cookbook system.
+    The packet is designed to be machine-readable and also usable as a human review artifact.
+  required_rule: >-
+    A new scenario is admissible only if its expected paradigms are grounded in an authority source
+    and the lesson is not already redundant with active discovery or sufficient cookbook coverage.
+
+scenario:
+  scenario_id: "SCN-YYYY-NNN"
+  short_name: ""
+  title: ""
+  category: ""
+  openwrt_boundary: ""
+  programming_family: ""
+
+inspiration:
+  primary_kind: "blind_failure"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: ""
+  primary_source:
+    source_type: "doc_or_result"
+    path_or_url: ""
+    locator: ""
+  supporting_sources: []
+
+authority:
+  summary: ""
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: ""
+    locator: ""
+  supporting_sources: []
+  why_authoritative: ""
+
+blind_prompt:
+  prompt_text: |
+    
+  prompt_notes:
+    - "Do not mention source URLs."
+    - "Do not mention exact expected APIs unless a real user would naturally name them."
+    - "Keep the task bounded enough for binary scoring."
+
+scoring:
+  expected_paradigms: []
+  explicit_falsenesses: []
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: ""
+  family_decision:
+    existing_family_match: true
+    reason: ""
+
+coverage_check:
+  existing_pages_considered: []
+  already_adequately_covered: false
+  coverage_rationale: ""
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "new-standalone-page"
+  target_pages: []
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "discovery"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids: []
+    do_not_batch_with_scenarios: []
+    do_not_batch_with_categories: []
+    rationale: ""
+
+operator_record:
+  proposed_by: ""
+  date_opened: "YYYY-MM-DD"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "proposed"
+  notes: ""
+
