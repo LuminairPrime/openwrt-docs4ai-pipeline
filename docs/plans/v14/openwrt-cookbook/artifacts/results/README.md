@@ -1,6 +1,6 @@
 # Manual AI-Agent Result Layout
 
-Store cookbook-center manual runs under this directory.
+This directory stores aggregated cross-run analysis, imported legacy evidence, and accepted result bundles from completed blindtesting sweeps. For active sandboxed execution during live runs, use `artifacts/runs/<agent-label>/<run-label>/` instead.
 
 Recommended structure:
 
@@ -15,7 +15,7 @@ Inside each run directory:
 ```text
 00-run-manifest.yaml
 summary.md
-alpha/
+01a/
   00-prompt-source.txt
   00-key-source.txt
   01-raw-response.md
@@ -25,13 +25,13 @@ alpha/
     <evaluator-label>/
       02-manual-score.md
       03-operator-notes.md
-zeta/
+01f/
   00-prompt-source.txt
   00-key-source.txt
   01-raw-response.md
   02-manual-score.md
   03-operator-notes.md
-iota/
+01i/
   00-prompt-source.txt
   00-key-source.txt
   01-raw-response.md

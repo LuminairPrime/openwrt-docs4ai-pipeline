@@ -137,49 +137,49 @@ procedure in [06-test-bank-and-grouped-delivery.md](./06-test-bank-and-grouped-d
 
 The cookbook center should mirror the old grouped-slice convention:
 
-- grouped question file and grouped answer key live side-by-side
+- batch prompt file and batch answer key live side-by-side
 - names should mirror each other
-- grouped run manifests should point to both files
+- run manifests should point to both files
 
 ### Naming rule
 
 Examples:
 
-- `01a-batch-alpha.md`
-- `01a-batch-alpha-key.md`
+- `01a.md`
+- `01a-key.md`
 
-- `01b-batch-beta.md`
-- `01b-batch-beta-key.md`
+- `01b.md`
+- `01b-key.md`
 
-- `01c-batch-gamma.md`
-- `01c-batch-gamma-key.md`
+- `01c.md`
+- `01c-key.md`
 
-- `01d-batch-delta.md`
-- `01d-batch-delta-key.md`
+- `01d.md`
+- `01d-key.md`
 
-- `01e-batch-epsilon.md`
-- `01e-batch-epsilon-key.md`
+- `01e.md`
+- `01e-key.md`
 
-- `01f-batch-zeta.md`
-- `01f-batch-zeta-key.md`
+- `01f.md`
+- `01f-key.md`
 
-- `01g-batch-eta.md`
-- `01g-batch-eta-key.md`
+- `01g.md`
+- `01g-key.md`
 
-- `01h-batch-theta.md`
-- `01h-batch-theta-key.md`
+- `01h.md`
+- `01h-key.md`
 
-- `01i-batch-iota.md`
-- `01i-batch-iota-key.md`
+- `01i.md`
+- `01i-key.md`
 
 This naming policy keeps the operator workflow obvious and matches the historical project shape.
 
-The current v14 full-pack rebatch spans `alpha` through `iota` and is intentionally tuned for one isolated agent session per grouped prompt file.
+The current v14 full-pack rebatch spans `01a` through `01i` and is intentionally tuned for one isolated agent session per batch prompt file.
 
-Any future remap that regenerates those grouped prompt files should treat
+Any future remap that regenerates those batch prompt files should treat
 [artifacts/templates/00-batch-prompt-header-template.md](./artifacts/templates/00-batch-prompt-header-template.md)
 as the single reusable source for the shared header block. Only the batch-specific body content
-and group-specific path examples should vary across regenerated files.
+and batch-specific path examples should vary across regenerated files.
 
 ---
 

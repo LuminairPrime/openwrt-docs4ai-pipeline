@@ -18,7 +18,7 @@ run:
     value: "verification"
   prior_accepted_scenarios: []
   omitted_as_already_accepted: []
-  groups_run: []
+  batches_run: []
   duplicate_fail_policy:
     allowed_values:
       - full-review

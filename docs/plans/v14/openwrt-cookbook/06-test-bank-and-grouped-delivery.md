@@ -117,37 +117,37 @@ This is why the rerun layout is now periodically remapped instead of only growin
 
 ---
 
-## 5. New Grouped Prompt Files To Run Manually
+## 5. Batch Prompt Files To Run Manually
 
-These are the new operator-facing grouped files created by the v14 center.
+These are the operator-facing batch files created by the v14 center.
 
 | Group | File | Scenarios inside | Why grouped this way |
 | --- | --- | --- | --- |
-| Alpha | `artifacts/test-groups/01a-batch-alpha.md` | S01, S03, S04 | one procd service boundary, one C ubus plugin boundary, and one modern LuCI JS form boundary |
-| Beta | `artifacts/test-groups/01b-batch-beta.md` | S02, S06, S09 | mixes native ucode ubus access, procd validation, and hotplug shell handling |
-| Gamma | `artifacts/test-groups/01c-batch-gamma.md` | S07, S05, S10 | separates C ubus reply construction, LuCI live-status rendering, and firstboot mutation |
-| Delta | `artifacts/test-groups/01d-batch-delta.md` | S08, S11, S12 | keeps ucode UCI mutation, buildroot package boilerplate, and standalone C ubus runtime setup apart |
-| Epsilon | `artifacts/test-groups/01e-batch-epsilon.md` | S13, S14, S19 | pairs native ucode fs/json, LuCI menu JSON, and guarded hotplug ubus forwarding |
-| Zeta | `artifacts/test-groups/01f-batch-zeta.md` | S15, S18, S20 | combines blobmsg C parsing, LuCI async status lifecycle, and mutation-only `uci-defaults` |
-| Eta | `artifacts/test-groups/01g-batch-eta.md` | S16, S21, S23 | groups async ucode process handling with `ucidef_*` helpers and package install layout |
-| Theta | `artifacts/test-groups/01h-batch-theta.md` | S22, S24, S25 | keeps advanced C parse/reply, rpcd ACL permissions, and shell config helpers distinct |
-| Iota | `artifacts/test-groups/01i-batch-iota.md` | S26, S27, S17 | ends with shell `jshn`, LuCI runtime-state extraction, and the diagnostic check kept last |
+| 01a | `artifacts/tests-batches/01a.md` | S01, S03, S04 | one procd service boundary, one C ubus plugin boundary, and one modern LuCI JS form boundary |
+| 01b | `artifacts/tests-batches/01b.md` | S02, S06, S09 | mixes native ucode ubus access, procd validation, and hotplug shell handling |
+| 01c | `artifacts/tests-batches/01c.md` | S07, S05, S10 | separates C ubus reply construction, LuCI live-status rendering, and firstboot mutation |
+| 01d | `artifacts/tests-batches/01d.md` | S08, S11, S12 | keeps ucode UCI mutation, buildroot package boilerplate, and standalone C ubus runtime setup apart |
+| 01e | `artifacts/tests-batches/01e.md` | S13, S14, S19 | pairs native ucode fs/json, LuCI menu JSON, and guarded hotplug ubus forwarding |
+| 01f | `artifacts/tests-batches/01f.md` | S15, S18, S20 | combines blobmsg C parsing, LuCI async status lifecycle, and mutation-only `uci-defaults` |
+| 01g | `artifacts/tests-batches/01g.md` | S16, S21, S23 | groups async ucode process handling with `ucidef_*` helpers and package install layout |
+| 01h | `artifacts/tests-batches/01h.md` | S22, S24, S25 | keeps advanced C parse/reply, rpcd ACL permissions, and shell config helpers distinct |
+| 01i | `artifacts/tests-batches/01i.md` | S26, S27, S17 | ends with shell `jshn`, LuCI runtime-state extraction, and the diagnostic check kept last |
 
-### Mirrored grouped answer keys
+### Mirrored batch answer keys
 
-| Group | Answer key file |
+| Batch | Answer key file |
 | --- | --- |
-| Alpha | `artifacts/test-groups/01a-batch-alpha-key.md` |
-| Beta | `artifacts/test-groups/01b-batch-beta-key.md` |
-| Gamma | `artifacts/test-groups/01c-batch-gamma-key.md` |
-| Delta | `artifacts/test-groups/01d-batch-delta-key.md` |
-| Epsilon | `artifacts/test-groups/01e-batch-epsilon-key.md` |
-| Zeta | `artifacts/test-groups/01f-batch-zeta-key.md` |
-| Eta | `artifacts/test-groups/01g-batch-eta-key.md` |
-| Theta | `artifacts/test-groups/01h-batch-theta-key.md` |
-| Iota | `artifacts/test-groups/01i-batch-iota-key.md` |
+| 01a | `artifacts/tests-batches/01a-key.md` |
+| 01b | `artifacts/tests-batches/01b-key.md` |
+| 01c | `artifacts/tests-batches/01c-key.md` |
+| 01d | `artifacts/tests-batches/01d-key.md` |
+| 01e | `artifacts/tests-batches/01e-key.md` |
+| 01f | `artifacts/tests-batches/01f-key.md` |
+| 01g | `artifacts/tests-batches/01g-key.md` |
+| 01h | `artifacts/tests-batches/01h-key.md` |
+| 01i | `artifacts/tests-batches/01i-key.md` |
 
-The v14 rule is now the same as the old system: grouped prompt files and grouped answer keys should be named similarly and stored similarly.
+The v14 rule is now the same as the old system: batch prompt files and batch answer keys should be named similarly and stored similarly.
 
 ### What you need to manually run now
 
@@ -155,23 +155,21 @@ You now have:
 
 - **14 admitted packets** total
 - **10 net-new scenario concepts** beyond the original 17
-- **9 grouped prompt files** total
+- **9 batch prompt files** total
 
-The current grouped manual-run set covers the **full 27-scenario pack** delivered in **9 grouped prompt files** after the balanced alpha-to-iota remap.
+The current manual-run set covers the **full 27-scenario pack** delivered in **9 batch prompt files** after the balanced 01a-to-01i remap.
 
 ---
 
 ## 6. File Locations
 
-### Prompt groups
+### Prompt batches
 
-Store grouped manual-run prompt files here:
+Store batch prompt files and their paired answer keys here:
 
 ```text
-docs/plans/v14/openwrt-cookbook/artifacts/test-groups/
+docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/
 ```
-
-Store the mirrored grouped answer keys in the same directory.
 
 ### Scenario packets
 
@@ -200,15 +198,15 @@ Each **run label** is one test-administration iteration for one target AI agent.
 ### Recommended path shape
 
 ```text
-artifacts/results/<agent-label>/<run-label>/<group-name>/
+artifacts/results/<target-agent-label>/<run-label>/<batch-id>/
 ```
 
 Example:
 
 ```text
-artifacts/results/claude-opus-4-6-thinking/2026-04-05-rerun-01/alpha/
-artifacts/results/claude-opus-4-6-thinking/2026-04-05-rerun-01/zeta/
-artifacts/results/claude-opus-4-6-thinking/2026-04-05-rerun-01/iota/
+artifacts/results/claude-opus-4-6-thinking/2026-04-05-rerun-01/01a/
+artifacts/results/claude-opus-4-6-thinking/2026-04-05-rerun-01/01f/
+artifacts/results/claude-opus-4-6-thinking/2026-04-05-rerun-01/01i/
 ```
 
 ### Expected files inside each group result folder
@@ -243,7 +241,7 @@ Inside that evaluator subfolder, the reviewing AI may write its own draft scorin
 Only the human-accepted final evaluation should live at the canonical top-level path:
 
 ```text
-artifacts/results/<target-agent-label>/<run-label>/<group-name>/02-manual-score.md
+artifacts/results/<target-agent-label>/<run-label>/<batch-id>/02-manual-score.md
 ```
 
 This keeps repeated evaluator passes from colliding while preserving one authoritative per-group score file.
@@ -281,8 +279,8 @@ Use these templates when creating a new result bundle:
 
 ## 8. Manual Execution Workflow
 
-1. Choose the grouped prompt file in `artifacts/test-groups/`
-2. Run that exact prompt against one target AI agent in a fresh isolated session dedicated to that single group
+1. Choose the batch prompt file in `artifacts/tests-batches/`
+2. Run that exact prompt against one target AI agent in a fresh isolated session dedicated to that single batch
 3. Preserve the raw answer under the agent's results subtree:
 	- if the target is a local IDE or CLI agent with file-write access, let it write directly to the canonical `01-raw-response.md` path for that run and group
 	- if the target is a web or chat agent without file-write access, copy the response into that file immediately after the run
@@ -319,39 +317,39 @@ If the human skips a previously accepted scenario in a later iteration, record t
 
 If the human reruns the duplicate and the evaluator chooses to skip full scoring, still leave a short note or short score record in the current run so later readers understand why the group was not fully rescored.
 
-The important rule is conversational isolation. Do not run Delta, Epsilon, and Zeta as one continuous mega-prompt if that would let the agent learn from earlier answers.
+The important rule is conversational isolation. Do not run 01d, 01e, and 01f as one continuous mega-prompt if that would let the agent learn from earlier answers.
 
 ---
 
-## 9. Machine-Readable Group Inventory
+## 9. Machine-Readable Batch Inventory
 
-The grouped prompt layout is also represented in:
+The batch prompt layout is also represented in:
 
-- [artifacts/test-groups/02-grouped-run-manifest.yaml](./artifacts/test-groups/02-grouped-run-manifest.yaml)
+- [artifacts/tests-batches/manifest.yaml](./artifacts/tests-batches/manifest.yaml)
 
-Use that file as the machine-readable grouping contract and this document as the human-readable operator explanation.
+Use that file as the machine-readable batch contract and this document as the human-readable operator explanation.
 
 The manifest owns:
 
-- group names and grouped file pairings
-- scenario membership inside each group
+- batch IDs and batch file pairings
+- scenario membership inside each batch
 - grouping rationale and category mix
 
 The manifest does **not** own the shared execution-contract header text that appears at the top
-of the grouped prompt files. That shared header is governed by
+of the batch prompt files. That shared header is governed by
 [artifacts/templates/00-batch-prompt-header-template.md](./artifacts/templates/00-batch-prompt-header-template.md).
 
-### 9A. Manual grouped-prompt refresh procedure
+### 9A. Manual batch prompt refresh procedure
 
-There is currently no dedicated grouped-prompt regeneration script documented or implemented in
-this repository. Until such a script exists, refresh grouped prompt files manually in this order:
+There is currently no dedicated batch prompt regeneration script documented or implemented in
+this repository. Until such a script exists, refresh batch prompt files manually in this order:
 
-1. update [artifacts/test-groups/02-grouped-run-manifest.yaml](./artifacts/test-groups/02-grouped-run-manifest.yaml) first so the machine-readable group membership is correct
-2. create or refresh the grouped prompt file header from [artifacts/templates/00-batch-prompt-header-template.md](./artifacts/templates/00-batch-prompt-header-template.md)
-3. vary only the batch-specific parts of that header, such as the group name, example scenario labels, and canonical `01-raw-response.md` path for that group
+1. update [artifacts/tests-batches/manifest.yaml](./artifacts/tests-batches/manifest.yaml) first so the machine-readable batch membership is correct
+2. create or refresh the batch prompt file header from [artifacts/templates/00-batch-prompt-header-template.md](./artifacts/templates/00-batch-prompt-header-template.md)
+3. vary only the batch-specific parts of that header, such as the batch ID, example scenario labels, and canonical `01-raw-response.md` path for that batch
 4. place the scenario bodies in the intended order without changing the shared clean-room, session-isolation, or output-routing contract ad hoc
-5. confirm the paired key file and grouped-run manifest still point to the same group file names after the refresh
-6. if the remap changes the operator-facing grouped layout, update the grouped tables and examples in this document as part of the same change
+5. confirm the paired key file and manifest still point to the same batch file names after the refresh
+6. if the remap changes the operator-facing batch layout, update the tables and examples in this document as part of the same change
 
 That procedure keeps the grouping contract, shared header contract, and operator docs synchronized even while grouped prompt refresh remains manual.
 

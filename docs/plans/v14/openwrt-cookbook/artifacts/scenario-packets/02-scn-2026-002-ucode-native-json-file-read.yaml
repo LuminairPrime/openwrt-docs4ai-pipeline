@@ -34,7 +34,7 @@ inspiration:
       path_or_url: "docs/plans/v14/openwrt-cookbook/01-current-cookbook-state-and-gap-map.md"
       locator: "Highest-Value Remaining Or Weakly Surfaced Gaps"
     - source_type: "frozen_test_packet"
-      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/00-batch-prompts.md"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/tests-full/full-prompts.md"
       locator: "Scenario 13"
 
 authority:
@@ -47,7 +47,7 @@ authority:
     locator: "native fs and JSON utility patterns"
   supporting_sources:
     - source_type: "frozen_test_packet"
-      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md"
       locator: "Scenario 13"
   why_authoritative: >-
     The upstream ucode utility surface plus the frozen golden key define the exact current-era pattern that should be taught.

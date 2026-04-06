@@ -8,9 +8,9 @@
 
 This v14 prototype treats these as the canonical rerun packet:
 
-- `artifacts/test-pack/00-batch-prompts.md`
-- `artifacts/test-pack/02-metadata-catalog.json`
-- `artifacts/test-pack/03-golden-answers-key.md`
+- `artifacts/tests-full/full-prompts.md`
+- `artifacts/tests-full/metadata-catalog.json`
+- `artifacts/tests-full/golden-answers-key.md`
 
 New scenarios may be added later, but every new addition must clear the same admission rules documented here.
 
@@ -274,4 +274,4 @@ The expected output of that workflow is a filled copy of [artifacts/templates/00
 
 Admitted real packets should then be stored under `artifacts/scenario-packets/` so the operator can distinguish live candidates from the blank template.
 
-After admission, decide whether the scenario should immediately appear in a grouped prompt file under `artifacts/test-groups/` or remain only as a packet until enough non-overlapping scenarios exist to form a clean batch.
+After admission, decide whether the scenario should immediately appear in a batch prompt file under `artifacts/tests-batches/` or remain only as a packet until enough non-overlapping scenarios exist to form a clean batch.

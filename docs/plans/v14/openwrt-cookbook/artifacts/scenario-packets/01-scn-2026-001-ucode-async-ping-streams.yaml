@@ -35,7 +35,7 @@ inspiration:
       path_or_url: "docs/plans/v14/openwrt-cookbook/01-current-cookbook-state-and-gap-map.md"
       locator: "Highest-Value Remaining Or Weakly Surfaced Gaps"
     - source_type: "frozen_test_packet"
-      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/00-batch-prompts.md"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/tests-full/full-prompts.md"
       locator: "Scenario 16"
 
 authority:
@@ -48,7 +48,7 @@ authority:
     locator: "async process and ucode utility patterns; paired with Scenario 16 golden truths"
   supporting_sources:
     - source_type: "frozen_test_packet"
-      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md"
       locator: "Scenario 16"
   why_authoritative: >-
     This boundary is defined by current-era ucode and the frozen golden key already extracted from the

@@ -8,9 +8,9 @@
 
 | V13 source | V14 destination | Why copied |
 | --- | --- | --- |
-| `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/00-batch-prompts.md` | `artifacts/test-pack/00-batch-prompts.md` | Canonical blind prompt packet |
-| `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/02-metadata-catalog.json` | `artifacts/test-pack/02-metadata-catalog.json` | Canonical expected-paradigm catalog |
-| `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/03-golden-answers-key.md` | `artifacts/test-pack/03-golden-answers-key.md` | Canonical truth and falseness schema |
+| `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/00-batch-prompts.md` | `artifacts/tests-full/full-prompts.md` | Canonical blind prompt packet |
+| `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/02-metadata-catalog.json` | `artifacts/tests-full/metadata-catalog.json` | Canonical expected-paradigm catalog |
+| `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/03-golden-answers-key.md` | `artifacts/tests-full/golden-answers-key.md` | Canonical truth and falseness schema |
 
 These three files are the frozen rerun packet for this prototype center.
 

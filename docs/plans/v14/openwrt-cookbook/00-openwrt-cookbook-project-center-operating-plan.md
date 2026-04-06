@@ -83,7 +83,7 @@ The core working artifacts for the prototype now live here:
 - scenario admission template: [artifacts/templates/00-scenario-admission-template.yaml](./artifacts/templates/00-scenario-admission-template.yaml)
 - grouped prompt header template: [artifacts/templates/00-batch-prompt-header-template.md](./artifacts/templates/00-batch-prompt-header-template.md)
 - admitted packet examples: `artifacts/scenario-packets/`
-- grouped operator prompt files: `artifacts/test-groups/`
+- batch prompt files: `artifacts/tests-batches/`
 - manual agent result bundles: `artifacts/results/`
 
 Use the seed registry as the frozen starting ontology. Use the live registry to track mutable workflow state over time.
@@ -218,7 +218,7 @@ When there is conflict, use this precedence order.
 | --- | --- | --- |
 | 1 | Current upstream OpenWrt, LuCI, packages, procd, rpcd, libubus, libubox code | Highest authority for implementation patterns |
 | 2 | Current repo corpus and authored cookbook pages | Repository-local truth surface for routing, summaries, and already-verified teaching material |
-| 3 | Active frozen test-pack artifacts in this project center | Reproducibility inputs for reruns |
+| 3 | Active frozen tests-full artifacts in this project center | Reproducibility inputs for reruns |
 | 4 | OpenWrt wiki or official release material | Useful for public-facing phrasing and historical explanation |
 | 5 | Archive threads and mailing-list evidence | Strong source for recurring confusion, migration pain, and historical context |
 | 6 | Prior synthesis docs and model score summaries | Useful evidence, but not final authority by themselves |
@@ -581,9 +581,9 @@ Retest / Benchmark / Future Skill Extraction
 
 This center physically copies only the minimum artifact set needed for reproducible reruns:
 
-- `artifacts/test-pack/00-batch-prompts.md`
-- `artifacts/test-pack/02-metadata-catalog.json`
-- `artifacts/test-pack/03-golden-answers-key.md`
+- `artifacts/tests-full/full-prompts.md`
+- `artifacts/tests-full/metadata-catalog.json`
+- `artifacts/tests-full/golden-answers-key.md`
 
 Everything else is summarized or referenced.
 
@@ -647,7 +647,7 @@ This prototype is considered useful if it achieves all of the following:
 1. another maintainer can explain where new tests should come from
 2. another maintainer can tell when one failure is enough to open cookbook work
 3. another maintainer can tell whether to create a new page or extend an existing one
-4. the copied test-pack artifacts are frozen and easy to find
+4. the copied tests-full artifacts are frozen and easy to find
 5. the rationale lives here instead of being spread across v13 notes
 
 ---

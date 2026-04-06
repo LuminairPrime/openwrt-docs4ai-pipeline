@@ -1,7 +1,7 @@
-Grouped prompt file used for this run:
+Batch prompt file used for this run:
 
-Path: docs/plans/v14/openwrt-cookbook/artifacts/test-groups/<grouped-prompt-file>.md
-Group name: <alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota>
+Path: docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/<batch-id>.md
+Batch ID: <01a|01b|01c|01d|01e|01f|01g|01h|01i>
 Execution form: <canonical|reduced-follow-on>
 Omitted scenarios already accepted elsewhere: <none|SXX,SYY>
 Copied or executed on: YYYY-MM-DD

@@ -66,7 +66,7 @@ families:
         - Cross-batch synthesis explicitly called out the need for a complete uci_load_validate cookbook treatment.
         - Golden key records procd and validation as mandatory structural truths.
     authority_sources:
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
       - static/cookbook-source/procd-service-lifecycle.md
     cookbook_destinations:
       existing_pages:
@@ -121,7 +121,7 @@ families:
     authority_sources:
       - static/cookbook-source/firstboot-uci-defaults-pattern.md
       - static/cookbook-source/firstboot-wifi-policy.md
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
     cookbook_destinations:
       existing_pages:
         - static/cookbook-source/firstboot-uci-defaults-pattern.md
@@ -211,7 +211,7 @@ families:
     authority_sources:
       - static/cookbook-source/luci-form-with-uci.md
       - static/cookbook-source/luci-uhttpd-https-auth.md
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
     cookbook_destinations:
       existing_pages:
         - static/cookbook-source/luci-form-with-uci.md
@@ -244,7 +244,7 @@ families:
         - Cross-batch synthesis named native ucode JSON parsing as a universal blind spot.
     authority_sources:
       - static/cookbook-source/uci-read-write-from-ucode.md
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
     cookbook_destinations:
       existing_pages:
         - static/cookbook-source/uci-read-write-from-ucode.md
@@ -273,7 +273,7 @@ families:
       notes:
         - Cross-batch synthesis named this the single strongest blind spot across both batches.
     authority_sources:
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
       - docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md
     cookbook_destinations:
       existing_pages: []
@@ -306,7 +306,7 @@ families:
       notes:
         - Cross-batch synthesis identified the missing ubus_add_uloop() pattern as a major blind spot and proposed a dedicated C skeleton page.
     authority_sources:
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
       - static/cookbook-source/ucode-rpcd-service-pattern.md
     cookbook_destinations:
       existing_pages:
@@ -334,7 +334,7 @@ families:
         - Cookbook coverage already exists for the minimal package Makefile boundary.
     authority_sources:
       - static/cookbook-source/minimal-openwrt-package-makefile.md
-      - docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md
+      - docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md
     cookbook_destinations:
       existing_pages:
         - static/cookbook-source/minimal-openwrt-package-makefile.md

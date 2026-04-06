@@ -1,0 +1,143 @@
+# This manifest is the machine-readable batch contract.
+# It records batch membership, file pairings, scenario membership, and grouping rationale.
+# The shared batch execution header is governed separately by
+# artifacts/templates/00-batch-prompt-header-template.md.
+# If a batch is remapped or refreshed, update this manifest first and then refresh the
+# batch prompt header from that template rather than rewriting the shared contract in this
+# manifest.
+
+manifest_version: 1
+purpose: batch-manual-rerun-layout
+batches:
+  - batch_id: 01a
+    file: artifacts/tests-batches/01a.md
+    answer_key: artifacts/tests-batches/01a-key.md
+    scenarios:
+      - scenario_id: "01"
+        category: core_daemon_procd
+      - scenario_id: "03"
+        category: c_plugin_libubus
+      - scenario_id: "04"
+        category: luci_js_frontend
+    grouping_rationale: >-
+      Opens the full-pack rebatch with one procd service boundary, one native C ubus plugin
+      boundary, and one modern LuCI JS form boundary; success on one should not cheaply train
+      the others.
+  - batch_id: 01b
+    file: artifacts/tests-batches/01b.md
+    answer_key: artifacts/tests-batches/01b-key.md
+    scenarios:
+      - scenario_id: "02"
+        category: implicit_ucode_ubus_backend
+      - scenario_id: "06"
+        category: core_daemon_procd
+        source_packet: artifacts/scenario-packets/04-scn-2026-004-procd-uci-load-validate-loglevel.yaml
+      - scenario_id: "09"
+        category: shell_hotplug_d
+    grouping_rationale: >-
+      Mixes native ucode ubus access, procd validation, and hotplug shell event handling,
+      which keeps the three answer paths structurally distinct.
+  - batch_id: 01c
+    file: artifacts/tests-batches/01c.md
+    answer_key: artifacts/tests-batches/01c-key.md
+    scenarios:
+      - scenario_id: "07"
+        category: c_plugin_libubus
+      - scenario_id: "05"
+        category: luci_js_frontend
+      - scenario_id: "10"
+        category: shell_uci_defaults
+    grouping_rationale: >-
+      Pairs a C ubus reply-construction task with a LuCI live-status table and a firstboot
+      mutation script so none of the three solutions reveals the next one.
+  - batch_id: 01d
+    file: artifacts/tests-batches/01d.md
+    answer_key: artifacts/tests-batches/01d-key.md
+    scenarios:
+      - scenario_id: "08"
+        category: explicit_ucode_uci_backend
+      - scenario_id: "11"
+        category: makefile_build_system
+      - scenario_id: "12"
+        category: c_uloop_daemon
+        source_packet: artifacts/scenario-packets/03-scn-2026-003-c-libubus-daemon-skeleton.yaml
+    grouping_rationale: >-
+      Keeps ucode UCI mutation, buildroot package compilation structure, and standalone C
+      ubus/uloop daemon setup in one balanced batch without same-family bleed.
+  - batch_id: 01e
+    file: artifacts/tests-batches/01e.md
+    answer_key: artifacts/tests-batches/01e-key.md
+    scenarios:
+      - scenario_id: "13"
+        category: ucode_fs_json
+        source_packet: artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml
+      - scenario_id: "14"
+        category: luci_menu_json
+      - scenario_id: "19"
+        category: shell_hotplug_ubus_forward
+        source_packet: artifacts/scenario-packets/06-scn-2026-006-hotplug-json-forward-ubus.yaml
+    grouping_rationale: >-
+      Preserves the Scenario 13 verification boundary while pairing it with LuCI menu JSON and
+      guarded hotplug ubus forwarding, which keeps runtime layers distinct.
+  - batch_id: 01f
+    file: artifacts/tests-batches/01f.md
+    answer_key: artifacts/tests-batches/01f-key.md
+    scenarios:
+      - scenario_id: "15"
+        category: c_blobmsg_parsing
+      - scenario_id: "18"
+        category: luci_js_async_status
+        source_packet: artifacts/scenario-packets/05-scn-2026-005-luci-load-render-rpc-status.yaml
+      - scenario_id: "20"
+        category: shell_uci_defaults_mutation
+        source_packet: artifacts/scenario-packets/07-scn-2026-007-uci-defaults-mutation-not-initd.yaml
+    grouping_rationale: >-
+      Puts one C blobmsg parse boundary, one LuCI async lifecycle boundary, and one firstboot
+      mutation-only shell boundary together to maximize diversity while keeping the batch compact.
+  - batch_id: 01g
+    file: artifacts/tests-batches/01g.md
+    answer_key: artifacts/tests-batches/01g-key.md
+    scenarios:
+      - scenario_id: "16"
+        category: implicit_uloop_async
+        source_packet: artifacts/scenario-packets/01-scn-2026-001-ucode-async-ping-streams.yaml
+      - scenario_id: "21"
+        category: shell_ucidef_helpers
+        source_packet: artifacts/scenario-packets/08-scn-2026-008-ucidef-helper-wan-pppoe.yaml
+      - scenario_id: "23"
+        category: makefile_package_install_layout
+        source_packet: artifacts/scenario-packets/10-scn-2026-010-package-install-luci-rpcd-bootstrap.yaml
+    grouping_rationale: >-
+      Combines async ucode process handling, helper-driven board defaults, and package runtime
+      install layout without placing adjacent shell or buildroot lessons together.
+  - batch_id: 01h
+    file: artifacts/tests-batches/01h.md
+    answer_key: artifacts/tests-batches/01h-key.md
+    scenarios:
+      - scenario_id: "22"
+        category: c_blobmsg_parse_reply
+        source_packet: artifacts/scenario-packets/09-scn-2026-009-c-blobmsg-parse-nested-reply.yaml
+      - scenario_id: "24"
+        category: rpcd_acl_contract
+        source_packet: artifacts/scenario-packets/11-scn-2026-011-rpcd-acl-silent-failure.yaml
+      - scenario_id: "25"
+        category: shell_uci_config_helpers
+        source_packet: artifacts/scenario-packets/12-scn-2026-012-shell-config-load-get.yaml
+    grouping_rationale: >-
+      Keeps the advanced C parse-plus-reply contract, rpcd ACL permission boundary, and shell
+      config-helper API in separate answer families while still delivering a balanced triad.
+  - batch_id: 01i
+    file: artifacts/tests-batches/01i.md
+    answer_key: artifacts/tests-batches/01i-key.md
+    scenarios:
+      - scenario_id: "26"
+        category: shell_jshn_json
+        source_packet: artifacts/scenario-packets/13-scn-2026-013-shell-jshn-structured-json.yaml
+      - scenario_id: "27"
+        category: ubus_netifd_runtime_state
+        source_packet: artifacts/scenario-packets/14-scn-2026-014-netifd-ubus-runtime-state.yaml
+      - scenario_id: "17"
+        category: diagnostic
+    grouping_rationale: >-
+      Ends the full-pack layout with shell JSON parsing, LuCI runtime-state extraction, and the
+      diagnostic architecture check; Scenario 17 stays at the tail of its batch to limit priming.

@@ -14,15 +14,15 @@
 ## Inputs Consumed
 
 - Scenario packet: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
-- Blind or grouped prompt: `docs/plans/v14/openwrt-cookbook/artifacts/test-groups/01e-batch-epsilon.md`
-- Frozen answer key: `docs/plans/v14/openwrt-cookbook/artifacts/test-groups/01e-batch-epsilon-key.md`
+- Blind or batch prompt: `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md`
+- Frozen answer key: `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md`
 - Supporting scenario references:
-  - `docs/plans/v14/openwrt-cookbook/artifacts/test-pack/00-batch-prompts.md` (Scenario 13 wording)
-  - `docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md` (Scenario 13 truths and falses)
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-full/full-prompts.md` (Scenario 13 wording)
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md` (Scenario 13 truths and falses)
 - Raw failure response(s):
-  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-alpha-import-01/epsilon/01-raw-response.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-alpha-import-01/epsilon/02-manual-score.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-alpha-import-01/epsilon/03-operator-notes.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/01-raw-response.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/02-manual-score.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/03-operator-notes.md`
 - Existing cookbook pages considered:
   - `static/cookbook-source/uci-read-write-from-ucode.md`
   - `static/cookbook-source/ucode-native-file-io-and-json.md`

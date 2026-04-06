@@ -6,7 +6,7 @@ origin_type: authored
 when_to_use: "Use when a ucode script or rpcd helper needs structured data from a non-UCI JSON file and should stay entirely inside the ucode runtime."
 related_modules: [ucode, luci-examples, uci]
 era_status: current
-verification_basis: "drafted from SCN-2026-002, the epsilon grouped verification slice, imported real blind-failure evidence, the live cookbook page, and current local plus upstream ucode authority surfaces"
+verification_basis: "drafted from SCN-2026-002, the 01e batch verification slice, imported real blind-failure evidence, the live cookbook page, and current local plus upstream ucode authority surfaces"
 reviewed_by: draft
 last_reviewed: 2026-04-05
 ---
@@ -142,11 +142,11 @@ UCI is the right abstraction only for UCI-managed configuration. It is not a gen
 
 - Exact corpus files checked:
   - `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/test-groups/01e-batch-epsilon.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/test-groups/01e-batch-epsilon-key.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-alpha-import-01/epsilon/01-raw-response.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-alpha-import-01/epsilon/02-manual-score.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-alpha-import-01/epsilon/03-operator-notes.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/01-raw-response.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/02-manual-score.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/03-operator-notes.md`
   - `openwrt-condensed-docs-renamed/L1-raw/ucode/c_source-api-module-fs.md`
   - `static/cookbook-source/ucode-native-file-io-and-json.md`
 - Exact upstream files or URLs checked:

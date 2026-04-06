@@ -1,0 +1,10 @@
+Imported evidence source mapping for Scenario 13.
+
+Original prompt source:
+- docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/01a-batch-alpha.md
+
+Current cookbook-center batch verification mapping:
+- docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md
+
+Prompt text:
+Write an OpenWrt script snippet that safely reads an external JSON file from '/etc/my_app/config.json', parses the data natively, and prints the value of the 'startup_delay' key.

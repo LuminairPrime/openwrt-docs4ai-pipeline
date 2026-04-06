@@ -25,7 +25,7 @@ master inventory prompt header.
 - Local IDE or CLI agents with file-write access should not create standalone code
   files, scratch scripts, or other extra artifacts in the repository.
 - For grouped blind runs, local agents should write the complete compiled response
-  to `artifacts/results/<agent-label>/<run-label>/<group-name>/01-raw-response.md`
+  to `artifacts/runs/<agent-label>/<run-label>/<batch-id>/01-raw-response.md`
   relative to the repository root.
 - For non-grouped inventory runs, the operator should supply one explicit output
   destination before execution or capture the response manually after the run.
@@ -42,6 +42,6 @@ master inventory prompt header.
 
 - Do not force a canned fallback token such as `Failure`; the blind run should stay
   an honest internal-knowledge answer or explicit uncertainty statement.
-- The grouped files under `artifacts/test-groups/` are the default blind-run
-  surface. The combined `00-batch-prompts.md` file is the full inventory reference
+- The batch files under `artifacts/tests-batches/` are the default blind-run
+  surface. The combined `full-prompts.md` file is the full inventory reference
   and should not be the default execution surface.

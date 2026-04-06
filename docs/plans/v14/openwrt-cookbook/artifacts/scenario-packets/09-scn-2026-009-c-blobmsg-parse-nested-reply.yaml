@@ -38,7 +38,7 @@ authority:
     locator: "blobmsg_parse() handler patterns"
   supporting_sources:
     - source_type: "frozen_test_packet"
-      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md"
       locator: "Scenario 07 and Scenario 15 truths"
   why_authoritative: >-
     The local hostapd source anchors the parse contract, and the inherited golden key anchors the canonical reply contract.

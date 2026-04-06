@@ -152,8 +152,8 @@ JSON is structured data. Text slicing appears to work until formatting, escaping
 
 - Exact corpus files checked:
   - `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/test-groups/01e-batch-epsilon.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/test-groups/01e-batch-epsilon-key.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md`
   - `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/01a-batch-alpha-key-sonnet46.md`
   - `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/results/alpha/significantotter.txt`
   - `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/results/alpha/significantotter-score-20260328-0628pm.md`
