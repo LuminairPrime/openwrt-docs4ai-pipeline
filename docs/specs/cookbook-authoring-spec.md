@@ -101,7 +101,7 @@ agent must consume all of the following inputs:
 2. the blind prompt or grouped prompt file used to test the boundary
 3. the frozen answer key for that scenario or grouped batch
 4. at least one raw blind-failure response from
-  `docs/plans/v14/openwrt-cookbook-project-center/artifacts/results/<agent-id>/<run-id>/`
+  `docs/plans/v14/openwrt-cookbook/artifacts/results/<agent-id>/<run-id>/`
   when the page is being created as a remediation unit rather than a speculative note
 5. the authority source files or URLs that define the correct OpenWrt behavior
 6. the list of existing cookbook pages considered before deciding on a new page or
@@ -121,11 +121,11 @@ When a cookbook page is created through the v14 cookbook center, authoring shoul
 a staging workflow rather than writing straight into the live corpus:
 
 1. write the working draft under
-  `docs/plans/v14/openwrt-cookbook-project-center/artifacts/authoring/drafts/`
+  `docs/plans/v14/openwrt-cookbook/artifacts/authoring/drafts/`
 2. write a companion creation log under
-  `docs/plans/v14/openwrt-cookbook-project-center/artifacts/authoring/logs/`
+  `docs/plans/v14/openwrt-cookbook/artifacts/authoring/logs/`
 3. write a human review record under
-  `docs/plans/v14/openwrt-cookbook-project-center/artifacts/authoring/reviews/`
+  `docs/plans/v14/openwrt-cookbook/artifacts/authoring/reviews/`
 4. run the v14 promotion and review gates
 5. only then promote the settled content into `static/cookbook-source/`
 
@@ -135,7 +135,7 @@ targeted, what was deliberately excluded, and why the final page shape was chose
 The review record must capture the review decision, the exact issues found, and whether
 the draft is accepted, revised in staging, or returned to evidence collection. Human
 review procedure is defined in
-`docs/plans/v14/openwrt-cookbook-project-center/10-human-review-procedure.md`.
+`docs/plans/v14/openwrt-cookbook/10-human-review-procedure.md`.
 
 ## Metadata Mapping Contract
 

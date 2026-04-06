@@ -1,0 +1,135 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for native ucode file I/O plus JSON parsing.
+  required_rule: >-
+    This packet should open or justify a dedicated page if existing adjacent ucode docs remain insufficient.
+
+scenario:
+  scenario_id: "SCN-2026-002"
+  short_name: "ucode-native-json-file-read"
+  title: "uCode native file read and JSON parse"
+  category: "ucode_fs_json"
+  openwrt_boundary: "native fs.readfile() plus json() instead of shell-level JSON parsing"
+  programming_family: "Native ucode runtime model"
+
+inspiration:
+  primary_kind: "blind_failure"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Scenario 13 produced a universal blind spot around native ucode JSON parsing, and the current corpus still
+    lacks a clearly dedicated page for file I/O plus JSON handling as a standalone lesson.
+  primary_source:
+    source_type: "repo_plan"
+    path_or_url: "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md"
+    locator: "Blind Spot 1 and Scenario 13 notes"
+  supporting_sources:
+    - source_type: "repo_doc"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/01-current-cookbook-state-and-gap-map.md"
+      locator: "Highest-Value Remaining Or Weakly Surfaced Gaps"
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/00-batch-prompts.md"
+      locator: "Scenario 13"
+
+authority:
+  summary: >-
+    Modern ucode should read files natively through the fs module and parse JSON through json(), rather than
+    shelling out to cat, jq, jsonfilter, or jshn wrappers.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "https://github.com/openwrt/openwrt/blob/master/package/utils/cli/files/usr/share/ucode/cli/utils.uc"
+    locator: "native fs and JSON utility patterns"
+  supporting_sources:
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      locator: "Scenario 13"
+  why_authoritative: >-
+    The upstream ucode utility surface plus the frozen golden key define the exact current-era pattern that should be taught.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt ucode snippet that reads /etc/my_app/config.json, parses it natively, and prints the value of the startup_delay key.
+  prompt_notes:
+    - "Do not mention fs.readfile() or json() explicitly."
+    - "Keep the task about native file I/O and JSON parsing, not broader config management."
+    - "Preserve enough OpenWrt specificity that generic shell parsing can fail."
+
+scoring:
+  expected_paradigms:
+    - "import * as fs from 'fs'"
+    - "fs.readfile()"
+    - "json(...)"
+    - "native property extraction from parsed data"
+  explicit_falsenesses:
+    - "cat plus jq"
+    - "jsonfilter or jshn wrappers"
+    - "grep, awk, or sed JSON parsing"
+    - "subprocess-only file reading"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-UCODE-NATIVE"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet targets the defining native file I/O and JSON parsing blind spot inside the ucode-native family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/uci-read-write-from-ucode.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    The existing page covers UCI mutation from ucode, but does not clearly own general-purpose native file reads and JSON parsing.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "new-standalone-page"
+  target_pages:
+    - "static/cookbook-source/ucode-native-file-io-and-json.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "epsilon"
+    do_not_batch_with_scenarios: []
+    do_not_batch_with_categories: []
+    rationale: "Keep native ucode fs/json parsing in epsilon with LuCI menu JSON and hotplug forwarding, not beside other ucode-runtime prompts."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: >-
+    This packet formalizes a known universal blind spot and is best used as a remediation-verification scenario
+    once dedicated cookbook coverage exists.

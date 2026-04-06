@@ -1,8 +1,23 @@
 <#
 .SYNOPSIS
-    Install curated agent skills from multiple community repos into three tool destinations.
+    Deprecated installer kept only as a migration stub.
 
 .DESCRIPTION
+        Deprecated. Do not use this script for the current local skill layout.
+
+        The repository now treats `.agents\skills\` as the canonical local skill
+        root, mirrors that curated set into `.claude\skills\` and
+        `.kilocode\skills\` via `sync_local_skills.py`, and keeps
+        `.github\instructions\` as a minimal instruction overlay set.
+
+        This legacy installer previously repopulated `.claude\skills\` and
+        `.github\instructions\`, which would undo the April 2026 prompt-surface
+        cleanup.
+
+        Use instead:
+            python tools/agents-skills/sync_local_skills.py --dry-run --prune
+            python tools/agents-skills/sync_local_skills.py --force --prune
+
     References and Inspiration:
       - https://www.reddit.com/r/ClaudeAI/comments/1rwzbcv/i_applied_my_skillwriting_principles_to_159/
       - https://github.com/AbsolutelySkilled/AbsolutelySkilled
@@ -60,6 +75,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+throw "install-claude-skills.ps1 is deprecated. Use tools/agents-skills/sync_local_skills.py --force --prune from the repo root instead."
 
 # =============================================================================
 # SKILL MANIFEST

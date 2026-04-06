@@ -132,5 +132,5 @@ uci.get('my_app', 'main', 'startup_delay');
 - `fs.readfile(path, [limit])` verified from condensed corpus `ucode/c_source-api-module-fs.md`
 - `json()` semantics verified from current upstream ucode JSON tests under `tmp/authoring-repos/repo-ucode-full/tests/custom/03_stdlib/34_json`
 - native file-read plus parse blind spot verified by Scenario 13 in the frozen test pack and cross-batch synthesis
-- scenario packet reference for this page: `docs/plans/v14/openwrt-cookbook-project-center/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
+- scenario packet reference for this page: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
 - known limitation: this page covers native JSON file parsing, not streaming process output or UCI-backed configuration mutation

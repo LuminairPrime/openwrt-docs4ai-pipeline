@@ -1,0 +1,127 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the runtime shape returned by network.interface dump.
+  required_rule: >-
+    Keep the scenario about the returned ubus data structure, not broader LuCI form construction.
+
+scenario:
+  scenario_id: "SCN-2026-014"
+  short_name: "netifd-ubus-runtime-state"
+  title: "network.interface dump runtime state shape"
+  category: "ubus_netifd_runtime_state"
+  openwrt_boundary: "extracting live IPv4 data from the network.interface dump ubus response"
+  programming_family: "LuCI/runtime ubus state"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local LuCI code reads network.interface dump by treating ipv4-address as an array of objects, a detail generic AI answers frequently flatten or invent incorrectly.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/luci-examples/chunked-reference/example_app-luci-app-dockerman-htdocs-luci-static-resources-dockerman-api-js.md"
+    locator: "callNetworkInterfaceDump declaration and ipv4-address access"
+
+authority:
+  summary: >-
+    Correct LuCI-side runtime extraction uses network.interface.dump with expect { interface: [] } and walks ipv4-address as an array of objects exposing address fields.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/luci-examples/chunked-reference/example_app-luci-app-dockerman-htdocs-luci-static-resources-dockerman-api-js.md"
+    locator: "network.interface dump response handling"
+  supporting_sources:
+    - source_type: "repo_doc"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/tmp/cookbook-test-coverage-gap-analysis.md"
+      locator: "candidate 3.1 verification summary"
+  why_authoritative: >-
+    The production LuCI example shows the exact runtime shape and extraction pattern for live netifd interface data.
+
+blind_prompt:
+  prompt_text: |
+    Write a LuCI/OpenWrt JS snippet that calls the runtime network-interface dump over ubus and extracts the first non-loopback IPv4 address for the `lan` interface from the returned data structure.
+  prompt_notes:
+    - "Do not turn this into a full view file."
+    - "The key boundary is the structure of the dump response."
+
+scoring:
+  expected_paradigms:
+    - "rpc.declare"
+    - "object: 'network.interface'"
+    - "method: 'dump'"
+    - "expect: { 'interface': [] }"
+    - "iface['ipv4-address']"
+    - "a.address"
+  explicit_falsenesses:
+    - "flat ipv4 string"
+    - "wrong ubus object"
+    - "wrong method"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-UBUS-SURFACES"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet extends the existing ubus surface family with a concrete runtime-state shape lesson."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/inter-component-communication-map.md"
+    - "static/cookbook-source/runtime-device-identity-via-ubus.md"
+  already_adequately_covered: true
+  coverage_rationale: >-
+    The family is broadly covered already; this packet is primarily useful as a sharper verification and benchmark probe for runtime-state shape mistakes.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "golden-key-only"
+  target_pages:
+    - "static/cookbook-source/runtime-device-identity-via-ubus.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "iota"
+    do_not_batch_with_scenarios:
+      - "18"
+    do_not_batch_with_categories:
+      - "luci_js_async_status"
+    rationale: "Keep runtime-state structure separate from the adjacent LuCI async load/render lifecycle lesson."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a fully verified netifd runtime-shape packet using current LuCI example code."

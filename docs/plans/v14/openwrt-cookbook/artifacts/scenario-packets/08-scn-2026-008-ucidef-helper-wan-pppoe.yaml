@@ -1,0 +1,122 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the ucidef helper boundary in board-default shell work.
+  required_rule: >-
+    Keep the scenario narrowly about helper API choice rather than whole board.d file layout.
+
+scenario:
+  scenario_id: "SCN-2026-008"
+  short_name: "ucidef-helper-wan-pppoe"
+  title: "ucidef helper usage for WAN PPPoE defaults"
+  category: "shell_ucidef_helpers"
+  openwrt_boundary: "helper-driven board defaults via /lib/functions/uci-defaults.sh"
+  programming_family: "Firstboot persistence"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local helper definitions and target-specific usage show that some board defaults should use ucidef helpers rather than raw UCI mutation.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-openwrt-full/target/linux/lantiq/base-files/lib/functions/lantiq.sh"
+    locator: "ucidef_set_interface_wan \"dsl0\" \"pppoe\""
+
+authority:
+  summary: >-
+    The correct helper surface lives in /lib/functions/uci-defaults.sh and should be used when the task is specifically about helper-owned board defaults.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/authoring-repos/repo-openwrt-full/package/base-files/files/lib/functions/uci-defaults.sh"
+    locator: "ucidef_set_interface_wan helper definition"
+  supporting_sources:
+    - source_type: "upstream_code"
+      path_or_url: "tmp/authoring-repos/repo-openwrt-full/target/linux/lantiq/base-files/lib/functions/lantiq.sh"
+      locator: "helper invocation for WAN PPPoE"
+  why_authoritative: >-
+    Both the helper definition and a concrete local invocation are available in the workspace.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt board-defaults shell snippet that uses the helper APIs from /lib/functions/uci-defaults.sh to declare the WAN interface on dsl0 with protocol pppoe, instead of writing raw uci set commands.
+  prompt_notes:
+    - "Keep the task about helper choice, not full board file structure."
+
+scoring:
+  expected_paradigms:
+    - ". /lib/functions/uci-defaults.sh"
+    - "ucidef_set_interface_wan \"dsl0\" \"pppoe\""
+  explicit_falsenesses:
+    - "raw uci set"
+    - "manual /etc/config/network editing"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-FIRSTBOOT"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates the helper-owned board-default branch inside the firstboot family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/firstboot-wifi-policy.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    Existing firstboot coverage is adjacent, but helper-owned board-default APIs remain a distinct boundary worth testing.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "golden-key-only"
+  target_pages:
+    - "static/cookbook-source/firstboot-wifi-policy.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "eta"
+    do_not_batch_with_scenarios:
+      - "10"
+      - "20"
+    do_not_batch_with_categories:
+      - "shell_uci_defaults"
+      - "shell_uci_defaults_mutation"
+    rationale: "Keep helper-driven board-default logic separate from raw uci-defaults mutation prompts."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a helper-boundary scenario based on local helper definitions and local target usage."

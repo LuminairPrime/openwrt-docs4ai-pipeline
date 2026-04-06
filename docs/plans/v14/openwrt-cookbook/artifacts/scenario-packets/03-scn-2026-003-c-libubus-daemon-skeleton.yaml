@@ -1,0 +1,135 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the standalone C libubus daemon initialization boundary.
+  required_rule: >-
+    Keep this scenario tightly scoped to daemon skeleton and event loop order, not full object registration or business logic.
+
+scenario:
+  scenario_id: "SCN-2026-003"
+  short_name: "c-libubus-daemon-skeleton"
+  title: "Standalone C libubus daemon skeleton"
+  category: "c_uloop_daemon"
+  openwrt_boundary: "uloop and ubus initialization order for a standalone C daemon"
+  programming_family: "C daemon and RPC contract discipline"
+
+inspiration:
+  primary_kind: "blind_failure"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Cross-batch findings showed the ubus_add_uloop boundary is still weakly known, and the current cookbook corpus has no obvious dedicated page for this exact standalone C service skeleton.
+  primary_source:
+    source_type: "repo_plan"
+    path_or_url: "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md"
+    locator: "Blind Spot 4 and Scenario 12 notes"
+  supporting_sources:
+    - source_type: "repo_doc"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/01-current-cookbook-state-and-gap-map.md"
+      locator: "Highest-Value Remaining Or Weakly Surfaced Gaps"
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/00-batch-prompts.md"
+      locator: "Scenario 12"
+
+authority:
+  summary: >-
+    A standalone OpenWrt C daemon must initialize the event loop, connect to ubus, register the bus with the loop, and only then enter uloop_run().
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "https://github.com/openwrt/packages/blob/master/net/udhcpsnoop/src/ubus.c"
+    locator: "daemon setup and ubus plus uloop integration"
+  supporting_sources:
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      locator: "Scenario 12"
+  why_authoritative: >-
+    This boundary is a direct current-era OpenWrt C integration pattern and is already frozen in the existing test pack.
+
+blind_prompt:
+  prompt_text: |
+    Write a standalone OpenWrt C service daemon skeleton that initializes the event loop, connects to the system bus, binds the bus into the event loop, and then blocks in the main loop.
+  prompt_notes:
+    - "Do not mention ubus_add_uloop() explicitly."
+    - "Keep the task about initialization order, not object registration or response handlers."
+    - "Make the task OpenWrt-specific enough that a generic sleep loop solution fails."
+
+scoring:
+  expected_paradigms:
+    - "#include <libubus.h>"
+    - "#include <libubox/uloop.h>"
+    - "uloop_init()"
+    - "ubus_connect()"
+    - "ubus_add_uloop()"
+    - "uloop_run()"
+  explicit_falsenesses:
+    - "sleep() loop instead of event loop"
+    - "omitting ubus_add_uloop()"
+    - "calling ubus_connect() before uloop_init()"
+    - "generic sockets used to bypass ubus"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-C-LIBUBUS"
+  family_decision:
+    existing_family_match: true
+    reason: "This is the highest-value still-open standalone C daemon boundary inside the C libubus family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/ucode-rpcd-service-pattern.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    Existing coverage is strong for ucode rpcd services, but does not explicitly teach the standalone C libubus daemon initialization contract.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "new-standalone-page"
+  target_pages:
+    - "static/cookbook-source/c-libubus-daemon-skeleton.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "delta"
+    do_not_batch_with_scenarios: []
+    do_not_batch_with_categories: []
+    rationale: "Keep the standalone C ubus/uloop daemon contract in delta with only one build-system and one ucode-uci boundary."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: >-
+    This packet should move directly into authoring and later verification, not back into broad discovery,
+    because the missing lesson has already been established by prior evidence.

@@ -1,0 +1,134 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the uci_load_validate extension gap inside the procd family.
+  required_rule: >-
+    This packet is intended to drive an extension of an existing cookbook page rather than a separate generic init-system page.
+
+scenario:
+  scenario_id: "SCN-2026-004"
+  short_name: "procd-uci-load-validate-loglevel"
+  title: "procd loglevel validation through uci_load_validate"
+  category: "core_daemon_procd"
+  openwrt_boundary: "typed UCI validation inside a procd init script"
+  programming_family: "Service lifecycle and supervision"
+
+inspiration:
+  primary_kind: "cookbook_gap"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    The existing procd family is already covered, but both prior scenarios and cross-batch synthesis indicate that a full uci_load_validate treatment is still under-surfaced and should be made explicit.
+  primary_source:
+    source_type: "repo_doc"
+    path_or_url: "docs/plans/v14/openwrt-cookbook/01-current-cookbook-state-and-gap-map.md"
+    locator: "Highest-Value Remaining Or Weakly Surfaced Gaps"
+  supporting_sources:
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/02-metadata-catalog.json"
+      locator: "Scenario 01 and Scenario 06"
+    - source_type: "repo_plan"
+      path_or_url: "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md"
+      locator: "P0 uci_load_validate cookbook recommendation"
+
+authority:
+  summary: >-
+    Current-era OpenWrt init scripts should validate typed config through uci_load_validate inside a procd-oriented init script rather than parsing /etc/config manually.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "https://github.com/openwrt/openwrt/blob/master/package/base-files/files/etc/init.d/system"
+    locator: "init-script structure and validation boundary"
+  supporting_sources:
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      locator: "Scenario 01 and Scenario 06"
+    - source_type: "repo_doc"
+      path_or_url: "static/cookbook-source/procd-service-lifecycle.md"
+      locator: "existing lifecycle guidance"
+  why_authoritative: >-
+    The upstream init-script contract plus the frozen golden key define the exact validation pattern and make the extension source-backed.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt init-script function snippet that validates a loglevel option from UCI as an integer before the service starts.
+  prompt_notes:
+    - "Do not mention uci_load_validate explicitly."
+    - "Keep the task inside init-script validation, not full daemon startup or respawn behavior."
+    - "Make the task OpenWrt-specific enough that grep or regex parsing can fail."
+
+scoring:
+  expected_paradigms:
+    - "USE_PROCD=1 or clear procd init-script context"
+    - "uci_load_validate"
+    - "typed integer validation"
+    - "init-script-local validation helper or start_service context"
+  explicit_falsenesses:
+    - "grep or awk parsing of /etc/config"
+    - "manual regex validation in shell"
+    - "generic Linux service config parsing divorced from UCI"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-INIT-PROCD"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates the specific still-open validation lesson inside the procd family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/procd-service-lifecycle.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    The current page teaches the lifecycle boundary but does not yet provide the complete focused uci_load_validate treatment that the gap map calls out.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "extend-existing-page"
+  target_pages:
+    - "static/cookbook-source/procd-service-lifecycle.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "beta"
+    do_not_batch_with_scenarios: []
+    do_not_batch_with_categories: []
+    rationale: "Keep the focused procd validation contract in beta with one ucode ubus task and one shell hotplug task."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: >-
+    This packet should drive a focused extension to the existing procd page and then be used as a remediation-verification check.

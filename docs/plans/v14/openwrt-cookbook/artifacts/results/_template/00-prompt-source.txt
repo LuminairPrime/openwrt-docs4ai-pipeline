@@ -1,0 +1,8 @@
+Grouped prompt file used for this run:
+
+Path: docs/plans/v14/openwrt-cookbook/artifacts/test-groups/<grouped-prompt-file>.md
+Group name: <alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota>
+Execution form: <canonical|reduced-follow-on>
+Omitted scenarios already accepted elsewhere: <none|SXX,SYY>
+Copied or executed on: YYYY-MM-DD
+Operator: <name>

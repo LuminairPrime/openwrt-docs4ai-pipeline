@@ -1,0 +1,12 @@
+Mirrored grouped answer key used for this run:
+
+Path: docs/plans/v14/openwrt-cookbook/artifacts/test-groups/<grouped-key-file>.md
+Group name: <alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota>
+Group default review mode: <full-review|short-duplicate-review|skipped-as-already-accepted>
+Earlier accepted-fail reference: <none|artifacts/results/<agent-label>/<run-label>/<group-name>/02-manual-score.md>
+Reviewed on: YYYY-MM-DD
+Operator: <name>
+
+Underlying scenario packets consulted for tie-break interpretation:
+- docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/<packet-1>.yaml
+- docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/<packet-2>.yaml

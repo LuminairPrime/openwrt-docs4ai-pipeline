@@ -1,0 +1,126 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for native shell JSON handling through libubox jshn.sh.
+  required_rule: >-
+    Keep the scenario about jshn API selection and navigation, not generic jq-based JSON handling.
+
+scenario:
+  scenario_id: "SCN-2026-013"
+  short_name: "shell-jshn-structured-json"
+  title: "jshn.sh native shell JSON navigation"
+  category: "shell_jshn_json"
+  openwrt_boundary: "native shell JSON parsing through /usr/share/libubox/jshn.sh"
+  programming_family: "Shell JSON handling"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local hotplug scripts use /usr/share/libubox/jshn.sh and json_* helpers directly, while generic AI answers often reach for jq or string parsing that is not appropriate on routers.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/openwrt-hotplug/chunked-reference/hotplug_event-netifd-hotplug-events.md"
+    locator: "jshn import path and json_* helper usage"
+
+authority:
+  summary: >-
+    Correct shell-side JSON handling in OpenWrt uses libubox's jshn.sh helper and json_* navigation calls.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/openwrt-hotplug/chunked-reference/hotplug_event-netifd-hotplug-events.md"
+    locator: "json_init/json_load/json_get_keys/json_select/json_get_vars examples"
+  supporting_sources:
+    - source_type: "repo_doc"
+      path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/openwrt-core/chunked-reference/makefile_meta-category-libs.md"
+      locator: "libubox description as library for parsing and generating JSON from shell scripts"
+  why_authoritative: >-
+    Production shell scripts prove the API surface while the package metadata anchors the helper's role in the platform.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt shell snippet that sources the native shell JSON helper, loads a JSON string from `$payload`, enters the `network` object, reads the `proto` and `device` fields, then navigates back out cleanly.
+  prompt_notes:
+    - "Do not mention jq or jsonfilter."
+    - "The boundary is jshn usage, including navigation back out."
+
+scoring:
+  expected_paradigms:
+    - ". /usr/share/libubox/jshn.sh"
+    - "json_load"
+    - "json_select network"
+    - "json_get_vars proto device"
+    - "json_select .."
+  explicit_falsenesses:
+    - "jq"
+    - "jsonfilter"
+    - "grep"
+    - "sed"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-SHELL-JSON"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates native shell JSON handling as its own family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/hotplug-handler-pattern.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    Existing shell pages demonstrate jshn incidentally, but not as an explicit native-JSON lesson.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "extend-existing-page"
+  target_pages:
+    - "static/cookbook-source/hotplug-handler-pattern.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "discovery"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "iota"
+    do_not_batch_with_scenarios:
+      - "19"
+    do_not_batch_with_categories:
+      - "shell_hotplug_ubus_forward"
+    rationale: "Keep direct jshn instruction away from the adjacent hotplug structured-forwarding lesson."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a fully verified native shell JSON packet."

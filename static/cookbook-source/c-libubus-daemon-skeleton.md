@@ -143,5 +143,5 @@ ubus_add_uloop(ctx);
 - `ubus_add_uloop()` presence verified from current upstream sources including `tmp/authoring-repos/repo-procd/ubus.c`, `tmp/authoring-repos/repo-ucode-full/lib/ubus.c`, and `tmp/authoring-repos/repo-uhttpd/ubus.c`
 - frozen Scenario 12 truth packet confirms required runtime order: `uloop_init()` -> `ubus_connect()` -> `ubus_add_uloop()` -> `uloop_run()`
 - adjacent existing cookbook page checked: `static/cookbook-source/ucode-rpcd-service-pattern.md`
-- scenario packet reference for this page: `docs/plans/v14/openwrt-cookbook-project-center/artifacts/scenario-packets/03-scn-2026-003-c-libubus-daemon-skeleton.yaml`
+- scenario packet reference for this page: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/03-scn-2026-003-c-libubus-daemon-skeleton.yaml`
 - known limitation: this page is intentionally limited to daemon startup and event-loop binding, not object registration or blobmsg handler implementation

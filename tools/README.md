@@ -13,6 +13,9 @@ The numbering contract for this repository is strict:
 | Tool | Purpose |
 | --- | --- |
 | `manage_ai_store.py` | Scratch-first AI summary review, validation, audit, promotion, and cleanup |
+| `agents-skills/sync_local_skills.py` | Refresh repo-local mirrored skill roots from the canonical `.agents/skills/` source |
+| `agents-skills/backup_global_customization_roots.py` | Back up user-managed machine-global skill, agent, and rule roots before cleanup |
+| `agents-skills/archive_global_skill_candidates.py` | Move explicit archive-candidate skills or profile-selected global skills out of user-managed machine-global skill roots |
 
 ## AI Store Workflow
 
@@ -33,3 +36,38 @@ The CLI reuses the shared AI helper libraries in `lib/`:
 
 See `docs/guides/runbook-ai-summary-operations.md` for the durable operator
 workflow and fallback procedures.
+
+## Cross-IDE Skill Maintenance
+
+Use `tools/agents-skills/sync_local_skills.py` when repo-local Claude-style
+skills under `.agents/skills/` need to be mirrored into `.claude/skills/` and
+`.kilocode/skills/` for IDE compatibility.
+
+```powershell
+python tools/agents-skills/sync_local_skills.py --dry-run --prune
+python tools/agents-skills/sync_local_skills.py --force --prune
+```
+
+The mirror layout is defined in `tools/agents-skills/skill-layout.json`.
+
+Use `tools/agents-skills/backup_global_customization_roots.py` before any
+destructive machine-global cleanup:
+
+```powershell
+python tools/agents-skills/backup_global_customization_roots.py --dry-run
+python tools/agents-skills/backup_global_customization_roots.py
+```
+
+Archive the current explicit machine-global skill candidates with:
+
+```powershell
+python tools/agents-skills/archive_global_skill_candidates.py --dry-run
+python tools/agents-skills/archive_global_skill_candidates.py
+```
+
+Apply a cleanup profile such as `near-zero-global` with:
+
+```powershell
+python tools/agents-skills/archive_global_skill_candidates.py --profile near-zero-global --dry-run
+python tools/agents-skills/archive_global_skill_candidates.py --profile near-zero-global
+```

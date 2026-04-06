@@ -1,0 +1,129 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for the shell-side UCI config helper API boundary.
+  required_rule: >-
+    Keep the scenario about config helper selection, not raw UCI mutation or init-script lifecycle.
+
+scenario:
+  scenario_id: "SCN-2026-012"
+  short_name: "shell-config-load-get"
+  title: "Shell config_load/config_get/config_list_foreach boundary"
+  category: "shell_uci_config_helpers"
+  openwrt_boundary: "reading OpenWrt config in shell through /lib/functions.sh helper APIs"
+  programming_family: "Shell configuration helpers"
+
+inspiration:
+  primary_kind: "upstream_pattern"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Local hotplug and lifecycle scripts consistently source /lib/functions.sh and use config_load/config_get/config_get_bool/config_list_foreach instead of parsing /etc/config files directly.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/openwrt-hotplug/chunked-reference/hotplug_event-netifd-hotplug-events.md"
+    locator: "config helper usage lines covering config_load, config_get_bool, and config_list_foreach"
+
+authority:
+  summary: >-
+    Correct OpenWrt shell config reading uses /lib/functions.sh helper APIs rather than ad hoc text parsing of /etc/config/* files.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/openwrt-hotplug/chunked-reference/hotplug_event-netifd-hotplug-events.md"
+    locator: "config_load/config_get/config_get_bool/config_list_foreach usage"
+  supporting_sources:
+    - source_type: "repo_doc"
+      path_or_url: "tmp/smoke-test-kujhbse0/staged/release-tree/cookbook/chunked-reference/procd-service-lifecycle.md"
+      locator: "config_load and config_get helper mention"
+  why_authoritative: >-
+    Production shell code and cookbook guidance agree on the helper-based API surface for shell-side UCI reads.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt shell snippet that sources the standard config helper library, loads the `network` config, reads the `ifname` option from section `wan`, reads a boolean `auto` option with a default of `1`, and iterates each `dns` list item.
+  prompt_notes:
+    - "Do not turn this into raw `uci get` calls."
+    - "The task is about /lib/functions.sh helper usage."
+
+scoring:
+  expected_paradigms:
+    - ". /lib/functions.sh"
+    - "config_load 'network'"
+    - "config_get"
+    - "config_get_bool"
+    - "config_list_foreach"
+  explicit_falsenesses:
+    - "grep /etc/config/network"
+    - "awk /etc/config/network"
+    - "sed /etc/config/network"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-SHELL-CONFIG-API"
+  family_decision:
+    existing_family_match: true
+    reason: "This packet isolates the standard shell config helper read boundary."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/procd-service-lifecycle.md"
+    - "static/cookbook-source/hotplug-handler-pattern.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    The helper calls appear in examples, but the corpus does not yet foreground them as the required shell-side config reading contract.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "extend-existing-page"
+  target_pages:
+    - "static/cookbook-source/procd-service-lifecycle.md"
+    - "static/cookbook-source/hotplug-handler-pattern.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "discovery"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "theta"
+    do_not_batch_with_scenarios:
+      - "20"
+      - "21"
+    do_not_batch_with_categories:
+      - "shell_uci_defaults_mutation"
+      - "shell_ucidef_helpers"
+    rationale: "Keep shell config-read helpers away from nearby firstboot mutation/helper lessons."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: "Admitted as a fully verified shell config-helper packet using production hotplug source."

@@ -1,0 +1,28 @@
+manifest_version: 1
+agent:
+  # Freeform stable label or slug, not a numeric counter.
+  agent_id: ""
+  model_name: ""
+  provider: ""
+run:
+  # Freeform run label or folder name for one iteration, not a numeric counter.
+  run_id: "YYYY-MM-DD-rerun-01"
+  iteration_label: "target-agent-iteration-01"
+  operator: ""
+  date: "YYYY-MM-DD"
+  mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+  prior_accepted_scenarios: []
+  omitted_as_already_accepted: []
+  groups_run: []
+  duplicate_fail_policy:
+    allowed_values:
+      - full-review
+      - short-duplicate-review
+      - mixed
+    value: "mixed"
+notes: ""

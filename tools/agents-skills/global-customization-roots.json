@@ -1,0 +1,101 @@
+{
+  "user_managed_global_roots": [
+    "~/.claude/skills",
+    "~/.claude/agents",
+    "~/.claude/rules",
+    "~/.agents/skills",
+    "~/.gemini/antigravity/skills",
+    "~/.kilocode/skills"
+  ],
+  "read_only_extension_roots": [
+    "~/.vscode-insiders/extensions/github.copilot-chat-0.43.2026040101/assets/prompts/skills",
+    "~/.vscode-insiders/extensions/github.vscode-pull-request-github-0.135.2026040104/src/lm/skills"
+  ],
+  "selected_profile": "near-zero-global",
+  "profiles": {
+    "tiny-global-core": {
+      "keep_global_skill_names": [
+        "python-patterns",
+        "python-testing",
+        "shell-scripting",
+        "technical-writing",
+        "test-strategy"
+      ]
+    },
+    "near-zero-global": {
+      "keep_global_skill_names": []
+    }
+  },
+  "python_pipeline_localize_skill_names": [
+    "api-design",
+    "changelog-generator",
+    "ci-cd-pipeline-builder",
+    "clean-code",
+    "codedocs",
+    "code-review",
+    "code-reviewer",
+    "codebase-onboarding",
+    "dependency-auditor",
+    "developer-experience",
+    "env-secrets-manager",
+    "find-bugs",
+    "gh-address-comments",
+    "gh-fix-ci",
+    "git-commit-helper",
+    "investigate",
+    "pr-review-expert",
+    "python-patterns",
+    "python-testing",
+    "qa",
+    "readme-updater",
+    "runbook-generator",
+    "secret-scanner",
+    "shell-scripting",
+    "technical-writing",
+    "test-strategy"
+  ],
+  "openwrt_project_localize_skill_names": [
+    "api-design",
+    "code-review",
+    "code-reviewer",
+    "find-bugs",
+    "investigate",
+    "qa",
+    "secret-scanner",
+    "shell-scripting",
+    "technical-writing"
+  ],
+  "archive_candidates": [
+    "android-clean-architecture",
+    "compose-multiplatform-patterns",
+    "continuous-learning",
+    "continuous-learning-v2",
+    "django-patterns",
+    "django-tdd",
+    "django-verification",
+    "eval-harness",
+    "frontend-slides",
+    "golang-patterns",
+    "golang-testing",
+    "java-coding-standards",
+    "kotlin-coroutines-flows",
+    "kotlin-exposed-patterns",
+    "kotlin-ktor-patterns",
+    "kotlin-patterns",
+    "kotlin-testing",
+    "laravel-patterns",
+    "laravel-tdd",
+    "laravel-verification",
+    "mcp-server-patterns",
+    "perl-patterns",
+    "perl-testing",
+    "project-guidelines-example",
+    "rust-patterns",
+    "rust-testing",
+    "springboot-patterns",
+    "springboot-tdd",
+    "springboot-verification",
+    "ultimate-ui",
+    "user-stories"
+  ]
+}

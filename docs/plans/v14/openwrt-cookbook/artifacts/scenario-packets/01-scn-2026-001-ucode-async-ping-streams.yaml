@@ -1,0 +1,139 @@
+template_version: 1
+template_status: candidate-packet
+instructions:
+  purpose: >-
+    Filled admission packet for a high-priority ucode async blind spot scenario.
+  required_rule: >-
+    This packet is already source-backed and admitted. Keep it out of rediscovery and
+    move it into verification after the dedicated cookbook page exists.
+
+scenario:
+  scenario_id: "SCN-2026-001"
+  short_name: "ucode-async-ping-streams"
+  title: "uCode async parallel ping stream handling"
+  category: "implicit_uloop_async"
+  openwrt_boundary: "ucode process multiplexing through uloop.handle(..., uloop.ULOOP_READ)"
+  programming_family: "Async scripting and process multiplexing"
+
+inspiration:
+  primary_kind: "blind_failure"
+  allowed_kinds:
+    - blind_failure
+    - cookbook_gap
+    - upstream_pattern
+    - archive_confusion
+    - skill_need
+  summary: >-
+    Cross-batch synthesis recorded Scenario 16 as a universal blind spot with 0 percent pass behavior,
+    and the live cookbook corpus still lacks a dedicated async ucode page.
+  primary_source:
+    source_type: "repo_plan"
+    path_or_url: "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/06-cross-batch-synthesis-and-golden-key-proposals.md"
+    locator: "Blind Spot 2 and Scenario 16 notes"
+  supporting_sources:
+    - source_type: "repo_doc"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/01-current-cookbook-state-and-gap-map.md"
+      locator: "Highest-Value Remaining Or Weakly Surfaced Gaps"
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/00-batch-prompts.md"
+      locator: "Scenario 16"
+
+authority:
+  summary: >-
+    Modern OpenWrt ucode async work should use process handles from fs.popen() and wire them into
+    uloop with explicit read-event flags. Shell background hacks are structurally wrong for this boundary.
+  primary_source:
+    source_type: "upstream_code"
+    path_or_url: "https://github.com/openwrt/openwrt/blob/master/package/utils/cli/files/usr/share/ucode/cli/utils.uc"
+    locator: "async process and ucode utility patterns; paired with Scenario 16 golden truths"
+  supporting_sources:
+    - source_type: "frozen_test_packet"
+      path_or_url: "docs/plans/v14/openwrt-cookbook/artifacts/test-pack/03-golden-answers-key.md"
+      locator: "Scenario 16"
+  why_authoritative: >-
+    This boundary is defined by current-era ucode and the frozen golden key already extracted from the
+    existing evaluation corpus.
+
+blind_prompt:
+  prompt_text: |
+    Write an OpenWrt ucode script that runs two continuous ping commands to 10.10.10.2 and 10.10.10.3 in parallel.
+    It must stream both outputs live, prefix each printed line with the source target IP, and avoid sequential processing.
+  prompt_notes:
+    - "Do not mention source URLs."
+    - "Do not mention uloop.ULOOP_READ in the prompt."
+    - "Keep the task bounded to async process streaming rather than broader monitoring architecture."
+
+scoring:
+  expected_paradigms:
+    - "import * as uloop from 'uloop'"
+    - "import * as fs from 'fs'"
+    - "fs.popen() process handles"
+    - "uloop.handle(..., uloop.ULOOP_READ)"
+    - "line prefixing inside async callbacks"
+  explicit_falsenesses:
+    - "shell background jobs using &"
+    - "mkfifo or named-pipe multiplexing"
+    - "missing explicit events argument to uloop.handle"
+    - "invented fs.read(fd, len) style async descriptor API"
+  binary_pass_rule: "all required paradigms present and no falseness triggered"
+
+family_assignment:
+  family_id: "FAM-UCODE-ASYNC"
+  family_decision:
+    existing_family_match: true
+    reason: "This scenario directly exercises the defining blind spot for the async ucode family."
+
+coverage_check:
+  existing_pages_considered:
+    - "static/cookbook-source/uci-read-write-from-ucode.md"
+  already_adequately_covered: false
+  coverage_rationale: >-
+    Existing ucode coverage is about UCI persistence, not async process wiring or event-loop stream handling.
+  preferred_outcome_if_fail:
+    allowed_values:
+      - reject
+      - golden-key-only
+      - extend-existing-page
+      - new-standalone-page
+      - umbrella-page
+    value: "new-standalone-page"
+  target_pages:
+    - "static/cookbook-source/ucode-async-process-pattern.md"
+
+queue:
+  initial_status:
+    allowed_values:
+      - candidate
+      - active-discovery
+      - verification
+      - benchmark-only
+      - retired
+    value: "candidate"
+  intended_mode:
+    allowed_values:
+      - discovery
+      - verification
+      - benchmark
+    value: "verification"
+
+delivery:
+  grouped_batch_policy:
+    one_per_domain_category_type: true
+    candidate_group_ids:
+      - "eta"
+    do_not_batch_with_scenarios: []
+    do_not_batch_with_categories: []
+    rationale: "Place async ucode process streaming in the eta triad, away from adjacent LuCI and ucode-native prompt families."
+
+operator_record:
+  proposed_by: "GitHub Copilot"
+  date_opened: "2026-04-05"
+  approval_status:
+    allowed_values:
+      - proposed
+      - admitted
+      - rejected
+    value: "admitted"
+  notes: >-
+    This packet is admitted from existing v13 evidence and should not return to active discovery.
+    Its next execution should be after cookbook authoring, as a remediation-verification scenario.

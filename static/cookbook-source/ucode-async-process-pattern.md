@@ -150,6 +150,6 @@ let buf = fs.read(proc, 128);
 - `uloop.handle(handle, callback, events)` and `uloop.run()` verified from corpus `ucode/c_source-api-module-uloop.md`
 - explicit `ULOOP_READ` usage verified from `tmp/authoring-repos/repo-openwrt-full/package/network/services/unetmsg/files/usr/share/ucode/unetmsg/unetmsgd-remote.uc`
 - line-oriented `read("line")` usage verified from current upstream ucode examples under `tmp/authoring-repos/repo-openwrt-full/package/network/services/hostapd/files/hostapd.uc`
-- scenario packet reference for this page: `docs/plans/v14/openwrt-cookbook-project-center/artifacts/scenario-packets/01-scn-2026-001-ucode-async-ping-streams.yaml`
+- scenario packet reference for this page: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/01-scn-2026-001-ucode-async-ping-streams.yaml`
 - finite-command cleanup is intentionally documented as an extension because the primary remediation target is continuous multi-stream output
 - known limitation: the example demonstrates the current streaming pattern, but `reviewed_by` remains `placeholder` until a human maintainer performs final review

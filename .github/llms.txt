@@ -12,13 +12,9 @@ This repository provides resources to customize and enhance GitHub Copilot:
 
 ## Agents
 
-- [Devils Advocate](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/devils-advocate.agent.md): I play the devil's advocate to challenge and stress-test your ideas by finding flaws, risks, and edge cases
-- [DevOps Expert](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/devops-expert.agent.md): DevOps specialist following the infinity loop principle (Plan → Code → Build → Test → Release → Deploy → Operate → Monitor) with focus on automation, collaboration, and continuous improvement
 - [GitHub Actions Expert](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/github-actions-expert.agent.md): GitHub Actions specialist focused on secure CI/CD workflows, action pinning, OIDC authentication, permissions least privilege, and supply-chain security
-- [Polyglot Test Generator](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/polyglot-test-generator.agent.md): Orchestrates comprehensive test generation using Research-Plan-Implement pipeline. Use when asked to generate tests, write unit tests, improve test coverage, or add tests.
 - [QA](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/qa-subagent.agent.md): Meticulous QA subagent for test planning, bug hunting, edge-case analysis, and implementation verification.
 - [SE: Tech Writer](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/se-technical-writer.agent.md): Technical writing specialist for creating developer documentation, technical blogs, tutorials, and educational content
-- [Technical Debt Remediation Plan](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/tech-debt-remediation-plan.agent.md): Generate technical debt remediation plans for code, tests, and documentation.
 - [Universal Janitor](https://raw.githubusercontent.com/github/awesome-copilot/main/agents/janitor.agent.md): Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation.
 
 ## Instructions
@@ -35,10 +31,6 @@ This repository provides resources to customize and enhance GitHub Copilot:
 
 ## Skills
 
-- [Architecture Blueprint Generator](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/architecture-blueprint-generator/SKILL.md): Comprehensive project architecture blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks and architectural patterns, generates visual diagrams, documents implementation patterns, and provides extensible blueprints for maintaining architectural consistency and guiding new development.
-- [Context Map](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/context-map/SKILL.md): Generate a map of all files relevant to a task before making changes
-- [Create Llms](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-llms/SKILL.md): Create an llms.txt file from scratch based on repository structure following the llms.txt specification at https://llmstxt.org/
-- [Gh Cli](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gh-cli/SKILL.md): GitHub CLI (gh) comprehensive reference for repositories, issues, pull requests, Actions, projects, releases, gists, codespaces, organizations, extensions, and all GitHub operations from the command line.
-- [Git Commit](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/git-commit/SKILL.md): Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping
-- [Markdown To Html](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/markdown-to-html/SKILL.md): Convert Markdown files to HTML similar to marked.js, pandoc, gomarkdown/markdown, or similar tools; or writing custom script to convert markdown to html and/or working on web template systems like jekyll/jekyll, gohugoio/hugo, or similar web templating systems that utilize markdown documents, converting them to html. Use when asked to "convert markdown to html", "transform md to html", "render markdown", "generate html from markdown", or when working with .md files and/or web a templating system that converts markdown to HTML output. Supports CLI and Node.js workflows with GFM, CommonMark, and standard Markdown flavors.
-- [Pytest Coverage](https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pytest-coverage/SKILL.md): Run pytest tests with coverage, discover lines missing coverage, and increase coverage to 100%.
+Repo-local Copilot skills were consolidated into `.agents/skills/` during the
+April 2026 cleanup. `.github/skills/` now contains only a tombstone README so
+the repository does not maintain a second local skill inventory.

@@ -278,6 +278,6 @@ Drop privileges by setting `user` and `group` parameters. These are applied befo
 - real `uci_load_validate` call shape verified from `tmp/authoring-repos/repo-packages/utils/rtl-ais/files/rtl_ais.init` and `tmp/authoring-repos/repo-packages/net/aria2/files/aria2.init`
 - `USE_PROCD=1` pattern and `service_triggers` function verified from `wiki/wiki_page-guide-developer-procd-init-scripts.md` file listing
 - respawn parameter order (fail_threshold, restart_timeout, max_fail) matches procd corpus documentation
-- Scenario packet reference for this extension: `docs/plans/v14/openwrt-cookbook-project-center/artifacts/scenario-packets/04-scn-2026-004-procd-uci-load-validate-loglevel.yaml`
+- Scenario packet reference for this extension: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/04-scn-2026-004-procd-uci-load-validate-loglevel.yaml`
 - Known limitation: `reviewed_by` remains `placeholder` until a human maintainer claims final reviewer ownership
 
