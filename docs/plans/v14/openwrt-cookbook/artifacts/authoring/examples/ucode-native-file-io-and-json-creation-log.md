@@ -15,7 +15,7 @@
 
 - Scenario packet: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
 - Blind or batch prompt: `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md`
-- Frozen answer key: `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md`
+- Frozen answer key: `docs/plans/v14/openwrt-cookbook/artifacts/tests-keys/01e-key.md`
 - Supporting scenario references:
   - `docs/plans/v14/openwrt-cookbook/artifacts/tests-full/full-prompts.md` (Scenario 13 wording)
   - `docs/plans/v14/openwrt-cookbook/artifacts/tests-full/golden-answers-key.md` (Scenario 13 truths and falses)

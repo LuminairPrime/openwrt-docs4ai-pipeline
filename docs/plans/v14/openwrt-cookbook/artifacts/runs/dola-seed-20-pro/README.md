@@ -4,7 +4,7 @@
 
 **Read from:** `<batch-id>.md` — the files provided to you.
 
-**Write to:** Print results to the screen and if you have filesystem write access write your results to `results/<batch-id>-result.md`.
+**Write to:** Print results to the screen and write them to `results/<batch-id>-result.md` if you have web access.
 
 **Five hard rules:**
 

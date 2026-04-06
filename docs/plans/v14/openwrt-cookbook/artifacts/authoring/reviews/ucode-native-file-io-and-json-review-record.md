@@ -17,7 +17,7 @@ promotion claim is treated as complete.
 
 - Scenario packet: `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
 - Blind or batch prompt: `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md`
-- Frozen answer key: `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md`
+- Frozen answer key: `docs/plans/v14/openwrt-cookbook/artifacts/tests-keys/01e-key.md`
 - Raw failure response(s):
   - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/01-raw-response.md`
   - `docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/results/alpha/significantotter.txt`

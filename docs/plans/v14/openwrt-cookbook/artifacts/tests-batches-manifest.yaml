@@ -11,7 +11,7 @@ purpose: batch-manual-rerun-layout
 batches:
   - batch_id: 01a
     file: artifacts/tests-batches/01a.md
-    answer_key: artifacts/tests-batches/01a-key.md
+    answer_key: artifacts/tests-keys/01a-key.md
     scenarios:
       - scenario_id: "01"
         category: core_daemon_procd
@@ -25,7 +25,7 @@ batches:
       the others.
   - batch_id: 01b
     file: artifacts/tests-batches/01b.md
-    answer_key: artifacts/tests-batches/01b-key.md
+    answer_key: artifacts/tests-keys/01b-key.md
     scenarios:
       - scenario_id: "02"
         category: implicit_ucode_ubus_backend
@@ -39,7 +39,7 @@ batches:
       which keeps the three answer paths structurally distinct.
   - batch_id: 01c
     file: artifacts/tests-batches/01c.md
-    answer_key: artifacts/tests-batches/01c-key.md
+    answer_key: artifacts/tests-keys/01c-key.md
     scenarios:
       - scenario_id: "07"
         category: c_plugin_libubus
@@ -52,7 +52,7 @@ batches:
       mutation script so none of the three solutions reveals the next one.
   - batch_id: 01d
     file: artifacts/tests-batches/01d.md
-    answer_key: artifacts/tests-batches/01d-key.md
+    answer_key: artifacts/tests-keys/01d-key.md
     scenarios:
       - scenario_id: "08"
         category: explicit_ucode_uci_backend
@@ -66,7 +66,7 @@ batches:
       ubus/uloop daemon setup in one balanced batch without same-family bleed.
   - batch_id: 01e
     file: artifacts/tests-batches/01e.md
-    answer_key: artifacts/tests-batches/01e-key.md
+    answer_key: artifacts/tests-keys/01e-key.md
     scenarios:
       - scenario_id: "13"
         category: ucode_fs_json
@@ -81,7 +81,7 @@ batches:
       guarded hotplug ubus forwarding, which keeps runtime layers distinct.
   - batch_id: 01f
     file: artifacts/tests-batches/01f.md
-    answer_key: artifacts/tests-batches/01f-key.md
+    answer_key: artifacts/tests-keys/01f-key.md
     scenarios:
       - scenario_id: "15"
         category: c_blobmsg_parsing
@@ -96,7 +96,7 @@ batches:
       mutation-only shell boundary together to maximize diversity while keeping the batch compact.
   - batch_id: 01g
     file: artifacts/tests-batches/01g.md
-    answer_key: artifacts/tests-batches/01g-key.md
+    answer_key: artifacts/tests-keys/01g-key.md
     scenarios:
       - scenario_id: "16"
         category: implicit_uloop_async
@@ -112,7 +112,7 @@ batches:
       install layout without placing adjacent shell or buildroot lessons together.
   - batch_id: 01h
     file: artifacts/tests-batches/01h.md
-    answer_key: artifacts/tests-batches/01h-key.md
+    answer_key: artifacts/tests-keys/01h-key.md
     scenarios:
       - scenario_id: "22"
         category: c_blobmsg_parse_reply
@@ -128,7 +128,7 @@ batches:
       config-helper API in separate answer families while still delivering a balanced triad.
   - batch_id: 01i
     file: artifacts/tests-batches/01i.md
-    answer_key: artifacts/tests-batches/01i-key.md
+    answer_key: artifacts/tests-keys/01i-key.md
     scenarios:
       - scenario_id: "26"
         category: shell_jshn_json

@@ -137,15 +137,15 @@ These are the operator-facing batch files created by the v14 center.
 
 | Batch | Answer key file |
 | --- | --- |
-| 01a | `artifacts/tests-batches/01a-key.md` |
-| 01b | `artifacts/tests-batches/01b-key.md` |
-| 01c | `artifacts/tests-batches/01c-key.md` |
-| 01d | `artifacts/tests-batches/01d-key.md` |
-| 01e | `artifacts/tests-batches/01e-key.md` |
-| 01f | `artifacts/tests-batches/01f-key.md` |
-| 01g | `artifacts/tests-batches/01g-key.md` |
-| 01h | `artifacts/tests-batches/01h-key.md` |
-| 01i | `artifacts/tests-batches/01i-key.md` |
+| 01a | `artifacts/tests-keys/01a-key.md` |
+| 01b | `artifacts/tests-keys/01b-key.md` |
+| 01c | `artifacts/tests-keys/01c-key.md` |
+| 01d | `artifacts/tests-keys/01d-key.md` |
+| 01e | `artifacts/tests-keys/01e-key.md` |
+| 01f | `artifacts/tests-keys/01f-key.md` |
+| 01g | `artifacts/tests-keys/01g-key.md` |
+| 01h | `artifacts/tests-keys/01h-key.md` |
+| 01i | `artifacts/tests-keys/01i-key.md` |
 
 The v14 rule is now the same as the old system: batch prompt files and batch answer keys should be named similarly and stored similarly.
 
@@ -165,10 +165,26 @@ The current manual-run set covers the **full 27-scenario pack** delivered in **9
 
 ### Prompt batches
 
-Store batch prompt files and their paired answer keys here:
+Store batch prompt files here:
 
 ```text
 docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/
+```
+
+### Answer keys
+
+Store batch answer keys here:
+
+```text
+docs/plans/v14/openwrt-cookbook/artifacts/tests-keys/
+```
+
+### Batch manifest
+
+The machine-readable batch inventory lives at:
+
+```text
+docs/plans/v14/openwrt-cookbook/artifacts/tests-batches-manifest.yaml
 ```
 
 ### Scenario packets
@@ -325,7 +341,7 @@ The important rule is conversational isolation. Do not run 01d, 01e, and 01f as 
 
 The batch prompt layout is also represented in:
 
-- [artifacts/tests-batches/manifest.yaml](./artifacts/tests-batches/manifest.yaml)
+- [artifacts/tests-batches-manifest.yaml](./artifacts/tests-batches-manifest.yaml)
 
 Use that file as the machine-readable batch contract and this document as the human-readable operator explanation.
 
@@ -344,7 +360,7 @@ of the batch prompt files. That shared header is governed by
 There is currently no dedicated batch prompt regeneration script documented or implemented in
 this repository. Until such a script exists, refresh batch prompt files manually in this order:
 
-1. update [artifacts/tests-batches/manifest.yaml](./artifacts/tests-batches/manifest.yaml) first so the machine-readable batch membership is correct
+1. update [artifacts/tests-batches-manifest.yaml](./artifacts/tests-batches-manifest.yaml) first so the machine-readable batch membership is correct
 2. create or refresh the batch prompt file header from [artifacts/templates/00-batch-prompt-header-template.md](./artifacts/templates/00-batch-prompt-header-template.md)
 3. vary only the batch-specific parts of that header, such as the batch ID, example scenario labels, and canonical `01-raw-response.md` path for that batch
 4. place the scenario bodies in the intended order without changing the shared clean-room, session-isolation, or output-routing contract ad hoc

@@ -1,7 +1,7 @@
 Imported key source mapping for Scenario 13.
 
 Primary cookbook-center answer key:
-- docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md
+- docs/plans/v14/openwrt-cookbook/artifacts/tests-keys/01e-key.md
 
 Historical canonical answer reference:
 - docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scenarios/01a-batch-alpha-key-sonnet46.md

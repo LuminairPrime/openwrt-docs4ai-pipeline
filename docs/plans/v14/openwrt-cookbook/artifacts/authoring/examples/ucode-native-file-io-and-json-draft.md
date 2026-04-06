@@ -143,7 +143,7 @@ UCI is the right abstraction only for UCI-managed configuration. It is not a gen
 - Exact corpus files checked:
   - `docs/plans/v14/openwrt-cookbook/artifacts/scenario-packets/02-scn-2026-002-ucode-native-json-file-read.yaml`
   - `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e.md`
-  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/01e-key.md`
+  - `docs/plans/v14/openwrt-cookbook/artifacts/tests-keys/01e-key.md`
   - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/01-raw-response.md`
   - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/02-manual-score.md`
   - `docs/plans/v14/openwrt-cookbook/artifacts/results/significantotter/2026-03-28-import-01/01e/03-operator-notes.md`

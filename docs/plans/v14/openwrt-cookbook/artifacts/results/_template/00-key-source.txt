@@ -1,6 +1,6 @@
 Mirrored batch answer key used for this run:
 
-Path: docs/plans/v14/openwrt-cookbook/artifacts/tests-batches/<batch-id>-key.md
+Path: docs/plans/v14/openwrt-cookbook/artifacts/tests-keys/<batch-id>-key.md
 Batch ID: <01a|01b|01c|01d|01e|01f|01g|01h|01i>
 Batch default review mode: <full-review|short-duplicate-review|skipped-as-already-accepted>
 Earlier accepted-fail reference: <none|artifacts/results/<agent-label>/<run-label>/<batch-id>/02-manual-score.md>
