@@ -7,7 +7,9 @@
       "Bash(npm list:*)",
       "Bash(node:*)",
       "Bash(export PATH=\"$PATH:/c/Users/MC/AppData/Roaming/npm\")",
-      "Read(//c/Users/MC/AppData/Roaming/npm/**)"
+      "Read(//c/Users/MC/AppData/Roaming/npm/**)",
+      "Bash(echo \"exit: $?\")",
+      "Skill(update-config)"
     ]
   }
 }
