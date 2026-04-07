@@ -1,0 +1,16 @@
+I have an easy task for you. I want you to grade some test results. it's logically easy because I don't need you to grade correctness; it's okay to not be sure about correctness. I need you to grade INCORRECTNESS. you will give each test-taker a score based on how many DEFINITELY WRONG answers they provided. any doubts you have are allowed to be discarded. we only care about answers that you KNOW are WRONG. it doesn't even matter how wrong; as soon as you see something wrong in the answer, you can record that as a FAIL and skip the rest of that answer and continue to the next answer.
+
+the test takers each have their own folder named after them in this folder:
+C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-pipeline\docs\plans\v14\openwrt-cookbook\artifacts\runs
+in the folder that is named after the test-taker is another folder named "results". the result files are named after the test files in the root folder, so the 01a test file has a result file named 01a at the start as well. you aren't reviewing the test files, you're reviewing the results files.
+
+you will create a new score card file in this folder:
+C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-pipeline\docs\plans\v14\openwrt-cookbook\artifacts\scoring\haiku
+and your score card will give the results for each test-taker. if, while scoring, you think up new ideas for test pass/fail criteria that could be added to the answer keys for the tests, I would appreciate it if you recorded your ideas in your score card somewhere as well, so that I can enhance the keys in the future. 
+
+you will find the answer keys for each test file in this folder:
+C:\Users\MC\Documents\AirSentinel\openwrt-docs4ai-pipeline\docs\plans\v14\openwrt-cookbook\artifacts\tests-keys
+
+because each test file (01a, 01b, etc) is consistent for all the test-takers, you will be able to efficiently review this data set by spinning up one agent per key file, and then scoring just that accompanying test result from every test-taker one after the other. so for example, the 01a-key agent will review the 01a-result file from the big-pickle test-taker first, then review the 01a-result file from the dola-seed-20-pro test-taker second, and then so on. then, at the end, the orchestrator will take the 01a-key's agent's memory and synthesize all the other agent memories together into the final score card file.
+
+do you have any questions before you begin?
