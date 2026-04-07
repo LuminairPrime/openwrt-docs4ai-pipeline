@@ -306,14 +306,19 @@ openwrt-cookbook/
 
 Grouped by risk. Complete each group before the next.
 
-### Group A — Low Risk: Renames
+### Group A — Low Risk: Renames (no cross-reference impact)
 
 | Step | Action | Effort |
 |---|---|---|
 | A1 | `git mv` `00-openwrt-cookbook-project-center-operating-plan.md` → `00-operating-plan.md` | Small |
 | A2 | `git mv` `01-current-cookbook-state-and-gap-map.md` → `01-cookbook-state-and-gap-map.md` | Small |
 | A3 | `git mv` `08-cookbook-authoring-execution-contract.md` → `08-cookbook-authoring-contract.md` | Small |
-| A4 | `git mv` `artifacts/authoring` → `artifacts/staging` | Small |
+
+### Group A2 — Medium Risk: Renames with cross-reference impact
+
+| Step | Action | Effort |
+|---|---|---|
+| A4 | `git mv` `artifacts/authoring` → `artifacts/staging`. **Must be paired with Group E steps E5, E6, E8** — multiple contracts reference `authoring/` and will break if not updated in the same commit | Small (rename) + Medium (reference repair) |
 
 ### Group B — Low Risk: Directory creation
 

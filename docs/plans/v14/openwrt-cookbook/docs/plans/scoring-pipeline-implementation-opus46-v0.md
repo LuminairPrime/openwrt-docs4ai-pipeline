@@ -96,6 +96,7 @@ Every key file in `artifacts/tests-keys/` must be rewritten to exactly this 4-se
 
 ### Scoring Notes
 - <edge cases, known hallucination traps, boundary clarifications>
+- **Source:** <link to the authoritative OpenWrt repo file/function backing this scenario's correct answer>
 ```
 
 | Old Format | New Section | Purpose |
@@ -110,7 +111,7 @@ Every key file in `artifacts/tests-keys/` must be rewritten to exactly this 4-se
 | 2.1 | For each key file (01a through 01i): read existing content |
 | 2.2 | Decompose "PASS criteria" into **Required Signals** |
 | 2.3 | Move "Immediate fails" into **Automatic Fails** verbatim |
-| 2.4 | Add **Allowed Variants** — derive from known acceptable patterns in the cookbook corpus, prior scoring runs in `artifacts/scoring/haiku/`, and `artifacts/runs/` evidence |
+| 2.4 | Add **Allowed Variants** — derive from scenario packets, upstream OpenWrt source code, official documentation, and explicit key improvements. Do NOT derive allowed variants from prior model scoring runs or cookbook corpus alone — those are not authority sources for correctness |
 | 2.5 | Add **Scoring Notes** — migrate any scenario-specific calibration from `artifacts/scoring/archive/scoring-prompt-v2.md` lines 187–196 into the key itself so the key carries the guardrail |
 | 2.6 | Verify all 9 keys parse cleanly: every scenario has all 4 sections (use "None" if genuinely empty) |
 
@@ -205,7 +206,7 @@ This is the master scoring prompt. It supersedes both v2 prompts. Design princip
 
 1. **Zero embedded OpenWrt knowledge** — the prompt is a pure rule engine
 2. **Strict 5-phase execution sequence** — calibration → scope → grading → recording → reconciliation
-3. **Primary Answer Isolation** — first complete code block is the only answer scored
+3. **Primary Answer Isolation** — first complete code block is the primary answer scored; for prose-only answers (no code blocks), the first substantive actionable explanation is the primary answer. Explicitly labeled anti-pattern examples (e.g., "DON'T do this:") are excluded from primary-answer consideration
 4. **Verbatim Evidence Extraction** — violations must be quoted literally, never paraphrased
 5. **Key Ingestion Gate** — valid scenario IDs are extracted from the key; all others are ignored
 
@@ -430,7 +431,7 @@ Read these files in order:
 1. artifacts/scoring/openwrt-test-scoring-prompt-v4.md — your operating instructions
 2. artifacts/scoring/openwrt-calibration-fixtures.md — your calibration test (run this FIRST)
 3. artifacts/tests-keys/<batch>-key.md — the answer key for this batch
-4. artifacts/runs/<test-taker>/results/<batch>-result.md — the test-taker's answers
+4. artifacts/results/<test-taker>/<batch>-result.md — the test-taker's answers (canonical layout; for legacy runs in artifacts/runs/, adapt the path accordingly)
 
 Execute the v4 prompt exactly. If calibration fails, stop and report:
 "Calibration Failed. Review required."
