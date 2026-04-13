@@ -14,11 +14,7 @@ def _sha256(path: Path) -> str:
 
 
 def _directory_tree_hashes(root: Path) -> dict[Path, str]:
-    return {
-        path.relative_to(root): _sha256(path)
-        for path in sorted(root.rglob("*"))
-        if path.is_file()
-    }
+    return {path.relative_to(root): _sha256(path) for path in sorted(root.rglob("*")) if path.is_file()}
 
 
 def _expected_skill_names(layout: dict) -> set[str]:
@@ -87,9 +83,7 @@ def test_mirror_roots_match_canonical_content() -> None:
 
             assert mirror_file.exists(), f"missing mirror: {relative_mirror_root}/{skill_name}"
             assert _sha256(mirror_file) == _sha256(canonical_file), skill_name
-            assert _directory_tree_hashes(mirror_skill) == _directory_tree_hashes(
-                canonical_skill
-            ), skill_name
+            assert _directory_tree_hashes(mirror_skill) == _directory_tree_hashes(canonical_skill), skill_name
 
 
 def test_independent_roots_are_not_used_as_mirrors() -> None:
