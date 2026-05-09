@@ -216,11 +216,7 @@ def main():
         return 1
 
     if os.path.isfile(os.path.join(repo_ucode, "package.json")):
-        npm = shutil.which("npm") or shutil.which("npm.cmd")
-        if npm:
-            subprocess.run([npm, "install", "--silent"], cwd=repo_ucode, capture_output=True)
-        else:
-            print("[02b] WARN: npm not found, skipping 'npm install' in repo-ucode")
+        subprocess.run(["npm", "install", "--silent"], cwd=repo_ucode, shell=(os.name == "nt"), capture_output=True)
 
     saved = 0
 

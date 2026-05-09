@@ -157,16 +157,6 @@ INLINE_HTML_FRAGMENT_RE = re.compile(
 )
 CODE_FENCE_BLOCK_RE = re.compile(r"(```.*?```|~~~.*?~~~)", re.DOTALL)
 
-SYMBOL_INDEX_RE = re.compile(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', re.MULTILINE)
-NEXT_HEADING_RE = re.compile(r"^#{2,4}\s+", re.MULTILINE)
-DEPRECATED_RE = re.compile(r"\*\*[Dd]eprecated\*\*")
-FRONTMATTER_RE = re.compile(r"^---\r?\n.*?\r?\n---\r?\n?", re.DOTALL)
-CODE_BLOCK_RE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
-HEADING_PROTECT_RE = re.compile(r"^\s*#+ .+$", re.MULTILINE)
-HTML_TAG_RE = re.compile(r"<[^>\n]+>")
-ANCHOR_LINK_RE = re.compile(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", re.MULTILINE)
-INLINE_CODE_OR_LINK_RE = re.compile(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)")
-
 _html_normalizer_warning_emitted: bool = False
 
 
@@ -889,7 +879,7 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
             l2_files.append({"path": out_file, "module": module, "root_rel": f"{module}/{f}", "l1_rel": l1_rel})
 
             # Symbol Indexing
-            for m in SYMBOL_INDEX_RE.finditer(content):
+            for m in re.finditer(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', content, re.MULTILINE):
                 raw_node = m.group(1)
                 symbol = re.split(r"\(", raw_node)[0].strip()
                 if not is_code_symbol(symbol):
@@ -898,9 +888,9 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
                 # Check for deprecation only inside the current section.
                 is_dep = False
                 section_tail = content[m.end() :]
-                next_heading = NEXT_HEADING_RE.search(section_tail)
+                next_heading = re.search(r"^#{2,4}\s+", section_tail, re.MULTILINE)
                 dep_window = section_tail[: next_heading.start()] if next_heading else section_tail[:1000]
-                if DEPRECATED_RE.search(dep_window):
+                if re.search(r"\*\*[Dd]eprecated\*\*", dep_window):
                     is_dep = True
 
                 sig = raw_node if "(" in raw_node else f"{symbol}()"
@@ -936,18 +926,18 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
 
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
         prot_spans: list[tuple[int, int]] = []
-        fm_match = FRONTMATTER_RE.match(content)
+        fm_match = re.match(r"^---\r?\n.*?\r?\n---\r?\n?", content, re.DOTALL)
         if fm_match:
             prot_spans.append((fm_match.start(), fm_match.end()))
-        for m in CODE_BLOCK_RE.finditer(content):
+        for m in re.finditer(r"```.*?```|~~~.*?~~~", content, re.DOTALL):
             prot_spans.append((m.start(), m.end()))
-        for m in HEADING_PROTECT_RE.finditer(content):
+        for m in re.finditer(r"^\s*#+ .+$", content, re.MULTILINE):
             prot_spans.append((m.start(), m.end()))
-        for m in HTML_TAG_RE.finditer(content):
+        for m in re.finditer(r"<[^>\n]+>", content):
             prot_spans.append((m.start(), m.end()))
-        for m in ANCHOR_LINK_RE.finditer(content):
+        for m in re.finditer(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", content, re.MULTILINE):
             prot_spans.append((m.start(), m.end()))
-        for m in INLINE_CODE_OR_LINK_RE.finditer(content):
+        for m in re.finditer(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)", content):
             prot_spans.append((m.start(), m.end()))
         spans: list[tuple[int, int, str]] = []
         for _, target, pat in patterns:
