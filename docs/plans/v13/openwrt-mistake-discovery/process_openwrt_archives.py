@@ -585,11 +585,7 @@ def build_threads(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         sorted_messages = sorted(group, key=sort_key_for_message)
         all_files = sorted({ref for message in sorted_messages for ref in message.get("mentioned_files", [])})
         all_commits = sorted({ref for message in sorted_messages for ref in message.get("mentioned_commits", [])})
-        all_categories = []
-        for message in sorted_messages:
-            for category in message.get("categories", []):
-                if category not in all_categories:
-                    all_categories.append(category)
+        all_categories = list(dict.fromkeys(category for message in sorted_messages for category in message.get("categories", [])))
         thread = {
             "thread_id": root_id,
             "subject": sorted_messages[0].get("subject", ""),
