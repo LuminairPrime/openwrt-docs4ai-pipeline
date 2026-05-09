@@ -588,8 +588,7 @@ def build_threads(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         all_categories = []
         authors: set[str] = set()
         for message in sorted_messages:
-            addr = message.get("from_addr")
-            if addr:
+            if addr := message.get("from_addr"):
                 authors.add(addr)
             for category in message.get("categories", []):
                 if category not in all_categories:
