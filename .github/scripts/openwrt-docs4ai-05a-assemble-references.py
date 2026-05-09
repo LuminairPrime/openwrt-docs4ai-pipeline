@@ -306,16 +306,16 @@ def write_complete_reference(
         write_yaml_frontmatter(
             handle,
             {
-                "module": module,
-                "total_token_count": total_tokens,
-                "section_count": section_count,
+                "module": layout["module"],
+                "total_token_count": layout["total_token_count"],
+                "section_count": layout["section_count"],
                 "is_monolithic": True,
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {module} Complete Reference\n\n")
-        handle.write(f"> **Contains:** {section_count} documents concatenated\n")
-        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n\n---\n\n")
+        handle.write(f"# {layout['module']} Complete Reference\n\n")
+        handle.write(f"> **Contains:** {layout['section_count']} documents concatenated\n")
+        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n\n---\n\n")
         handle.write(body_text)
 
 
@@ -332,24 +332,24 @@ def write_sharded_reference_index(
         write_yaml_frontmatter(
             handle,
             {
-                "module": module,
-                "total_token_count": total_tokens,
-                "section_count": section_count,
+                "module": layout["module"],
+                "total_token_count": layout["total_token_count"],
+                "section_count": layout["section_count"],
                 "is_monolithic": False,
                 "is_sharded_index": True,
-                "part_count": len(parts),
+                "part_count": len(layout["parts"]),
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {module} Complete Reference\n\n")
-        handle.write(f"> **Contains:** {section_count} documents across {len(parts)} sharded parts\n")
-        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n")
+        handle.write(f"# {layout['module']} Complete Reference\n\n")
+        handle.write(f"> **Contains:** {layout['section_count']} documents across {len(layout['parts'])} sharded parts\n")
+        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n")
         handle.write(
             f"> **Sharding Rule:** The module exceeded the {MAX_MONOLITH_TOKENS} token budget, so use one of the smaller parts below for deep context.\n\n"
         )
         handle.write("## Reference Parts\n\n")
-        for part in parts:
-            filename = legacy_part_filename(module, int(part["part_number"]))
+        for part in layout["parts"]:
+            filename = legacy_part_filename(layout["module"], int(part["part_number"]))
             handle.write(
                 "- [{filename}](./{filename}): Part {part_number} of {part_count} "
                 "(~{token_count} tokens, {section_count} documents)\n".format(
@@ -404,16 +404,16 @@ def write_release_complete_reference(
         write_yaml_frontmatter(
             handle,
             {
-                "module": module,
-                "total_token_count": total_tokens,
-                "section_count": section_count,
+                "module": layout["module"],
+                "total_token_count": layout["total_token_count"],
+                "section_count": layout["section_count"],
                 "is_monolithic": True,
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {module} Bundled Reference\n\n")
-        handle.write(f"> **Contains:** {section_count} documents concatenated\n")
-        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n\n---\n\n")
+        handle.write(f"# {layout['module']} Bundled Reference\n\n")
+        handle.write(f"> **Contains:** {layout['section_count']} documents concatenated\n")
+        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n\n---\n\n")
         handle.write(join_reference_sections(sections, body_key="release_body_text"))
 
 
@@ -430,23 +430,23 @@ def write_release_sharded_reference_index(
         write_yaml_frontmatter(
             handle,
             {
-                "module": module,
-                "total_token_count": total_tokens,
-                "section_count": section_count,
+                "module": layout["module"],
+                "total_token_count": layout["total_token_count"],
+                "section_count": layout["section_count"],
                 "is_monolithic": False,
                 "is_sharded_index": True,
-                "part_count": len(parts),
+                "part_count": len(layout["parts"]),
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {module} Bundled Reference\n\n")
-        handle.write(f"> **Contains:** {section_count} documents across {len(parts)} sharded parts\n")
-        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n")
+        handle.write(f"# {layout['module']} Bundled Reference\n\n")
+        handle.write(f"> **Contains:** {layout['section_count']} documents across {len(layout['parts'])} sharded parts\n")
+        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n")
         handle.write(
             f"> **Sharding Rule:** The module exceeded the {MAX_MONOLITH_TOKENS} token budget, so use one of the smaller parts below for deep context.\n\n"
         )
         handle.write("## Reference Parts\n\n")
-        for part in parts:
+        for part in layout["parts"]:
             filename = release_part_filename(int(part["part_number"]))
             handle.write(
                 "- [{filename}](./{filename}): Part {part_number} of {part_count} "
