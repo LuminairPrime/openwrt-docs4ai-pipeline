@@ -586,9 +586,10 @@ def build_threads(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         all_files = sorted({ref for message in sorted_messages for ref in message.get("mentioned_files", [])})
         all_commits = sorted({ref for message in sorted_messages for ref in message.get("mentioned_commits", [])})
         all_categories = []
-        authors = set()
+        authors: set[str] = set()
         for message in sorted_messages:
-            if addr := message.get("from_addr"):
+            addr = message.get("from_addr")
+            if addr:
                 authors.add(addr)
             for category in message.get("categories", []):
                 if category not in all_categories:
