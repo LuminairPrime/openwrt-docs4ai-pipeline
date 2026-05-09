@@ -295,13 +295,14 @@ def write_yaml_frontmatter(handle, payload: dict[str, Any]) -> None:
 
 def write_complete_reference(
     path: str,
-    module: str,
-    total_tokens: int,
-    section_count: int,
+    layout: dict[str, Any],
     generated_at: str,
     body_text: str,
 ) -> None:
     """Write the stable single-file complete reference for one module."""
+    module = layout["module"]
+    total_tokens = int(layout["total_token_count"])
+    section_count = int(layout["section_count"])
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
@@ -321,13 +322,14 @@ def write_complete_reference(
 
 def write_sharded_reference_index(
     path: str,
-    module: str,
-    total_tokens: int,
-    section_count: int,
+    layout: dict[str, Any],
     generated_at: str,
-    parts: list[dict[str, Any]],
 ) -> None:
     """Write the stable complete-reference index for an oversized module."""
+    module = layout["module"]
+    total_tokens = int(layout["total_token_count"])
+    section_count = int(layout["section_count"])
+    parts = layout["parts"]
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
@@ -393,13 +395,14 @@ def write_sharded_reference_part(
 
 def write_release_complete_reference(
     path: str,
-    module: str,
-    total_tokens: int,
-    section_count: int,
+    layout: dict[str, Any],
     generated_at: str,
     sections: list[dict[str, Any]],
 ) -> None:
     """Write the release-tree bundled reference for one module."""
+    module = layout["module"]
+    total_tokens = int(layout["total_token_count"])
+    section_count = int(layout["section_count"])
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
@@ -419,13 +422,14 @@ def write_release_complete_reference(
 
 def write_release_sharded_reference_index(
     path: str,
-    module: str,
-    total_tokens: int,
-    section_count: int,
+    layout: dict[str, Any],
     generated_at: str,
-    parts: list[dict[str, Any]],
 ) -> None:
     """Write the release-tree bundled-reference index for an oversized module."""
+    module = layout["module"]
+    total_tokens = int(layout["total_token_count"])
+    section_count = int(layout["section_count"])
+    parts = layout["parts"]
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
@@ -595,11 +599,8 @@ def main(argv: list[str] | None = None) -> int:
         if layout["sharded"]:
             write_sharded_reference_index(
                 l4_path,
-                module,
-                int(layout["total_token_count"]),
-                int(layout["section_count"]),
+                layout,
                 generated_at,
-                layout["parts"],
             )
             outputs_generated += 1
 
@@ -628,9 +629,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             write_complete_reference(
                 l4_path,
-                module,
-                int(layout["total_token_count"]),
-                int(layout["section_count"]),
+                layout,
                 generated_at,
                 join_reference_sections(sections),
             )
@@ -654,11 +653,8 @@ def main(argv: list[str] | None = None) -> int:
         if layout["sharded"]:
             write_release_sharded_reference_index(
                 release_reference_path,
-                module,
-                int(layout["total_token_count"]),
-                int(layout["section_count"]),
+                layout,
                 generated_at,
-                layout["parts"],
             )
 
             for part in layout["parts"]:
@@ -674,9 +670,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             write_release_complete_reference(
                 release_reference_path,
-                module,
-                int(layout["total_token_count"]),
-                int(layout["section_count"]),
+                layout,
                 generated_at,
                 sections,
             )
