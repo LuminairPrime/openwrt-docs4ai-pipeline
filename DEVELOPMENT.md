@@ -14,29 +14,12 @@ This file is the maintainer quick start for local development. The current engin
 | git | 2.25+ | Repo cloning and versioned refactors |
 | jsdoc-to-markdown | current npm release | API doc extraction |
 
-## Environment Setup
-
-The repository utilizes a Python virtual environment for reliable local execution.
-
-### Quick Start on Windows
+## Quick Start on Windows
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
 pip install -r .github/scripts/requirements.txt
 npm install -g jsdoc-to-markdown
 winget install --id JohnMacFarlane.Pandoc
-```
-
-### Quick Start on Linux / macOS
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r .github/scripts/requirements.txt
-npm install -g jsdoc-to-markdown
-# For Ubuntu/Debian: sudo apt-get install pandoc
-# For macOS: brew install pandoc
 ```
 
 After dependencies are installed, use the canonical local validation wrappers in `tools/testing/` rather than relying on GitHub Actions behavior.

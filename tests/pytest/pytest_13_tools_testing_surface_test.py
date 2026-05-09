@@ -4,11 +4,9 @@ import json
 import subprocess
 from pathlib import Path
 
-from tests.support.runner_support import _resolve_repo_python
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-REPO_PYTHON = _resolve_repo_python()
+REPO_PYTHON = PROJECT_ROOT / ".venv" / "Scripts" / "python.exe"
 
 
 def test_tools_testing_entrypoints_exist() -> None:
