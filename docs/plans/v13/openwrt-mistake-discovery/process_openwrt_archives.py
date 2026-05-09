@@ -5,8 +5,8 @@ import json
 import random
 import re
 from collections import Counter, defaultdict
-
 from dataclasses import dataclass
+from datetime import datetime
 from email.header import decode_header, make_header
 from email.parser import BytesParser
 from email.policy import default
@@ -16,7 +16,21 @@ from typing import Any
 
 TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_.:-]{2,}")
 STOP_WORDS = frozenset(
-    {"the", "and", "for", "with", "that", "this", "from", "into", "have", "will", "when", "then", "not"}
+    {
+        "the",
+        "and",
+        "for",
+        "with",
+        "that",
+        "this",
+        "from",
+        "into",
+        "have",
+        "will",
+        "when",
+        "then",
+        "not",
+    }
 )
 
 
@@ -138,40 +152,25 @@ CATEGORY_PATTERNS = {
         re.IGNORECASE,
     ),
     "concurrency": re.compile(r"thread|mutex|lock(?:ing)?|race[-.\s]condition|deadlock|atomic|synchron", re.IGNORECASE),
-    "build-system": re.compile(
-        r"Makefile|PKG_|CONFIG_|compile|linker|CFLAGS|LDFLAGS|kmod|out[-.\s]of[-.\s]tree|-Werror|-Wno-", re.IGNORECASE
-    ),
-    "c-language": re.compile(
-        r"inline|static\s+.*void|implicit\s+declaration|undefined\s+behavior|cast|const|volatile|gcc|musl",
-        re.IGNORECASE,
-    ),
+    "build-system": re.compile(r"Makefile|PKG_|CONFIG_|compile|linker|CFLAGS|LDFLAGS|kmod|out[-.\s]of[-.\s]tree|-Werror|-Wno-", re.IGNORECASE),
+    "c-language": re.compile(r"inline|static\s+.*void|implicit\s+declaration|undefined\s+behavior|cast|const|volatile|gcc|musl", re.IGNORECASE),
     "uci-config": re.compile(r"uci[_\s]|/etc/config|uci\.batch|uci-defaults|option|config\s+\w+", re.IGNORECASE),
-    "procd-init": re.compile(
-        r"procd|init\.d|rc\.d|respawn|service|procd_set_param|procd_close_instance", re.IGNORECASE
-    ),
-    "networking": re.compile(
-        r"netifd|firewall|nftables|iptables|bridge|vlan|interface|socket|netlink|bind\(", re.IGNORECASE
-    ),
+    "procd-init": re.compile(r"procd|init\.d|rc\.d|respawn|service|procd_set_param|procd_close_instance", re.IGNORECASE),
+    "networking": re.compile(r"netifd|firewall|nftables|iptables|bridge|vlan|interface|socket|netlink|bind\(", re.IGNORECASE),
     "ubus-ipc": re.compile(r"ubus|blobmsg|libubox|ustream|uloop", re.IGNORECASE),
     "luci-frontend": re.compile(r"luci|uhttpd|rpcd|cbi|\.js|javascript|rpc", re.IGNORECASE),
     "kernel-driver": re.compile(r"kmod|dts|device[-.\s]tree|kernel|insmod|modprobe|module_init", re.IGNORECASE),
-    "patch-maintenance": re.compile(
-        r"bump|upstream|obsolete|remove.*patch|supersed|cherry[-.\s]pick|backport", re.IGNORECASE
-    ),
+    "patch-maintenance": re.compile(r"bump|upstream|obsolete|remove.*patch|supersed|cherry[-.\s]pick|backport", re.IGNORECASE),
     "package-packaging": re.compile(r"ipk|opkg|feed|PKG_SOURCE|PKG_HASH|PKG_VERSION", re.IGNORECASE),
 }
 
 STRUCTURAL_SIGNAL_PATTERNS = {
     "has_compiler_error": re.compile(r"\w+\.[ch]:\d+:\d+:\s*(?:error|warning):", re.IGNORECASE),
     "has_stack_trace": re.compile(r"Call Trace:|BUG:|Oops:|Unable to handle|RIP:|PC is at", re.IGNORECASE),
-    "has_shell_error": re.compile(
-        r"command not found|No such file|Permission denied|Segmentation fault", re.IGNORECASE
-    ),
+    "has_shell_error": re.compile(r"command not found|No such file|Permission denied|Segmentation fault", re.IGNORECASE),
     "has_build_error": re.compile(r"make\[\d+\]: \*\*\*|ERROR:|FATAL:.*not found|collect2: error", re.IGNORECASE),
     "has_code_block": re.compile(r"(?m)(^[\t ]{4,}\S.*\n){3,}"),
-    "has_reference_urls": re.compile(
-        r"https?://(?:bugs\.|github\.com/|git\.|lore\.kernel\.org/|patchwork\.)", re.IGNORECASE
-    ),
+    "has_reference_urls": re.compile(r"https?://(?:bugs\.|github\.com/|git\.|lore\.kernel\.org/|patchwork\.)", re.IGNORECASE),
     "has_patch_revision": re.compile(r"\[PATCH\s+v[2-9]", re.IGNORECASE),
 }
 
@@ -183,20 +182,20 @@ COMMIT_RE = re.compile(r"\b[a-f0-9]{7,12}\b", re.IGNORECASE)
 
 SEARCH_HINTS = {
     "build-system": [
-        'grep -R "EXTRA_CFLAGS" package/ target/',
+        "grep -R \"EXTRA_CFLAGS\" package/ target/",
         r"grep -R \"PKG_VERSION|PKG_SOURCE|PKG_HASH\" package/",
     ],
     "procd-init": [
         r"grep -R \"procd_set_param|procd_open_instance|USE_PROCD\" package/",
-        'find package -path "*/files/*" -name "*.init"',
+        "find package -path \"*/files/*\" -name \"*.init\"",
     ],
     "uci-config": [
         r"grep -R \"uci commit|uci set|uci add_list\" package/",
-        'grep -R "/etc/config" package/',
+        "grep -R \"/etc/config\" package/",
     ],
     "luci-frontend": [
         r"grep -R \"require view|require form|rpc.declare\" .",
-        'find . -path "*luci*" -name "*.js"',
+        "find . -path \"*luci*\" -name \"*.js\"",
     ],
     "networking": [
         r"grep -R \"bridge|vlan|firewall|netifd\" package/ target/",
@@ -425,9 +424,7 @@ def categorize(text: str) -> list[str]:
     return categories or ["uncategorized"]
 
 
-def disposition(
-    from_addr: str, subject: str, body_for_scoring: str, matched_keywords: list[str], in_reply_to: str | None
-) -> str:
+def disposition(from_addr: str, subject: str, body_for_scoring: str, matched_keywords: list[str], in_reply_to: str | None) -> str:
     if re.search(r"noreply(?:@|\s+at\s+)github\.com|buildbot@|ci@|jenkins@", from_addr, re.IGNORECASE):
         return "dropped"
     if re.search(r"\[VOTE\]|\b(?:CI|buildbot|patchwork)\b", subject, re.IGNORECASE):
@@ -605,21 +602,27 @@ def build_threads(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     threads: list[dict[str, Any]] = []
     for root_id, group in grouped.items():
         sorted_messages = sorted(group, key=sort_key_for_message)
-        all_files = sorted({ref for message in sorted_messages for ref in message.get("mentioned_files", [])})
-        all_commits = sorted({ref for message in sorted_messages for ref in message.get("mentioned_commits", [])})
-        all_categories = []
+        files_set: set[str] = set()
+        commits_set: set[str] = set()
+        categories_dict: dict[str, None] = {}
         for message in sorted_messages:
-            for category in message.get("categories", []):
-                if category not in all_categories:
-                    all_categories.append(category)
+            if files := message.get("mentioned_files"):
+                files_set.update(files)
+            if commits := message.get("mentioned_commits"):
+                commits_set.update(commits)
+            if categories := message.get("categories"):
+                for category in categories:
+                    categories_dict[category] = None
+
+        all_files = sorted(files_set)
+        all_commits = sorted(commits_set)
+        all_categories = list(categories_dict)
         thread = {
             "thread_id": root_id,
             "subject": sorted_messages[0].get("subject", ""),
             "messages": sorted_messages,
             "message_count": len(sorted_messages),
-            "author_count": len(
-                {message.get("from_addr", "") for message in sorted_messages if message.get("from_addr")}
-            ),
+            "author_count": len({message.get('from_addr', '') for message in sorted_messages if message.get('from_addr')}),
             "date_range": [sorted_messages[0].get("date_iso"), sorted_messages[-1].get("date_iso")],
             "all_mentioned_files": all_files,
             "all_mentioned_commits": all_commits,
@@ -640,9 +643,7 @@ def build_threads(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(threads, key=lambda item: (-item["score"], item["subject"].lower()))
 
 
-def extract_snippet(
-    messages: list[dict[str, Any]], pattern: re.Pattern[str], preferred_other_author: str | None = None
-) -> dict[str, Any] | None:
+def extract_snippet(messages: list[dict[str, Any]], pattern: re.Pattern[str], preferred_other_author: str | None = None) -> dict[str, Any] | None:
     candidate_messages = messages
     if preferred_other_author:
         filtered = [message for message in messages if message.get("from_addr") != preferred_other_author]
@@ -753,9 +754,7 @@ def write_lesson_index(path: Path, lessons: list[dict[str, Any]], source_label: 
             if fix.get("snippet"):
                 lines.extend(["", "Fix or correction:", f"> {fix['snippet']}"])
             else:
-                lines.extend(
-                    ["", "Fix or correction:", "> Not found in archive; search codebase for the correct pattern."]
-                )
+                lines.extend(["", "Fix or correction:", "> Not found in archive; search codebase for the correct pattern."])
             if lesson["mentioned_files"]:
                 lines.extend(["", f"Files: {', '.join(lesson['mentioned_files'])}"])
             if lesson["codebase_search_hints"]:
@@ -820,7 +819,8 @@ def write_common_problem_summary(path: Path, lessons: list[dict[str, Any]]) -> N
         lines.extend([f"## {category}", ""])
         lines.append(f"- Lesson candidates: {len(grouped_lessons)}")
         lines.append(
-            "- Completeness: " + ", ".join(f"{name}={count}" for name, count in sorted(completeness_counter.items()))
+            "- Completeness: "
+            + ", ".join(f"{name}={count}" for name, count in sorted(completeness_counter.items()))
         )
         top_keywords = [token for token, _count in keyword_counter.most_common(12)]
         if top_keywords:
@@ -848,9 +848,7 @@ def write_common_problem_summary(path: Path, lessons: list[dict[str, Any]]) -> N
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def build_parse_stage(
-    messages: list[dict[str, Any]], output_root: Path, seed: int
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+def build_parse_stage(messages: list[dict[str, Any]], output_root: Path, seed: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     parsed_root = output_root / "parsed"
     primary = [message for message in messages if message["disposition"] == "primary"]
     sidelined = [message for message in messages if message["disposition"] == "sidelined"]
@@ -868,11 +866,7 @@ def build_parse_stage(
                 "sidelined": len(sidelined),
                 "dropped": len(dropped),
             },
-            "keyword_match_rate": round(
-                sum(1 for message in messages if message["has_keyword_match"]) / len(messages) * 100, 1
-            )
-            if messages
-            else 0.0,
+            "keyword_match_rate": round(sum(1 for message in messages if message["has_keyword_match"]) / len(messages) * 100, 1) if messages else 0.0,
         },
     )
     write_samples(parsed_root / "samples.md", primary, seed)
@@ -918,9 +912,7 @@ def build_thread_stage(primary: list[dict[str, Any]], output_root: Path, seed: i
     return threads
 
 
-def build_score_stage(
-    threads: list[dict[str, Any]], output_root: Path, seed: int, threshold: float
-) -> list[dict[str, Any]]:
+def build_score_stage(threads: list[dict[str, Any]], output_root: Path, seed: int, threshold: float) -> list[dict[str, Any]]:
     scored_root = output_root / "scored"
     passing = [thread for thread in threads if thread["score"] >= threshold]
     write_jsonl(scored_root / "threads-scored.jsonl", threads)
@@ -1010,9 +1002,7 @@ def relative_source(path: Path, input_root: Path) -> str:
     return path.resolve().relative_to(input_root.resolve()).as_posix()
 
 
-def process_archives(
-    input_root: Path, output_root: Path, files: list[Path], seed: int, threshold: float
-) -> dict[str, Any]:
+def process_archives(input_root: Path, output_root: Path, files: list[Path], seed: int, threshold: float) -> dict[str, Any]:
     all_messages: list[dict[str, Any]] = []
     for path in files:
         relative = relative_source(path, input_root)
@@ -1038,9 +1028,7 @@ def process_archives(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Process OpenWrt mailing-list archives into condensed lesson candidates."
-    )
+    parser = argparse.ArgumentParser(description="Process OpenWrt mailing-list archives into condensed lesson candidates.")
     parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--files", nargs="*", type=Path, help="Optional explicit archive files to process.")
@@ -1057,12 +1045,8 @@ def main() -> int:
     summary = process_archives(args.input_root, args.output_root, files, args.seed, args.score_threshold)
     print(f"[process] Input files: {summary['input_files']}")
     print(f"[process] Messages: {summary['messages']}")
-    print(
-        f"[process] Primary: {summary['primary']} | Sidelined: {summary['sidelined']} | Dropped: {summary['dropped']}"
-    )
-    print(
-        f"[process] Threads: {summary['threads']} | Passing: {summary['passing_threads']} | Lessons: {summary['lessons']}"
-    )
+    print(f"[process] Primary: {summary['primary']} | Sidelined: {summary['sidelined']} | Dropped: {summary['dropped']}")
+    print(f"[process] Threads: {summary['threads']} | Passing: {summary['passing_threads']} | Lessons: {summary['lessons']}")
     print(f"[process] Output root: {args.output_root}")
     return 0
 
