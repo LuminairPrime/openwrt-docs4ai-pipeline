@@ -8,10 +8,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Prerequisites
 
-```powershell
+```bash
+# First, create and activate a virtual environment
+python3 -m venv .venv
+# On Windows: .\.venv\Scripts\Activate.ps1
+# On Linux/macOS: source .venv/bin/activate
+
+# Then install dependencies
 pip install -r .github/scripts/requirements.txt
 npm install -g jsdoc-to-markdown
-winget install --id JohnMacFarlane.Pandoc
+# On Windows: winget install --id JohnMacFarlane.Pandoc
+# On Linux: sudo apt-get install pandoc
+# On macOS: brew install pandoc
 ```
 
 Use the workspace interpreter directly when needed: `.venv/Scripts/python.exe`. Do not assume the system `python` on PATH is the repo interpreter.
