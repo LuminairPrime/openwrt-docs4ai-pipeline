@@ -925,28 +925,29 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
             content = f.read()
 
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
-        prot: set[int] = set()
+        prot_spans: list[tuple[int, int]] = []
         fm_match = re.match(r"^---\r?\n.*?\r?\n---\r?\n?", content, re.DOTALL)
         if fm_match:
-            prot.update(range(fm_match.start(), fm_match.end()))
+            prot_spans.append((fm_match.start(), fm_match.end()))
         for m in re.finditer(r"```.*?```|~~~.*?~~~", content, re.DOTALL):
-            prot.update(range(m.start(), m.end()))
+            prot_spans.append((m.start(), m.end()))
         for m in re.finditer(r"^\s*#+ .+$", content, re.MULTILINE):
-            prot.update(range(m.start(), m.end()))
+            prot_spans.append((m.start(), m.end()))
         for m in re.finditer(r"<[^>\n]+>", content):
-            prot.update(range(m.start(), m.end()))
+            prot_spans.append((m.start(), m.end()))
         for m in re.finditer(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", content, re.MULTILINE):
-            prot.update(range(m.start(), m.end()))
+            prot_spans.append((m.start(), m.end()))
         for m in re.finditer(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)", content):
-            prot.update(range(m.start(), m.end()))
-
+            prot_spans.append((m.start(), m.end()))
         spans: list[tuple[int, int, str]] = []
         for _, target, pat in patterns:
             if target.endswith(info["root_rel"]):
                 continue
             for m in pat.finditer(content):
-                if not any(i in prot for i in range(m.start(), m.end())):
-                    if not any(s <= m.start() < e for s, e, _ in spans):
+                m_start, m_end = m.start(), m.end()
+                is_protected = any(max(m_start, p_start) < min(m_end, p_end) for p_start, p_end in prot_spans)
+                if not is_protected:
+                    if not any(s <= m_start < e for s, e, _ in spans):
                         spans.append((m.start(), m.end(), f"[{m.group(0)}]({target})"))
 
         if spans:
