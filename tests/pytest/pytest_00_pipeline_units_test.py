@@ -481,6 +481,22 @@ class TestCookbookCrossModuleLinkContract:
         result = assemble.rewrite_release_chunked_links(link)
         assert result == "[ucode UCI](../../ucode/chunked-reference/c_source-api-module-uci.md)"
 
+def test_resolve_repo_path_absolute():
+    from lib.config import _resolve_repo_path
+    import os
+    abs_path = "/tmp/some/absolute/path"
+    if os.name == 'nt':
+        abs_path = "C:\\tmp\\some\\absolute\\path"
+    assert _resolve_repo_path(abs_path) == abs_path
+
+def test_resolve_repo_path_relative():
+    from lib.config import _resolve_repo_path, _REPO_ROOT
+    import os
+    rel_path = "some/relative/path"
+    expected_path = os.path.join(_REPO_ROOT, rel_path)
+    assert _resolve_repo_path(rel_path) == expected_path
+
+
 def test_normalize_repo_relative_with_absolute_inside_repo():
     from lib.config import _normalize_repo_relative, _REPO_ROOT
     import os
