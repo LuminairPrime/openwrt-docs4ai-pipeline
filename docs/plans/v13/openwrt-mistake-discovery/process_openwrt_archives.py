@@ -14,6 +14,25 @@ from email.utils import getaddresses, parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
+TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_.:-]{2,}")
+STOP_WORDS = frozenset(
+    {
+        "the",
+        "and",
+        "for",
+        "with",
+        "that",
+        "this",
+        "from",
+        "into",
+        "have",
+        "will",
+        "when",
+        "then",
+        "not",
+    }
+)
+
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_INPUT_ROOT = ROOT / "OpenWrt_Archives"
@@ -791,8 +810,8 @@ def write_common_problem_summary(path: Path, lessons: list[dict[str, Any]]) -> N
             source_keywords = lesson.get("problem", {}) or {}
             snippet = source_keywords.get("snippet", "")
             if snippet:
-                for token in re.findall(r"[A-Za-z][A-Za-z0-9_.:-]{2,}", snippet.lower()):
-                    if token in {"the", "and", "for", "with", "that", "this", "from", "into", "have", "will", "when", "then", "not"}:
+                for token in TOKEN_RE.findall(snippet.lower()):
+                    if token in STOP_WORDS:
                         continue
                     keyword_counter[token] += 1
             completeness_counter[lesson["completeness"]["level"]] += 1
