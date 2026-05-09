@@ -495,3 +495,58 @@ def test_resolve_repo_path_relative():
     rel_path = "some/relative/path"
     expected_path = os.path.join(_REPO_ROOT, rel_path)
     assert _resolve_repo_path(rel_path) == expected_path
+
+
+def test_normalize_repo_relative_with_absolute_inside_repo():
+    from lib.config import _normalize_repo_relative, _REPO_ROOT
+    import os
+    path = os.path.join(_REPO_ROOT, "lib", "config.py")
+    assert _normalize_repo_relative(path) == "lib/config.py"
+
+def test_normalize_repo_relative_with_relative_path():
+    from lib.config import _normalize_repo_relative
+    assert _normalize_repo_relative("lib/config.py") == "lib/config.py"
+
+def test_normalize_repo_relative_with_absolute_outside_repo():
+    from lib.config import _normalize_repo_relative
+    import os
+    if os.name == 'nt':
+        path = "C:\\tmp\\some\\path"
+        expected = "C:/tmp/some/path"
+    else:
+        path = "/tmp/some/path"
+        expected = "/tmp/some/path"
+    assert _normalize_repo_relative(path) == expected
+
+def test_normalize_repo_relative_with_dot():
+    from lib.config import _normalize_repo_relative
+    assert _normalize_repo_relative(".") == "."
+
+def test_normalize_repo_relative_with_dot_dot():
+    from lib.config import _normalize_repo_relative
+    assert _normalize_repo_relative("..") == ".."
+
+def test_normalize_repo_relative_different_drive_windows(monkeypatch):
+    import os
+    import lib.config as config
+    from lib.config import _normalize_repo_relative
+
+    orig_abspath = os.path.abspath
+    orig_commonpath = os.path.commonpath
+
+    def mock_abspath(path):
+        if path == "D:\\some\\path":
+            return "D:\\some\\path"
+        return orig_abspath(path)
+
+    monkeypatch.setattr(os.path, "abspath", mock_abspath)
+    monkeypatch.setattr(config, "_REPO_ROOT", "C:\\repo")
+
+    def mock_commonpath(paths):
+        if "C:\\repo" in paths and "D:\\some\\path" in paths:
+            raise ValueError("Paths don't have the same drive")
+        return orig_commonpath(paths)
+
+    monkeypatch.setattr(os.path, "commonpath", mock_commonpath)
+
+    assert _normalize_repo_relative("D:\\some\\path") == "D:/some/path"
