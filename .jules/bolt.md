@@ -1,7 +1,0 @@
-## 2026-05-09 - Repository Interpreter Specificity
-**Learning:** This repository relies extensively on the local virtual environment (`.venv`). Tooling commands executed in standard global context (e.g., standard `pip` or standard `pytest` directly in GitHub Actions/Docker) may fail due to implicit dependencies like `pyyaml` mapped inside script files executed via `tests.support.runner_support._resolve_repo_python()`.
-**Action:** When validating, ensure tests either strictly run through canonical scripts (e.g., `python tools/testing/run_default_validation.py`) or explicitly install required pipeline dependencies to the globally available interpreter if running pytest manually. Test wrapper scripts should ideally utilize dynamic, cross-platform interpreter resolution.
-
-## 2026-05-09 - Large Set Allocation Anti-Pattern in L2 Normalization
-**Learning:** During semantic normalization (`openwrt-docs4ai-03-normalize-semantic.py`), the `pass_2_link_all` logic was heavily allocating integer sets for protected markdown region tracking (e.g. `prot.update(range(m.start(), m.end()))`). In python, generating and inserting thousands of integers into sets for large strings drastically degrades performance ($O(P)$ memory and execution time where $P$ is the length of the string matches).
-**Action:** Use list-based interval tracking with mathematical overlap checking `max(start, block_start) < min(end, block_end)` instead. This reduces the protection algorithm from $O(P)$ to $O(K)$, where $K$ is the number of protected blocks.

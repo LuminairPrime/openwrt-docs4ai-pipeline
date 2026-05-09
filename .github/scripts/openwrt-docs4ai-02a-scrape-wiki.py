@@ -517,23 +517,23 @@ def convert_raw_to_markdown(path, raw_content):
     }
 
 
-def write_page_output(ctx, converted):
+def write_page_output(slug, url, path, converted, last_modified, last_modified_http, raw_hash):
     metadata = {
         "extractor": "02a-scrape-wiki.py",
         "origin_type": "wiki_page",
         "module": "wiki",
-        "slug": ctx["slug"],
-        "source_url": ctx["url"],
+        "slug": slug,
+        "source_url": url,
         "language": "text",
         "fetch_status": "success",
         "conversion_mode": converted["mode"],
-        "last_modified": ctx["last_modified"],
-        "last_modified_http": ctx["last_modified_http"],
-        "raw_hash": ctx["raw_hash"],
-        "source_path": ctx["path"],
+        "last_modified": last_modified,
+        "last_modified_http": last_modified_http,
+        "raw_hash": raw_hash,
+        "source_path": path,
         "extraction_timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
     }
-    extractor.write_l1_markdown("wiki", "wiki_page", ctx["slug"], converted["content"], metadata)
+    extractor.write_l1_markdown("wiki", "wiki_page", slug, converted["content"], metadata)
     return content_hash_prefix(converted["content"])
 
 
@@ -553,12 +553,12 @@ def get_cutoff_date():
     return datetime.datetime.now(datetime.UTC).replace(tzinfo=None) - datetime.timedelta(days=730)
 
 
-def update_cache_entry(cache, ctx, content_hash, skip_reason=None):
-    cache[ctx["url"]] = {
-        "path": ctx["path"],
-        "last_modified": ctx["last_modified"],
-        "last_modified_http": ctx["last_modified_http"],
-        "raw_hash": ctx["raw_hash"],
+def update_cache_entry(cache, url, path, last_modified, last_modified_http, raw_hash, content_hash, skip_reason=None):
+    cache[url] = {
+        "path": path,
+        "last_modified": last_modified,
+        "last_modified_http": last_modified_http,
+        "raw_hash": raw_hash,
         "content_hash": content_hash,
         "skip_reason": skip_reason,
     }
@@ -637,34 +637,26 @@ def process_page(session, path, cache, stats, cutoff):
     if parsed_last_modified is not None and parsed_last_modified < cutoff and path not in MANDATORY_PAGES:
         if remove_output(slug):
             log("INFO", f"Removed cached output for old wiki page {slug}.")
-        ctx = {
-            "slug": slug,
-            "url": url,
-            "path": path,
-            "last_modified": effective_last_modified,
-            "last_modified_http": effective_last_modified_http,
-            "raw_hash": raw_hash,
-        }
         update_cache_entry(
             cache,
-            ctx,
+            url,
+            path,
+            effective_last_modified,
+            effective_last_modified_http,
+            raw_hash,
             existing_output["computed_content_hash"] if existing_output else None,
         )
         stats["skipped_old"] += 1
         return "skipped_old"
 
     if cache_entry and cache_entry.get("raw_hash") == raw_hash and cache_entry.get("skip_reason") == "short":
-        ctx = {
-            "slug": slug,
-            "url": url,
-            "path": path,
-            "last_modified": effective_last_modified,
-            "last_modified_http": effective_last_modified_http,
-            "raw_hash": raw_hash,
-        }
         update_cache_entry(
             cache,
-            ctx,
+            url,
+            path,
+            effective_last_modified,
+            effective_last_modified_http,
+            raw_hash,
             None,
             skip_reason="short",
         )
@@ -673,17 +665,13 @@ def process_page(session, path, cache, stats, cutoff):
         return "skipped_short"
 
     if cache_entry and cache_entry.get("raw_hash") == raw_hash and existing_output:
-        ctx = {
-            "slug": slug,
-            "url": url,
-            "path": path,
-            "last_modified": effective_last_modified,
-            "last_modified_http": effective_last_modified_http,
-            "raw_hash": raw_hash,
-        }
         update_cache_entry(
             cache,
-            ctx,
+            url,
+            path,
+            effective_last_modified,
+            effective_last_modified_http,
+            raw_hash,
             existing_output["computed_content_hash"],
         )
         stats["skipped_unchanged"] += 1
@@ -703,17 +691,13 @@ def process_page(session, path, cache, stats, cutoff):
                 f"Reusing cached wiki page {slug} after short conversion result ({len(converted['content'])} chars).",
             )
             return "reused_cached"
-        ctx = {
-            "slug": slug,
-            "url": url,
-            "path": path,
-            "last_modified": last_modified,
-            "last_modified_http": effective_last_modified_http,
-            "raw_hash": raw_hash,
-        }
         update_cache_entry(
             cache,
-            ctx,
+            url,
+            path,
+            last_modified,
+            effective_last_modified_http,
+            raw_hash,
             None,
             skip_reason="short",
         )
@@ -721,18 +705,22 @@ def process_page(session, path, cache, stats, cutoff):
         log("INFO", f"Skipping short wiki page {slug} ({len(converted['content'])} chars).")
         return "skipped_short"
 
-    ctx = {
-        "slug": slug,
-        "url": url,
-        "path": path,
-        "last_modified": last_modified,
-        "last_modified_http": effective_last_modified_http,
-        "raw_hash": raw_hash,
-    }
-    content_hash = write_page_output(ctx, converted)
+    content_hash = write_page_output(
+        slug,
+        url,
+        path,
+        converted,
+        last_modified,
+        effective_last_modified_http,
+        raw_hash,
+    )
     update_cache_entry(
         cache,
-        ctx,
+        url,
+        path,
+        last_modified,
+        effective_last_modified_http,
+        raw_hash,
         content_hash,
         skip_reason=None,
     )
