@@ -24,6 +24,18 @@ from typing import Any, Callable, cast
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from lib import config, partial_rerun_guard, repo_manifest
 
+# Pre-compiled regular expressions for performance
+RE_FRONTMATTER = re.compile(r"^---\r?\n.*?\r?\n---\r?\n?", re.DOTALL)
+RE_FENCED_CODE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
+RE_HEADER_LINE = re.compile(r"^\s*#+ .+$", re.MULTILINE)
+RE_HTML_TAG = re.compile(r"<[^>\n]+>")
+RE_MD_LIST_LINK = re.compile(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", re.MULTILINE)
+RE_INLINE_CODE_OR_LINK = re.compile(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)")
+RE_MD_SYMBOL_INDEX = re.compile(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', re.MULTILINE)
+RE_MD_HEADING_SEARCH = re.compile(r"^#{2,4}\s+", re.MULTILINE)
+RE_DEPRECATED_SEARCH = re.compile(r"\*\*[Dd]eprecated\*\*")
+
+
 try:
     from bs4 import BeautifulSoup, Comment, Tag
     from bs4.element import NavigableString
@@ -879,7 +891,7 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
             l2_files.append({"path": out_file, "module": module, "root_rel": f"{module}/{f}", "l1_rel": l1_rel})
 
             # Symbol Indexing
-            for m in re.finditer(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', content, re.MULTILINE):
+            for m in RE_MD_SYMBOL_INDEX.finditer(content):
                 raw_node = m.group(1)
                 symbol = re.split(r"\(", raw_node)[0].strip()
                 if not is_code_symbol(symbol):
@@ -888,9 +900,9 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
                 # Check for deprecation only inside the current section.
                 is_dep = False
                 section_tail = content[m.end() :]
-                next_heading = re.search(r"^#{2,4}\s+", section_tail, re.MULTILINE)
+                next_heading = RE_MD_HEADING_SEARCH.search(section_tail)
                 dep_window = section_tail[: next_heading.start()] if next_heading else section_tail[:1000]
-                if re.search(r"\*\*[Dd]eprecated\*\*", dep_window):
+                if RE_DEPRECATED_SEARCH.search(dep_window):
                     is_dep = True
 
                 sig = raw_node if "(" in raw_node else f"{symbol}()"
@@ -926,18 +938,18 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
 
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
         prot: set[int] = set()
-        fm_match = re.match(r"^---\r?\n.*?\r?\n---\r?\n?", content, re.DOTALL)
+        fm_match = RE_FRONTMATTER.match(content)
         if fm_match:
             prot.update(range(fm_match.start(), fm_match.end()))
-        for m in re.finditer(r"```.*?```|~~~.*?~~~", content, re.DOTALL):
+        for m in RE_FENCED_CODE.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in re.finditer(r"^\s*#+ .+$", content, re.MULTILINE):
+        for m in RE_HEADER_LINE.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in re.finditer(r"<[^>\n]+>", content):
+        for m in RE_HTML_TAG.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in re.finditer(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", content, re.MULTILINE):
+        for m in RE_MD_LIST_LINK.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in re.finditer(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)", content):
+        for m in RE_INLINE_CODE_OR_LINK.finditer(content):
             prot.update(range(m.start(), m.end()))
 
         spans: list[tuple[int, int, str]] = []
