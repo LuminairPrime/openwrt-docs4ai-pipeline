@@ -24,6 +24,18 @@ from typing import Any, Callable, cast
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from lib import config, partial_rerun_guard, repo_manifest
 
+# Pre-compiled regular expressions for performance
+RE_FRONTMATTER = re.compile(r"^---\r?\n.*?\r?\n---\r?\n?", re.DOTALL)
+RE_FENCED_CODE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
+RE_HEADER_LINE = re.compile(r"^\s*#+ .+$", re.MULTILINE)
+RE_HTML_TAG = re.compile(r"<[^>\n]+>")
+RE_MD_LIST_LINK = re.compile(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", re.MULTILINE)
+RE_INLINE_CODE_OR_LINK = re.compile(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)")
+RE_MD_SYMBOL_INDEX = re.compile(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', re.MULTILINE)
+RE_MD_HEADING_SEARCH = re.compile(r"^#{2,4}\s+", re.MULTILINE)
+RE_DEPRECATED_SEARCH = re.compile(r"\*\*[Dd]eprecated\*\*")
+
+
 try:
     from bs4 import BeautifulSoup, Comment, Tag
     from bs4.element import NavigableString
@@ -156,16 +168,6 @@ INLINE_HTML_FRAGMENT_RE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 CODE_FENCE_BLOCK_RE = re.compile(r"(```.*?```|~~~.*?~~~)", re.DOTALL)
-
-SYMBOL_INDEX_RE = re.compile(r'^#{2,4}\s+[`"]?([A-Za-z][A-Za-z0-9_.]+(?:\(.*\))?)[`"]?', re.MULTILINE)
-NEXT_HEADING_RE = re.compile(r"^#{2,4}\s+", re.MULTILINE)
-DEPRECATED_RE = re.compile(r"\*\*[Dd]eprecated\*\*")
-FRONTMATTER_RE = re.compile(r"^---\r?\n.*?\r?\n---\r?\n?", re.DOTALL)
-CODE_BLOCK_RE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
-HEADING_PROTECT_RE = re.compile(r"^\s*#+ .+$", re.MULTILINE)
-HTML_TAG_RE = re.compile(r"<[^>\n]+>")
-ANCHOR_LINK_RE = re.compile(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", re.MULTILINE)
-INLINE_CODE_OR_LINK_RE = re.compile(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)")
 
 _html_normalizer_warning_emitted: bool = False
 
@@ -889,7 +891,7 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
             l2_files.append({"path": out_file, "module": module, "root_rel": f"{module}/{f}", "l1_rel": l1_rel})
 
             # Symbol Indexing
-            for m in SYMBOL_INDEX_RE.finditer(content):
+            for m in RE_MD_SYMBOL_INDEX.finditer(content):
                 raw_node = m.group(1)
                 symbol = re.split(r"\(", raw_node)[0].strip()
                 if not is_code_symbol(symbol):
@@ -898,9 +900,9 @@ def pass_1_normalize_all(ts_now: str) -> tuple[list[dict[str, Any]], dict[str, A
                 # Check for deprecation only inside the current section.
                 is_dep = False
                 section_tail = content[m.end() :]
-                next_heading = NEXT_HEADING_RE.search(section_tail)
+                next_heading = RE_MD_HEADING_SEARCH.search(section_tail)
                 dep_window = section_tail[: next_heading.start()] if next_heading else section_tail[:1000]
-                if DEPRECATED_RE.search(dep_window):
+                if RE_DEPRECATED_SEARCH.search(dep_window):
                     is_dep = True
 
                 sig = raw_node if "(" in raw_node else f"{symbol}()"
@@ -935,28 +937,47 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
             content = f.read()
 
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
+<<<<<<< HEAD
         prot: set[int] = set()
-        fm_match = FRONTMATTER_RE.match(content)
+        fm_match = RE_FRONTMATTER.match(content)
         if fm_match:
             prot.update(range(fm_match.start(), fm_match.end()))
-        for m in CODE_BLOCK_RE.finditer(content):
+        for m in RE_FENCED_CODE.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in HEADING_PROTECT_RE.finditer(content):
+        for m in RE_HEADER_LINE.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in HTML_TAG_RE.finditer(content):
+        for m in RE_HTML_TAG.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in ANCHOR_LINK_RE.finditer(content):
+        for m in RE_MD_LIST_LINK.finditer(content):
             prot.update(range(m.start(), m.end()))
-        for m in INLINE_CODE_OR_LINK_RE.finditer(content):
+        for m in RE_INLINE_CODE_OR_LINK.finditer(content):
             prot.update(range(m.start(), m.end()))
 
+=======
+        prot_spans: list[tuple[int, int]] = []
+        fm_match = re.match(r"^---\r?\n.*?\r?\n---\r?\n?", content, re.DOTALL)
+        if fm_match:
+            prot_spans.append((fm_match.start(), fm_match.end()))
+        for m in re.finditer(r"```.*?```|~~~.*?~~~", content, re.DOTALL):
+            prot_spans.append((m.start(), m.end()))
+        for m in re.finditer(r"^\s*#+ .+$", content, re.MULTILINE):
+            prot_spans.append((m.start(), m.end()))
+        for m in re.finditer(r"<[^>\n]+>", content):
+            prot_spans.append((m.start(), m.end()))
+        for m in re.finditer(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", content, re.MULTILINE):
+            prot_spans.append((m.start(), m.end()))
+        for m in re.finditer(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)", content):
+            prot_spans.append((m.start(), m.end()))
+>>>>>>> origin/main
         spans: list[tuple[int, int, str]] = []
         for _, target, pat in patterns:
             if target.endswith(info["root_rel"]):
                 continue
             for m in pat.finditer(content):
-                if not any(i in prot for i in range(m.start(), m.end())):
-                    if not any(s <= m.start() < e for s, e, _ in spans):
+                m_start, m_end = m.start(), m.end()
+                is_protected = any(max(m_start, p_start) < min(m_end, p_end) for p_start, p_end in prot_spans)
+                if not is_protected:
+                    if not any(s <= m_start < e for s, e, _ in spans):
                         spans.append((m.start(), m.end(), f"[{m.group(0)}]({target})"))
 
         if spans:
