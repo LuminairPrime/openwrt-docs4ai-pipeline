@@ -937,23 +937,6 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
             content = f.read()
 
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
-<<<<<<< HEAD
-        prot: set[int] = set()
-        fm_match = RE_FRONTMATTER.match(content)
-        if fm_match:
-            prot.update(range(fm_match.start(), fm_match.end()))
-        for m in RE_FENCED_CODE.finditer(content):
-            prot.update(range(m.start(), m.end()))
-        for m in RE_HEADER_LINE.finditer(content):
-            prot.update(range(m.start(), m.end()))
-        for m in RE_HTML_TAG.finditer(content):
-            prot.update(range(m.start(), m.end()))
-        for m in RE_MD_LIST_LINK.finditer(content):
-            prot.update(range(m.start(), m.end()))
-        for m in RE_INLINE_CODE_OR_LINK.finditer(content):
-            prot.update(range(m.start(), m.end()))
-
-=======
         prot_spans: list[tuple[int, int]] = []
         fm_match = re.match(r"^---\r?\n.*?\r?\n---\r?\n?", content, re.DOTALL)
         if fm_match:
@@ -968,7 +951,6 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
             prot_spans.append((m.start(), m.end()))
         for m in re.finditer(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)", content):
             prot_spans.append((m.start(), m.end()))
->>>>>>> origin/main
         spans: list[tuple[int, int, str]] = []
         for _, target, pat in patterns:
             if target.endswith(info["root_rel"]):
