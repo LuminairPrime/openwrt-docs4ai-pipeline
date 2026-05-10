@@ -295,63 +295,61 @@ def write_yaml_frontmatter(handle, payload: dict[str, Any]) -> None:
 
 def write_complete_reference(
     path: str,
-    layout: dict[str, Any],
+    module: str,
+    total_tokens: int,
+    section_count: int,
     generated_at: str,
     body_text: str,
 ) -> None:
     """Write the stable single-file complete reference for one module."""
-    module = layout["module"]
-    total_tokens = int(layout["total_token_count"])
-    section_count = int(layout["section_count"])
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
             {
-                "module": layout["module"],
-                "total_token_count": layout["total_token_count"],
-                "section_count": layout["section_count"],
+                "module": module,
+                "total_token_count": total_tokens,
+                "section_count": section_count,
                 "is_monolithic": True,
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {layout['module']} Complete Reference\n\n")
-        handle.write(f"> **Contains:** {layout['section_count']} documents concatenated\n")
-        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n\n---\n\n")
+        handle.write(f"# {module} Complete Reference\n\n")
+        handle.write(f"> **Contains:** {section_count} documents concatenated\n")
+        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n\n---\n\n")
         handle.write(body_text)
 
 
 def write_sharded_reference_index(
     path: str,
-    layout: dict[str, Any],
+    module: str,
+    total_tokens: int,
+    section_count: int,
+    parts: list[dict[str, Any]],
     generated_at: str,
 ) -> None:
     """Write the stable complete-reference index for an oversized module."""
-    module = layout["module"]
-    total_tokens = int(layout["total_token_count"])
-    section_count = int(layout["section_count"])
-    parts = layout["parts"]
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
             {
-                "module": layout["module"],
-                "total_token_count": layout["total_token_count"],
-                "section_count": layout["section_count"],
+                "module": module,
+                "total_token_count": total_tokens,
+                "section_count": section_count,
                 "is_monolithic": False,
                 "is_sharded_index": True,
-                "part_count": len(layout["parts"]),
+                "part_count": len(parts),
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {layout['module']} Complete Reference\n\n")
-        handle.write(f"> **Contains:** {layout['section_count']} documents across {len(layout['parts'])} sharded parts\n")
-        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n")
+        handle.write(f"# {module} Complete Reference\n\n")
+        handle.write(f"> **Contains:** {section_count} documents across {len(parts)} sharded parts\n")
+        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n")
         handle.write(
             f"> **Sharding Rule:** The module exceeded the {MAX_MONOLITH_TOKENS} token budget, so use one of the smaller parts below for deep context.\n\n"
         )
         handle.write("## Reference Parts\n\n")
-        for part in layout["parts"]:
-            filename = legacy_part_filename(layout["module"], int(part["part_number"]))
+        for part in parts:
+            filename = legacy_part_filename(module, int(part["part_number"]))
             handle.write(
                 "- [{filename}](./{filename}): Part {part_number} of {part_count} "
                 "(~{token_count} tokens, {section_count} documents)\n".format(
@@ -395,62 +393,60 @@ def write_sharded_reference_part(
 
 def write_release_complete_reference(
     path: str,
-    layout: dict[str, Any],
+    module: str,
+    total_tokens: int,
+    section_count: int,
     generated_at: str,
     sections: list[dict[str, Any]],
 ) -> None:
     """Write the release-tree bundled reference for one module."""
-    module = layout["module"]
-    total_tokens = int(layout["total_token_count"])
-    section_count = int(layout["section_count"])
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
             {
-                "module": layout["module"],
-                "total_token_count": layout["total_token_count"],
-                "section_count": layout["section_count"],
+                "module": module,
+                "total_token_count": total_tokens,
+                "section_count": section_count,
                 "is_monolithic": True,
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {layout['module']} Bundled Reference\n\n")
-        handle.write(f"> **Contains:** {layout['section_count']} documents concatenated\n")
-        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n\n---\n\n")
+        handle.write(f"# {module} Bundled Reference\n\n")
+        handle.write(f"> **Contains:** {section_count} documents concatenated\n")
+        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n\n---\n\n")
         handle.write(join_reference_sections(sections, body_key="release_body_text"))
 
 
 def write_release_sharded_reference_index(
     path: str,
-    layout: dict[str, Any],
+    module: str,
+    total_tokens: int,
+    section_count: int,
+    parts: list[dict[str, Any]],
     generated_at: str,
 ) -> None:
     """Write the release-tree bundled-reference index for an oversized module."""
-    module = layout["module"]
-    total_tokens = int(layout["total_token_count"])
-    section_count = int(layout["section_count"])
-    parts = layout["parts"]
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         write_yaml_frontmatter(
             handle,
             {
-                "module": layout["module"],
-                "total_token_count": layout["total_token_count"],
-                "section_count": layout["section_count"],
+                "module": module,
+                "total_token_count": total_tokens,
+                "section_count": section_count,
                 "is_monolithic": False,
                 "is_sharded_index": True,
-                "part_count": len(layout["parts"]),
+                "part_count": len(parts),
                 "generated": generated_at,
             },
         )
-        handle.write(f"# {layout['module']} Bundled Reference\n\n")
-        handle.write(f"> **Contains:** {layout['section_count']} documents across {len(layout['parts'])} sharded parts\n")
-        handle.write(f"> **Tokens:** ~{layout['total_token_count']} (cl100k_base)\n")
+        handle.write(f"# {module} Bundled Reference\n\n")
+        handle.write(f"> **Contains:** {section_count} documents across {len(parts)} sharded parts\n")
+        handle.write(f"> **Tokens:** ~{total_tokens} (cl100k_base)\n")
         handle.write(
             f"> **Sharding Rule:** The module exceeded the {MAX_MONOLITH_TOKENS} token budget, so use one of the smaller parts below for deep context.\n\n"
         )
         handle.write("## Reference Parts\n\n")
-        for part in layout["parts"]:
+        for part in parts:
             filename = release_part_filename(int(part["part_number"]))
             handle.write(
                 "- [{filename}](./{filename}): Part {part_number} of {part_count} "
@@ -589,6 +585,15 @@ def main(argv: list[str] | None = None) -> int:
 
         sections, skeleton_lines = load_l2_sections(module, md_files)
         layout = build_reference_layout(module, sections)
+        total_tokens = layout["total_token_count"]
+        section_count = layout["section_count"]
+        parts = layout.get("parts", [])
+        total_tokens = layout.get("total_token_count", 0)
+        section_count = layout.get("section_count", 0)
+        parts = layout.get("parts", [])
+        total_tokens = layout.get("total_token_count", 0)
+        section_count = layout.get("section_count", 0)
+        parts = layout.get("parts", [])
 
         out_mod_dir = os.path.join(OUTDIR, module)
         os.makedirs(out_mod_dir, exist_ok=True)
@@ -599,12 +604,15 @@ def main(argv: list[str] | None = None) -> int:
         if layout["sharded"]:
             write_sharded_reference_index(
                 l4_path,
-                layout,
+                module,
+                total_tokens,
+                section_count,
                 generated_at,
+                parts,
             )
             outputs_generated += 1
 
-            for part in layout["parts"]:
+            for part in parts:
                 write_sharded_reference_part(
                     os.path.join(
                         out_mod_dir,
@@ -629,7 +637,9 @@ def main(argv: list[str] | None = None) -> int:
         else:
             write_complete_reference(
                 l4_path,
-                layout,
+                module,
+                total_tokens,
+                section_count,
                 generated_at,
                 join_reference_sections(sections),
             )
@@ -653,11 +663,14 @@ def main(argv: list[str] | None = None) -> int:
         if layout["sharded"]:
             write_release_sharded_reference_index(
                 release_reference_path,
-                layout,
+                module,
+                total_tokens,
+                section_count,
                 generated_at,
+                parts,
             )
 
-            for part in layout["parts"]:
+            for part in parts:
                 write_release_sharded_reference_part(
                     os.path.join(
                         release_mod_dir,
@@ -670,7 +683,9 @@ def main(argv: list[str] | None = None) -> int:
         else:
             write_release_complete_reference(
                 release_reference_path,
-                layout,
+                module,
+                total_tokens,
+                section_count,
                 generated_at,
                 sections,
             )
@@ -682,12 +697,12 @@ def main(argv: list[str] | None = None) -> int:
             print(
                 "[05a] OK: {module} L4 index + {part_count} parts ({token_count} tokens) and L3 skeleton".format(
                     module=module,
-                    part_count=len(layout["parts"]),
-                    token_count=layout["total_token_count"],
+                    part_count=len(parts),
+                    token_count=total_tokens,
                 )
             )
         else:
-            print(f"[05a] OK: {module} L4 ({layout['total_token_count']} tokens) and L3 skeleton")
+            print(f"[05a] OK: {module} L4 ({total_tokens} tokens) and L3 skeleton")
 
     print(f"[05a] Complete: {outputs_generated} artifacts generated.")
     if outputs_generated == 0:

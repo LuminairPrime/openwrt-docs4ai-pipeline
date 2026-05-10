@@ -481,17 +481,21 @@ class TestCookbookCrossModuleLinkContract:
         result = assemble.rewrite_release_chunked_links(link)
         assert result == "[ucode UCI](../../ucode/chunked-reference/c_source-api-module-uci.md)"
 
+
 def test_resolve_repo_path_absolute():
     from lib.config import _resolve_repo_path
     import os
+
     abs_path = "/tmp/some/absolute/path"
-    if os.name == 'nt':
+    if os.name == "nt":
         abs_path = "C:\\tmp\\some\\absolute\\path"
     assert _resolve_repo_path(abs_path) == abs_path
+
 
 def test_resolve_repo_path_relative():
     from lib.config import _resolve_repo_path, _REPO_ROOT
     import os
+
     rel_path = "some/relative/path"
     expected_path = os.path.join(_REPO_ROOT, rel_path)
     assert _resolve_repo_path(rel_path) == expected_path
@@ -500,17 +504,22 @@ def test_resolve_repo_path_relative():
 def test_normalize_repo_relative_with_absolute_inside_repo():
     from lib.config import _normalize_repo_relative, _REPO_ROOT
     import os
+
     path = os.path.join(_REPO_ROOT, "lib", "config.py")
     assert _normalize_repo_relative(path) == "lib/config.py"
 
+
 def test_normalize_repo_relative_with_relative_path():
     from lib.config import _normalize_repo_relative
+
     assert _normalize_repo_relative("lib/config.py") == "lib/config.py"
+
 
 def test_normalize_repo_relative_with_absolute_outside_repo():
     from lib.config import _normalize_repo_relative
     import os
-    if os.name == 'nt':
+
+    if os.name == "nt":
         path = "C:\\tmp\\some\\path"
         expected = "C:/tmp/some/path"
     else:
@@ -518,13 +527,18 @@ def test_normalize_repo_relative_with_absolute_outside_repo():
         expected = "/tmp/some/path"
     assert _normalize_repo_relative(path) == expected
 
+
 def test_normalize_repo_relative_with_dot():
     from lib.config import _normalize_repo_relative
+
     assert _normalize_repo_relative(".") == "."
+
 
 def test_normalize_repo_relative_with_dot_dot():
     from lib.config import _normalize_repo_relative
+
     assert _normalize_repo_relative("..") == ".."
+
 
 def test_normalize_repo_relative_different_drive_windows(monkeypatch):
     import os
