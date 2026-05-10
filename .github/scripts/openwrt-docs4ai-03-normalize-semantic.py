@@ -938,18 +938,18 @@ def pass_2_link_all(l2_files: list[dict[str, Any]], registry: dict[str, Any]) ->
 
         # Protection: Skip frontmatter, fenced code blocks, existing links, inline code, and headers.
         prot_spans: list[tuple[int, int]] = []
-        fm_match = RE_FRONTMATTER.match(content)
+        fm_match = re.match(r"^---\r?\n.*?\r?\n---\r?\n?", content, re.DOTALL)
         if fm_match:
             prot_spans.append((fm_match.start(), fm_match.end()))
-        for m in RE_FENCED_CODE.finditer(content):
+        for m in re.finditer(r"```.*?```|~~~.*?~~~", content, re.DOTALL):
             prot_spans.append((m.start(), m.end()))
-        for m in RE_HEADER_LINE.finditer(content):
+        for m in re.finditer(r"^\s*#+ .+$", content, re.MULTILINE):
             prot_spans.append((m.start(), m.end()))
-        for m in RE_HTML_TAG.finditer(content):
+        for m in re.finditer(r"<[^>\n]+>", content):
             prot_spans.append((m.start(), m.end()))
-        for m in RE_MD_LIST_LINK.finditer(content):
+        for m in re.finditer(r"^\s*[*-]\s+\[.*\]\(#.*\).*$", content, re.MULTILINE):
             prot_spans.append((m.start(), m.end()))
-        for m in RE_INLINE_CODE_OR_LINK.finditer(content):
+        for m in re.finditer(r"`[^`\n]+`|\[[^\]]+\]\([^)]+\)", content):
             prot_spans.append((m.start(), m.end()))
         spans: list[tuple[int, int, str]] = []
         for _, target, pat in patterns:
