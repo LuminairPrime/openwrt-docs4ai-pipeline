@@ -1,11 +1,9 @@
 import json
-import os
 import hashlib
 from unittest import mock
-import pytest
 
 from lib import extractor
-from lib import config
+
 
 def test_write_l1_markdown_creates_files_with_correct_content(tmp_path):
     # Setup
@@ -40,6 +38,7 @@ def test_write_l1_markdown_creates_files_with_correct_content(tmp_path):
         expected_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()[:8]
         assert saved_metadata["content_hash"] == expected_hash
 
+
 def test_write_l1_markdown_handles_none_metadata(tmp_path):
     module = "test_module"
     origin_type = "wiki"
@@ -56,6 +55,7 @@ def test_write_l1_markdown_handles_none_metadata(tmp_path):
         saved_metadata = json.loads(meta_path.read_text(encoding="utf-8"))
         expected_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()[:8]
         assert saved_metadata == {"content_hash": expected_hash}
+
 
 def test_wrap_code_block():
     title = "my_script.sh"
