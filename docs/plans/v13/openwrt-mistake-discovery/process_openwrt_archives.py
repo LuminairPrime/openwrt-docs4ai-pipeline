@@ -14,6 +14,25 @@ from email.utils import getaddresses, parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
+TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_.:-]{2,}")
+STOP_WORDS = frozenset(
+    {
+        "the",
+        "and",
+        "for",
+        "with",
+        "that",
+        "this",
+        "from",
+        "into",
+        "have",
+        "will",
+        "when",
+        "then",
+        "not",
+    }
+)
+
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_INPUT_ROOT = ROOT / "OpenWrt_Archives"
@@ -583,9 +602,21 @@ def build_threads(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     threads: list[dict[str, Any]] = []
     for root_id, group in grouped.items():
         sorted_messages = sorted(group, key=sort_key_for_message)
-        all_files = sorted({ref for message in sorted_messages for ref in message.get("mentioned_files", [])})
-        all_commits = sorted({ref for message in sorted_messages for ref in message.get("mentioned_commits", [])})
-        all_categories = list(dict.fromkeys(category for message in sorted_messages for category in message.get("categories", [])))
+        files_set: set[str] = set()
+        commits_set: set[str] = set()
+        categories_dict: dict[str, None] = {}
+        for message in sorted_messages:
+            if files := message.get("mentioned_files"):
+                files_set.update(files)
+            if commits := message.get("mentioned_commits"):
+                commits_set.update(commits)
+            if categories := message.get("categories"):
+                for category in categories:
+                    categories_dict[category] = None
+
+        all_files = sorted(files_set)
+        all_commits = sorted(commits_set)
+        all_categories = list(categories_dict)
         thread = {
             "thread_id": root_id,
             "subject": sorted_messages[0].get("subject", ""),
@@ -779,8 +810,8 @@ def write_common_problem_summary(path: Path, lessons: list[dict[str, Any]]) -> N
             source_keywords = lesson.get("problem", {}) or {}
             snippet = source_keywords.get("snippet", "")
             if snippet:
-                for token in re.findall(r"[A-Za-z][A-Za-z0-9_.:-]{2,}", snippet.lower()):
-                    if token in {"the", "and", "for", "with", "that", "this", "from", "into", "have", "will", "when", "then", "not"}:
+                for token in TOKEN_RE.findall(snippet.lower()):
+                    if token in STOP_WORDS:
                         continue
                     keyword_counter[token] += 1
             completeness_counter[lesson["completeness"]["level"]] += 1
