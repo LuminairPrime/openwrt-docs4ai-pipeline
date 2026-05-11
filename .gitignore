@@ -29,3 +29,5 @@ docs/plans/v13/openwrt-mistake-discovery/OpenWrt_Archives_Processed_Small/
 
 # Generated publish tree (Legacy Pre-V13; safe to remove after all devs migrate)
 openwrt-condensed-docs/
+
+vendors/
