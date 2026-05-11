@@ -1,0 +1,192 @@
+[
+  {
+    "moduleId": ".",
+    "label": "Workspace Root",
+    "kind": "root",
+    "root": ".",
+    "fileCount": 1939,
+    "sourceFileCount": 78,
+    "symbolCount": 845,
+    "languages": [
+      {
+        "language": "python",
+        "capabilityTier": "high",
+        "fileCount": 73
+      },
+      {
+        "language": "typescript",
+        "capabilityTier": "high",
+        "fileCount": 4
+      },
+      {
+        "language": "javascript",
+        "capabilityTier": "high",
+        "fileCount": 1
+      }
+    ],
+    "topSymbols": [
+      "parse_args",
+      "lines_from_file",
+      "lines_from_stdin",
+      "lines_from_git",
+      "load_lines",
+      "lint"
+    ],
+    "dependencies": [],
+    "dependents": [],
+    "entryFiles": [],
+    "keyTests": [],
+    "keyDocs": [
+      ".agents/copilot-instructions-audit.md",
+      ".agents/global-skill-cleanup.md",
+      ".agents/skills/api-design/README.md",
+      ".agents/skills/api-design/references/openapi-patterns.md"
+    ],
+    "sampleFiles": [
+      ".git-blame-ignore-revs",
+      ".gitattributes",
+      ".gitignore"
+    ],
+    "processIds": [
+      ".::.git-blame-ignore-revs",
+      ".::.gitattributes"
+    ],
+    "confidence": 0.88
+  },
+  {
+    "moduleId": "tests",
+    "label": "tests",
+    "kind": "tests",
+    "root": "tests",
+    "fileCount": 38,
+    "sourceFileCount": 33,
+    "symbolCount": 290,
+    "languages": [
+      {
+        "language": "python",
+        "capabilityTier": "high",
+        "fileCount": 32
+      },
+      {
+        "language": "cpp",
+        "capabilityTier": "low",
+        "fileCount": 1
+      }
+    ],
+    "topSymbols": [
+      "main",
+      "test_ucode_normalize_fenced_blocks_classifies_shell_json_and_pseudocode",
+      "test_ucode_fix_known_issues_rewrites_nl80211_named_const_import",
+      "test_clean_wiki_semantic_content_strips_wrap_color_and_duplicate_rows",
+      "test_clean_wiki_semantic_content_removes_immediate_duplicate_heading",
+      "test_clean_wiki_semantic_content_strips_sortable_and_converts_data_table"
+    ],
+    "dependencies": [],
+    "dependents": [],
+    "entryFiles": [],
+    "keyTests": [],
+    "keyDocs": [
+      "tests/proposals/PRE-RELEASE-TEST-PLAN-OPUS.md",
+      "tests/proposals/PRE-RELEASE-TEST-PLAN-TIER-LIST-GEMINI32PRO.md",
+      "tests/README.md"
+    ],
+    "sampleFiles": [
+      "tests/__init__.py",
+      "tests/artifacts/recent-sequential-smoke-terminal-output.txt",
+      "tests/check_linting.py"
+    ],
+    "processIds": [
+      "tests::__init__.py",
+      "tests::recent-sequential-smoke-terminal-output.txt"
+    ],
+    "confidence": 0.82
+  },
+  {
+    "moduleId": "tools",
+    "label": "tools",
+    "kind": "scripts",
+    "root": "tools",
+    "fileCount": 26,
+    "sourceFileCount": 11,
+    "symbolCount": 49,
+    "languages": [
+      {
+        "language": "python",
+        "capabilityTier": "high",
+        "fileCount": 11
+      }
+    ],
+    "topSymbols": [
+      "run_archive",
+      "parse_args",
+      "main",
+      "run_backup",
+      "parse_args",
+      "main"
+    ],
+    "dependencies": [],
+    "dependents": [],
+    "entryFiles": [],
+    "keyTests": [],
+    "keyDocs": [
+      "tools/agents-skills/AbsolutelySkilled.md",
+      "tools/agents-skills/awesome-agent-skills.md",
+      "tools/agents-skills/awesome-claude-skills.md",
+      "tools/agents-skills/claude-code-tresor.md"
+    ],
+    "sampleFiles": [
+      "tools/agents-skills/AbsolutelySkilled.md",
+      "tools/agents-skills/archive_global_skill_candidates.py",
+      "tools/agents-skills/awesome-agent-skills.md"
+    ],
+    "processIds": [
+      "tools::AbsolutelySkilled.md",
+      "tools::archive_global_skill_candidates.py"
+    ],
+    "confidence": 0.7599999999999999
+  },
+  {
+    "moduleId": "docs",
+    "label": "docs",
+    "kind": "docs",
+    "root": "docs",
+    "fileCount": 601,
+    "sourceFileCount": 2,
+    "symbolCount": 43,
+    "languages": [
+      {
+        "language": "python",
+        "capabilityTier": "high",
+        "fileCount": 2
+      }
+    ],
+    "topSymbols": [
+      "load_scenarios",
+      "run_pipeline",
+      "decode_header_value",
+      "normalize_email",
+      "parse_from_header",
+      "parse_message_ids"
+    ],
+    "dependencies": [],
+    "dependents": [],
+    "entryFiles": [],
+    "keyTests": [],
+    "keyDocs": [
+      "docs/ARCHITECTURE.md",
+      "docs/archive/helpers/a-tier/code-review-generic.md",
+      "docs/archive/helpers/a-tier/create-llms.md",
+      "docs/archive/helpers/a-tier/github-actions-ci-cd-best-practices.md"
+    ],
+    "sampleFiles": [
+      "docs/ARCHITECTURE.md",
+      "docs/archive/helpers/a-tier/code-review-generic.md",
+      "docs/archive/helpers/a-tier/create-llms.md"
+    ],
+    "processIds": [
+      "docs::ARCHITECTURE.md",
+      "docs::code-review-generic.md"
+    ],
+    "confidence": 0.7599999999999999
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 3,
+  "workspaceRoot": "C:\\Users\\MC\\Documents\\AirSentinel\\openwrt-docs4ai-pipeline",
+  "analyzedAt": "2026-05-11T18:53:50.318Z",
+  "scope": "all",
+  "overviewGeneratedAt": "2026-05-11T18:50:53.272Z",
+  "totalChangedFiles": 2,
+  "changedLineCount": 10,
+  "addedLineCount": 2,
+  "deletedLineCount": 8,
+  "categories": {
+    "source": 2,
+    "docs": 0,
+    "tests": 0,
+    "config": 0,
+    "other": 0
+  },
+  "areasTouched": [
+    {
+      "areaId": ".",
+      "label": "Workspace Root",
+      "root": ".",
+      "kind": "root",
+      "fileCount": 2,
+      "files": [
+        ".github/scripts/openwrt-docs4ai-05a-assemble-references.py",
+        "run-kodax.mjs"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": ".github/scripts/openwrt-docs4ai-05a-assemble-references.py",
+      "status": "modified",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "run-kodax.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    }
+  ],
+  "riskHints": [
+    "Workspace-root files changed; validate repo-wide implications."
+  ]
+}

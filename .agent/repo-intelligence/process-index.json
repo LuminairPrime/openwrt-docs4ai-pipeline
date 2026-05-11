@@ -1,0 +1,318 @@
+[
+  {
+    "id": ".::.git-blame-ignore-revs",
+    "label": "Workspace Root entry via .git-blame-ignore-revs",
+    "moduleId": ".",
+    "entryFile": ".git-blame-ignore-revs",
+    "entrySymbol": "E",
+    "summary": "E fans into local work and touches modules ..",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "E",
+        "symbolId": "openwrt-condensed-docs-renamed/luci/luci-env.d.ts#E:467",
+        "filePath": "openwrt-condensed-docs-renamed/luci/luci-env.d.ts",
+        "line": 467,
+        "note": "Entry symbol E in openwrt-condensed-docs-renamed/luci/luci-env.d.ts"
+      }
+    ],
+    "confidence": 0.94
+  },
+  {
+    "id": ".::.gitattributes",
+    "label": "Workspace Root entry via .gitattributes",
+    "moduleId": ".",
+    "entryFile": ".gitattributes",
+    "entrySymbol": "E",
+    "summary": "E fans into local work and touches modules ..",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "E",
+        "symbolId": "openwrt-condensed-docs-renamed/luci/luci-env.d.ts#E:467",
+        "filePath": "openwrt-condensed-docs-renamed/luci/luci-env.d.ts",
+        "line": 467,
+        "note": "Entry symbol E in openwrt-condensed-docs-renamed/luci/luci-env.d.ts"
+      }
+    ],
+    "confidence": 0.94
+  },
+  {
+    "id": "tests::__init__.py",
+    "label": "tests entry via __init__.py",
+    "moduleId": "tests",
+    "entryFile": "tests/__init__.py",
+    "entrySymbol": "_tool_path_env",
+    "summary": "_tool_path_env fans into get and touches modules tests.",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "_tool_path_env",
+        "symbolId": "tests/check_linting.py#_tool_path_env:22",
+        "filePath": "tests/check_linting.py",
+        "line": 22,
+        "note": "Entry symbol _tool_path_env in tests/check_linting.py"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "__future__",
+        "filePath": "tests/check_linting.py",
+        "note": "Imports __future__"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "argparse",
+        "filePath": "tests/check_linting.py",
+        "note": "Imports argparse"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "json",
+        "filePath": "tests/check_linting.py",
+        "note": "Imports json"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "get",
+        "symbolId": "tests/pytest/pytest_04_wiki_scraper_test.py#FakeSession.get:46",
+        "filePath": "tests/pytest/pytest_04_wiki_scraper_test.py",
+        "line": 46,
+        "note": "Calls get (same-module)"
+      }
+    ],
+    "confidence": 0.95
+  },
+  {
+    "id": "tests::recent-sequential-smoke-terminal-output.txt",
+    "label": "tests entry via recent-sequential-smoke-terminal-output.txt",
+    "moduleId": "tests",
+    "entryFile": "tests/artifacts/recent-sequential-smoke-terminal-output.txt",
+    "entrySymbol": "_tool_path_env",
+    "summary": "_tool_path_env fans into get and touches modules tests.",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "_tool_path_env",
+        "symbolId": "tests/check_linting.py#_tool_path_env:22",
+        "filePath": "tests/check_linting.py",
+        "line": 22,
+        "note": "Entry symbol _tool_path_env in tests/check_linting.py"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "__future__",
+        "filePath": "tests/check_linting.py",
+        "note": "Imports __future__"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "argparse",
+        "filePath": "tests/check_linting.py",
+        "note": "Imports argparse"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "json",
+        "filePath": "tests/check_linting.py",
+        "note": "Imports json"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "get",
+        "symbolId": "tests/pytest/pytest_04_wiki_scraper_test.py#FakeSession.get:46",
+        "filePath": "tests/pytest/pytest_04_wiki_scraper_test.py",
+        "line": 46,
+        "note": "Calls get (same-module)"
+      }
+    ],
+    "confidence": 0.95
+  },
+  {
+    "id": "tools::AbsolutelySkilled.md",
+    "label": "tools entry via AbsolutelySkilled.md",
+    "moduleId": "tools",
+    "entryFile": "tools/agents-skills/AbsolutelySkilled.md",
+    "entrySymbol": "_load_config",
+    "summary": "_load_config fans into read_text and touches modules tools, tests.",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "_load_config",
+        "symbolId": "tools/agents-skills/archive_global_skill_candidates.py#_load_config:13",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "line": 13,
+        "note": "Entry symbol _load_config in tools/agents-skills/archive_global_skill_candidates.py"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "__future__",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "note": "Imports __future__"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "argparse",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "note": "Imports argparse"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "json",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "note": "Imports json"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "read_text",
+        "symbolId": "tests/support/smoke_pipeline_support.py#read_text:261",
+        "filePath": "tests/support/smoke_pipeline_support.py",
+        "line": 261,
+        "note": "Calls read_text (name-match)"
+      }
+    ],
+    "confidence": 0.95
+  },
+  {
+    "id": "tools::archive_global_skill_candidates.py",
+    "label": "tools entry via archive_global_skill_candidates.py",
+    "moduleId": "tools",
+    "entryFile": "tools/agents-skills/archive_global_skill_candidates.py",
+    "entrySymbol": "run_archive",
+    "summary": "run_archive fans into _load_config, _skill_names_for_profile, _skill_roots and touches modules tools, tests.",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "run_archive",
+        "symbolId": "tools/agents-skills/archive_global_skill_candidates.py#run_archive:78",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "line": 78,
+        "note": "Entry symbol run_archive in tools/agents-skills/archive_global_skill_candidates.py"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "__future__",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "note": "Imports __future__"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "argparse",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "note": "Imports argparse"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "json",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "note": "Imports json"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "_load_config",
+        "symbolId": "tools/agents-skills/archive_global_skill_candidates.py#_load_config:13",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "line": 13,
+        "note": "Calls _load_config (same-module)"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "_skill_names_for_profile",
+        "symbolId": "tools/agents-skills/archive_global_skill_candidates.py#_skill_names_for_profile:26",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "line": 26,
+        "note": "Calls _skill_names_for_profile (same-module)"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "_skill_roots",
+        "symbolId": "tools/agents-skills/archive_global_skill_candidates.py#_skill_roots:48",
+        "filePath": "tools/agents-skills/archive_global_skill_candidates.py",
+        "line": 48,
+        "note": "Calls _skill_roots (same-module)"
+      },
+      {
+        "kind": "calls",
+        "symbolName": "read_text",
+        "symbolId": "tests/support/smoke_pipeline_support.py#read_text:261",
+        "filePath": "tests/support/smoke_pipeline_support.py",
+        "line": 261,
+        "note": "Then reaches read_text (name-match)"
+      }
+    ],
+    "confidence": 0.95
+  },
+  {
+    "id": "docs::ARCHITECTURE.md",
+    "label": "docs entry via ARCHITECTURE.md",
+    "moduleId": "docs",
+    "entryFile": "docs/ARCHITECTURE.md",
+    "entrySymbol": "EvaluationResult",
+    "summary": "EvaluationResult fans into local work and touches modules docs.",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "EvaluationResult",
+        "symbolId": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py#EvaluationResult:11",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "line": 11,
+        "note": "Entry symbol EvaluationResult in docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "os",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "note": "Imports os"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "re",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "note": "Imports re"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "json",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "note": "Imports json"
+      }
+    ],
+    "confidence": 0.9199999999999999
+  },
+  {
+    "id": "docs::code-review-generic.md",
+    "label": "docs entry via code-review-generic.md",
+    "moduleId": "docs",
+    "entryFile": "docs/archive/helpers/a-tier/code-review-generic.md",
+    "entrySymbol": "EvaluationResult",
+    "summary": "EvaluationResult fans into local work and touches modules docs.",
+    "steps": [
+      {
+        "kind": "entry",
+        "symbolName": "EvaluationResult",
+        "symbolId": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py#EvaluationResult:11",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "line": 11,
+        "note": "Entry symbol EvaluationResult in docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "os",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "note": "Imports os"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "re",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "note": "Imports re"
+      },
+      {
+        "kind": "imports",
+        "symbolName": "json",
+        "filePath": "docs/plans/v13/openwrt-mistake-discovery/ai-defect-discovery-pipeline/scripts/run_evaluator.py",
+        "note": "Imports json"
+      }
+    ],
+    "confidence": 0.9199999999999999
+  }
+]

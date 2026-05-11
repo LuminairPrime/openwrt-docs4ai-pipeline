@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 3,
+  "workspaceRoot": "C:\\Users\\MC\\Documents\\AirSentinel\\openwrt-docs4ai-pipeline",
+  "source": "git",
+  "generatedAt": "2026-05-11T18:50:53.272Z",
+  "truncated": false,
+  "git": {
+    "branch": "main",
+    "head": "dae05ad1234f80a2a288d5df1c75e1e895baa027",
+    "hasUncommittedChanges": true
+  },
+  "fileStats": {
+    "totalFiles": 2604,
+    "sourceFiles": 89,
+    "docFiles": 1881,
+    "testFiles": 34,
+    "configFiles": 6
+  },
+  "manifests": [
+    ".agents/skills/dependency-auditor/test-project/package.json",
+    ".claude/skills/dependency-auditor/test-project/package.json",
+    ".github/scripts/requirements.txt",
+    ".kilo/package-lock.json",
+    ".kilocode/package-lock.json",
+    ".kilocode/skills/dependency-auditor/test-project/package.json"
+  ],
+  "keyDocs": [
+    ".agents/skills/api-design/README.md",
+    ".agents/skills/changelog-generator/README.md",
+    ".agents/skills/ci-cd-pipeline-builder/README.md",
+    ".agents/skills/clean-code/README.md",
+    ".agents/skills/code-reviewer/README.md",
+    ".agents/skills/codedocs/README.md",
+    ".agents/skills/dependency-auditor/README.md",
+    ".agents/skills/developer-experience/README.md"
+  ],
+  "entryHints": [],
+  "areas": [
+    {
+      "id": "docs",
+      "label": "docs",
+      "kind": "docs",
+      "root": "docs",
+      "fileCount": 601,
+      "manifests": [],
+      "sampleFiles": [
+        "docs/ARCHITECTURE.md",
+        "docs/archive/helpers/a-tier/code-review-generic.md",
+        "docs/archive/helpers/a-tier/create-llms.md"
+      ]
+    },
+    {
+      "id": "tests",
+      "label": "tests",
+      "kind": "tests",
+      "root": "tests",
+      "fileCount": 38,
+      "manifests": [],
+      "sampleFiles": [
+        "tests/__init__.py",
+        "tests/artifacts/recent-sequential-smoke-terminal-output.txt",
+        "tests/check_linting.py"
+      ]
+    },
+    {
+      "id": ".",
+      "label": "Workspace Root",
+      "kind": "root",
+      "root": ".",
+      "fileCount": 32,
+      "manifests": [],
+      "sampleFiles": [
+        ".git-blame-ignore-revs",
+        ".gitattributes",
+        ".gitignore"
+      ]
+    },
+    {
+      "id": "tools",
+      "label": "tools",
+      "kind": "scripts",
+      "root": "tools",
+      "fileCount": 26,
+      "manifests": [],
+      "sampleFiles": [
+        "tools/agents-skills/AbsolutelySkilled.md",
+        "tools/agents-skills/archive_global_skill_candidates.py",
+        "tools/agents-skills/awesome-agent-skills.md"
+      ]
+    }
+  ]
+}

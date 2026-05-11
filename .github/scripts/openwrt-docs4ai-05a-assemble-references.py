@@ -585,12 +585,6 @@ def main(argv: list[str] | None = None) -> int:
 
         sections, skeleton_lines = load_l2_sections(module, md_files)
         layout = build_reference_layout(module, sections)
-        total_tokens = layout["total_token_count"]
-        section_count = layout["section_count"]
-        parts = layout.get("parts", [])
-        total_tokens = layout.get("total_token_count", 0)
-        section_count = layout.get("section_count", 0)
-        parts = layout.get("parts", [])
         total_tokens = layout.get("total_token_count", 0)
         section_count = layout.get("section_count", 0)
         parts = layout.get("parts", [])
@@ -607,8 +601,8 @@ def main(argv: list[str] | None = None) -> int:
                 module,
                 total_tokens,
                 section_count,
-                generated_at,
                 parts,
+                generated_at,
             )
             outputs_generated += 1
 
@@ -666,8 +660,8 @@ def main(argv: list[str] | None = None) -> int:
                 module,
                 total_tokens,
                 section_count,
-                generated_at,
                 parts,
+                generated_at,
             )
 
             for part in parts:
