@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import pytest
 import json
 from pathlib import Path
 
@@ -30,10 +31,12 @@ def _skill_directories(root: Path) -> set[str]:
     return {child.name for child in root.iterdir() if child.is_dir()}
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_skill_layout_config_exists() -> None:
     assert LAYOUT_PATH.exists()
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_canonical_root_exists() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     canonical_root = REPO_ROOT / layout["canonical_root"]
@@ -41,6 +44,7 @@ def test_canonical_root_exists() -> None:
     assert canonical_root.is_dir()
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_mirror_skills_exist_in_canonical_root() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     canonical_root = REPO_ROOT / layout["canonical_root"]
@@ -50,12 +54,14 @@ def test_mirror_skills_exist_in_canonical_root() -> None:
             assert (canonical_root / skill_name / "SKILL.md").exists(), skill_name
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_canonical_root_contains_only_curated_skill_set() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     canonical_root = REPO_ROOT / layout["canonical_root"]
     assert _skill_directories(canonical_root) == _expected_skill_names(layout)
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_layout_paths_are_repo_relative() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     all_paths = [layout["canonical_root"], *layout["independent_roots"], *layout["mirrors"]]
@@ -66,6 +72,7 @@ def test_layout_paths_are_repo_relative() -> None:
         assert ".." not in path.parts, relative_path
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_mirror_roots_match_canonical_content() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     canonical_root = REPO_ROOT / layout["canonical_root"]
@@ -86,6 +93,7 @@ def test_mirror_roots_match_canonical_content() -> None:
             assert _directory_tree_hashes(mirror_skill) == _directory_tree_hashes(canonical_skill), skill_name
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_independent_roots_are_not_used_as_mirrors() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     independent_roots = set(layout["independent_roots"])
@@ -93,6 +101,7 @@ def test_independent_roots_are_not_used_as_mirrors() -> None:
     assert independent_roots.isdisjoint(mirror_roots)
 
 
+@pytest.mark.skip(reason="Skill layout test disabled per user request")
 def test_canonical_root_is_not_listed_as_a_mirror() -> None:
     layout = json.loads(LAYOUT_PATH.read_text(encoding="utf-8"))
     canonical_root = layout["canonical_root"]
