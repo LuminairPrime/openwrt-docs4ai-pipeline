@@ -31,3 +31,5 @@ docs/plans/v13/openwrt-mistake-discovery/OpenWrt_Archives_Processed_Small/
 openwrt-condensed-docs/
 
 vendors/
+.worktrees/*
+!.worktrees/mise-test-files/
