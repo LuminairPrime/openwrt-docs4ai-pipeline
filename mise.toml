@@ -1,0 +1,24 @@
+# mise.toml — unified task-runner interface for openwrt-docs4ai
+#
+# Provides a single-entry command for local QA validation that mirrors
+# the GitHub Actions CI environment inside an ephemeral testcontainers
+# Linux container.
+#
+# Usage:
+#   mise run qa          # full pipeline
+#   mise run qa -- --help  # forward args to the orchestrator
+
+[env]
+PIPELINE_RUN_DIR = "tmp/pipeline-ci"
+OUTDIR = "tmp/pipeline-ci/staged"
+STAGED_DIR = "tmp/pipeline-ci/staged"
+WORKDIR = "tmp/pipeline-ci/downloads"
+PROCESSED_DIR = "tmp/pipeline-ci/processed"
+DIST_PAGES_REPO = "openwrt-docs4ai/openwrt-docs4ai.github.io"
+DIST_RELEASE_REPO = "openwrt-docs4ai/corpus"
+DIST_TARGET_BRANCH = "main"
+DIST_ZIP_ROOT_DIR = "openwrt-docs4ai"
+
+[tasks.qa]
+description = "Run the full QA pipeline inside an ephemeral CI container"
+run = "python tests/qa_pipeline_orchestrator.py"

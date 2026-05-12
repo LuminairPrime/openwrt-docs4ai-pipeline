@@ -43,6 +43,24 @@ python tools/manage_ai_store.py --option full --keep-scratch
 
 The main GitHub Actions workflow now starts with a `validate_source` job that runs `python tests/check_linting.py --strict --result-root tmp/ci/lint-review/current`. When that gate fails remotely, inspect the `lint-review` artifact's `summary.json` before opening raw logs.
 
+## Full CI-in-a-Box Pipeline (mise + testcontainers)
+
+**For AI agents and human developers: do not execute pipeline scripts manually.**
+
+To verify your work against the exact same environment that GitHub Actions uses, run:
+
+```powershell
+mise run qa
+```
+
+This single command spins up an ephemeral Linux container matching the CI runner image, bind-mounts the project, injects CI environment variables, executes all 21 pipeline stages (01 through 08) sequentially inside the container, and tears it down cleanly — with zero state leakage.
+
+- A zero exit code means your changes pass the full pipeline.
+- A non-zero exit code means the pipeline halted on a required-stage failure. Inspect the dumped `stdout`/`stderr` to diagnose.
+- Optional stages (like `04-generate-ai-summaries`) that fail will report a warning but will not halt the pipeline.
+
+The orchestrator source is at `tests/qa_pipeline_orchestrator.py`. Stage definitions and environment variables are in `mise.toml`.
+
 ## Cookbook Regeneration Guardrail
 
 Do not assume a cookbook-only source edit is isolated just because the authored files live under `static/cookbook-source/`.

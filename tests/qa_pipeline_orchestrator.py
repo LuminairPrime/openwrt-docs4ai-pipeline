@@ -125,6 +125,64 @@ def _run_python_script(container: DockerContainer, stage: PipelineStage) -> tupl
     return _exec(container, f"python {script_path}", timeout=stage.timeout)
 
 
+# ── Pipeline runner ───────────────────────────────────────────────────────────
+
+
+def run_pipeline(
+    container: DockerContainer, stages: tuple[PipelineStage, ...]
+) -> int:
+    """Execute stages sequentially, halting on first required-stage failure.
+
+    Returns 0 on success, 1 on failure.
+    """
+    total = len(stages)
+    failed_optional: list[str] = []
+
+    for idx, stage in enumerate(stages, start=1):
+        optional_tag = " [OPTIONAL]" if stage.optional else ""
+        print(
+            f"[{idx}/{total}] {stage.label} "
+            f"({stage.script}){optional_tag} ..."
+        )
+        t0 = time.monotonic()
+        exit_code, output = _run_python_script(container, stage)
+        elapsed = time.monotonic() - t0
+
+        if exit_code == 0:
+            print(f"  ✓ PASS ({elapsed:.1f}s)")
+        elif stage.optional:
+            print(
+                f"  ⚠ WARN — optional stage failed "
+                f"(exit={exit_code}, {elapsed:.1f}s)"
+            )
+            failed_optional.append(stage.label)
+            if output.strip():
+                print(f"  Last output ({len(output)} bytes):")
+                print(output[-2000:])
+        else:
+            print(f"  ✗ FAIL (exit={exit_code}, {elapsed:.1f}s)")
+            print(
+                f"\nPipeline halted — {stage.label} ({stage.script}) "
+                f"failed with exit code {exit_code}."
+            )
+            if output.strip():
+                print(f"Last output ({len(output)} bytes):")
+                print(output[-2000:])
+            return 1
+
+    # ── Summary ────────────────────────────────────────────
+    print("\n" + "=" * 60)
+    if failed_optional:
+        print(
+            "All required stages passed. "
+            f"Optional stage(s) skipped/failed: {', '.join(failed_optional)}"
+        )
+    else:
+        print("All pipeline stages passed.")
+    print("=" * 60)
+    return 0
+
+
 # ── Orchestrator entry point ─────────────────────────────────────────────────
 
 
@@ -160,50 +218,11 @@ def main() -> int:
         print("Dependencies installed.")
 
         print()
-
-        total = len(PIPELINE_STAGES)
-        failed_optional: list[str] = []
-
-        for idx, stage in enumerate(PIPELINE_STAGES, start=1):
-            optional_tag = " [OPTIONAL]" if stage.optional else ""
-            print(
-                f"[{idx}/{total}] {stage.label} "
-                f"({stage.script}){optional_tag} ..."
-            )
-            t0 = time.monotonic()
-            exit_code, output = _run_python_script(container, stage)
-            elapsed = time.monotonic() - t0
-
-            if exit_code == 0:
-                print(f"  ✓ PASS ({elapsed:.1f}s)")
-            elif stage.optional:
-                print(f"  ⚠ WARN — optional stage failed (exit={exit_code}, {elapsed:.1f}s)")
-                failed_optional.append(stage.label)
-                if output.strip():
-                    print(f"  Last output ({len(output)} bytes):")
-                    print(output[-2000:])
-            else:
-                print(f"  ✗ FAIL (exit={exit_code}, {elapsed:.1f}s)")
-                print(
-                    f"\nPipeline halted — {stage.label} ({stage.script}) "
-                    f"failed with exit code {exit_code}."
-                )
-                if output.strip():
-                    print(f"Last output ({len(output)} bytes):")
-                    # Print tail of output (last 2000 chars) for diagnostics.
-                    print(output[-2000:])
-                return 1
-
-        # ── Summary ────────────────────────────────────────────
-        print("\n" + "=" * 60)
-        if failed_optional:
-            print(
-                "All required stages passed. "
-                f"Optional stage(s) skipped/failed: {', '.join(failed_optional)}"
-            )
-        else:
-            print("All pipeline stages passed.")
-        print("=" * 60)
+        failed = run_pipeline(container, PIPELINE_STAGES)
+        if failed:
+            print("\nQA Pipeline FAILED.")
+            return 1
+        print("\nQA Pipeline PASSED.")
         return 0
     finally:
         print("\nTearing down container...")
