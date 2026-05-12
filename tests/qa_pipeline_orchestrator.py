@@ -107,7 +107,38 @@ def run_pipeline_in_container() -> int:
         return 0
 
 
+# ─── Docker availability check ──────────────────────────────────────────
+
+def _check_docker_available() -> bool:
+    """Return True if Docker is running and accessible."""
+    import subprocess
+
+    try:
+        result = subprocess.run(
+            ["docker", "info"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return result.returncode == 0
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+
+
 # ─── CLI entry point ───────────────────────────────────────────────────
 
+def main() -> int:
+    """Entry point for mise run qa."""
+    if not _check_docker_available():
+        print(
+            "Docker is not available. Ensure Docker Desktop is running "
+            "or WSL integration is enabled.",
+            file=sys.stderr,
+        )
+        return 2  # distinct exit code for environment issue
+
+    return run_pipeline_in_container()
+
+
 if __name__ == "__main__":
-    sys.exit(run_pipeline_in_container())
+    sys.exit(main())

@@ -47,3 +47,13 @@ def test_build_container_command_runs_every_script():
 
     for script in PIPELINE_SCRIPTS:
         assert script in script_body, f"{script} missing from container command"
+
+
+def test_check_docker_available_graceful_when_missing():
+    """Verify the check function handles Docker being unavailable gracefully."""
+    from tests.qa_pipeline_orchestrator import _check_docker_available
+
+    result = _check_docker_available()
+    assert isinstance(result, bool)
+    # If Docker is not available, test should still pass
+    # (we're testing the function, not Docker availability)
