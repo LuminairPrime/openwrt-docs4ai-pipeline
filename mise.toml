@@ -1,0 +1,12 @@
+[tasks.qa]
+description = "Run the full CI-in-a-box pipeline validation in an ephemeral Docker container"
+run = "python tests/qa_pipeline_orchestrator.py"
+
+[env]
+PIPELINE_RUN_DIR = "/workspace/tmp/pipeline-ci"
+WORKDIR = "/workspace/tmp/pipeline-ci/downloads"
+PROCESSED_DIR = "/workspace/tmp/pipeline-ci/processed"
+STAGED_DIR = "/workspace/tmp/pipeline-ci/staged"
+OUTDIR = "/workspace/tmp/pipeline-ci/staged"
+SKIP_AI = "true"
+VALIDATE_MODE = "soft"
