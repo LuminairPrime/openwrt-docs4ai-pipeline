@@ -26,6 +26,7 @@ CONTAINER_ENV: dict[str, str] = {
     "OUTDIR": "/workspace/tmp/pipeline-ci/staged",
     "SKIP_AI": "true",
     "VALIDATE_MODE": "soft",
+    "SKIP_WIKI": "true",
     "HOME": "/root",
 }
 
@@ -45,3 +46,68 @@ PIPELINE_SCRIPTS: list[str] = [
 ]
 
 SCRIPTS_DIR_RELATIVE = ".github/scripts"
+
+
+# ─── Container command builder ─────────────────────────────────────────
+
+def build_container_command() -> list[str]:
+    """Build the shell command that the container will execute.
+
+    Creates the directory structure, installs dependencies from requirements.txt,
+    then executes each pipeline script in order, halting on first failure.
+    """
+    mkdir_cmd = "mkdir -p /workspace/tmp/pipeline-ci/downloads /workspace/tmp/pipeline-ci/processed /workspace/tmp/pipeline-ci/staged"
+    install_cmd = "pip install -r /workspace/.github/scripts/requirements.txt -q"
+
+    script_commands: list[str] = []
+    for script in PIPELINE_SCRIPTS:
+        script_path = f"/workspace/{SCRIPTS_DIR_RELATIVE}/{script}"
+        script_commands.append(
+            f"echo '=== Running {script} ===' && "
+            f"python {script_path} || (echo 'FAILED: {script}' && exit 1)"
+        )
+
+    pipeline_body = " && ".join([mkdir_cmd, install_cmd] + script_commands)
+    return ["/bin/bash", "-c", pipeline_body]
+
+
+# ─── Container orchestration ───────────────────────────────────────────
+
+def run_pipeline_in_container() -> int:
+    """Spin up container, execute pipeline, return exit code.
+
+    Returns:
+        0 on full success, 1 on any pipeline script failure.
+    """
+    from testcontainers.core.container import DockerContainer
+
+    print("=== QA Pipeline Orchestrator ===")
+    print(f"Project root: {PROJECT_ROOT}")
+    print(f"Scripts directory: {PROJECT_ROOT / SCRIPTS_DIR_RELATIVE}")
+    print()
+
+    command = build_container_command()
+
+    with DockerContainer("python:3.12-slim") as container:
+        container.with_volume_mapping(
+            str(PROJECT_ROOT), "/workspace"
+        )
+        for key, value in CONTAINER_ENV.items():
+            container.with_env(key, value)
+
+        result = container.exec(command)
+        exit_code, output = result
+        print(output.decode("utf-8", errors="replace"))
+
+        if exit_code != 0:
+            print(f"\nPipeline FAILED with exit code {exit_code}", file=sys.stderr)
+            return 1
+
+        print("\n=== Pipeline PASSED ===")
+        return 0
+
+
+# ─── CLI entry point ───────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    sys.exit(run_pipeline_in_container())
