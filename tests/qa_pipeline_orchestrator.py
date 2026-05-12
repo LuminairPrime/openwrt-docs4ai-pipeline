@@ -8,6 +8,7 @@ with exit-code validation and guaranteed teardown.
 
 from __future__ import annotations
 
+import argparse
 import sys
 import time
 from dataclasses import dataclass
@@ -183,11 +184,51 @@ def run_pipeline(
     return 0
 
 
+# ── Stage selection helpers ──────────────────────────────────────────────────
+
+
+_EXTRACTOR_PREFIXES: tuple[str, ...] = ("02",)
+
+
+def _is_extractor_stage(stage: PipelineStage) -> bool:
+    """Return True if *stage* is a data-extraction stage (02a-02h)."""
+    return any(stage.script.startswith(prefix) for prefix in _EXTRACTOR_PREFIXES)
+
+
+def _select_stages(smoke: bool = False) -> tuple[PipelineStage, ...]:
+    """Return the pipeline stages to execute.
+
+    When *smoke* is True, extraction stages (02a-02h) are excluded so that
+    only post-extract validation runs — useful for rapid smoke-checking of
+    previously extracted data.
+    """
+    if not smoke:
+        return PIPELINE_STAGES
+    stages = tuple(s for s in PIPELINE_STAGES if not _is_extractor_stage(s))
+    return stages
+
+
 # ── Orchestrator entry point ─────────────────────────────────────────────────
 
 
 def main() -> int:
-    print("QA Pipeline Orchestrator starting...")
+    parser = argparse.ArgumentParser(
+        description="QA Pipeline Orchestrator — run CI pipeline stages inside "
+        "an ephemeral testcontainers Linux container."
+    )
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Smoke-only mode: skip data-extraction stages (02a-02h) and "
+        "run post-extract validation only.",
+    )
+    args = parser.parse_args()
+
+    stages = _select_stages(smoke=args.smoke)
+    mode_label = "SMOKE (no extractors)" if args.smoke else "FULL"
+    print(f"QA Pipeline Orchestrator [{mode_label}] starting...")
+    print(f"Stages to execute: {len(stages)}")
+
     container = create_container()
     try:
         print(f"Starting container ({CONTAINER_IMAGE})...")
@@ -218,7 +259,7 @@ def main() -> int:
         print("Dependencies installed.")
 
         print()
-        failed = run_pipeline(container, PIPELINE_STAGES)
+        failed = run_pipeline(container, stages)
         if failed:
             print("\nQA Pipeline FAILED.")
             return 1

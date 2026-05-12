@@ -5,10 +5,16 @@
 # Linux container.
 #
 # Usage:
-#   mise run qa          # full pipeline
-#   mise run qa -- --help  # forward args to the orchestrator
+#   mise run qa               # full pipeline
+#   mise run qa-smoke          # post-extract validation only (no extractors)
+#   mise run qa-lint            # source validation (ruff + pyright + actionlint)
+#   mise run qa -- --help       # forward args to the orchestrator
+
+[tools]
+python = "3.12"
 
 [env]
+CI = "true"
 PIPELINE_RUN_DIR = "tmp/pipeline-ci"
 OUTDIR = "tmp/pipeline-ci/staged"
 STAGED_DIR = "tmp/pipeline-ci/staged"
@@ -20,5 +26,13 @@ DIST_TARGET_BRANCH = "main"
 DIST_ZIP_ROOT_DIR = "openwrt-docs4ai"
 
 [tasks.qa]
-description = "Run the full QA pipeline inside an ephemeral CI container"
+description = "Run full QA pipeline in ephemeral Testcontainers CI environment"
 run = "python tests/qa_pipeline_orchestrator.py"
+
+[tasks.qa-smoke]
+description = "Run smoke-only QA (post-extract validation, no extractors)"
+run = "python tests/qa_pipeline_orchestrator.py --smoke"
+
+[tasks.qa-lint]
+description = "Run source validation (ruff + pyright + actionlint)"
+run = "python tests/check_linting.py --strict"
