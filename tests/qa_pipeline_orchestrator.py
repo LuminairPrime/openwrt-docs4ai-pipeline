@@ -188,24 +188,44 @@ def run_pipeline(
 
 
 _EXTRACTOR_PREFIXES: tuple[str, ...] = ("02",)
+_SMOKE_EXCLUDED_PREFIXES: tuple[str, ...] = ("02", "04")
 
 
 def _is_extractor_stage(stage: PipelineStage) -> bool:
-    """Return True if *stage* is a data-extraction stage (02a-02h)."""
+    """Return True if *stage* is a data-extraction stage (02a-02i)."""
     return any(stage.script.startswith(prefix) for prefix in _EXTRACTOR_PREFIXES)
 
 
-def _select_stages(smoke: bool = False) -> tuple[PipelineStage, ...]:
+def _select_stages(
+    smoke: bool = False, stage: str | None = None
+) -> tuple[PipelineStage, ...]:
     """Return the pipeline stages to execute.
 
-    When *smoke* is True, extraction stages (02a-02h) are excluded so that
-    only post-extract validation runs — useful for rapid smoke-checking of
-    previously extracted data.
+    When *stage* is given, only the matching stage is returned.
+    When *smoke* is True, extraction stages (02a-02i) and AI summaries (04)
+    are excluded so that only post-extract validation runs — useful for rapid
+    smoke-checking of previously extracted data.
     """
-    if not smoke:
-        return PIPELINE_STAGES
-    stages = tuple(s for s in PIPELINE_STAGES if not _is_extractor_stage(s))
-    return stages
+    if stage is not None:
+        matches = tuple(s for s in PIPELINE_STAGES if s.script == stage)
+        if not matches:
+            available = ", ".join(s.script for s in PIPELINE_STAGES)
+            print(
+                f"Error: unknown stage '{stage}'.\nAvailable: {available}",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+        return matches
+    if smoke:
+        stages = tuple(
+            s
+            for s in PIPELINE_STAGES
+            if not any(
+                s.script.startswith(prefix) for prefix in _SMOKE_EXCLUDED_PREFIXES
+            )
+        )
+        return stages
+    return PIPELINE_STAGES
 
 
 # ── Orchestrator entry point ─────────────────────────────────────────────────
@@ -219,13 +239,24 @@ def main() -> int:
     parser.add_argument(
         "--smoke",
         action="store_true",
-        help="Smoke-only mode: skip data-extraction stages (02a-02h) and "
-        "run post-extract validation only.",
+        help="Smoke-only mode: skip data-extraction stages (02a-02i) and "
+        "AI summaries (04). Runs post-extract validation only.",
+    )
+    parser.add_argument(
+        "--stage",
+        type=str,
+        metavar="SCRIPT",
+        help="Run a single stage by script name (e.g. '08-validate-output').",
     )
     args = parser.parse_args()
 
-    stages = _select_stages(smoke=args.smoke)
-    mode_label = "SMOKE (no extractors)" if args.smoke else "FULL"
+    stages = _select_stages(smoke=args.smoke, stage=args.stage)
+    if args.stage:
+        mode_label = f"SINGLE ({args.stage})"
+    elif args.smoke:
+        mode_label = "SMOKE (no extractors / AI)"
+    else:
+        mode_label = "FULL"
     print(f"QA Pipeline Orchestrator [{mode_label}] starting...")
     print(f"Stages to execute: {len(stages)}")
 
