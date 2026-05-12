@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 from testcontainers.core.container import DockerContainer
@@ -27,31 +28,47 @@ CI_ENV = {
     "OUTDIR": f"{CONTAINER_WORKSPACE}/tmp/pipeline-ci/staged",
 }
 
-# Pipeline scripts executed sequentially, matching GitHub Actions CI order.
-PIPELINE_SCRIPTS: list[str] = [
-    ".github/scripts/openwrt-docs4ai-01-clone-repos.py",
-    ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
-    ".github/scripts/openwrt-docs4ai-02b-scrape-ucode.py",
-    ".github/scripts/openwrt-docs4ai-02c-scrape-jsdoc.py",
-    ".github/scripts/openwrt-docs4ai-02d-scrape-core-packages.py",
-    ".github/scripts/openwrt-docs4ai-02e-scrape-example-packages.py",
-    ".github/scripts/openwrt-docs4ai-02f-scrape-procd-api.py",
-    ".github/scripts/openwrt-docs4ai-02g-scrape-uci-schemas.py",
-    ".github/scripts/openwrt-docs4ai-02h-scrape-hotplug-events.py",
-    ".github/scripts/openwrt-docs4ai-02i-ingest-cookbook.py",
-    ".github/scripts/openwrt-docs4ai-03-normalize-semantic.py",
-    ".github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py",
-    ".github/scripts/openwrt-docs4ai-05a-assemble-references.py",
-    ".github/scripts/openwrt-docs4ai-05b-generate-agents-and-readme.py",
-    ".github/scripts/openwrt-docs4ai-05c-generate-ucode-ide-schemas.py",
-    ".github/scripts/openwrt-docs4ai-05d-generate-api-drift-changelog.py",
-    ".github/scripts/openwrt-docs4ai-05e-generate-luci-dts.py",
-    ".github/scripts/openwrt-docs4ai-06-generate-llm-routing-indexes.py",
-    ".github/scripts/openwrt-docs4ai-07-generate-web-index.py",
-    ".github/scripts/openwrt-docs4ai-08-validate-output.py",
-]
+# ── Pipeline stage definitions ──────────────────────────────────────────────
 
-EXEC_TIMEOUT = 600  # seconds per pipeline script
+
+@dataclass
+class PipelineStage:
+    """A single stage in the QA pipeline execution sequence."""
+
+    script: str       # stem name, e.g. "01-clone-repos"
+    label: str        # human-readable label, e.g. "Clone Repos"
+    timeout: int = 300   # per-stage timeout in seconds
+    optional: bool = False  # failure is non-fatal when True
+
+
+PIPELINE_STAGES: tuple[PipelineStage, ...] = (
+    PipelineStage("01-clone-repos", "Clone Repos", timeout=600),
+    PipelineStage("02a-scrape-wiki", "Scrape Wiki", timeout=1200),
+    PipelineStage("02i-ingest-cookbook", "Ingest Cookbook", timeout=300),
+    PipelineStage("02b-scrape-ucode", "Scrape ucode", timeout=600),
+    PipelineStage("02c-scrape-jsdoc", "Scrape LuCI jsdoc", timeout=900),
+    PipelineStage("02d-scrape-core-packages", "Scrape Core Packages", timeout=600),
+    PipelineStage("02e-scrape-example-packages", "Scrape Examples", timeout=600),
+    PipelineStage("02f-scrape-procd-api", "Scrape procd", timeout=300),
+    PipelineStage("02g-scrape-uci-schemas", "Scrape UCI Schemas", timeout=300),
+    PipelineStage("02h-scrape-hotplug-events", "Scrape Hotplug", timeout=300),
+    PipelineStage("03-normalize-semantic", "Normalize L2", timeout=900),
+    PipelineStage("04-generate-ai-summaries", "AI Summaries", timeout=600, optional=True),
+    PipelineStage("05a-assemble-references", "Assemble References", timeout=600),
+    PipelineStage("05b-generate-agents-and-readme", "Generate Agents/README", timeout=300),
+    PipelineStage("05c-generate-ucode-ide-schemas", "Generate ucode DTS", timeout=300),
+    PipelineStage("05d-generate-api-drift-changelog", "API Drift Changelog", timeout=300),
+    PipelineStage("05e-generate-luci-dts", "Generate LuCI DTS", timeout=300),
+    PipelineStage("06-generate-llm-routing-indexes", "LLM Routing Indexes", timeout=300),
+    PipelineStage("07-generate-web-index", "Web Index", timeout=300),
+    PipelineStage("08-validate-output", "Validate Output", timeout=600),
+)
+
+
+def _script_path(stage: PipelineStage) -> str:
+    """Resolve a PipelineStage to its full container script path."""
+    script_filename = f"openwrt-docs4ai-{stage.script}.py"
+    return f"{CONTAINER_WORKSPACE}/.github/scripts/{script_filename}"
 
 
 # ── Container lifecycle ──────────────────────────────────────────────────────
@@ -78,7 +95,10 @@ def create_container() -> DockerContainer:
 # ── Remote execution helpers ─────────────────────────────────────────────────
 
 
-def _exec(container: DockerContainer, cmd: str, timeout: int = EXEC_TIMEOUT) -> tuple[int, str]:
+_DEFAULT_TIMEOUT = 300  # seconds, used for non-pipeline commands
+
+
+def _exec(container: DockerContainer, cmd: str, timeout: int = _DEFAULT_TIMEOUT) -> tuple[int, str]:
     """Execute a command inside the container.
 
     Returns ``(exit_code, output_text)``.  Both stdout and stderr are
@@ -95,14 +115,14 @@ def _exec(container: DockerContainer, cmd: str, timeout: int = EXEC_TIMEOUT) -> 
     return exit_code, stdout
 
 
-def _run_python_script(container: DockerContainer, script_path: str) -> tuple[int, str]:
-    """Execute a Python script inside the container.
+def _run_python_script(container: DockerContainer, stage: PipelineStage) -> tuple[int, str]:
+    """Execute a pipeline stage's Python script inside the container.
 
-    *script_path* is treated as relative to the project root and resolved
-    to an absolute container path.
+    Uses the stage's *timeout* and resolves the script path via
+    ``_script_path()``.
     """
-    abs_path = f"{CONTAINER_WORKSPACE}/{script_path}"
-    return _exec(container, f"python {abs_path}")
+    script_path = _script_path(stage)
+    return _exec(container, f"python {script_path}", timeout=stage.timeout)
 
 
 # ── Orchestrator entry point ─────────────────────────────────────────────────
@@ -141,19 +161,33 @@ def main() -> int:
 
         print()
 
-        total = len(PIPELINE_SCRIPTS)
-        for idx, script in enumerate(PIPELINE_SCRIPTS, start=1):
-            name = Path(script).name
-            print(f"[{idx}/{total}] Running {name} ...")
+        total = len(PIPELINE_STAGES)
+        failed_optional: list[str] = []
+
+        for idx, stage in enumerate(PIPELINE_STAGES, start=1):
+            optional_tag = " [OPTIONAL]" if stage.optional else ""
+            print(
+                f"[{idx}/{total}] {stage.label} "
+                f"({stage.script}){optional_tag} ..."
+            )
             t0 = time.monotonic()
-            exit_code, output = _run_python_script(container, script)
+            exit_code, output = _run_python_script(container, stage)
             elapsed = time.monotonic() - t0
 
             if exit_code == 0:
                 print(f"  ✓ PASS ({elapsed:.1f}s)")
+            elif stage.optional:
+                print(f"  ⚠ WARN — optional stage failed (exit={exit_code}, {elapsed:.1f}s)")
+                failed_optional.append(stage.label)
+                if output.strip():
+                    print(f"  Last output ({len(output)} bytes):")
+                    print(output[-2000:])
             else:
                 print(f"  ✗ FAIL (exit={exit_code}, {elapsed:.1f}s)")
-                print(f"\nPipeline halted — {name} failed with exit code {exit_code}.")
+                print(
+                    f"\nPipeline halted — {stage.label} ({stage.script}) "
+                    f"failed with exit code {exit_code}."
+                )
                 if output.strip():
                     print(f"Last output ({len(output)} bytes):")
                     # Print tail of output (last 2000 chars) for diagnostics.
@@ -162,7 +196,13 @@ def main() -> int:
 
         # ── Summary ────────────────────────────────────────────
         print("\n" + "=" * 60)
-        print("All pipeline scripts passed.")
+        if failed_optional:
+            print(
+                "All required stages passed. "
+                f"Optional stage(s) skipped/failed: {', '.join(failed_optional)}"
+            )
+        else:
+            print("All pipeline stages passed.")
         print("=" * 60)
         return 0
     finally:
