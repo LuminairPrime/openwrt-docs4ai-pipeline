@@ -27,12 +27,13 @@
       "python-patterns",
       "python-testing",
       "qa",
-      "readme-updater",
-      "runbook-generator",
-      "secret-scanner",
-      "shell-scripting",
-      "technical-writing",
-      "test-strategy"
+        "readme-updater",
+        "runbook-generator",
+        "secret-scanner",
+        "shell-scripting",
+        "skill-creator",
+        "technical-writing",
+        "test-strategy"
     ],
     ".kilocode/skills": [
       "api-design",
@@ -59,12 +60,13 @@
       "python-patterns",
       "python-testing",
       "qa",
-      "readme-updater",
-      "runbook-generator",
-      "secret-scanner",
-      "shell-scripting",
-      "technical-writing",
-      "test-strategy"
+        "readme-updater",
+        "runbook-generator",
+        "secret-scanner",
+        "shell-scripting",
+        "skill-creator",
+        "technical-writing",
+        "test-strategy"
     ]
   }
 }

@@ -8,11 +8,9 @@ Inputs:  - PROCESSED_DIR/L2-semantic/                   (required L2 source)
                  - static/data/override/{module}/{slug}.json    (override data store)
                  - ai-summaries-cache.json                      (legacy; migrated on run)
 Outputs: - PROCESSED_DIR/L2-semantic/{module}/*.md      (mutated: ai fields added)
-                 - static/data/base/{module}/{slug}.json        (new entries when WRITE_AI)
+                 - static/data/base/{module}/{slug}.json        (new entries when AI_MODE=generate)
 Environment Variables:
-    SKIP_AI          Skip entire step cleanly. Default: true for direct local
-                                     execution; the hosted workflow sets it explicitly.
-    WRITE_AI         Call API for files missing summaries. Default: true.
+    AI_MODE          Canonical AI contract: skip|stored|generate.
     MAX_AI_FILES     Cap on API calls per run. Default: 40.
     GITHUB_TOKEN     GitHub Models API bearer token.
     LOCAL_DEV_TOKEN  Local development token (fallback when GITHUB_TOKEN absent).
@@ -72,10 +70,8 @@ from lib import ai_enrichment, config
 cast(Any, sys.stdout).reconfigure(line_buffering=True)
 
 PROCESSED_DIR = config.PROCESSED_DIR
-SKIP_AI = os.environ.get("SKIP_AI", "true").lower() == "true"
-WRITE_AI = os.environ.get("WRITE_AI", "true").lower() == "true"
+AI_SETTINGS = config.AI_SETTINGS
 MAX_FILES = int(os.environ.get("MAX_AI_FILES", "40"))
-TOKEN = os.environ.get("GITHUB_TOKEN") or os.environ.get("LOCAL_DEV_TOKEN")
 VALIDATE_PAYLOAD = os.environ.get("AI_VALIDATE_PAYLOAD", "true").lower() != "false"
 
 # Legacy flat cache — migrated opportunistically on first run that encounters it
@@ -89,6 +85,8 @@ _LEGACY_CACHE_PATH = os.path.abspath(
 
 def main() -> int:
     """Run the stage-04 AI enrichment step against the configured output tree."""
+    if AI_SETTINGS.used_legacy_flags:
+        print("[04] INFO: SKIP_AI/WRITE_AI is deprecated. Set AI_MODE=skip|stored|generate instead.")
     return ai_enrichment.run_ai_enrichment(
         outdir=PROCESSED_DIR,
         base_dir=os.environ.get("AI_DATA_BASE_DIR", config.AI_DATA_BASE_DIR),
@@ -97,10 +95,10 @@ def main() -> int:
             config.AI_DATA_OVERRIDE_DIR,
         ),
         legacy_cache_path=_LEGACY_CACHE_PATH,
-        skip_ai=SKIP_AI,
-        write_ai=WRITE_AI,
+        skip_ai=AI_SETTINGS.skip_ai,
+        write_ai=AI_SETTINGS.write_ai,
         max_files=MAX_FILES,
-        token=TOKEN,
+        token=AI_SETTINGS.token,
         validate_payload=VALIDATE_PAYLOAD,
         report_prefix="[04]",
     )

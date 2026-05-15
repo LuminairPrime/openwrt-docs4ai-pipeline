@@ -57,9 +57,9 @@ data/override/<module>/<slug>.json   ← checked first
 data/base/<module>/<slug>.json       ← checked second
   ↓ not found
 legacy ai-summaries-cache.json       ← migrated on first match
-  ↓ not found or WRITE_AI=false
+  ↓ not found or AI_MODE=stored
 API call (gpt-4o-mini)               ← generated live
-  ↓ WRITE_AI=false or MAX_AI_FILES reached
+  ↓ AI_MODE=stored or MAX_AI_FILES reached
 skipped
 ```
 

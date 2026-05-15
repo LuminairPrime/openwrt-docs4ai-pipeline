@@ -305,7 +305,7 @@ def run_ai_enrichment(
 ) -> int:
     """Run AI summary application and optional generation for one staged corpus."""
     if skip_ai:
-        print(f"{report_prefix} SKIP: AI summarization disabled (SKIP_AI=true)")
+        print(f"{report_prefix} SKIP: AI summarization disabled (AI_MODE=skip)")
         return 0
 
     l2_dir = os.path.join(outdir, "L2-semantic")
@@ -325,9 +325,9 @@ def run_ai_enrichment(
     stage_start_epoch = int(time.time())
     stage_timer_start = time.perf_counter()
     if not write_ai:
-        print(f"{report_prefix} INFO: WRITE_AI=false — applying stored summaries only, no API calls")
+        print(f"{report_prefix} INFO: AI_MODE=stored — applying stored summaries only, no API calls")
     elif not token_value:
-        print(f"{report_prefix} INFO: WRITE_AI=true but no token is configured — applying stored summaries only")
+        print(f"{report_prefix} INFO: AI_MODE=generate but no token is configured — applying stored summaries only")
 
     if not _run_preflight(
         l2_dir=l2_dir,

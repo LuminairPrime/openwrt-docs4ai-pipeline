@@ -95,6 +95,10 @@ def test_validate_known_dockerman_ucode_false_positive_is_exact() -> None:
         rel_path,
         "Syntax error: return must be inside function body",
     )
+    assert validate.is_known_ucode_false_positive(
+        f"../processed/{rel_path}",
+        "Syntax error: return must be inside function body",
+    )
     assert not validate.is_known_ucode_false_positive(
         rel_path,
         "Syntax error: unexpected token",
@@ -102,6 +106,32 @@ def test_validate_known_dockerman_ucode_false_positive_is_exact() -> None:
     assert not validate.is_known_ucode_false_positive(
         "L2-semantic/luci-examples/other.md",
         "Syntax error: return must be inside function body",
+    )
+
+
+def test_validate_known_ubus_ucode_false_positives_are_exact() -> None:
+    validate = load_script_module(
+        "validator_known_ubus_ucode_false_positive",
+        "openwrt-docs4ai-08-validate-output.py",
+    )
+
+    rel_path = "L2-semantic/ucode/c_source-api-module-ubus.md"
+
+    assert validate.is_known_ucode_false_positive(
+        rel_path,
+        "Syntax error: Can't access lexical declaration 'obj' before initialization",
+    )
+    assert validate.is_known_ucode_false_positive(
+        f"../processed/{rel_path}",
+        "Syntax error: Unexpected character",
+    )
+    assert not validate.is_known_ucode_false_positive(
+        rel_path,
+        "Syntax error: return must be inside function body",
+    )
+    assert not validate.is_known_ucode_false_positive(
+        "L2-semantic/ucode/other.md",
+        "Syntax error: Unexpected character",
     )
 
 

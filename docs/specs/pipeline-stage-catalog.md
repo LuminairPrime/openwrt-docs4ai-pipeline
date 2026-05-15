@@ -26,7 +26,7 @@ The hosted workflow is named `openwrt-docs4ai-pipeline`.
 | `02h-scrape-hotplug-events.py` | 02h | L1 extractor | cloned OpenWrt repo -> `L1-raw/openwrt-hotplug/` |
 | `02i-ingest-cookbook.py` | 02i | L1 extractor | `content/cookbook-source/` -> `L1-raw/cookbook/` |
 | `03-normalize-semantic.py` | 03 | L2 normalizer | `L1-raw/` -> `L2-semantic/` and cross-link state |
-| `04-generate-ai-summaries.py` | 04 | L2 enrichment | optionally enriches L2 from the AI store |
+| `04-generate-ai-summaries.py` | 04 | L2 enrichment | applies stored summaries or generates missing ones based on `AI_MODE` |
 | `05a-assemble-references.py` | 05a | Assembler | builds module reference surfaces in `release-tree/` |
 | `05b-generate-agents-and-readme.py` | 05b | Publication companion generator | builds root `AGENTS.md` and generated `README.md` |
 | `05c-generate-ucode-ide-schemas.py` | 05c | IDE surface generator | emits `release-tree/ucode/types/ucode.d.ts` |
@@ -60,7 +60,7 @@ The hosted workflow is named `openwrt-docs4ai-pipeline`.
 
 - `push` runs on `main`.
 - `schedule` runs monthly at `13:00 UTC` on the first day of the month.
-- `workflow_dispatch` exposes `skip_wiki`, `skip_buildroot`, `skip_ai`, and `max_ai_files`.
+- `workflow_dispatch` exposes `skip_wiki`, `skip_buildroot`, `ai_mode`, deprecated `skip_ai`, and `max_ai_files`.
 - The hosted workflow does not expose a `start_stage` input. Partial reruns are a local maintenance practice, not a hosted workflow contract.
 
 ## Stage Dependency Matrix

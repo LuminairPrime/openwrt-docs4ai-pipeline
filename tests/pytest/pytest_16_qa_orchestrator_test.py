@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -37,7 +38,7 @@ def build_demo_layout() -> qa_orchestrator.ContainerLayout:
         staged_dir="/workspace/tmp/ci/qa/demo/pipeline-run/staged",
         ai_data_base_dir="/workspace/tmp/ci/qa/demo/pipeline-run/ai-data/base",
         ai_data_override_dir="/workspace/tmp/ci/qa/demo/pipeline-run/ai-data/override",
-        wiki_cache_dir="/workspace/tmp/ci/qa/shared/wiki-cache",
+        wiki_cache_dir="/workspace/.cache/shared/wiki",
         ucode_bin_dir="/workspace/tmp/ci/qa/demo/pipeline-run/downloads/repo-ucode/build-install/bin",
         ucode_lib_dir="/workspace/tmp/ci/qa/demo/pipeline-run/downloads/repo-ucode/build-install/lib",
     )
@@ -79,12 +80,12 @@ def test_qa_docs_reference_the_containerized_runner() -> None:
 
 def test_qa_docs_promote_optional_mise_modes() -> None:
     doc_expectations = {
-        "AGENTS.md": ["qa-stage01", "qa-ai", "qa-wiki-cache"],
-        "CLAUDE.md": ["qa-stage01", "qa-ai", "qa-wiki-cache"],
-        "DEVELOPMENT.md": ["qa-stage01", "qa-ai", "qa-wiki-cache"],
-        "README.md": ["qa-stage01", "qa-ai", "qa-wiki-cache"],
-        "tests/README.md": ["qa-stage01", "qa-ai", "qa-wiki-cache"],
-        "tools/testing/README.md": ["qa-stage01", "qa-ai", "qa-wiki-cache"],
+        "AGENTS.md": ["qa-smoke", "qa-wiki-refresh", "qa-ai-generate", "qa-full"],
+        "CLAUDE.md": ["qa-smoke", "qa-wiki-refresh", "qa-ai-generate", "qa-full"],
+        "DEVELOPMENT.md": ["qa-smoke", "qa-wiki-refresh", "qa-ai-generate", "qa-full"],
+        "README.md": ["qa-smoke", "qa-wiki-refresh", "qa-ai-generate", "qa-full"],
+        "tests/README.md": ["qa-smoke", "qa-wiki-refresh", "qa-ai-generate", "qa-full"],
+        "tools/testing/README.md": ["qa-smoke", "qa-wiki-refresh", "qa-ai-generate", "qa-full"],
     }
 
     for relative_path, snippets in doc_expectations.items():
@@ -96,10 +97,11 @@ def test_qa_docs_promote_optional_mise_modes() -> None:
 def test_mise_toml_promotes_first_class_qa_tasks() -> None:
     mise_text = (PROJECT_ROOT / "mise.toml").read_text(encoding="utf-8")
 
-    assert "QA_WIKI_CACHE_DIR" in mise_text
-    assert "[tasks.qa-stage01]" in mise_text
-    assert "[tasks.qa-ai]" in mise_text
-    assert "[tasks.qa-wiki-cache]" in mise_text
+    assert 'QA_WIKI_CACHE_DIR = ".cache/shared/wiki"' in mise_text
+    assert "[tasks.qa-smoke]" in mise_text
+    assert "[tasks.qa-wiki-refresh]" in mise_text
+    assert "[tasks.qa-ai-generate]" in mise_text
+    assert "[tasks.qa-full]" in mise_text
 
 
 def test_qa_orchestrator_help_exposes_cli_surface() -> None:
@@ -112,6 +114,7 @@ def test_qa_orchestrator_help_exposes_cli_surface() -> None:
 
     assert completed.returncode == 0
     assert "--only-stage" in completed.stdout
+    assert "--ai-mode" in completed.stdout
     assert "--skip-buildroot" in completed.stdout
     assert "--image" in completed.stdout
     assert "--wiki-cache-dir" in completed.stdout
@@ -130,7 +133,7 @@ def test_qa_orchestrator_build_container_env_matches_ci_contract() -> None:
 
     env = qa_orchestrator.build_container_env(
         layout,
-        run_ai=False,
+        ai_mode="stored",
         skip_wiki=True,
         skip_buildroot=False,
         max_ai_files=17,
@@ -138,7 +141,7 @@ def test_qa_orchestrator_build_container_env_matches_ci_contract() -> None:
 
     assert env["CI"] == "true"
     assert env["PIPELINE_RUN_DIR"] == layout.pipeline_run_dir
-    assert env["SKIP_AI"] == "true"
+    assert env["AI_MODE"] == "stored"
     assert env["SKIP_WIKI"] == "true"
     assert env["SKIP_BUILDROOT"] == "false"
     assert env["MAX_AI_FILES"] == "17"
@@ -148,13 +151,12 @@ def test_qa_orchestrator_forwards_opt_in_env_values(monkeypatch: pytest.MonkeyPa
     layout = build_demo_layout()
     monkeypatch.setenv("LOCAL_DEV_TOKEN", "demo-token")
     monkeypatch.setenv("WIKI_MAX_PAGES", "1")
-    monkeypatch.setenv("WRITE_AI", "false")
     monkeypatch.setenv("AI_VALIDATE_PAYLOAD", "false")
     monkeypatch.setenv("NO_PROXY", "   ")
 
     env = qa_orchestrator.build_container_env(
         layout,
-        run_ai=True,
+        ai_mode="generate",
         skip_wiki=False,
         skip_buildroot=True,
         max_ai_files=9,
@@ -162,9 +164,44 @@ def test_qa_orchestrator_forwards_opt_in_env_values(monkeypatch: pytest.MonkeyPa
 
     assert env["LOCAL_DEV_TOKEN"] == "demo-token"
     assert env["WIKI_MAX_PAGES"] == "1"
-    assert env["WRITE_AI"] == "false"
+    assert env["AI_MODE"] == "generate"
     assert env["AI_VALIDATE_PAYLOAD"] == "false"
+    assert "WRITE_AI" not in env
     assert "NO_PROXY" not in env
+
+
+def test_qa_orchestrator_rejects_cached_runs_without_refresh_sentinel(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(SystemExit, match="qa-wiki-refresh"):
+        qa_orchestrator.ensure_cached_run_prerequisites(
+            wiki_cache_dir=tmp_path / "wiki",
+            ai_mode="stored",
+            only_stage=None,
+        )
+
+
+def test_qa_orchestrator_rejects_generate_mode_without_token(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    wiki_cache_dir = tmp_path / "wiki"
+    metadata_dir = wiki_cache_dir / "http-metadata"
+    metadata_dir.mkdir(parents=True, exist_ok=True)
+    (metadata_dir / "wiki-lastmod.json").write_text("{}", encoding="utf-8")
+    (wiki_cache_dir / qa_orchestrator.WIKI_CACHE_SENTINEL_NAME).write_text(
+        json.dumps({"schema_version": 1, "status": "ready"}),
+        encoding="utf-8",
+    )
+    monkeypatch.delenv("LOCAL_DEV_TOKEN", raising=False)
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+
+    with pytest.raises(SystemExit, match="LOCAL_DEV_TOKEN or GITHUB_TOKEN"):
+        qa_orchestrator.ensure_cached_run_prerequisites(
+            wiki_cache_dir=wiki_cache_dir,
+            ai_mode="generate",
+            only_stage=None,
+        )
 
 
 def test_qa_orchestrator_rejects_result_roots_outside_repo(tmp_path: Path) -> None:

@@ -7,25 +7,60 @@ CI = "true"
 PYTHONPATH = "vendors/testcontainers-python/core"
 QA_CONTAINER_IMAGE = "python:3.12-slim"
 QA_MAX_AI_FILES = "40"
-QA_WIKI_CACHE_DIR = "tmp/ci/qa/shared/wiki-cache"
+QA_RESULTS_ROOT = "tmp/ci/qa"
+QA_SHARED_CACHE_ROOT = ".cache/shared"
+QA_WIKI_CACHE_DIR = ".cache/shared/wiki"
 TESTCONTAINERS_RYUK_DISABLED = "true"
 
-[tasks.qa-stage01]
+[tasks.qa-smoke]
 description = "Run the cheapest Docker-backed QA proof"
 run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot"
 run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot"
 
+[tasks.qa-wiki-refresh]
+description = "Refresh the shared wiki cache via stage 02a"
+env = { AI_MODE = "skip" }
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 02a --ai-mode skip"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 02a --ai-mode skip"
+
+[tasks._qa-cached-stored]
+hide = true
+env = { AI_MODE = "stored" }
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --ai-mode stored"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --ai-mode stored"
+
+[tasks._qa-cached-generate]
+hide = true
+env = { AI_MODE = "generate" }
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --ai-mode generate"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --ai-mode generate"
+
 [tasks.qa]
-description = "Run the Linux-mirrored QA pipeline in Docker"
-run = ".venv/bin/python tests/qa_pipeline_orchestrator.py"
-run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py"
+description = "Run the cached full QA proof with stored AI summaries"
+depends = ["_qa-cached-stored"]
+
+[tasks.qa-ai-generate]
+description = "Run the cached full QA proof with live AI generation"
+depends = ["_qa-cached-generate"]
+
+[tasks.qa-full]
+description = "Refresh wiki cache, then run the broadest AI-generate QA proof"
+depends = ["qa-wiki-refresh", "_qa-cached-generate"]
+
+[tasks.qa-stage01]
+description = "Deprecated alias for qa-smoke"
+hide = true
+run = "printf 'qa-stage01 is deprecated; use qa-smoke\\n' >&2 && .venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot"
+run_windows = "Write-Host 'qa-stage01 is deprecated; use qa-smoke'; .\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot"
 
 [tasks.qa-ai]
-description = "Run the Linux-mirrored QA pipeline with the AI stage enabled"
-run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --run-ai"
-run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --run-ai"
+description = "Deprecated alias for qa-ai-generate"
+hide = true
+run = "printf 'qa-ai is deprecated; use qa-ai-generate\\n' >&2 && .venv/bin/python tests/qa_pipeline_orchestrator.py --ai-mode generate"
+run_windows = "Write-Host 'qa-ai is deprecated; use qa-ai-generate'; .\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --ai-mode generate"
 
 [tasks.qa-wiki-cache]
-description = "Warm or refresh the shared wiki cache via stage 02a"
-run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 02a"
-run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 02a"
+description = "Deprecated alias for qa-wiki-refresh"
+hide = true
+run = "printf 'qa-wiki-cache is deprecated; use qa-wiki-refresh\\n' >&2 && .venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 02a --ai-mode skip"
+run_windows = "Write-Host 'qa-wiki-cache is deprecated; use qa-wiki-refresh'; .\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 02a --ai-mode skip"

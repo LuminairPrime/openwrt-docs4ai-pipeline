@@ -34,7 +34,7 @@ The live authored cookbook source set is under `static/cookbook-source/`.
 | `ubus-observability-pattern.md` | ubus-first state and metrics publication |
 | `runtime-device-identity-via-ubus.md` | canonical runtime identity surface |
 | `ucode-rpcd-service-pattern.md` | privileged backend service pattern in ucode/rpcd |
-| `c-libubus-daemon-skeleton.md` | minimal current-era C daemon startup contract around `uloop_init()`, `ubus_connect()`, `ubus_add_uloop()`, and `uloop_run()` |
+| `c-libubus-daemon-runtime-pattern.md` | minimal current-era C daemon startup contract around `uloop_init()`, `ubus_connect()`, `ubus_add_uloop()`, and `uloop_run()` |
 
 ### 1.4 Configuration, UI, and build surfaces
 

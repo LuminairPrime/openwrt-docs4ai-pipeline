@@ -76,7 +76,8 @@ def test_main_review_runs_expected_actions_and_keeps_scratch(
             "manage_ai_store.py",
             "--option",
             "review",
-            "--no-write-ai",
+            "--ai-mode",
+            "stored",
             "--keep-scratch",
         ],
     )
@@ -169,13 +170,14 @@ def test_run_generate_passes_token_and_cap_to_enrichment(
         fake_run_ai_enrichment,
     )
 
-    args = SimpleNamespace(write_ai=True, token_env=None, max_ai_files=7)
+    args = SimpleNamespace(ai_mode="generate", token_env=None, max_ai_files=7)
     manage_ai_store.run_generate(paths, args)
 
     assert captured["outdir"] == str(paths.scratch_outdir)
     assert captured["base_dir"] == str(paths.scratch_base_dir)
     assert captured["override_dir"] == str(paths.scratch_override_dir)
     assert captured["legacy_cache_path"] == str(paths.scratch_cache_path)
+    assert captured["skip_ai"] is False
     assert captured["write_ai"] is True
     assert captured["max_files"] == 7
     assert captured["token"] == "secret-token"
@@ -204,9 +206,43 @@ def test_run_generate_raises_when_enrichment_fails(
         lambda **kwargs: 1,
     )
 
-    args = SimpleNamespace(write_ai=True, token_env=None, max_ai_files=3)
+    args = SimpleNamespace(ai_mode="generate", token_env=None, max_ai_files=3)
     with pytest.raises(RuntimeError, match="AI generation failed"):
         manage_ai_store.run_generate(paths, args)
+
+
+def test_run_generate_uses_stored_mode_without_token(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    paths = _make_operation_paths(tmp_path)
+    _mkdir(paths.scratch_base_dir)
+    _mkdir(paths.scratch_override_dir)
+    _mkdir(paths.scratch_l2_root)
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(
+        manage_ai_store.ai_store_workflow,
+        "resolve_token_value",
+        lambda **kwargs: pytest.fail("stored mode should not resolve a live token"),
+    )
+
+    def fake_run_ai_enrichment(**kwargs: object) -> int:
+        captured.update(kwargs)
+        return 0
+
+    monkeypatch.setattr(
+        manage_ai_store.ai_enrichment,
+        "run_ai_enrichment",
+        fake_run_ai_enrichment,
+    )
+
+    args = SimpleNamespace(ai_mode="stored", token_env=None, max_ai_files=5)
+    manage_ai_store.run_generate(paths, args)
+
+    assert captured["skip_ai"] is False
+    assert captured["write_ai"] is False
+    assert captured["token"] is None
 
 
 def test_run_promote_copies_reviewed_json_and_rechecks(

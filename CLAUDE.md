@@ -35,17 +35,18 @@ python tools/testing/run_default_validation.py --run-ai --keep-temp
 python tools/testing/run_source_validation.py           # strict Ruff + Pyright + actionlint gate
 python tools/testing/run_targeted_pytest.py             # focused pytest diagnosis
 python tools/testing/run_targeted_smoke.py              # smoke diagnosis
-vendors\mise\bin\mise.exe run qa-stage01             # cheap Docker-backed proof
-vendors\mise\bin\mise.exe run qa                     # full Linux-mirrored stage 01->08 proof
-vendors\mise\bin\mise.exe run qa-ai                  # full mirror with cache-backed AI stage
-vendors\mise\bin\mise.exe run qa-wiki-cache          # warm or refresh the shared wiki cache
+vendors\mise\bin\mise.exe run qa-smoke              # cheap Docker-backed proof
+vendors\mise\bin\mise.exe run qa-wiki-refresh       # refresh the shared wiki cache
+vendors\mise\bin\mise.exe run qa                    # cached full stage 01->08 proof in AI_MODE=stored
+vendors\mise\bin\mise.exe run qa-ai-generate        # cached full proof in AI_MODE=generate
+vendors\mise\bin\mise.exe run qa-full               # refresh plus generate-mode full proof
 
-python tools/manage_ai_store.py --option review         # AI store review (no promotion)
+python tools/manage_ai_store.py --option review --ai-mode generate
 python tools/manage_ai_store.py --option full --keep-scratch
 ```
 
 `--run-ai` is cache-backed for regression proof only — it does not generate real AI summaries or promote to the AI store. Results land under `tmp/ci/`.
-`mise run qa` writes its own durable bundle under `tmp/ci/qa/<timestamp>/` and should be treated as the top-level local CI mirror. All `qa*` tasks restore and persist the shared wiki cache under `tmp/ci/qa/shared/wiki-cache/`. If the vendored `mise` binary is unavailable, call `.venv\Scripts\python.exe tests\qa_pipeline_orchestrator.py` directly.
+`mise run qa` writes its own durable bundle under `tmp/ci/qa/<timestamp>/` and should be treated as the top-level local CI mirror. Cached `qa*` tasks restore and persist the shared wiki cache under `.cache/shared/wiki/`, `qa-wiki-refresh` is the only task that refreshes it automatically, and `qa-full` chains the refresh plus generate-mode proof. If the vendored `mise` binary is unavailable, call `.venv\Scripts\python.exe tests\qa_pipeline_orchestrator.py` directly.
 
 The main GitHub Actions workflow now starts with a `validate_source` job that runs `python tests/check_linting.py --strict --result-root tmp/ci/lint-review/current`. When that gate fails remotely, inspect the `lint-review` artifact's `summary.json` before opening raw logs.
 
@@ -62,7 +63,7 @@ Do not assume a cookbook-only source edit is isolated just because the authored 
 ```powershell
 python tools/testing/run_targeted_pytest.py tests/pytest/pytest_01_workflow_contract_test.py -q
 python tools/testing/run_targeted_pytest.py -k "test_name_pattern" -q
-vendors\mise\bin\mise.exe run qa-stage01
+vendors\mise\bin\mise.exe run qa-smoke
 .venv\Scripts\python.exe tests/qa_pipeline_orchestrator.py --only-stage 02a
 ```
 

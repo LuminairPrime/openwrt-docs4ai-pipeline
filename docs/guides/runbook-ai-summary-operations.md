@@ -118,8 +118,7 @@ $env:OUTDIR = Join-Path $scratch "out"
 $env:AI_DATA_BASE_DIR = Join-Path $scratch "ai-data/base"
 $env:AI_DATA_OVERRIDE_DIR = Join-Path $scratch "ai-data/override"
 $env:AI_CACHE_PATH = Join-Path $scratch "ai-summaries-cache.json"
-$env:SKIP_AI = "false"
-$env:WRITE_AI = "true"
+$env:AI_MODE = "generate"
 $env:MAX_AI_FILES = "300"
 $env:LOCAL_DEV_TOKEN = "<token>"
 
@@ -235,8 +234,7 @@ Remove-Item Env:OUTDIR -ErrorAction SilentlyContinue
 Remove-Item Env:AI_DATA_BASE_DIR -ErrorAction SilentlyContinue
 Remove-Item Env:AI_DATA_OVERRIDE_DIR -ErrorAction SilentlyContinue
 Remove-Item Env:AI_CACHE_PATH -ErrorAction SilentlyContinue
-Remove-Item Env:SKIP_AI -ErrorAction SilentlyContinue
-Remove-Item Env:WRITE_AI -ErrorAction SilentlyContinue
+Remove-Item Env:AI_MODE -ErrorAction SilentlyContinue
 Remove-Item Env:MAX_AI_FILES -ErrorAction SilentlyContinue
 Remove-Item Env:LOCAL_DEV_TOKEN -ErrorAction SilentlyContinue
 

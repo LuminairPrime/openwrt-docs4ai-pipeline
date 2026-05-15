@@ -67,7 +67,7 @@ The creating agent must then:
 
 ## 3. C libubus Daemon Skeleton
 
-- Target page: `static/cookbook-source/c-libubus-daemon-skeleton.md`
+- Target page: `static/cookbook-source/c-libubus-daemon-runtime-pattern.md`
 - Draft path: `artifacts/authoring/drafts/c-libubus-daemon-skeleton-draft.md`
 - Creation log: `artifacts/authoring/logs/c-libubus-daemon-skeleton-creation-log.md`
 - Source packet: `artifacts/scenario-packets/03-scn-2026-003-c-libubus-daemon-skeleton.yaml`

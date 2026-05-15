@@ -455,11 +455,24 @@ def normalize_markdown_content(path, markdown):
     return title, final_content
 
 
+def normalize_dokuwiki_for_pandoc(raw_content):
+    """Repair common wiki-export table rows so Pandoc sees valid DokuWiki."""
+    normalized_lines = []
+    for line in raw_content.splitlines():
+        stripped = line.rstrip()
+        trimmed = stripped.lstrip()
+        if trimmed.startswith(("|", "^")) and stripped[-1:] not in {"|", "^"}:
+            stripped = f"{stripped}{trimmed[0]}"
+        normalized_lines.append(stripped)
+    return "\n".join(normalized_lines)
+
+
 def convert_with_pandoc(raw_content, path):
+    pandoc_input = normalize_dokuwiki_for_pandoc(raw_content)
     try:
         result = subprocess.run(
             ["pandoc", "-f", "dokuwiki", "-t", "gfm", "--wrap=none"],
-            input=raw_content,
+            input=pandoc_input,
             capture_output=True,
             text=True,
             encoding="utf-8",

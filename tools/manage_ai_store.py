@@ -25,7 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from lib import ai_enrichment, ai_store_checks, ai_store_workflow
+from lib import ai_enrichment, ai_store_checks, ai_store_workflow, config
 
 
 PREFIX = "[manage-ai-store]"
@@ -49,11 +49,17 @@ def run_generate(
         "scratch L2 semantic corpus",
     )
 
-    token_value, token_source = ai_store_workflow.resolve_token_value(
-        write_ai=args.write_ai,
-        token_env=args.token_env,
-        environ=os.environ,
+    ai_settings = config.resolve_ai_mode_settings(
+        {**dict(os.environ), "AI_MODE": args.ai_mode}
     )
+    token_value = None
+    token_source = None
+    if ai_settings.write_ai:
+        token_value, token_source = ai_store_workflow.resolve_token_value(
+            write_ai=True,
+            token_env=args.token_env,
+            environ=os.environ,
+        )
     if token_value and token_source:
         print(f"{PREFIX} Using token from {token_source}")
 
@@ -62,8 +68,8 @@ def run_generate(
         base_dir=str(paths.scratch_base_dir),
         override_dir=str(paths.scratch_override_dir),
         legacy_cache_path=str(paths.scratch_cache_path),
-        skip_ai=False,
-        write_ai=args.write_ai,
+        skip_ai=ai_settings.skip_ai,
+        write_ai=ai_settings.write_ai,
         max_files=args.max_ai_files,
         token=token_value,
         validate_payload=True,
@@ -249,10 +255,10 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help="Specific environment variable to use for live AI generation",
     )
     parser.add_argument(
-        "--write-ai",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="Allow live API generation during the generate step (default: true)",
+        "--ai-mode",
+        choices=("stored", "generate"),
+        default="generate",
+        help="Stage-04 mode for the generate step (default: generate)",
     )
     parser.add_argument(
         "--strict-audit",
@@ -276,6 +282,7 @@ def main() -> int:
     actions = ai_store_workflow.expand_option_sequence(args.option)
 
     print(f"{PREFIX} Option: {args.option}")
+    print(f"{PREFIX} AI mode: {args.ai_mode}")
     print(f"{PREFIX} Scratch root: {paths.scratch_root}")
     print(f"{PREFIX} Source OUTDIR: {paths.source_outdir}")
     print(f"{PREFIX} Permanent base store: {paths.permanent_base_dir}")

@@ -33,17 +33,18 @@ python tools/testing/run_default_validation.py --run-ai --keep-temp
 python tools/testing/run_source_validation.py
 python tools/testing/run_targeted_pytest.py -k wiki -q
 python tools/testing/run_targeted_smoke.py --include-extractors
-vendors\mise\bin\mise.exe run qa-stage01
+vendors\mise\bin\mise.exe run qa-smoke
+vendors\mise\bin\mise.exe run qa-wiki-refresh
 vendors\mise\bin\mise.exe run qa
-vendors\mise\bin\mise.exe run qa-ai
-vendors\mise\bin\mise.exe run qa-wiki-cache
+vendors\mise\bin\mise.exe run qa-ai-generate
+vendors\mise\bin\mise.exe run qa-full
 ```
 
 Use the wrappers in `tools/testing/` for normal maintenance. They keep the public
 command menu small while still delegating to the maintained runners in this
 directory. Use the `qa*` tasks in `vendors\mise\bin\mise.exe` when you need the
-Docker-backed Linux mirror, the cache-backed AI stage, or the shared wiki-cache
-warming path.
+Docker-backed Linux mirror, the cached stored/generate AI modes, or the shared
+wiki-cache refresh path.
 
 ## Direct Entry Points
 
@@ -57,7 +58,7 @@ python tests/run_pytest.py -k wiki -q
 python tests/run_smoke.py --include-extractors
 python tests/run_smoke_and_pytest.py --run-ai --keep-temp
 .venv\Scripts\python.exe tests/qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot
-.venv\Scripts\python.exe tests/qa_pipeline_orchestrator.py --run-ai
+.venv\Scripts\python.exe tests/qa_pipeline_orchestrator.py --ai-mode generate
 .venv\Scripts\python.exe tests/qa_pipeline_orchestrator.py --only-stage 02a
 python -m pytest tests/pytest/pytest_04_wiki_scraper_test.py -q
 python -m pytest tests/pytest/pytest_03_wiki_corpus_sanity_test.py -s -q
@@ -85,7 +86,7 @@ The maintained runners write durable bundles under `tmp/ci/`:
 Each bundle contains per-stage text logs and a `summary.json` file.
 When lint review fails, inspect `summary.json` first before raw console output.
 When the Docker-backed QA runner fails, inspect `tmp/ci/qa/<timestamp>/summary.json` and the matching per-stage logs before rerunning.
-The Docker-backed QA runner also restores and persists the shared wiki cache under `tmp/ci/qa/shared/wiki-cache/` so repeated wiki-scraper runs make fewer upstream requests.
+The Docker-backed QA runner restores and persists the shared wiki cache under `.cache/shared/wiki/`, and `qa-wiki-refresh` writes the warm-cache sentinel required by cached full proofs.
 
 `tools/testing/run_default_validation.py` intentionally produces two maintained
 bundles by delegation:

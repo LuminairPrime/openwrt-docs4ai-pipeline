@@ -53,11 +53,12 @@ python tools/testing/run_default_validation.py --include-extractors
 python tools/testing/run_source_validation.py
 python tools/testing/run_targeted_pytest.py -k wiki -q
 python tools/testing/run_targeted_smoke.py --include-extractors
-vendors\mise\bin\mise.exe run qa-stage01
+vendors\mise\bin\mise.exe run qa-smoke
+vendors\mise\bin\mise.exe run qa-wiki-refresh
 vendors\mise\bin\mise.exe run qa
-vendors\mise\bin\mise.exe run qa-ai
-vendors\mise\bin\mise.exe run qa-wiki-cache
-python tools/manage_ai_store.py --option review
+vendors\mise\bin\mise.exe run qa-ai-generate
+vendors\mise\bin\mise.exe run qa-full
+python tools/manage_ai_store.py --option review --ai-mode generate
 python tools/manage_ai_store.py --option full --keep-scratch
 ```
 
@@ -77,11 +78,12 @@ See `tools/testing/README.md` for the operator-facing menu and `tests/README.md`
 - `tools/testing/run_source_validation.py` is the source gate only. Use it when the change is clearly in formatting, typing, or workflow validation.
 - `tools/testing/run_targeted_pytest.py` forwards diagnostic arguments to `tests/run_pytest.py`.
 - `tools/testing/run_targeted_smoke.py` forwards diagnostic arguments to `tests/run_smoke.py`.
-- `vendors\mise\bin\mise.exe run qa-stage01` is the cheapest Docker-backed proof.
-- `vendors\mise\bin\mise.exe run qa` is the Docker-backed full pipeline mirror. It restores and persists the shared wiki cache at `tmp/ci/qa/shared/wiki-cache/`, and it writes its run bundle under `tmp/ci/qa/<timestamp>/`.
-- `vendors\mise\bin\mise.exe run qa-ai` enables the cache-backed AI stage for AI-surface regressions. It does not replace the AI-store review and promotion workflow.
-- `vendors\mise\bin\mise.exe run qa-wiki-cache` warms or refreshes the shared wiki cache through stage `02a` so repeated scraper-heavy runs hit fewer remote requests.
-- `tests/qa_pipeline_orchestrator.py` remains the direct implementation-level entry point when you need flags such as `--skip-wiki`, `--image`, `--wiki-cache-dir`, or `--result-root`.
+- `vendors\mise\bin\mise.exe run qa-smoke` is the cheapest Docker-backed proof.
+- `vendors\mise\bin\mise.exe run qa-wiki-refresh` refreshes `.cache/shared/wiki/` through stage `02a` and writes the warm-cache sentinel required by cached full proofs.
+- `vendors\mise\bin\mise.exe run qa` is the cached Docker-backed full pipeline mirror in `AI_MODE=stored`. It requires a warm wiki cache and writes its run bundle under `tmp/ci/qa/<timestamp>/`.
+- `vendors\mise\bin\mise.exe run qa-ai-generate` runs the cached full proof in `AI_MODE=generate`. It requires a warm wiki cache and fails early if no token is configured.
+- `vendors\mise\bin\mise.exe run qa-full` is the broadest local proof. It refreshes the wiki cache and then runs the generate-mode full proof.
+- `tests/qa_pipeline_orchestrator.py` remains the direct implementation-level entry point when you need flags such as `--skip-wiki`, `--image`, `--wiki-cache-dir`, `--result-root`, or `--ai-mode`.
 - The implementation-level runners under `tests/` remain maintained and scriptable. Use them directly only when you need advanced flags such as `--result-root` or a very specific execution path.
 
 These runners are intentionally local-first. Remote GitHub Actions validation still depends on a pushed commit and the run-pinning procedure in `CI Operations`.
@@ -304,7 +306,8 @@ gh run view <run_id> --json jobs,conclusion,url
 
 Defaults below are the direct local defaults from `lib/config.py` and the local
 AI tooling. The hosted workflow overrides `WORKDIR` and `OUTDIR`, and manual
-dispatch exposes `skip_ai=false` by default.
+dispatch exposes `ai_mode=stored` by default while retaining `skip_ai` as a
+deprecated compatibility input.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -313,8 +316,7 @@ dispatch exposes `skip_ai=false` by default.
 | `PROCESSED_DIR` | `{PIPELINE_RUN_DIR}/processed` | Canonical `L1-raw/`, `L2-semantic/`, and manifest outputs |
 | `OUTDIR` | `{PIPELINE_RUN_DIR}/staged` | Staged generated output root. CI publishes `{OUTDIR}/release-tree/` to external targets. |
 | `SKIP_WIKI` | `false` | Skip wiki extraction |
-| `SKIP_AI` | `true` | Disable optional AI enrichment by default |
-| `WRITE_AI` | `true` | Allow script `04` to create missing base records when AI is enabled |
+| `AI_MODE` | `skip` | Canonical AI mode: `skip`, `stored`, or `generate` |
 | `WIKI_MAX_PAGES` | `300` | Limit wiki traversal depth |
 | `MAX_AI_FILES` | `40` | Limit local or remote AI summary volume |
 | `VALIDATE_MODE` | `hard` | Validation severity mode |

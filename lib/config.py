@@ -2,11 +2,25 @@ import datetime
 import json
 import os
 import secrets
+from dataclasses import dataclass
 from typing import cast
 
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PIPELINE_RUN_STATE = os.path.join("tmp", "pipeline-run-state.json")
+VALID_AI_MODES = {"skip", "stored", "generate"}
+
+
+@dataclass(frozen=True)
+class AiModeSettings:
+    """Describe the normalized AI execution contract for one process."""
+
+    mode: str
+    skip_ai: bool
+    write_ai: bool
+    token: str | None
+    token_source: str | None
+    used_legacy_flags: bool
 
 
 def _resolve_repo_path(raw_path: str) -> str:
@@ -30,6 +44,65 @@ def _normalize_repo_relative(raw_path: str) -> str:
 
 def _utc_now_iso() -> str:
     return datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _read_env_bool(environ: dict[str, str], name: str, default: bool) -> bool:
+    """Parse a boolean-like environment variable using the repo's convention."""
+
+    value = environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() == "true"
+
+
+def _resolve_ai_token(environ: dict[str, str]) -> tuple[str | None, str | None]:
+    """Return the preferred AI token and its source name when configured."""
+
+    for env_name in ("LOCAL_DEV_TOKEN", "GITHUB_TOKEN"):
+        token_value = environ.get(env_name, "").strip()
+        if token_value:
+            return token_value, env_name
+    return None, None
+
+
+def resolve_ai_mode_settings(
+    environ: dict[str, str] | None = None,
+) -> AiModeSettings:
+    """Resolve AI_MODE and legacy flag compatibility into one normalized view."""
+
+    env = dict(os.environ if environ is None else environ)
+    raw_ai_mode = env.get("AI_MODE", "").strip().lower()
+    used_legacy_flags = False
+
+    if raw_ai_mode:
+        if raw_ai_mode not in VALID_AI_MODES:
+            valid_modes = ", ".join(sorted(VALID_AI_MODES))
+            raise RuntimeError(f"Invalid AI_MODE value: {raw_ai_mode}. Expected one of: {valid_modes}.")
+        mode = raw_ai_mode
+    else:
+        used_legacy_flags = "SKIP_AI" in env or "WRITE_AI" in env
+        skip_ai = _read_env_bool(env, "SKIP_AI", True)
+        if skip_ai:
+            mode = "skip"
+        else:
+            write_ai = _read_env_bool(env, "WRITE_AI", True)
+            mode = "generate" if write_ai else "stored"
+
+    skip_ai = mode == "skip"
+    write_ai = mode == "generate"
+    token = None
+    token_source = None
+    if write_ai:
+        token, token_source = _resolve_ai_token(env)
+
+    return AiModeSettings(
+        mode=mode,
+        skip_ai=skip_ai,
+        write_ai=write_ai,
+        token=token,
+        token_source=token_source,
+        used_legacy_flags=used_legacy_flags,
+    )
 
 
 def _write_json_atomic(path: str, payload: dict[str, object]) -> None:
@@ -117,7 +190,12 @@ RUN_RECORD_PATH = os.path.join(PIPELINE_RUN_DIR, "pipeline-run-record.json")
 
 # Execution Flags & Quotas
 SKIP_WIKI = os.environ.get("SKIP_WIKI", "false").lower() == "true"
-SKIP_AI = os.environ.get("SKIP_AI", "true").lower() == "true"
+AI_SETTINGS = resolve_ai_mode_settings()
+AI_MODE = AI_SETTINGS.mode
+SKIP_AI = AI_SETTINGS.skip_ai
+WRITE_AI = AI_SETTINGS.write_ai
+AI_TOKEN = AI_SETTINGS.token
+AI_TOKEN_SOURCE = AI_SETTINGS.token_source
 WIKI_MAX_PAGES = int(os.environ.get("WIKI_MAX_PAGES", "300"))
 MAX_AI_FILES = int(os.environ.get("MAX_AI_FILES", "40"))
 LLM_BUDGET_LIMIT = float(os.environ.get("LLM_BUDGET_LIMIT", "5.00").replace("$", ""))

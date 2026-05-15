@@ -105,9 +105,10 @@ Stage `04` is the only numbered AI enrichment stage.
 
 | Condition | Behavior |
 | --- | --- |
-| `skip_ai=true` or `SKIP_AI=true` | stage `04` is skipped |
-| local validation without `--run-ai` | cached AI data is used; no live generation |
-| scratch review via `manage_ai_store.py --option review` | scratch store is prepared, `04` runs against scratch state, validation and audit follow |
+| `AI_MODE=skip` | stage `04` is skipped |
+| `AI_MODE=stored` | stage `04` applies stored summaries only; no live generation |
+| local validation without `--run-ai` | cached AI data is used through `AI_MODE=stored` |
+| scratch review via `manage_ai_store.py --option review --ai-mode <stored\|generate>` | scratch store is prepared, `04` runs against scratch state, validation and audit follow |
 | promotion via `manage_ai_store.py --option promote` | reviewed scratch JSON is copied into `data/base/` and revalidated |
 
 Use [../guides/runbook-ai-summary-operations.md](../guides/runbook-ai-summary-operations.md) for the operator workflow.

@@ -94,7 +94,7 @@ coverage_check:
       - umbrella-page
     value: "new-standalone-page"
   target_pages:
-    - "static/cookbook-source/c-libubus-daemon-skeleton.md"
+    - "static/cookbook-source/c-libubus-daemon-runtime-pattern.md"
 
 queue:
   initial_status:

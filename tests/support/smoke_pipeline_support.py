@@ -159,7 +159,7 @@ def build_env(downloads_dir, staged_dir, run_ai=False, extra_env=None, processed
     env["PROCESSED_DIR"] = processed_dir
     env["STAGED_DIR"] = staged_dir
     env["OUTDIR"] = staged_dir
-    env["SKIP_AI"] = "false" if run_ai else "true"
+    env["AI_MODE"] = "generate" if run_ai else "stored"
     env["AI_DATA_BASE_DIR"] = os.path.join(pipeline_run_dir, "ai-data", "base")
     env["AI_DATA_OVERRIDE_DIR"] = os.path.join(pipeline_run_dir, "ai-data", "override")
     env["VALIDATE_MODE"] = env.get("VALIDATE_MODE", "hard")

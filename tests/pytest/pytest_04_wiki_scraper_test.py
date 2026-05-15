@@ -286,6 +286,39 @@ def test_convert_raw_to_markdown_falls_back_when_pandoc_fails(monkeypatch):
     assert "raw DokuWiki syntax" in converted["content"]
 
 
+def test_convert_with_pandoc_normalizes_unterminated_table_rows(monkeypatch):
+    wiki = load_wiki_module()
+    captured = {}
+
+    class PandocResult:
+        returncode = 0
+        stdout = "# ImageTag\n\nConverted table.\n"
+        stderr = ""
+
+    def fake_run(*args, **kwargs):
+        captured["input"] = kwargs["input"]
+        return PandocResult()
+
+    monkeypatch.setattr(wiki.subprocess, "run", fake_run)
+
+    markdown, error = wiki.convert_with_pandoc(
+        "\n".join(
+            [
+                "====== BCM63xx Firmware Image Information ======",
+                "",
+                "^router ^method^ codever ^tagid ^filename",
+                "|any    |cfe   |any     |bccfe |openwrt.bin",
+            ]
+        ),
+        "/docs/techref/brcm63xx.imagetag",
+    )
+
+    assert error is None
+    assert markdown == "# ImageTag\n\nConverted table.\n"
+    assert "^router ^method^ codever ^tagid ^filename^" in captured["input"]
+    assert "|any    |cfe   |any     |bccfe |openwrt.bin|" in captured["input"]
+
+
 def test_process_page_reuses_cached_output_after_fetch_failure(tmp_path, monkeypatch):
     wiki = load_wiki_module()
     configure_tmp_workdir(wiki, tmp_path)

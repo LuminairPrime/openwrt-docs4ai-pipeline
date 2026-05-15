@@ -1,10 +1,25 @@
+import importlib.util
 import json
+import sys
 from types import SimpleNamespace
 
 import pytest
 
 from lib import ai_store_workflow
-from tests.support.pytest_pipeline_support import load_script_module
+from tests.support.pytest_pipeline_support import PROJECT_ROOT, load_script_module
+
+
+def load_config_module(module_name: str):
+    spec = importlib.util.spec_from_file_location(
+        module_name,
+        PROJECT_ROOT / "lib" / "config.py",
+    )
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_ucode_normalize_fenced_blocks_classifies_shell_json_and_pseudocode():
@@ -222,6 +237,47 @@ def test_clone_repos_get_commit_rejects_invalid_hash(monkeypatch):
 
     with pytest.raises(RuntimeError, match="Invalid commit for repo-openwrt"):
         clone.get_commit("repo-openwrt")
+
+
+def test_config_resolve_ai_mode_settings_supports_generate_mode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    for env_name in (
+        "AI_MODE",
+        "SKIP_AI",
+        "WRITE_AI",
+        "LOCAL_DEV_TOKEN",
+        "GITHUB_TOKEN",
+    ):
+        monkeypatch.delenv(env_name, raising=False)
+    monkeypatch.setenv("AI_MODE", "generate")
+    monkeypatch.setenv("LOCAL_DEV_TOKEN", "demo-local-token")
+
+    config = load_config_module("config_ai_mode_generate")
+    settings = config.resolve_ai_mode_settings()
+
+    assert settings.mode == "generate"
+    assert settings.skip_ai is False
+    assert settings.write_ai is True
+    assert settings.token == "demo-local-token"
+    assert settings.token_source == "LOCAL_DEV_TOKEN"
+    assert settings.used_legacy_flags is False
+
+
+def test_config_resolve_ai_mode_settings_translates_legacy_flags(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("AI_MODE", raising=False)
+    monkeypatch.setenv("SKIP_AI", "false")
+    monkeypatch.setenv("WRITE_AI", "false")
+
+    config = load_config_module("config_ai_mode_legacy")
+    settings = config.resolve_ai_mode_settings()
+
+    assert settings.mode == "stored"
+    assert settings.skip_ai is False
+    assert settings.write_ai is False
+    assert settings.used_legacy_flags is True
 
 
 def test_normalize_resolve_pipeline_commits_reads_manifest_when_env_missing(tmp_path, monkeypatch):

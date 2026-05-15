@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.metadata as importlib_metadata
+import json
 import os
 import shlex
 import sys
@@ -21,10 +22,16 @@ VENDORED_TESTCONTAINERS_CORE = PROJECT_ROOT / "vendors" / "testcontainers-python
 DEFAULT_IMAGE = "python:3.12-slim"
 DEFAULT_MAX_AI_FILES = 40
 QA_RESULTS_ROOT = PROJECT_ROOT / "tmp" / "ci" / "qa"
-DEFAULT_WIKI_CACHE_DIR = QA_RESULTS_ROOT / "shared" / "wiki-cache"
+DEFAULT_WIKI_CACHE_DIR = PROJECT_ROOT / ".cache" / "shared" / "wiki"
 CONTAINER_WORKSPACE = "/workspace"
+WIKI_CACHE_METADATA_DIRNAME = "http-metadata"
+WIKI_CACHE_METADATA_FILENAME = "wiki-lastmod.json"
+WIKI_CACHE_SENTINEL_NAME = "cache-state.json"
+WIKI_CACHE_SENTINEL_SCHEMA_VERSION = 1
+WIKI_REFRESH_TASK_NAME = "qa-wiki-refresh"
 FORWARDED_CONTAINER_ENV_NAMES = (
     "AI_VALIDATE_PAYLOAD",
+    "AI_MODE",
     "GH_TOKEN",
     "GITHUB_TOKEN",
     "HTTPS_PROXY",
@@ -32,7 +39,6 @@ FORWARDED_CONTAINER_ENV_NAMES = (
     "LOCAL_DEV_TOKEN",
     "NO_PROXY",
     "WIKI_MAX_PAGES",
-    "WRITE_AI",
 )
 FRESH_ISOLATED_STAGE_IDS = {"01", "02a"}
 REQUIRED_CLONE_DIR_NAMES = ("repo-ucode", "repo-luci", "repo-openwrt")
@@ -146,6 +152,7 @@ patch_importlib_metadata_version()
 from docker.errors import DockerException
 from testcontainers.core.container import DockerContainer
 
+from lib import config as repo_config
 from tests.support.runner_support import StageResult, StageSpec, build_summary, write_json
 from tests.support.smoke_pipeline_support import select_pipeline_scripts
 
@@ -187,9 +194,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional output directory override for QA logs and summaries.",
     )
     parser.add_argument(
-        "--run-ai",
-        action="store_true",
-        help="Enable the cache-backed AI stage instead of forcing SKIP_AI=true.",
+        "--ai-mode",
+        choices=sorted(repo_config.VALID_AI_MODES),
+        default=None,
+        help=(
+            "Control stage-04 behavior with AI_MODE=skip|stored|generate. "
+            "When omitted, the runner uses AI_MODE from the environment or "
+            "defaults to stored mode."
+        ),
     )
     parser.add_argument(
         "--skip-wiki",
@@ -227,9 +239,22 @@ def build_parser() -> argparse.ArgumentParser:
         "--wiki-cache-dir",
         type=str,
         default=read_env_text("QA_WIKI_CACHE_DIR"),
-        help=("Persistent wiki cache directory. Defaults to tmp/ci/qa/shared/wiki-cache inside the repository."),
+        help=("Persistent wiki cache directory. Defaults to .cache/shared/wiki inside the repository."),
     )
     return parser
+
+
+def resolve_requested_ai_mode(raw_ai_mode: str | None) -> str:
+    """Resolve the requested AI mode with legacy environment compatibility."""
+
+    if raw_ai_mode:
+        return raw_ai_mode
+
+    settings = repo_config.resolve_ai_mode_settings(dict(os.environ))
+    if settings.used_legacy_flags:
+        print("[qa] INFO: SKIP_AI/WRITE_AI is deprecated. Set AI_MODE=skip|stored|generate instead.")
+        return settings.mode
+    return "stored"
 
 
 def resolve_repo_subdir(
@@ -281,11 +306,84 @@ def resolve_wiki_cache_dir(wiki_cache_dir: str | None) -> Path:
     resolved = resolve_repo_subdir(
         wiki_cache_dir,
         default=DEFAULT_WIKI_CACHE_DIR,
-        allowed_root=PROJECT_ROOT,
+        allowed_root=PROJECT_ROOT / ".cache",
         label="wiki cache directory",
     )
-    resolved.mkdir(parents=True, exist_ok=True)
     return resolved
+
+
+def wiki_cache_metadata_dir(wiki_cache_dir: Path) -> Path:
+    """Return the durable metadata directory beneath the shared wiki cache."""
+
+    return wiki_cache_dir / WIKI_CACHE_METADATA_DIRNAME
+
+
+def wiki_cache_metadata_file(wiki_cache_dir: Path) -> Path:
+    """Return the durable metadata file used by the wiki scraper cache."""
+
+    return wiki_cache_metadata_dir(wiki_cache_dir) / WIKI_CACHE_METADATA_FILENAME
+
+
+def wiki_cache_sentinel_path(wiki_cache_dir: Path) -> Path:
+    """Return the sentinel manifest path for a warmed wiki cache."""
+
+    return wiki_cache_dir / WIKI_CACHE_SENTINEL_NAME
+
+
+def requires_warm_wiki_cache(only_stage: str | None) -> bool:
+    """Return True when the selected run expects a pre-warmed wiki cache."""
+
+    stage_specs = build_stage_specs(only_stage)
+    includes_wiki_stage = any(spec.slug.startswith("02a-") for spec in stage_specs)
+    refresh_only = len(stage_specs) == 1 and stage_specs[0].slug.startswith("02a-")
+    return includes_wiki_stage and not refresh_only
+
+
+def ensure_cached_run_prerequisites(
+    *,
+    wiki_cache_dir: Path,
+    ai_mode: str,
+    only_stage: str | None,
+) -> None:
+    """Reject cached QA modes that are missing a warm wiki cache or token."""
+
+    if not requires_warm_wiki_cache(only_stage):
+        return
+
+    sentinel_path = wiki_cache_sentinel_path(wiki_cache_dir)
+    metadata_path = wiki_cache_metadata_file(wiki_cache_dir)
+    if not sentinel_path.is_file() or not metadata_path.is_file():
+        try:
+            relative_cache_dir = wiki_cache_dir.relative_to(PROJECT_ROOT).as_posix()
+        except ValueError:
+            relative_cache_dir = str(wiki_cache_dir)
+        raise SystemExit(
+            "Wiki cache is cold. Run "
+            f"`vendors\\mise\\bin\\mise.exe run {WIKI_REFRESH_TASK_NAME}` to "
+            f"refresh {relative_cache_dir} before rerunning this cached QA "
+            "proof."
+        )
+
+    if ai_mode == "generate":
+        ai_settings = repo_config.resolve_ai_mode_settings({**dict(os.environ), "AI_MODE": ai_mode})
+        if not ai_settings.token:
+            raise SystemExit("AI_MODE=generate requires LOCAL_DEV_TOKEN or GITHUB_TOKEN before container startup.")
+
+
+def write_wiki_cache_state(wiki_cache_dir: Path, result_dir: Path) -> Path:
+    """Write the warm-cache sentinel after a successful refresh run."""
+
+    wiki_cache_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema_version": WIKI_CACHE_SENTINEL_SCHEMA_VERSION,
+        "status": "ready",
+        "refreshed_at": datetime.now(timezone.utc).isoformat(),
+        "refreshed_by": result_dir.relative_to(PROJECT_ROOT).as_posix(),
+        "metadata_file": wiki_cache_metadata_file(wiki_cache_dir).relative_to(PROJECT_ROOT).as_posix(),
+    }
+    sentinel_path = wiki_cache_sentinel_path(wiki_cache_dir)
+    sentinel_path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+    return sentinel_path
 
 
 def build_container_layout(result_dir: Path, wiki_cache_dir: Path) -> ContainerLayout:
@@ -317,7 +415,7 @@ def build_container_layout(result_dir: Path, wiki_cache_dir: Path) -> ContainerL
 def build_container_env(
     layout: ContainerLayout,
     *,
-    run_ai: bool,
+    ai_mode: str,
     skip_wiki: bool,
     skip_buildroot: bool,
     max_ai_files: int,
@@ -334,7 +432,7 @@ def build_container_env(
         "AI_DATA_BASE_DIR": layout.ai_data_base_dir,
         "AI_DATA_OVERRIDE_DIR": layout.ai_data_override_dir,
         "CI": "true",
-        "SKIP_AI": "false" if run_ai else "true",
+        "AI_MODE": ai_mode,
         "SKIP_WIKI": "true" if skip_wiki else "false",
         "SKIP_BUILDROOT": "true" if skip_buildroot else "false",
         "MAX_AI_FILES": str(max_ai_files),
@@ -370,11 +468,17 @@ def build_wiki_cache_restore_script(layout: ContainerLayout) -> str:
     """Create the shell snippet that restores the shared wiki cache into the run workspace."""
 
     downloads_cache_dir = Path(layout.downloads_dir) / ".cache"
+    shared_metadata_dir = Path(layout.wiki_cache_dir) / WIKI_CACHE_METADATA_DIRNAME
     return textwrap.dedent(
         f"""
-        mkdir -p {shlex.quote(layout.wiki_cache_dir)} {shlex.quote(downloads_cache_dir.as_posix())}
+        mkdir -p \
+          {shlex.quote(layout.wiki_cache_dir)} \
+          {shlex.quote(shared_metadata_dir.as_posix())} \
+          {shlex.quote(downloads_cache_dir.as_posix())}
         find {shlex.quote(downloads_cache_dir.as_posix())} -mindepth 1 -exec rm -rf {{}} +
-        tar -C {shlex.quote(layout.wiki_cache_dir)} -cf - . | tar -C {shlex.quote(downloads_cache_dir.as_posix())} -xf -
+        if [ -d {shlex.quote(shared_metadata_dir.as_posix())} ]; then
+          tar -C {shlex.quote(shared_metadata_dir.as_posix())} -cf - . | tar -C {shlex.quote(downloads_cache_dir.as_posix())} -xf -
+        fi
         """
     ).strip()
 
@@ -383,13 +487,16 @@ def build_wiki_cache_sync_script(layout: ContainerLayout) -> str:
     """Create the shell snippet that persists the run wiki cache back to the shared cache."""
 
     downloads_cache_dir = Path(layout.downloads_dir) / ".cache"
+    shared_metadata_dir = Path(layout.wiki_cache_dir) / WIKI_CACHE_METADATA_DIRNAME
     return textwrap.dedent(
         f"""
         set -euo pipefail
-        mkdir -p {shlex.quote(layout.wiki_cache_dir)}
+        mkdir -p \
+          {shlex.quote(layout.wiki_cache_dir)} \
+          {shlex.quote(shared_metadata_dir.as_posix())}
         if [ -d {shlex.quote(downloads_cache_dir.as_posix())} ]; then
-          find {shlex.quote(layout.wiki_cache_dir)} -mindepth 1 -exec rm -rf {{}} +
-          tar -C {shlex.quote(downloads_cache_dir.as_posix())} -cf - . | tar -C {shlex.quote(layout.wiki_cache_dir)} -xf -
+          find {shlex.quote(shared_metadata_dir.as_posix())} -mindepth 1 -exec rm -rf {{}} +
+          tar -C {shlex.quote(downloads_cache_dir.as_posix())} -cf - . | tar -C {shlex.quote(shared_metadata_dir.as_posix())} -xf -
         fi
         """
     ).strip()
@@ -680,7 +787,8 @@ def write_summary_file(
         kind="qa",
         image=args.image,
         only_stage=args.only_stage,
-        run_ai=args.run_ai,
+        ai_mode=args.ai_mode,
+        run_ai=args.ai_mode != "skip",
         skip_wiki=args.skip_wiki,
         skip_buildroot=args.skip_buildroot,
         max_ai_files=args.max_ai_files,
@@ -715,17 +823,23 @@ def main() -> int:
     """Run the QA pipeline inside an ephemeral Linux container."""
 
     args = build_parser().parse_args()
+    args.ai_mode = resolve_requested_ai_mode(args.ai_mode)
     result_dir = resolve_result_dir(args.result_root)
+    stage_specs = build_stage_specs(args.only_stage)
     wiki_cache_dir = resolve_wiki_cache_dir(args.wiki_cache_dir)
+    ensure_cached_run_prerequisites(
+        wiki_cache_dir=wiki_cache_dir,
+        ai_mode=args.ai_mode,
+        only_stage=args.only_stage,
+    )
     layout = build_container_layout(result_dir, wiki_cache_dir)
     container_env = build_container_env(
         layout,
-        run_ai=args.run_ai,
+        ai_mode=args.ai_mode,
         skip_wiki=args.skip_wiki,
         skip_buildroot=args.skip_buildroot,
         max_ai_files=args.max_ai_files,
     )
-    stage_specs = build_stage_specs(args.only_stage)
     if args.only_stage is not None:
         ensure_isolated_stage_inputs(stage_specs, result_dir)
 
@@ -760,6 +874,13 @@ def main() -> int:
         raise SystemExit(
             "Docker is required for `mise run qa`. Start Docker Desktop or the configured daemon, then rerun the task."
         ) from exc
+
+    if (
+        qa_success(bootstrap_outcome, ucode_outcome, wiki_cache_outcome, results)
+        and len(stage_specs) == 1
+        and stage_specs[0].slug.startswith("02a-")
+    ):
+        write_wiki_cache_state(wiki_cache_dir, result_dir)
 
     write_summary_file(
         result_dir,

@@ -1,5 +1,5 @@
 ---
-title: C libubus Daemon Skeleton
+title: C libubus Daemon Runtime Pattern
 description: Minimal current-era skeleton for a standalone OpenWrt C daemon that initializes uloop, connects to ubus, binds the bus into the loop, and blocks cleanly in the event loop.
 module: cookbook
 origin_type: authored
@@ -11,7 +11,7 @@ reviewed_by: placeholder
 last_reviewed: 2026-04-05
 ---
 
-# C libubus Daemon Skeleton
+# C libubus Daemon Runtime Pattern
 
 > **When to use:** Use when the backend must be a native C daemon and needs the OpenWrt event loop and ubus runtime directly. If the real task is only a small privileged backend API for LuCI, prefer [ucode rpcd Service Pattern](./ucode-rpcd-service-pattern.md) instead.
 > **Key components:** C, libubox, uloop, libubus

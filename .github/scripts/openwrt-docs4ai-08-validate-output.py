@@ -59,6 +59,14 @@ KNOWN_UCODE_FALSE_POSITIVES = {
         "L2-semantic/luci-examples/example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md",
         "return must be inside function body",
     ),
+    (
+        "L2-semantic/ucode/c_source-api-module-ubus.md",
+        "Can't access lexical declaration 'obj' before initialization",
+    ),
+    (
+        "L2-semantic/ucode/c_source-api-module-ubus.md",
+        "Unexpected character",
+    ),
 }
 
 
@@ -482,9 +490,19 @@ def warn_on_placeholder_descriptions(entries, source_label, soft_warn):
                 break
 
 
+def canonicalize_known_ucode_false_positive_path(rel_path):
+    """Collapse staged/reporting prefixes so path matching stays exact."""
+    normalized = rel_path.replace("\\", "/")
+    for marker in ("L2-semantic/", "L1-raw/", "release-tree/", "support-tree/"):
+        marker_index = normalized.find(marker)
+        if marker_index != -1:
+            return normalized[marker_index:]
+    return normalized
+
+
 def is_known_ucode_false_positive(rel_path, stderr_text):
     """Return True for one exact upstream ucode AST false positive we accept."""
-    normalized_path = rel_path.replace("\\", "/")
+    normalized_path = canonicalize_known_ucode_false_positive_path(rel_path)
     normalized_stderr = (stderr_text or "").strip()
     for expected_path, expected_fragment in KNOWN_UCODE_FALSE_POSITIVES:
         if normalized_path == expected_path and expected_fragment in normalized_stderr:

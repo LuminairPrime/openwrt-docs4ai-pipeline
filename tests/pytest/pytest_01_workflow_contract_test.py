@@ -7,6 +7,7 @@ from tests.support.pytest_pipeline_support import (
     WORKFLOW_PATH,
     collect_workflow_script_invocations,
     get_workflow_job_block,
+    load_workflow_text,
     load_smoke_support_module,
     load_workflow_yaml,
 )
@@ -49,6 +50,19 @@ def test_full_pipeline_matches_workflow_invocations():
     assert workflow_scripts == set(smoke.FULL_PIPELINE)
 
 
+def test_smoke_build_env_sets_ai_mode_contract() -> None:
+    smoke = load_smoke_support_module("smoke_support_ai_mode")
+
+    env = smoke.build_env(
+        downloads_dir="tmp/demo/downloads",
+        staged_dir="tmp/demo/staged",
+        run_ai=True,
+    )
+
+    assert env["AI_MODE"] == "generate"
+    assert "SKIP_AI" not in env
+
+
 def test_validate_source_job_runs_strict_lint_review():
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     validate_block = get_workflow_job_block(workflow_text, "validate_source")
@@ -88,6 +102,23 @@ def test_process_uses_single_numbered_ai_stage_after_normalize():
     assert "Validate committed AI store against staged L2 (04b)" not in process_block
     assert "Audit committed AI store coverage (04a)" not in process_block
     assert "python .github/scripts/openwrt-docs4ai-04-generate-ai-summaries.py" in process_block
+
+
+def test_workflow_dispatch_supports_ai_mode_with_skip_ai_compat() -> None:
+    workflow_text = load_workflow_text()
+
+    assert "workflow_dispatch:" in workflow_text
+    assert "ai_mode:" in workflow_text
+    assert "default: stored" in workflow_text
+    assert "skip_ai:" in workflow_text
+
+
+def test_process_ai_stage_uses_ai_mode_env() -> None:
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    process_block = get_workflow_job_block(workflow_text, "process")
+
+    assert "AI_MODE:" in process_block
+    assert "SKIP_AI:" not in process_block
 
 
 def test_extract_matrix_fail_fast_is_disabled():

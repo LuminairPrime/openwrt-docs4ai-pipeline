@@ -6,8 +6,8 @@ exists to keep the day-to-day command menu small for humans and AI agents.
 For the full Linux-mirrored pipeline proof, use `vendors\mise\bin\mise.exe run
 qa`. That task delegates to `tests/qa_pipeline_orchestrator.py` and writes its
 bundle under `tmp/ci/qa/<timestamp>/`.
-All `qa*` tasks restore and persist the shared wiki cache under
-`tmp/ci/qa/shared/wiki-cache/`.
+Cached `qa*` tasks restore and persist the shared wiki cache under
+`.cache/shared/wiki/`.
 
 The rule is simple:
 
@@ -20,20 +20,22 @@ runner scripts under [tests/README.md](../../tests/README.md).
 ## Full Linux-Mirrored QA
 
 ```powershell
-vendors\mise\bin\mise.exe run qa-stage01
+vendors\mise\bin\mise.exe run qa-smoke
+vendors\mise\bin\mise.exe run qa-wiki-refresh
 vendors\mise\bin\mise.exe run qa
-vendors\mise\bin\mise.exe run qa-ai
-vendors\mise\bin\mise.exe run qa-wiki-cache
+vendors\mise\bin\mise.exe run qa-ai-generate
+vendors\mise\bin\mise.exe run qa-full
 ```
 
 Use this path when you need the closest local match to the Linux CI execution
 surface. If the vendored `mise` binary is unavailable, call
 `.venv\Scripts\python.exe tests\qa_pipeline_orchestrator.py` directly.
 
-- `qa-stage01` is the cheapest Docker-backed proof.
-- `qa` is the full Linux-mirrored stage `01` through `08` run.
-- `qa-ai` enables the cache-backed AI stage for QA coverage; real AI-store promotion still belongs to `tools/manage_ai_store.py`.
-- `qa-wiki-cache` warms or refreshes the shared wiki cache through stage `02a` so repeated wiki-heavy runs hit fewer remote requests.
+- `qa-smoke` is the cheapest Docker-backed proof.
+- `qa-wiki-refresh` refreshes `.cache/shared/wiki/` through stage `02a`.
+- `qa` is the cached full Linux-mirrored stage `01` through `08` run in `AI_MODE=stored`.
+- `qa-ai-generate` is the cached full proof in `AI_MODE=generate`; real AI-store promotion still belongs to `tools/manage_ai_store.py`.
+- `qa-full` refreshes the wiki cache and then runs the generate-mode full proof.
 
 ## Default Commands
 

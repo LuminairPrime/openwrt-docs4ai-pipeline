@@ -16,8 +16,16 @@ on:
         description: 'Skip buildroot/examples extraction'
         type: boolean
         default: false
+      ai_mode:
+        description: 'AI mode: skip, stored, or generate'
+        type: choice
+        options:
+          - skip
+          - stored
+          - generate
+        default: stored
       skip_ai:
-        description: 'Skip AI summarization'
+        description: 'Deprecated: use ai_mode=skip'
         type: boolean
         default: false
       max_ai_files:
@@ -726,10 +734,10 @@ jobs:
           _T=$(date +%s)
           python .github/scripts/openwrt-docs4ai-03-normalize-semantic.py
           echo "PROC_TIMER_03=$(($(date +%s) - _T))" >> "$GITHUB_ENV"
-      - name: "AI summaries (Optional)"
+      - name: "AI summaries (AI_MODE)"
         id: ai_summaries
         env:
-          SKIP_AI: ${{ inputs.skip_ai || 'false' }}
+          AI_MODE: ${{ inputs.ai_mode || (inputs.skip_ai && 'skip' || 'stored') }}
           MAX_AI_FILES: ${{ inputs.max_ai_files || '40' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
