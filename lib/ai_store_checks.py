@@ -387,10 +387,12 @@ def print_validation_report(
     *,
     max_errors: int = 200,
     max_warnings: int = 50,
+    warning_level: str = "WARN",
 ) -> None:
     """Render a bounded validation report to stdout."""
     error_limit = max(0, max_errors)
     warning_limit = max(0, max_warnings)
+    rendered_warning_level = warning_level.strip().upper() or "WARN"
 
     for error in result.errors[:error_limit]:
         print(f"{prefix} FAIL: {error}")
@@ -400,11 +402,11 @@ def print_validation_report(
         print(f"{prefix} FAIL: ... {remaining_errors} more errors")
 
     for warning in result.warnings[:warning_limit]:
-        print(f"{prefix} WARN: {warning}")
+        print(f"{prefix} {rendered_warning_level}: {warning}")
 
     remaining_warnings = len(result.warnings) - warning_limit
     if remaining_warnings > 0:
-        print(f"{prefix} WARN: ... {remaining_warnings} more warnings")
+        print(f"{prefix} {rendered_warning_level}: ... {remaining_warnings} more warnings")
 
     status = "FAILED" if result.errors else "OK"
     print(f"{prefix} Checked {result.checked_records} records: {status}")

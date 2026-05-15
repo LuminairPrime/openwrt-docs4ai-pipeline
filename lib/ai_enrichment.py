@@ -272,7 +272,7 @@ def _run_preflight(
         allow_title_mismatch=True,
         allow_hash_mismatch=True,
     )
-    print_validation_report(prefix, validation)
+    print_validation_report(prefix, validation, warning_level="INFO")
     if validation.errors:
         return False
 

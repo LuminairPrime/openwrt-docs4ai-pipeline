@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from tests.support.pytest_pipeline_support import (
+    PROJECT_ROOT,
+    load_module_from_path,
     load_script_module,
     load_workflow_text,
 )
@@ -58,6 +62,7 @@ def test_workflow_uses_node24_native_action_majors() -> None:
     assert "validate_source:" in workflow_text
     assert "python tests/check_linting.py --strict --result-root tmp/ci/lint-review/current" in workflow_text
     assert "name: lint-review" in workflow_text
+    assert "cache: false" in workflow_text
 
 
 def test_assemble_references_shards_oversized_modules() -> None:
@@ -133,6 +138,26 @@ def test_validate_known_ubus_ucode_false_positives_are_exact() -> None:
         "L2-semantic/ucode/other.md",
         "Syntax error: Unexpected character",
     )
+
+
+def test_print_validation_report_supports_info_level_for_allowed_warnings(capsys: pytest.CaptureFixture[str]) -> None:
+    checks = load_module_from_path(
+        "ai_store_checks_warning_level",
+        PROJECT_ROOT / "lib" / "ai_store_checks.py",
+    )
+
+    result = checks.StoreValidationResult(
+        checked_records=2,
+        errors=[],
+        warnings=["base wiki/topic: content_hash does not match current L2 body"],
+        l2_document_count=1,
+    )
+
+    checks.print_validation_report("[04]", result, warning_level="INFO")
+
+    captured = capsys.readouterr().out
+    assert "[04] INFO: base wiki/topic: content_hash does not match current L2 body" in captured
+    assert "[04] WARN:" not in captured
 
 
 def test_validate_routing_requires_sharded_part_links(tmp_path: Path) -> None:
