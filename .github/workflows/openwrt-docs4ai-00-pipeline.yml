@@ -1096,10 +1096,12 @@ jobs:
             use_legacy_app_id="true"
           fi
 
-          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
-          echo "reason=$reason" >> "$GITHUB_OUTPUT"
-          echo "use_client_id=$use_client_id" >> "$GITHUB_OUTPUT"
-          echo "use_legacy_app_id=$use_legacy_app_id" >> "$GITHUB_OUTPUT"
+          {
+            echo "enabled=$enabled"
+            echo "reason=$reason"
+            echo "use_client_id=$use_client_id"
+            echo "use_legacy_app_id=$use_legacy_app_id"
+          } >> "$GITHUB_OUTPUT"
 
           if [ "$enabled" != "true" ]; then
             echo "Skipping external distribution publish: $reason"
