@@ -115,7 +115,7 @@ This pipeline publishes to multiple repositories across two GitHub accounts. Und
 The `deploy` job performs three output publication actions:
 
 1. **Push `gh-pages` branch** — mirrors the full staging tree for test preview at `luminairprime.github.io/openwrt-docs4ai-pipeline/`. Triggers GitHub automatic `pages-build-deployment`.
-2. **Push to external distribution repos** (gated by `DIST_APP_ID` and `DIST_APP_PRIVATE_KEY` secrets):
+2. **Push to external distribution repos** (prefer `DIST_APP_CLIENT_ID` repo/org variable plus `DIST_APP_PRIVATE_KEY` secret; legacy fallback remains `DIST_APP_ID` plus `DIST_APP_PRIVATE_KEY`):
    - `openwrt-docs4ai/corpus` main — production corpus with dated release ZIP assets.
    - `openwrt-docs4ai/openwrt-docs4ai.github.io` main — production Pages site.
 

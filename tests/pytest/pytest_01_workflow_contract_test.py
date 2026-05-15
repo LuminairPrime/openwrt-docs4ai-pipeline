@@ -171,8 +171,23 @@ def test_external_distribution_is_gated_to_main_and_secrets():
 
     assert "Determine external distribution eligibility" in deploy_block
     assert "refs/heads/main" in deploy_block
+    assert "DIST_APP_CLIENT_ID_PRESENT" in deploy_block
     assert "DIST_APP_ID_PRESENT" in deploy_block
     assert "DIST_APP_PRIVATE_KEY_PRESENT" in deploy_block
+    assert "distribution app identifier is not configured" in deploy_block
+    assert "distribution app private key is not configured" in deploy_block
+
+
+def test_external_distribution_prefers_client_id_with_legacy_fallback():
+    workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    deploy_block = get_workflow_job_block(workflow_text, "deploy")
+
+    assert "Create corpus distribution token (legacy fallback)" in deploy_block
+    assert "Create external Pages distribution token (legacy fallback)" in deploy_block
+    assert "client-id: ${{ vars.DIST_APP_CLIENT_ID }}" in deploy_block
+    assert "app-id: ${{ secrets.DIST_APP_ID }}" in deploy_block
+    assert "steps.corpus_app_token_client.outputs.token || steps.corpus_app_token_legacy.outputs.token" in deploy_block
+    assert "steps.pages_app_token_client.outputs.token || steps.pages_app_token_legacy.outputs.token" in deploy_block
 
 
 def test_external_distribution_runs_after_source_pages_mirror():

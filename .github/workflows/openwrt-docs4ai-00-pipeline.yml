@@ -1070,6 +1070,7 @@ jobs:
       - name: Determine external distribution eligibility
         id: distribution_gate
         env:
+          DIST_APP_CLIENT_ID_PRESENT: ${{ vars.DIST_APP_CLIENT_ID != '' }}
           DIST_APP_ID_PRESENT: ${{ secrets.DIST_APP_ID != '' }}
           DIST_APP_PRIVATE_KEY_PRESENT: ${{ secrets.DIST_APP_PRIVATE_KEY != '' }}
         run: |
@@ -1077,17 +1078,28 @@ jobs:
 
           enabled="true"
           reason=""
+          use_client_id="false"
+          use_legacy_app_id="false"
 
           if [ "$GITHUB_REF" != "refs/heads/main" ]; then
             enabled="false"
             reason="external distribution publishes only from refs/heads/main"
-          elif [ "$DIST_APP_ID_PRESENT" != "true" ] || [ "$DIST_APP_PRIVATE_KEY_PRESENT" != "true" ]; then
+          elif [ "$DIST_APP_CLIENT_ID_PRESENT" != "true" ] && [ "$DIST_APP_ID_PRESENT" != "true" ]; then
             enabled="false"
-            reason="distribution app secrets are not configured"
+            reason="distribution app identifier is not configured"
+          elif [ "$DIST_APP_PRIVATE_KEY_PRESENT" != "true" ]; then
+            enabled="false"
+            reason="distribution app private key is not configured"
+          elif [ "$DIST_APP_CLIENT_ID_PRESENT" = "true" ]; then
+            use_client_id="true"
+          else
+            use_legacy_app_id="true"
           fi
 
           echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
           echo "reason=$reason" >> "$GITHUB_OUTPUT"
+          echo "use_client_id=$use_client_id" >> "$GITHUB_OUTPUT"
+          echo "use_legacy_app_id=$use_legacy_app_id" >> "$GITHUB_OUTPUT"
 
           if [ "$enabled" != "true" ]; then
             echo "Skipping external distribution publish: $reason"
@@ -1184,8 +1196,17 @@ jobs:
 
           echo "zip_path=$zip_path" >> "$GITHUB_OUTPUT"
       - name: Create corpus distribution token
-        if: steps.distribution_gate.outputs.enabled == 'true'
-        id: corpus_app_token
+        if: steps.distribution_gate.outputs.enabled == 'true' && steps.distribution_gate.outputs.use_client_id == 'true'
+        id: corpus_app_token_client
+        uses: actions/create-github-app-token@main
+        with:
+          client-id: ${{ vars.DIST_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DIST_APP_PRIVATE_KEY }}
+          owner: openwrt-docs4ai
+          repositories: corpus
+      - name: Create corpus distribution token (legacy fallback)
+        if: steps.distribution_gate.outputs.enabled == 'true' && steps.distribution_gate.outputs.use_legacy_app_id == 'true'
+        id: corpus_app_token_legacy
         uses: actions/create-github-app-token@main
         with:
           app-id: ${{ secrets.DIST_APP_ID }}
@@ -1197,7 +1218,7 @@ jobs:
         uses: actions/checkout@main
         with:
           repository: ${{ env.DIST_RELEASE_REPO }}
-          token: ${{ steps.corpus_app_token.outputs.token }}
+          token: ${{ steps.corpus_app_token_client.outputs.token || steps.corpus_app_token_legacy.outputs.token }}
           ref: ${{ env.DIST_TARGET_BRANCH }}
           path: external-targets/corpus
           fetch-depth: 0
@@ -1228,7 +1249,7 @@ jobs:
       - name: Publish corpus release asset
         if: steps.distribution_gate.outputs.enabled == 'true'
         env:
-          GH_TOKEN: ${{ steps.corpus_app_token.outputs.token }}
+          GH_TOKEN: ${{ steps.corpus_app_token_client.outputs.token || steps.corpus_app_token_legacy.outputs.token }}
         run: |
           set -euo pipefail
 
@@ -1247,8 +1268,17 @@ jobs:
 
           gh release upload "$release_tag" "$zip_path" --repo "$DIST_RELEASE_REPO" --clobber
       - name: Create external Pages distribution token
-        if: steps.distribution_gate.outputs.enabled == 'true'
-        id: pages_app_token
+        if: steps.distribution_gate.outputs.enabled == 'true' && steps.distribution_gate.outputs.use_client_id == 'true'
+        id: pages_app_token_client
+        uses: actions/create-github-app-token@main
+        with:
+          client-id: ${{ vars.DIST_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DIST_APP_PRIVATE_KEY }}
+          owner: openwrt-docs4ai
+          repositories: openwrt-docs4ai.github.io
+      - name: Create external Pages distribution token (legacy fallback)
+        if: steps.distribution_gate.outputs.enabled == 'true' && steps.distribution_gate.outputs.use_legacy_app_id == 'true'
+        id: pages_app_token_legacy
         uses: actions/create-github-app-token@main
         with:
           app-id: ${{ secrets.DIST_APP_ID }}
@@ -1260,7 +1290,7 @@ jobs:
         uses: actions/checkout@main
         with:
           repository: ${{ env.DIST_PAGES_REPO }}
-          token: ${{ steps.pages_app_token.outputs.token }}
+          token: ${{ steps.pages_app_token_client.outputs.token || steps.pages_app_token_legacy.outputs.token }}
           ref: ${{ env.DIST_TARGET_BRANCH }}
           path: external-targets/pages
           fetch-depth: 0
