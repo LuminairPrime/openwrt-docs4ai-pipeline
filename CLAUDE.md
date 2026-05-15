@@ -23,6 +23,7 @@ npm install -g jsdoc-to-markdown
 ```
 
 Use the workspace interpreter directly when needed: `.venv/Scripts/python.exe`. Do not assume the system `python` on PATH is the repo interpreter.
+Docker Desktop or another reachable Docker daemon is also required for `vendors\mise\bin\mise.exe run qa` and `tests/qa_pipeline_orchestrator.py`.
 
 ## Local Validation Commands
 
@@ -34,12 +35,17 @@ python tools/testing/run_default_validation.py --run-ai --keep-temp
 python tools/testing/run_source_validation.py           # strict Ruff + Pyright + actionlint gate
 python tools/testing/run_targeted_pytest.py             # focused pytest diagnosis
 python tools/testing/run_targeted_smoke.py              # smoke diagnosis
+vendors\mise\bin\mise.exe run qa-stage01             # cheap Docker-backed proof
+vendors\mise\bin\mise.exe run qa                     # full Linux-mirrored stage 01->08 proof
+vendors\mise\bin\mise.exe run qa-ai                  # full mirror with cache-backed AI stage
+vendors\mise\bin\mise.exe run qa-wiki-cache          # warm or refresh the shared wiki cache
 
 python tools/manage_ai_store.py --option review         # AI store review (no promotion)
 python tools/manage_ai_store.py --option full --keep-scratch
 ```
 
 `--run-ai` is cache-backed for regression proof only — it does not generate real AI summaries or promote to the AI store. Results land under `tmp/ci/`.
+`mise run qa` writes its own durable bundle under `tmp/ci/qa/<timestamp>/` and should be treated as the top-level local CI mirror. All `qa*` tasks restore and persist the shared wiki cache under `tmp/ci/qa/shared/wiki-cache/`. If the vendored `mise` binary is unavailable, call `.venv\Scripts\python.exe tests\qa_pipeline_orchestrator.py` directly.
 
 The main GitHub Actions workflow now starts with a `validate_source` job that runs `python tests/check_linting.py --strict --result-root tmp/ci/lint-review/current`. When that gate fails remotely, inspect the `lint-review` artifact's `summary.json` before opening raw logs.
 
@@ -56,6 +62,8 @@ Do not assume a cookbook-only source edit is isolated just because the authored 
 ```powershell
 python tools/testing/run_targeted_pytest.py tests/pytest/pytest_01_workflow_contract_test.py -q
 python tools/testing/run_targeted_pytest.py -k "test_name_pattern" -q
+vendors\mise\bin\mise.exe run qa-stage01
+.venv\Scripts\python.exe tests/qa_pipeline_orchestrator.py --only-stage 02a
 ```
 
 ## Review Discipline
@@ -158,6 +166,7 @@ Before editing numbered scripts or the workflow:
 ## Key Reference Files
 
 - `DEVELOPMENT.md` — full maintainer quick-start and CI operations detail
+- `AGENTS.md` — source-repo validation order and QA runner expectations
 - `docs/ARCHITECTURE.md` — durable architecture and naming contract
 - `docs/specs/schema-definitions.md` — generated corpus filesystem and data contracts
 - `docs/specs/pipeline-stage-catalog.md` — stage ordering and rerun guidance

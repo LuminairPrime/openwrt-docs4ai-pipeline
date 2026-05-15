@@ -4,24 +4,24 @@
     "label": "Workspace Root",
     "kind": "root",
     "root": ".",
-    "fileCount": 1939,
-    "sourceFileCount": 78,
-    "symbolCount": 845,
+    "fileCount": 1969,
+    "sourceFileCount": 89,
+    "symbolCount": 857,
     "languages": [
       {
         "language": "python",
         "capabilityTier": "high",
-        "fileCount": 73
+        "fileCount": 74
+      },
+      {
+        "language": "javascript",
+        "capabilityTier": "high",
+        "fileCount": 11
       },
       {
         "language": "typescript",
         "capabilityTier": "high",
         "fileCount": 4
-      },
-      {
-        "language": "javascript",
-        "capabilityTier": "high",
-        "fileCount": 1
       }
     ],
     "topSymbols": [
@@ -150,7 +150,7 @@
     "label": "docs",
     "kind": "docs",
     "root": "docs",
-    "fileCount": 601,
+    "fileCount": 603,
     "sourceFileCount": 2,
     "symbolCount": 43,
     "languages": [

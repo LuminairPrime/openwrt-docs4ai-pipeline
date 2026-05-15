@@ -1,19 +1,19 @@
 {
   "schemaVersion": 3,
   "workspaceRoot": "C:\\Users\\MC\\Documents\\AirSentinel\\openwrt-docs4ai-pipeline",
-  "analyzedAt": "2026-05-11T18:53:50.318Z",
+  "analyzedAt": "2026-05-13T08:47:52.697Z",
   "scope": "all",
-  "overviewGeneratedAt": "2026-05-11T18:50:53.272Z",
-  "totalChangedFiles": 2,
-  "changedLineCount": 10,
-  "addedLineCount": 2,
-  "deletedLineCount": 8,
+  "overviewGeneratedAt": "2026-05-13T08:46:25.982Z",
+  "totalChangedFiles": 29,
+  "changedLineCount": 368,
+  "addedLineCount": 331,
+  "deletedLineCount": 37,
   "categories": {
-    "source": 2,
-    "docs": 0,
+    "source": 12,
+    "docs": 13,
     "tests": 0,
     "config": 0,
-    "other": 0
+    "other": 4
   },
   "areasTouched": [
     {
@@ -21,28 +21,202 @@
       "label": "Workspace Root",
       "root": ".",
       "kind": "root",
-      "fileCount": 2,
+      "fileCount": 28,
       "files": [
-        ".github/scripts/openwrt-docs4ai-05a-assemble-references.py",
-        "run-kodax.mjs"
+        ".worktrees/mise-test-files/readme-mise-test-amelia.md",
+        ".worktrees/mise-test-files/readme-mise-test-deepcode.md",
+        ".worktrees/mise-test-files/readme-mise-test-dirac.md"
+      ]
+    },
+    {
+      "areaId": "docs",
+      "label": "docs",
+      "root": "docs",
+      "kind": "docs",
+      "fileCount": 1,
+      "files": [
+        "docs/plans/2026-05-12-mise-task-3.md"
       ]
     }
   ],
   "files": [
     {
-      "path": ".github/scripts/openwrt-docs4ai-05a-assemble-references.py",
+      "path": ".worktrees/mise-test-files/readme-mise-test-amelia.md",
+      "status": "modified",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/readme-mise-test-deepcode.md",
+      "status": "modified",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/readme-mise-test-dirac.md",
+      "status": "modified",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": "readme-infcodex-kodax.md",
+      "status": "modified",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": "run-kodax.mjs",
       "status": "modified",
       "category": "source",
       "areaId": "."
     },
     {
-      "path": "run-kodax.mjs",
+      "path": "$null",
+      "status": "untracked",
+      "category": "other",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/instructions-amelia.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/mise-test-copilot-gpt54.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/mise-test-cursor.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/mise-test-openspec.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/readme-mise-test-copilot-gpt54.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/readme-mise-test-cursor.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": ".worktrees/mise-test-files/readme-mise-test-openspec.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": "docs/plans/2026-05-12-mise-task-3.md",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "docs"
+    },
+    {
+      "path": "litellm_config.yaml",
+      "status": "untracked",
+      "category": "other",
+      "areaId": "."
+    },
+    {
+      "path": "out.txt",
+      "status": "untracked",
+      "category": "docs",
+      "areaId": "."
+    },
+    {
+      "path": "run-kodax-dirac-fix.mjs",
       "status": "untracked",
       "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "run-kodax-followup.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/diagnose_llms.py",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/diagnose_stdin_stream.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/diagnose_stdin_win32.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/test_dirac_automated.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/test_dirac_keys.ps1",
+      "status": "untracked",
+      "category": "other",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/test_raw_mode.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/test_raw_mode_deferred.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/test_raw_mode_kick.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/test_setencoding_read.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "scratch/verify_fix.mjs",
+      "status": "untracked",
+      "category": "source",
+      "areaId": "."
+    },
+    {
+      "path": "wf.json",
+      "status": "untracked",
+      "category": "other",
       "areaId": "."
     }
   ],
   "riskHints": [
+    "Cross-area change touches 2 areas.",
     "Workspace-root files changed; validate repo-wide implications."
   ]
 }

@@ -2,17 +2,17 @@
   "schemaVersion": 3,
   "workspaceRoot": "C:\\Users\\MC\\Documents\\AirSentinel\\openwrt-docs4ai-pipeline",
   "source": "git",
-  "generatedAt": "2026-05-11T18:50:53.272Z",
+  "generatedAt": "2026-05-13T08:46:25.982Z",
   "truncated": false,
   "git": {
     "branch": "main",
-    "head": "dae05ad1234f80a2a288d5df1c75e1e895baa027",
+    "head": "1ed3f47ce0a9fbb2896fb28ce33953ade955d477",
     "hasUncommittedChanges": true
   },
   "fileStats": {
-    "totalFiles": 2604,
-    "sourceFiles": 89,
-    "docFiles": 1881,
+    "totalFiles": 2636,
+    "sourceFiles": 100,
+    "docFiles": 1898,
     "testFiles": 34,
     "configFiles": 6
   },
@@ -41,12 +41,25 @@
       "label": "docs",
       "kind": "docs",
       "root": "docs",
-      "fileCount": 601,
+      "fileCount": 603,
       "manifests": [],
       "sampleFiles": [
         "docs/ARCHITECTURE.md",
         "docs/archive/helpers/a-tier/code-review-generic.md",
         "docs/archive/helpers/a-tier/create-llms.md"
+      ]
+    },
+    {
+      "id": ".",
+      "label": "Workspace Root",
+      "kind": "root",
+      "root": ".",
+      "fileCount": 39,
+      "manifests": [],
+      "sampleFiles": [
+        ".git-blame-ignore-revs",
+        ".gitattributes",
+        ".gitignore"
       ]
     },
     {
@@ -60,19 +73,6 @@
         "tests/__init__.py",
         "tests/artifacts/recent-sequential-smoke-terminal-output.txt",
         "tests/check_linting.py"
-      ]
-    },
-    {
-      "id": ".",
-      "label": "Workspace Root",
-      "kind": "root",
-      "root": ".",
-      "fileCount": 32,
-      "manifests": [],
-      "sampleFiles": [
-        ".git-blame-ignore-revs",
-        ".gitattributes",
-        ".gitignore"
       ]
     },
     {

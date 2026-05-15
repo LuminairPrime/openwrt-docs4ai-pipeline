@@ -5,3 +5,5 @@ lxml
 beautifulsoup4
 html5lib
 markdownify
+docker
+testcontainers

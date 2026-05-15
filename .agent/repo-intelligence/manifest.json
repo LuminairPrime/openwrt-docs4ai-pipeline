@@ -1,15 +1,15 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-05-11T18:50:53.272Z",
+  "generatedAt": "2026-05-13T08:46:25.982Z",
   "workspaceRoot": "C:\\Users\\MC\\Documents\\AirSentinel\\openwrt-docs4ai-pipeline",
   "git": {
     "branch": "main",
-    "head": "dae05ad1234f80a2a288d5df1c75e1e895baa027",
+    "head": "1ed3f47ce0a9fbb2896fb28ce33953ade955d477",
     "hasUncommittedChanges": true
   },
   "snapshotKind": "dirty",
-  "head": "dae05ad1234f80a2a288d5df1c75e1e895baa027",
+  "head": "1ed3f47ce0a9fbb2896fb28ce33953ade955d477",
   "branch": "main",
-  "dirtyPathsFingerprint": "df2672cee69e916712942da9f93406c9d1ea234ec612946df801badb3e3cdbc5",
-  "dirtySemanticFingerprint": "bf78853ad34a36ecc3df6e53c3e7a854a8deb59d62156c347239ee4acbfc00cd"
+  "dirtyPathsFingerprint": "81f5b7ff707c456fb869ab7dc1475e01cfd1d7674d99c4071dad9d44104e1a0b",
+  "dirtySemanticFingerprint": "9498110915a72670dfbd4d3dc9b0784dab6b8fe6f4a1ce48b753a03da6016ef2"
 }

@@ -37,6 +37,9 @@ The exact output layout is defined in `docs/specs/release-tree-contract.md`.
 
 - Read `docs/OVERVIEW.md` for the active maintainer doc map.
 - Read `DEVELOPMENT.md` for setup, validation, and CI operations.
+- Use `vendors\mise\bin\mise.exe run qa-stage01`, `vendors\mise\bin\mise.exe run qa`, `vendors\mise\bin\mise.exe run qa-ai`, and `vendors\mise\bin\mise.exe run qa-wiki-cache` for the Linux-mirrored local QA path.
+- The shared wiki cache for `qa*` tasks lives under `tmp/ci/qa/shared/wiki-cache/` and is restored and persisted automatically.
+- If the vendored `mise` binary is unavailable, use `.venv\Scripts\python.exe tests\qa_pipeline_orchestrator.py` directly.
 - Read `docs/ARCHITECTURE.md` for repository zones, layer model, and doc taxonomy.
 - Read `docs/specs/` for the active technical contracts.
 - Read `docs/guides/runbook-ai-summary-operations.md` for the AI-store workflow.

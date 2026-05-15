@@ -1,0 +1,31 @@
+min_version = "2024.1.1"
+
+[env]
+CI = "true"
+# Optional vendored Testcontainers checkout. The runner falls back to the
+# pip-installed package when this directory is absent.
+PYTHONPATH = "vendors/testcontainers-python/core"
+QA_CONTAINER_IMAGE = "python:3.12-slim"
+QA_MAX_AI_FILES = "40"
+QA_WIKI_CACHE_DIR = "tmp/ci/qa/shared/wiki-cache"
+TESTCONTAINERS_RYUK_DISABLED = "true"
+
+[tasks.qa-stage01]
+description = "Run the cheapest Docker-backed QA proof"
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 01 --skip-buildroot"
+
+[tasks.qa]
+description = "Run the Linux-mirrored QA pipeline in Docker"
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py"
+
+[tasks.qa-ai]
+description = "Run the Linux-mirrored QA pipeline with the AI stage enabled"
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --run-ai"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --run-ai"
+
+[tasks.qa-wiki-cache]
+description = "Warm or refresh the shared wiki cache via stage 02a"
+run = ".venv/bin/python tests/qa_pipeline_orchestrator.py --only-stage 02a"
+run_windows = ".\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py --only-stage 02a"

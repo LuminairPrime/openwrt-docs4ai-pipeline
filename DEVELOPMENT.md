@@ -9,6 +9,7 @@ This file is the maintainer quick start for local development. The current engin
 | Tool | Version | Purpose |
 | --- | --- | --- |
 | Python | 3.12+ | All pipeline scripts and local tests |
+| Docker Desktop or Docker Engine | current | Required for the Linux-mirrored QA runner |
 | Node.js | 20+ | `jsdoc-to-markdown` and JavaScript syntax checks |
 | pandoc | 3.0+ | Wiki conversion |
 | git | 2.25+ | Repo cloning and versioned refactors |
@@ -40,6 +41,8 @@ npm install -g jsdoc-to-markdown
 ```
 
 After dependencies are installed, use the canonical local validation wrappers in `tools/testing/` rather than relying on GitHub Actions behavior.
+For the full Linux-mirrored pipeline proof, use the `qa*` tasks in `vendors\mise\bin\mise.exe` when the vendored binary is present locally. If it is unavailable, run `.venv\Scripts\python.exe tests\qa_pipeline_orchestrator.py` directly.
+The vendored `mise` binary and vendored Testcontainers checkout are optional local conveniences; the QA runner falls back to the workspace virtual environment and the pip-installed `testcontainers` package when those vendored assets are absent.
 
 ## Recommended Local Commands
 
@@ -50,6 +53,10 @@ python tools/testing/run_default_validation.py --include-extractors
 python tools/testing/run_source_validation.py
 python tools/testing/run_targeted_pytest.py -k wiki -q
 python tools/testing/run_targeted_smoke.py --include-extractors
+vendors\mise\bin\mise.exe run qa-stage01
+vendors\mise\bin\mise.exe run qa
+vendors\mise\bin\mise.exe run qa-ai
+vendors\mise\bin\mise.exe run qa-wiki-cache
 python tools/manage_ai_store.py --option review
 python tools/manage_ai_store.py --option full --keep-scratch
 ```
@@ -62,13 +69,19 @@ For one-off terminal invocations, either activate `.venv` once before testing or
 
 ## Validation Runners
 
-The canonical human-facing validation surface is now Python-first, cross-platform, and intentionally small.
+The validation surface now has two tiers.
+Use `vendors\mise\bin\mise.exe run qa` for the full Linux-mirrored proof, and use the smaller Python wrappers in `tools/testing/` for the fastest local source, pytest, and smoke checks.
 See `tools/testing/README.md` for the operator-facing menu and `tests/README.md` for the underlying implementation-level runners.
 
 - `tools/testing/run_default_validation.py` is the normal local proof. It runs `tests/check_linting.py --strict` first and then `tests/run_smoke_and_pytest.py`.
 - `tools/testing/run_source_validation.py` is the source gate only. Use it when the change is clearly in formatting, typing, or workflow validation.
 - `tools/testing/run_targeted_pytest.py` forwards diagnostic arguments to `tests/run_pytest.py`.
 - `tools/testing/run_targeted_smoke.py` forwards diagnostic arguments to `tests/run_smoke.py`.
+- `vendors\mise\bin\mise.exe run qa-stage01` is the cheapest Docker-backed proof.
+- `vendors\mise\bin\mise.exe run qa` is the Docker-backed full pipeline mirror. It restores and persists the shared wiki cache at `tmp/ci/qa/shared/wiki-cache/`, and it writes its run bundle under `tmp/ci/qa/<timestamp>/`.
+- `vendors\mise\bin\mise.exe run qa-ai` enables the cache-backed AI stage for AI-surface regressions. It does not replace the AI-store review and promotion workflow.
+- `vendors\mise\bin\mise.exe run qa-wiki-cache` warms or refreshes the shared wiki cache through stage `02a` so repeated scraper-heavy runs hit fewer remote requests.
+- `tests/qa_pipeline_orchestrator.py` remains the direct implementation-level entry point when you need flags such as `--skip-wiki`, `--image`, `--wiki-cache-dir`, or `--result-root`.
 - The implementation-level runners under `tests/` remain maintained and scriptable. Use them directly only when you need advanced flags such as `--result-root` or a very specific execution path.
 
 These runners are intentionally local-first. Remote GitHub Actions validation still depends on a pushed commit and the run-pinning procedure in `CI Operations`.

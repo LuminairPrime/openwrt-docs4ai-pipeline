@@ -68,11 +68,11 @@
     "confidence": 0.96
   },
   {
-    "id": "run-kodax.mjs#main:3",
+    "id": "run-kodax-dirac-fix.mjs#main:3",
     "name": "main",
-    "qualifiedName": "run-kodax.mjs:main",
+    "qualifiedName": "run-kodax-dirac-fix.mjs:main",
     "kind": "function",
-    "filePath": "run-kodax.mjs",
+    "filePath": "run-kodax-dirac-fix.mjs",
     "moduleId": ".",
     "language": "javascript",
     "capabilityTier": "high",
@@ -82,7 +82,6 @@
     "calls": [
       "log",
       "runKodaX",
-      "cwd",
       "write",
       "stringify",
       "substring",
@@ -102,6 +101,349 @@
       "./vendors/InfCodeX/dist/index.js"
     ],
     "confidence": 0.96
+  },
+  {
+    "id": "run-kodax-followup.mjs#main:2",
+    "name": "main",
+    "qualifiedName": "run-kodax-followup.mjs:main",
+    "kind": "function",
+    "filePath": "run-kodax-followup.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 2,
+    "signature": "async function main() {",
+    "exported": false,
+    "calls": [
+      "runKodaX",
+      "cwd",
+      "write",
+      "log",
+      "error"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "./vendors/InfCodeX/dist/index.js"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "run-kodax.mjs#main:3",
+    "name": "main",
+    "qualifiedName": "run-kodax.mjs:main",
+    "kind": "function",
+    "filePath": "run-kodax.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 3,
+    "signature": "async function main() {",
+    "exported": false,
+    "calls": [
+      "runKodaX",
+      "cwd",
+      "write",
+      "log",
+      "error"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "./vendors/InfCodeX/dist/index.js"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/diagnose_stdin_win32.mjs#logEvent:40",
+    "name": "logEvent",
+    "qualifiedName": "scratch/diagnose_stdin_win32.mjs:logEvent",
+    "kind": "function",
+    "filePath": "scratch/diagnose_stdin_win32.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 40,
+    "signature": "function logEvent(label, data) {",
+    "exported": false,
+    "calls": [
+      "now",
+      "push",
+      "padStart",
+      "toString",
+      "charCodeAt",
+      "log",
+      "join",
+      "setRawMode",
+      "exit"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "node:process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/diagnose_stdin_win32.mjs#runTest:55",
+    "name": "runTest",
+    "qualifiedName": "scratch/diagnose_stdin_win32.mjs:runTest",
+    "kind": "function",
+    "filePath": "scratch/diagnose_stdin_win32.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 55,
+    "signature": "function runTest() {",
+    "exported": false,
+    "calls": [
+      "setEncoding",
+      "setRawMode",
+      "addListener",
+      "read",
+      "logEvent",
+      "resume",
+      "on",
+      "setTimeout",
+      "log",
+      "exit"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      },
+      {
+        "symbolId": "scratch/diagnose_stdin_win32.mjs#logEvent:40",
+        "name": "logEvent",
+        "filePath": "scratch/diagnose_stdin_win32.mjs",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "node:process"
+    ],
+    "confidence": 0.99
+  },
+  {
+    "id": "scratch/test_dirac_automated.mjs#tryNodePty:23",
+    "name": "tryNodePty",
+    "qualifiedName": "scratch/test_dirac_automated.mjs:tryNodePty",
+    "kind": "function",
+    "filePath": "scratch/test_dirac_automated.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 23,
+    "signature": "async function tryNodePty() {",
+    "exported": false,
+    "calls": [
+      "log"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "node:url",
+      "node:path",
+      "node:fs",
+      "node:child_process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/test_dirac_automated.mjs#main:39",
+    "name": "main",
+    "qualifiedName": "scratch/test_dirac_automated.mjs:main",
+    "kind": "function",
+    "filePath": "scratch/test_dirac_automated.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 39,
+    "signature": "async function main() {",
+    "exported": false,
+    "calls": [
+      "log",
+      "join",
+      "writeFileSync",
+      "spawn",
+      "on",
+      "toString",
+      "write",
+      "setTimeout",
+      "includes"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "node:url",
+      "node:path",
+      "node:fs",
+      "node:child_process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/test_raw_mode_deferred.mjs#hexOf:32",
+    "name": "hexOf",
+    "qualifiedName": "scratch/test_raw_mode_deferred.mjs:hexOf",
+    "kind": "function",
+    "filePath": "scratch/test_raw_mode_deferred.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 32,
+    "signature": "function hexOf(chunk) {",
+    "exported": false,
+    "calls": [
+      "toString"
+    ],
+    "callTargets": [],
+    "importPaths": [
+      "node:process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/test_raw_mode_deferred.mjs#describe:36",
+    "name": "describe",
+    "qualifiedName": "scratch/test_raw_mode_deferred.mjs:describe",
+    "kind": "function",
+    "filePath": "scratch/test_raw_mode_deferred.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 36,
+    "signature": "function describe(chunk) {",
+    "exported": false,
+    "calls": [
+      "stringify"
+    ],
+    "callTargets": [],
+    "importPaths": [
+      "node:process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/test_raw_mode_deferred.mjs#cleanup:49",
+    "name": "cleanup",
+    "qualifiedName": "scratch/test_raw_mode_deferred.mjs:cleanup",
+    "kind": "function",
+    "filePath": "scratch/test_raw_mode_deferred.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 49,
+    "signature": "function cleanup(msg) {",
+    "exported": false,
+    "calls": [
+      "setRawMode",
+      "write",
+      "exit"
+    ],
+    "callTargets": [],
+    "importPaths": [
+      "node:process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/test_raw_mode_kick.mjs#cleanup:18",
+    "name": "cleanup",
+    "qualifiedName": "scratch/test_raw_mode_kick.mjs:cleanup",
+    "kind": "function",
+    "filePath": "scratch/test_raw_mode_kick.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 18,
+    "signature": "function cleanup() {",
+    "exported": false,
+    "calls": [
+      "setRawMode",
+      "write",
+      "exit"
+    ],
+    "callTargets": [],
+    "importPaths": [
+      "node:process"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/test_raw_mode.mjs#onReadable:29",
+    "name": "onReadable",
+    "qualifiedName": "scratch/test_raw_mode.mjs:onReadable",
+    "kind": "function",
+    "filePath": "scratch/test_raw_mode.mjs",
+    "moduleId": ".",
+    "language": "javascript",
+    "capabilityTier": "high",
+    "line": 29,
+    "signature": "onReadable = () => {",
+    "exported": false,
+    "calls": [
+      "read",
+      "toString",
+      "stringify",
+      "log",
+      "setRawMode",
+      "exit"
+    ],
+    "callTargets": [
+      {
+        "symbolId": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py#log:78",
+        "name": "log",
+        "filePath": ".github/scripts/openwrt-docs4ai-02a-scrape-wiki.py",
+        "moduleId": ".",
+        "reason": "same-module"
+      }
+    ],
+    "importPaths": [
+      "node:process",
+      "node:readline"
+    ],
+    "confidence": 0.94
   },
   {
     "id": ".agents/skills/changelog-generator/scripts/commit_linter.py#CLIError:28",
@@ -42867,6 +43209,35 @@
     ],
     "callTargets": [],
     "importPaths": [],
+    "confidence": 0.96
+  },
+  {
+    "id": "scratch/diagnose_llms.py#test_models:28",
+    "name": "test_models",
+    "qualifiedName": "scratch/diagnose_llms.py:test_models",
+    "kind": "function",
+    "filePath": "scratch/diagnose_llms.py",
+    "moduleId": ".",
+    "language": "python",
+    "capabilityTier": "high",
+    "line": 28,
+    "signature": "async def test_models():",
+    "exported": true,
+    "calls": [
+      "print",
+      "acompletion",
+      "hasattr",
+      "len",
+      "str"
+    ],
+    "callTargets": [],
+    "importPaths": [
+      "asyncio",
+      "os",
+      "yaml",
+      "litellm",
+      "dotenv"
+    ],
     "confidence": 0.96
   },
   {
