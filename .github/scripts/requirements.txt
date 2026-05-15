@@ -5,3 +5,7 @@ lxml
 beautifulsoup4
 html5lib
 markdownify
+docker
+python-dotenv
+typing-extensions
+wrapt

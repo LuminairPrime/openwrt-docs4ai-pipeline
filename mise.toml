@@ -1,0 +1,10 @@
+min_version = "2024.1.1"
+
+[env]
+PYTHONPATH = "vendors/testcontainers-python/core"
+TESTCONTAINERS_RYUK_DISABLED = "true"
+
+[tasks.qa]
+description = "Run the containerized Linux QA pipeline"
+run = "python3 tests/qa_pipeline_orchestrator.py"
+run_windows = "..\\..\\.venv\\Scripts\\python.exe tests\\qa_pipeline_orchestrator.py"
