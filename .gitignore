@@ -34,7 +34,6 @@ openwrt-condensed-docs/
 
 vendors/
 .worktrees/*
-!.worktrees/mise-test-files/
 
 # Secrets and local config
 litellm_config.yaml
