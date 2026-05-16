@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 2142
 source_file: L1-raw/wiki/wiki_page-guide-developer-security.md
-last_pipeline_run: '2026-05-16T04:56:26.459188+00:00'
+last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
 source_url: https://openwrt.org/docs/guide-developer/security
 language: text
 ai_summary: The Security module of OpenWrt outlines the processes, tools, and mechanisms utilized to ensure the security of the OpenWrt distribution and its official package feeds. It includes guidelines for vulnerability reporting, emphasizing confidentiality and the appropriate channels for communication, such as contacting <contact@openwrt.org> or the public mailing list <openwrt-adm@lists.openwrt.org>. Additionally, the module provides information on security advisories specifically for components maintained by OpenWrt, while noting that third-party components are not covered. The support status of various OpenWrt releases is also detailed, indicating their current status and projected end-of-life dates.

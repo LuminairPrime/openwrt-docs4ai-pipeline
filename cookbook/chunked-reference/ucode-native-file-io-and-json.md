@@ -4,7 +4,7 @@ module: cookbook
 origin_type: authored
 token_count: 1226
 source_file: L1-raw/cookbook/ucode-native-file-io-and-json.md
-last_pipeline_run: '2026-05-16T04:56:26.459188+00:00'
+last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
 source_locator: static/cookbook-source/ucode-native-file-io-and-json.md
 description: Correct current-era pattern for reading files and parsing JSON directly
   in ucode with fs.readfile() and json(), without shell wrappers or external parsers.

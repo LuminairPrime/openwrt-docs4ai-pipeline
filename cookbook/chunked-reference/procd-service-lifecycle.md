@@ -4,7 +4,7 @@ module: cookbook
 origin_type: authored
 token_count: 2909
 source_file: L1-raw/cookbook/procd-service-lifecycle.md
-last_pipeline_run: '2026-05-16T04:56:26.459188+00:00'
+last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
 source_locator: static/cookbook-source/procd-service-lifecycle.md
 description: Complete guide to writing a procd-managed init script for an OpenWrt
   service, covering the full lifecycle from start to reload to stop with supervised
