@@ -2,9 +2,9 @@
 title: lldpd
 module: wiki
 origin_type: wiki_page
-token_count: 380
+token_count: 542
 source_file: L1-raw/wiki/wiki_page-techref-lldpd.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/techref/lldpd
 language: text
 ai_summary: The lldpd module implements the Link Layer Discovery Protocol (LLDP), an industry-standard protocol that provides a mechanism for network devices to discover each other and share information. It is designed to replace proprietary protocols like Extreme's EDP and Cisco's CDP. Configuration is done through the `/etc/config/lldpd` file, allowing users to set device classes and descriptions. The daemon must be running to utilize the `lldpcli` command for viewing neighbors and statistics.
@@ -16,7 +16,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/lldpd](https://openwrt.org/docs/techref/lldpd)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # lldpd
 
@@ -40,6 +40,8 @@ OpenWRT uses the standard, lightweight lldpd package. Drop into your ER-X via SS
 opkg update
 opkg install lldpd
 ```
+
+Alternatively/additionally install `luci-app-lldpd` package to add Luci Web interface for LLPD - discovered information are neatly presented in GUI.
 
 ## Configuration
 
@@ -75,3 +77,21 @@ lldpcli show statistics
 ## Known Issues
 
 \- lldpd unable to receive frames on mediatek due to bug: <https://github.com/openwrt/openwrt/issues/13788>
+
+It has been confirmed that on MediaTek (i.e. on ER-X, 25.12.4), the following configuration file works well:
+
+    config lldpd config
+            option enable_cdp 1
+            option enable_fdp 1
+            option enable_sonmp 1
+            option enable_edp 1
+
+            option lldp_class 4
+            option lldp_location "address country EU"
+
+            # interfaces to listen on
+            list interface "loopback"
+            list interface "eth1"
+            list interface "eth2"
+            list interface "eth3"
+            list interface "eth4"

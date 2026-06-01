@@ -2,9 +2,9 @@
 title: Network scripts
 module: wiki
 origin_type: wiki_page
-token_count: 3764
+token_count: 3765
 source_file: L1-raw/wiki/wiki_page-guide-developer-network-scripting.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/guide-developer/network-scripting
 language: text
 ai_summary: 'The Network scripts module in OpenWrt provides a framework for implementing protocol handlers that enable various network configurations through the netifd daemon. Each protocol handler is a shell script located in `/lib/netifd/proto/` and must define at least two functions: `proto_protocolname_init_config` for parameter validation and monitoring, and `proto_protocolname_setup` for executing the protocol-specific setup logic. The handlers are invoked with configuration parameters in JSON format, allowing for dynamic updates to network interfaces. Changes to the protocol handlers require a restart of the netifd daemon to take effect.'
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/network-scripting](https://openwrt.org/docs/guide-developer/network-scripting)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # Network scripts
 
@@ -428,6 +428,6 @@ uci get network.wan6.ip6prefix
 ``` bash
 # Runtime configuration
 ubus call network.interface dump \
-| jsonfilter -e "$['interface'][*]['inactive']
+| jsonfilter -e "$['interface'][*]['inactive']|
 ['route'][*]['target'='0.0.0.0','mask'='0','nexthop']"
 ```

@@ -2,9 +2,9 @@
 title: 'Init (User space boot) reference for Chaos Calmer: procd'
 module: wiki
 origin_type: wiki_page
-token_count: 5589
+token_count: 5583
 source_file: L1-raw/wiki/wiki_page-techref-init-detail-cc.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/techref/init.detail.cc
 language: text
 ai_summary: The Init (User space boot) reference for Chaos Calmer details the implementation of the user space boot sequence in OpenWrt, specifically focusing on the role of procd as the primary process. Procd, which replaces the traditional init system, is responsible for managing services and handling hotplug events after the initial preinit steps are completed by `/sbin/init`. The document outlines the boot process, including filesystem mounting and kernel module loading, as well as the source code paths followed during execution. It serves as a technical reference for developers looking to understand or contribute to the procd implementation in the Chaos Calmer release.
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/init.detail.cc](https://openwrt.org/docs/techref/init.detail.cc)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # Init (User space boot) reference for Chaos Calmer: procd
 
@@ -98,20 +98,20 @@ This is the source code path followed in logical order of execution by the proce
     7.  `spawn_procd()`
         As a callback by uloop_run in pid 1, this is pid 1; execs `/sbin/procd`
 
-2.  `/sbin/procd`
-    Execed by pid 1 `/sbin/init`, `/sbin/procd` replaces it as pid 1.
-    1.  `setsid()`, line 67
+        - `/sbin/procd`
+        Execed by pid 1 `/sbin/init`, `/sbin/procd` replaces it as pid 1.
+    8.  `setsid()`, line 67
         *The process group ID and session ID of the calling process are set to the PID of the calling process: [man 2 setsid](http://man7.org/linux/man-pages/man2/setsid.2.html)* See also [man 7 credentials](http://man7.org/linux/man-pages/man7/credentials.7.html).
-    2.  `uloop_init()`, line 68
+    9.  `uloop_init()`, line 68
         The uloop instance set up before by `/sbin/init` is gone. Creates a new one.
-    3.  `procd_signal()`, line 69 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=signal.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l82), line 82.
+    10. `procd_signal()`, line 69 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=signal.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l82), line 82.
         Setup signal handlers. Reboot on SIGTERM or SIGINT, poweroff on SIGUSR2 or SIGUSR2.
-    4.  `trigger_init()`, line 70 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=service/trigger.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l319)
+    11. `trigger_init()`, line 70 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=service/trigger.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l319)
         Procd triggers on config file/network interface changes, see [procd-init-scripts#procd_triggers_on_config_filenetwork_interface_changes](/docs/guide-developer/procd-init-scripts#procd_triggers_on_config_filenetwork_interface_changes)
         Initialise a run queue. An [example](http://git.openwrt.org/?p=project/libubox.git;a=blob;f=examples/runqueue-example.c;hb=d1c66ef1131d14f0ed197b368d03f71b964e45f8) is the sole documentation. A queued task has an uloop callback invoked when done, here sets the empty queue callback to do nothing.
-    5.  `procd_state_next()`, line 74 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l179)
+    12. `procd_state_next()`, line 74 [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l179)
         Transitions from NONE to EARLY the state of a state machine implemented in `state_enter(void)` used to sequence the remaining boot steps.
-    6.  `STATE_EARLY` in `state_enter()`
+    13. `STATE_EARLY` in `state_enter()`
         1.  Emits "- early -" to syslog,
         2.  Initialise the watchdog,
         3.  `hotplug("/etc/hotplug.json")` [(definition)](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/hotplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l568)
@@ -125,8 +125,8 @@ This is the source code path followed in logical order of execution by the proce
             1.  `udevtrigger`
                 Scans `/sys/bus/*/devices`, `/sys/class`; and `/sys/block` if it isn't a subdir of `/sys/class`, writing "add" to the uevent file of all devices. Then the kernel synthesizes an "add" uevent message on netlink. See Injecting events into hotplug via "uevent" in <https://www.kernel.org/doc/pending/hotplug.txt>
 
-                A callback chain, `udevtrigger_complete()` followed by `coldplug_complete()` is attached to completion of the child udevtrigger process, such that the still to be reached `uloop_run()` in procd `main()` function, after all uevents will have been processed, will advance procd state to STATE_UBUS, [line 31](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l31).
-    7.  `uloop_run`, line 75
+                A callback chain, `udevtrigger_complete()` followed by `coldplug_complete()` is attached to completion of the child udevtrigger process, such that the still to be reached `uloop_run()` in procd `main()` function, after all uevents will have been processed, will advance procd state to STATE_UBUS, [line 31](http://git.openwrt.org/?p=project/procd.git;a=blob;f=plug/coldplug.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l31).\|
+    14. `uloop_run`, line 75
         Solicited by udevtrigger in another process, the kernel emits uevents and uloop invokes the user space hotplug handler: the callback
         1.  `hotplug_handler`
             to run `/etc/hotplug.json`.
@@ -165,6 +165,6 @@ This is the source code path followed in logical order of execution by the proce
             This is a stable state, keeping uloop_run in procd.c main() running, mostly waiting on epoll_wait. [Upon receipt of a signal](http://git.openwrt.org/?p=project/procd.git;a=blob;f=signal.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l33) in SIGTERM, SIGINT (reboot), or SIGUSR2, SIGUSR2 (poweroff), procd transitions to
         5.  `STATE_SHUTDOWN`
             "- shutdown -" is logged, /etc/inittab shutdown entry is executed, and procd sleeps [at line 169](http://git.openwrt.org/?p=project/procd.git;a=blob;f=state.c;hb=0da5bf2ff222d1a499172a6e09507388676b5a08#l169) while the kernel does poweroff or reboot.
-    8.  `uloop_done`
+    15. `uloop_done`
         `return 0`
         lines 75 & 76 are never reached by pid 1, kernel would panic if init exited.

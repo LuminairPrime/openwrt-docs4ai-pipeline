@@ -1,15 +1,15 @@
 ---
 module: openwrt-core
-total_token_count: 23222
+total_token_count: 23374
 section_count: 7
 is_monolithic: true
-generated: '2026-05-16T06:03:07.782309+00:00'
+generated: '2026-06-01T15:07:54.396462+00:00'
 ---
 
 # openwrt-core Bundled Reference
 
 > **Contains:** 7 documents concatenated
-> **Tokens:** ~23222 (cl100k_base)
+> **Tokens:** ~23374 (cl100k_base)
 
 ---
 
@@ -291,7 +291,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 2025.10 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-ath79
@@ -497,7 +497,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2025.10 |
+| Version | 2026.04 |
 | Maintainer | Zoltan HERPAI <wigyori@uid0.hu> |
 
 
@@ -637,7 +637,7 @@ This package contains the microcode needed to use the network engines in IXP4xx 
 
 | Field | Value |
 |---|---|
-| Version | 20260410 |
+| Version | 20260519 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -686,6 +686,18 @@ Firmware binaries for the microcontroller on the Turris Omnia router. These are 
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/prism54-firmware
+---
+
+## rtl826x-firmware
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-only include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Build/Compile (set -e; cd $(PKG_BUILD_DIR); $(HOSTCC) rtl8261n_rtl8264b.c phy_patch.c -o phy_patch; ./phy_patch ) endef define Package/rtl826x-fir |
+| Maintainer | Balázs Triszka <info@balika011.hu> |
+| Source URL | https://github.com/balika011/realtek_phy_firmware |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/rtl826x-firmware
 ---
 
 ## wireless-regdb
@@ -2612,7 +2624,7 @@ The libblkid library is used to identify block devices (disks) as to their conte
 
 | Field | Value |
 |---|---|
-| Version | 2.42 |
+| Version | 2.42.1 |
 | Source URL | @KERNEL/linux/utils/$(PKG_NAME)/v2.42 |
 
 

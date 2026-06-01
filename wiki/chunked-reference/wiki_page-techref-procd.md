@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 1963
 source_file: L1-raw/wiki/wiki_page-techref-procd.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/techref/procd
 language: text
 ai_summary: Describes procd, the OpenWrt process manager and init system that replaces busybox init. Covers the procd init script lifecycle (start_service, stop_service, reload), the procd_add_instance/procd_set_param API for declaring managed processes, service watchdog behavior, instance respawn limits, stdio/logging configuration, trigger-based reload via ubus events, and the /etc/init.d/ enable/disable mechanism.
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/procd](https://openwrt.org/docs/techref/procd)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # Procd system init and daemon management
 

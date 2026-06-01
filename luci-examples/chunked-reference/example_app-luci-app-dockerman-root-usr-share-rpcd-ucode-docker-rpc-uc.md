@@ -2,9 +2,9 @@
 title: docker_rpc.uc
 module: luci-examples
 origin_type: example_app
-token_count: 5819
+token_count: 5821
 source_file: L1-raw/luci-examples/example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc
 source_locator: applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # docker_rpc.uc
 ```ucode
@@ -317,7 +317,7 @@ function run_ttyd(request) {
 
 	const id = request.args.id || '';
 	const cmd = request.args.cmd || '/bin/sh';
-	const port = request.args.port || 7682;
+	const port = int(request.args.port) || 7682;
 	const uid = request.args.uid || '';
 
 	if (!id) {

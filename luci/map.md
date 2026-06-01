@@ -1,7 +1,7 @@
 # luci Navigation Map
 
 > **Contains:** Headers and function signatures for luci.
-> **Generated:** 2026-05-16T06:03:07.782309+00:00
+> **Generated:** 2026-06-01T15:07:54.396462+00:00
 
 ---
 

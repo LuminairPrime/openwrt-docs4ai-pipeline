@@ -2,9 +2,9 @@
 title: ddns.uc
 module: luci-examples
 origin_type: example_app
-token_count: 2769
+token_count: 2734
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-root-usr-share-rpcd-ucode-ddns-uc.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
 source_locator: applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # ddns.uc
 ```ucode
@@ -41,7 +41,12 @@ const luci_helper = '/usr/lib/ddns/dynamic_dns_lucihelper.sh';
 const ddns_version_file = '/usr/share/ddns/version';
 
 
+function shellquote(value) {
+	if (value == null)
+		value = '';
 
+	return "'" + replace(value, "'", "'\\''") + "'";
+}
 
 function get_dateformat() {
 	return uci.get('ddns', 'global', 'ddns_dateformat') || '%F %R';
@@ -152,9 +157,9 @@ const methods = {
 					if (forceDnsTcp == 1) push(command, '-t');
 					// if (isGlue == 1) push(command, '-g');
 
-					push(command, '-l', lookupHost);
-					push(command, '-S', section);
-					if (length(dnsServer) > 0) push(command, '-d', dnsServer);
+					push(command, '-l', shellquote(lookupHost));
+					push(command, '-S', shellquote(section));
+					if (length(dnsServer) > 0) push(command, '-d', shellquote(dnsServer));
 					push(command, '-- get_registered_ip');
 
 					const result = system(`${join(' ', command)}`);
@@ -247,50 +252,40 @@ const methods = {
 
 			const hasCommand = (command) => { return (system(`command -v ${command} 1>/dev/null`) == 0) ? true : false };
 
-			const hasWget = () => hasCommand('wget');
+			const hasWget = () => {
+				return cache.has_wget ??= hasCommand('wget');
+			};
 
 			const hasWgetSsl = () => {
-				if (cache['has_wgetssl']) return cache['has_wgetssl'];
-				const result = hasWget() && system(`wget 2>&1 | grep -iqF 'https'`) == 0 ? true : false;
-				cache['has_wgetssl'] = result;
-				return result;
+				return cache.has_wgetssl ??= hasWget() && system(`wget 2>&1 | grep -iqF 'https'`) == 0 ? true : false;
 			};
 
 			const hasGNUWgetSsl = () => {
-				if (cache['has_gnuwgetssl']) return cache['has_gnuwgetssl'];
-				const result = hasWget() && system(`wget -V 2>&1 | grep -iqF '+https'`) == 0 ? true : false;
-				cache['has_gnuwgetssl'] = result;
-				return result;
+				return cache.has_gnuwgetssl ??= hasWget() && system(`wget -V 2>&1 | grep -iqF '+https'`) == 0 ? true : false;
 			};
 
 			const hasCurl = () => {
-				if (cache['has_curl']) return cache['has_curl'];
-				const result = hasCommand('curl');
-				cache['has_curl'] = result;
-				return result;
+				return cache.has_curl ??= hasCommand('curl');
 			};
 
 			const hasCurlSsl = () => {
-				return system(`curl -V 2>&1 | grep -qF 'https'`) == 0 ? true : false;
+				return cache.has_curl_ssl ??= system(`curl -V 2>&1 | grep -qF 'https'`) == 0 ? true : false;
 			};
 
 			const hasFetch = () => {
-				if (cache['has_fetch']) return cache['has_fetch'];
-				const result = hasCommand('uclient-fetch');
-				cache['has_fetch'] = result;
-				return result;
+				return cache.has_fetch ??= hasCommand('uclient-fetch');
 			};
 
 			const hasFetchSsl = () => {
-				return stat('/lib/libustream-ssl.so') == 0 ? true : false;
+				return cache.has_fetch_ssl ??= stat('/lib/libustream-ssl.so') ? true : false;
 			};
 
 			const hasCurlPxy = () => {
-				return system(`grep -i 'all_proxy' /usr/lib/libcurl.so*`) == 0 ? true : false;
+				return cache.has_curl_proxy ??= system(`grep -i 'all_proxy' /usr/lib/libcurl.so*`) == 0 ? true : false;
 			};
 
 			const hasBbwget = () => {
-				return system(`wget -V 2>&1 | grep -iqF 'busybox'`) == 0 ? true : false;
+				return cache.has_bbwget ??= system(`wget -V 2>&1 | grep -iqF 'busybox'`) == 0 ? true : false;
 			};
 
 

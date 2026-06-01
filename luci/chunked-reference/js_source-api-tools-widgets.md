@@ -4,7 +4,7 @@ module: luci
 origin_type: js_source
 token_count: 126
 source_file: L1-raw/luci/js_source-api-tools-widgets.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/modules/luci-base/htdocs/luci-static/resources/tools/widgets.js
 source_locator: modules/luci-base/htdocs/luci-static/resources/tools/widgets.js
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/modules/luci-base/htdocs/luci-static/resources/tools/widgets.js](https://github.com/openwrt/luci/blob/unknown/modules/luci-base/htdocs/luci-static/resources/tools/widgets.js)
 > **Kind:** js_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # LuCI API: widgets
 

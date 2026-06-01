@@ -9,7 +9,7 @@
 
 ## Tooling Surfaces
 
-- [types/ucode.d.ts](./types/ucode.d.ts): TypeScript declarations for IDE navigation and static analysis of ucode. (~3851 tokens, l3-ide-schema)
+- [types/ucode.d.ts](./types/ucode.d.ts): TypeScript declarations for IDE navigation and static analysis of ucode. (~3906 tokens, l3-ide-schema)
 
 ## Source Documents
 

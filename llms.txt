@@ -1,8 +1,8 @@
 # openwrt-docs4ai - LLM Routing Index
 > For a flat file listing, see [llms-full.txt](./llms-full.txt)
 
-> **Version:** openwrt/openwrt@6a608bc, openwrt/luci@fd9f50b, jow-/ucode@0beaa9d
-> **Total Context Available:** ~472305 tokens
+> **Version:** openwrt/openwrt@805098d, openwrt/luci@1bffbf4, jow-/ucode@0beaa9d
+> **Total Context Available:** ~473154 tokens
 
 ## Guides
 - [cookbook](./cookbook/llms.txt): Task-oriented OpenWrt guides: era-appropriate patterns, common AI mistakes, architecture overview, and cross-component howtos. (~40574 tokens)
@@ -17,11 +17,11 @@
 - [ucode](./ucode/llms.txt): ucode scripting language: standard library, runtime modules (fs, ubus, uci, uloop, nl80211, rtnl), and C API. (~89833 tokens)
 
 ## Ecosystem
-- [luci-examples](./luci-examples/llms.txt): LuCI community application examples: full plugin source code for Docker, statistics, DDNS, and more. (~101575 tokens)
-- [openwrt-core](./openwrt-core/llms.txt): OpenWrt buildroot core packages: early boot firmware, kernel module infrastructure, and base-files. (~23222 tokens)
+- [luci-examples](./luci-examples/llms.txt): LuCI community application examples: full plugin source code for Docker, statistics, DDNS, and more. (~101556 tokens)
+- [openwrt-core](./openwrt-core/llms.txt): OpenWrt buildroot core packages: early boot firmware, kernel module infrastructure, and base-files. (~23374 tokens)
 
 ## Manuals
-- [wiki](./wiki/llms.txt): OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support. (~195194 tokens)
+- [wiki](./wiki/llms.txt): OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support. (~195910 tokens)
 
 ## Complete Aggregation
 If your context window permits, you may fetch the flat URL index:

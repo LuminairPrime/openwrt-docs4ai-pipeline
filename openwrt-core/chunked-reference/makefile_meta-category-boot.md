@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 3680
 source_file: L1-raw/openwrt-core/makefile_meta-category-boot.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/boot
 source_locator: package/boot
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/boot](https://github.com/openwrt/openwrt/blob/unknown/package/boot)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # OpenWrt Buildroot: boot packages
 
@@ -304,7 +304,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 2025.10 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-ath79
@@ -510,7 +510,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2025.10 |
+| Version | 2026.04 |
 | Maintainer | Zoltan HERPAI <wigyori@uid0.hu> |
 
 

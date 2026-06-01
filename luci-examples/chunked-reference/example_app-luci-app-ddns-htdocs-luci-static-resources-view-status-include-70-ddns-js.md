@@ -4,7 +4,7 @@ module: luci-examples
 origin_type: example_app
 token_count: 392
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-htdocs-luci-static-resources-view-status-include-70-ddns-js.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/status/include/70_ddns.js
 source_locator: applications/luci-app-ddns/htdocs/luci-static/resources/view/status/include/70_ddns.js
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/status/include/70_ddns.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/status/include/70_ddns.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # 70_ddns.js
 ```javascript

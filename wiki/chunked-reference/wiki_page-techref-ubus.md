@@ -2,9 +2,9 @@
 title: ubus (OpenWrt micro bus architecture)
 module: wiki
 origin_type: wiki_page
-token_count: 6881
+token_count: 6886
 source_file: L1-raw/wiki/wiki_page-techref-ubus.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/techref/ubus
 language: text
 ai_summary: Explains the OpenWrt ubus inter-process communication bus, which provides a Unix-socket-based RPC mechanism for daemons to expose services and receive method calls. Covers ubus object and method registration, the ubusd broker, ubus_context lifecycle, blob_buf message encoding, ubus_lookup, ubus_invoke, ubus_register_event_handler, and the acl JSON permission system.
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/ubus](https://openwrt.org/docs/techref/ubus)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # ubus (OpenWrt micro bus architecture)
 
@@ -597,7 +597,7 @@ local DATA="${2}"
 local URL="https://${HOST}/\
 cgi-bin/luci/rpc/${LIB}?auth=${TOKEN}"
 curl -s -k -d "${DATA}" "${URL}" \
-| jsonfilter -e "$['result']"
+| jsonfilter -e "$['result']"|
 }
 HOST="localhost"
 USER="root"
@@ -608,7 +608,7 @@ TOKEN="$(luci_rpc auth "${DATA}")"
 DATA="{ \"id\": 2, \"method\": \"exec\",
 \"params\": [ \"ubus call system board\" ] }"
 VERSION="$(luci_rpc sys "${DATA}" \
-| jsonfilter -e "$['release']['version']")"
+| jsonfilter -e "$['release']['version']")"|
 echo "${VERSION}"
 ```
 
@@ -619,7 +619,7 @@ ubus_rpc() {
 local DATA="${1}"
 local URL="https://${HOST}/ubus"
 curl -s -k -d "${DATA}" "${URL}" \
-| jsonfilter -e "$['result']"
+| jsonfilter -e "$['result']"|
 }
 HOST="localhost"
 USER="root"
@@ -628,10 +628,10 @@ DATA="{ 'jsonrpc': '2.0', 'id': 1, 'method': 'call',
 'params': [ '00000000000000000000000000000000', 'session',
 'login', { 'username': '${USER}', 'password': '${PASS}' } ] }"
 SESSION="$(ubus_rpc "${DATA}" \
-| jsonfilter -e "$[*]['ubus_rpc_session']")"
+| jsonfilter -e "$[*]['ubus_rpc_session']")"|
 DATA="{ 'jsonrpc': '2.0', 'id': 2, 'method': 'call',
 'params': [ '${SESSION}', 'system', 'board', {} ] }"
 VERSION="$(ubus_rpc "${DATA}" \
-| jsonfilter -e "$[*]['release']['version']")"
+| jsonfilter -e "$[*]['release']['version']")"|
 echo "${VERSION}"
 ```

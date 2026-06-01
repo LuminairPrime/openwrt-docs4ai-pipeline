@@ -2,9 +2,9 @@
 title: overview.js
 module: luci-examples
 origin_type: example_app
-token_count: 11218
+token_count: 11211
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
 source_locator: applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # overview.js
 ```javascript
@@ -194,16 +194,16 @@ return view.extend({
 	},
 
 	handleReloadDDnsRule(m, section_id, ev) {
-		return fs.exec('/usr/lib/ddns/dynamic_dns_lucihelper.sh',
-							[ '-S', section_id, '--', 'start' ])
+		return fs.exec('/etc/init.d/ddns',
+							[ 'restart', section_id ])
 			.then(L.bind(m.load, m))
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
 
-	HandleStopDDnsRule(m, section_id, ev) {
+	handleStopDDnsRule(m, section_id, ev) {
 		return fs.exec('/usr/lib/ddns/dynamic_dns_lucihelper.sh',
-							[ '-S', section_id, '--', 'start' ])
+							[ '-S', section_id, '--', 'stop' ])
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
@@ -581,7 +581,7 @@ return view.extend({
 				},
 				stop_opt = {
 					'class': 'cbi-button cbi-button-neutral stop',
-					'click': ui.createHandlerFn(_this, 'HandleStopDDnsRule', m, section_id),
+					'click': ui.createHandlerFn(_this, 'handleStopDDnsRule', m, section_id),
 					'title': _('Stop this service'),
 				};
 
@@ -909,6 +909,7 @@ return view.extend({
 					o.modalonly = true;
 					o.multiple = false;
 					o.default = 'wan';
+					o.rmempty = false;
 					o.depends("ip_source", "web");
 					o.depends("ip_source", "script");
 					o.depends("ip_source", "interface");

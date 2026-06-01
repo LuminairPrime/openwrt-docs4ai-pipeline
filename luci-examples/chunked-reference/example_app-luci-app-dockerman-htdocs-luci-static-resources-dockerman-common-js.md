@@ -4,7 +4,7 @@ module: luci-examples
 origin_type: example_app
 token_count: 11882
 source_file: L1-raw/luci-examples/example_app-luci-app-dockerman-htdocs-luci-static-resources-dockerman-common-js.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/htdocs/luci-static/resources/dockerman/common.js
 source_locator: applications/luci-app-dockerman/htdocs/luci-static/resources/dockerman/common.js
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/htdocs/luci-static/resources/dockerman/common.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/htdocs/luci-static/resources/dockerman/common.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # common.js
 ```javascript
@@ -513,7 +513,7 @@ const dv = view.extend({
 
 	parseMemory(value) {
 		if (!value) return 0;
-		const rex = /^([0-9.]+) *([bkmgt])?i? *[Bb]?/i;
+		const rex = /^([0-9.]+) *([bkmgtp])?i? *[Bb]?/i;
 		let [, amount, unit] = rex.exec(value.toLowerCase());
 		amount = amount ? Number.parseFloat(amount) : 0;
 		switch (unit) {

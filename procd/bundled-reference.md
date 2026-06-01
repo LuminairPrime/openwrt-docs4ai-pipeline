@@ -3,7 +3,7 @@ module: procd
 total_token_count: 352
 section_count: 1
 is_monolithic: true
-generated: '2026-05-16T06:03:07.782309+00:00'
+generated: '2026-06-01T15:07:54.396462+00:00'
 ---
 
 # procd Bundled Reference

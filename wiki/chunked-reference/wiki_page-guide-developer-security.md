@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 2142
 source_file: L1-raw/wiki/wiki_page-guide-developer-security.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/guide-developer/security
 language: text
 ai_summary: The Security module of OpenWrt outlines the processes, tools, and mechanisms utilized to ensure the security of the OpenWrt distribution and its official package feeds. It includes guidelines for vulnerability reporting, emphasizing confidentiality and the appropriate channels for communication, such as contacting <contact@openwrt.org> or the public mailing list <openwrt-adm@lists.openwrt.org>. Additionally, the module provides information on security advisories specifically for components maintained by OpenWrt, while noting that third-party components are not covered. The support status of various OpenWrt releases is also detailed, indicating their current status and projected end-of-life dates.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/security](https://openwrt.org/docs/guide-developer/security)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # Security
 
@@ -43,7 +43,7 @@ This table lists the support status of various OpenWrt releases:
 
 | Version           | Current status       | Initial Release    | EoL (Projected)   | Latest Release | Release Date      |
 |:------------------|:---------------------|:-------------------|:------------------|:---------------|:------------------|
-| @lightgreen:25.12 | Supported            | 2026, March 06     | TBD               | 25.12.3        | 2026, May 07      |
+| @lightgreen:25.12 | Supported            | 2026, March 06     | TBD               | 25.12.4        | 2026, May 14      |
 | @yellow:24.10     | Security Maintenance | 2025, February 06  | (2026, September) | 24.10.6        | 2026, March 18    |
 | @pink:23.05       | End of Life          | 2023, October 13   | 2025, August      | 23.05.6        | 2025, August 20   |
 | @pink:22.03       | End of Life          | 2022, September 06 | 2024, July        | 22.03.7        | 2024, July 25     |

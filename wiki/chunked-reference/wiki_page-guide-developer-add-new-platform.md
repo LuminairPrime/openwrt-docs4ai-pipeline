@@ -2,9 +2,9 @@
 title: Adding new platform support
 module: wiki
 origin_type: wiki_page
-token_count: 4884
+token_count: 4888
 source_file: L1-raw/wiki/wiki_page-guide-developer-add-new-platform.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_url: https://openwrt.org/docs/guide-developer/add.new.platform
 language: text
 ai_summary: The 'Adding new platform support' module provides guidance for developers looking to add new platform support to OpenWrt. It emphasizes the importance of Linux in embedded devices and outlines the need for open-source firmware to enhance functionality and security. The document includes methods for verifying if a device runs Linux, particularly through OS fingerprinting and port scanning using tools like *nmap*. Specific command examples illustrate how to gather information about the device's operating system and running services.
@@ -16,7 +16,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/add.new.platform](https://openwrt.org/docs/guide-developer/add.new.platform)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # Adding new platform support
 
@@ -38,7 +38,7 @@ A large bunch of tools over the Internet exists in order to let you do OS finger
 
 |                                                                      |
 |----------------------------------------------------------------------|
-| `nmap -P0 -O //IP address//
+| `nmap -P0 -O //IP address//|
  Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET
  Interesting ports on 192.168.2.1:
  Not shown: 1693 closed ports
@@ -57,9 +57,9 @@ The *nmap* utility is able to report whether your device uses a Linux TCP/IP sta
 
 Using the same tool, you can also do port scanning and service version discovery. For instance, the following command will report which IP-based services are running on the device, and which version of the service is being used:
 
-|                                                                      |
-|----------------------------------------------------------------------|
-| `nmap -P0 -sV //IP address//
+|                                                                    |
+|--------------------------------------------------------------------|
+| `nmap -P0 -sV //IP address//|
  Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET
  Interesting ports on 192.168.2.1:
  Not shown: 1693 closed ports
@@ -69,7 +69,7 @@ Using the same tool, you can also do port scanning and service version discovery
  53/tcp open  domain  ISC Bind dnsmasq-2.35
  80/tcp open  http    OpenWrt BusyBox httpd
  MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
- Service Info: Device: WAP`                                            |
+ Service Info: Device: WAP`                                          |
 
 The web server version, if identified, can be determining in knowing the Operating System. For instance, the BOA web server is typical from devices running an open-source Unix or Unix-like.
 
@@ -91,15 +91,15 @@ You are very likely to find a firmware binary image on the manufacturer website,
 
 Some Unix tools like `hexdump` or `strings` can be used to analyze the firmware. Below there is an example with a binary firmware found on the Internet:
 
-|                                                                                  |
-|----------------------------------------------------------------------------------|
-| `hexdump -C <binary image.extension> | less
+|                                                                                 |
+|---------------------------------------------------------------------------------|
+| `hexdump -C <binary image.extension> | less|
  00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|
  00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|
  00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|
  00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|
  00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|
- 00000050  da ff f3 9b f7 39 7b ef  73 f6 19 3b 53 67 ea 44  |???.?9{?s?.;Sg?D|`   |
+ 00000050  da ff f3 9b f7 39 7b ef  73 f6 19 3b 53 67 ea 44  |???.?9{?s?.;Sg?D|`  |
 
 Scroll over the firmware to find printable words that can be significant.
 
@@ -125,7 +125,7 @@ You will find below a sample letter that can be sent to the manufacturer:
 
 |                                                                                                               |
 |---------------------------------------------------------------------------------------------------------------|
-| `Miss, Mister,
+| `Miss, Mister,|
 
  I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM
  the open source software used to build or modify the firmware.
@@ -165,24 +165,24 @@ Most of the time, the kernel source that comes along with the SDK is not really 
 
 Some directories are very likely to have local modifications needed to make your hardware be recognized and used under Linux. First of all, you need to find out the linux kernel version that is used by your hardware, this can be found by editing the linux/Makefile file.
 
-|                                 |
-|---------------------------------|
-| `head -5 linux-2.x.x/Makefile
+|                                |
+|--------------------------------|
+| `head -5 linux-2.x.x/Makefile|
  VERSION = 2
  PATCHLEVEL = x
  SUBLEVEL = y
  EXTRAVERSION = z
- NAME=A fancy name`               |
+ NAME=A fancy name`              |
 
 So now, you know that you have to download a standard kernel tarball at kernel.org that matches the version being used by your hardware.
 
 Then you can create a diff file between the two trees, especially for the following directories:
 
-|                                                                                                                           |
-|---------------------------------------------------------------------------------------------------------------------------|
-| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch
+|                                                                                                                          |
+|--------------------------------------------------------------------------------------------------------------------------|
+| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch|
  diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch
- diff -urN linux-2.x.x/drivers/ linux-2.x.x-modified/drivers > 03-drivers.patch`                                            |
+ diff -urN linux-2.x.x/drivers/ linux-2.x.x-modified/drivers > 03-drivers.patch`                                           |
 
 This will constitute a basic set of three patches that are very likely to contain any needed modifications that has been made to the stock Linux kernel to run on your specific device. Of course, the content produced by the diff -urN may not always be relevant, so that you have to clean up those patches to only let the "must have" code into them.
 
@@ -253,14 +253,14 @@ Writing your own flash map driver is not really a hard task once you know how yo
 
 First of all, you need to make your flash map driver be visible in the kernel configuration options, this can be done by editing the file `linux/drivers/mtd/maps/Kconfig`:
 
-|                                                                            |
-|----------------------------------------------------------------------------|
-| `config MTD_DEVICE_FLASH
+|                                                                          |
+|--------------------------------------------------------------------------|
+| `config MTD_DEVICE_FLASH|
          tristate "Device Flash device"
          depends on ARCHITECTURE && DEVICE
          help
           Flash memory access on DEVICE boards. Currently only works with
-          Bootloader Foo and Bootloader Bar.`                                |
+          Bootloader Foo and Bootloader Bar.`                              |
 
 Then add your source file to the linux/drivers/mtd/maps/Makefile, so that it will be compiled along with the kernel.
 
@@ -270,9 +270,9 @@ Then add your source file to the linux/drivers/mtd/maps/Makefile, so that it wil
 
 You can then write the kernel driver itself, by creating a `linux/drivers/mtd/maps/device-flash.c` C source file.
 
-|                                                                                               |
-|-----------------------------------------------------------------------------------------------|
-| `// Includes that are required for the flash map driver to know of the prototypes:
+|                                                                                             |
+|---------------------------------------------------------------------------------------------|
+| `// Includes that are required for the flash map driver to know of the prototypes:|
  #include <asm/io.h>
  #include <linux/init.h>
  #include <linux/kernel.h>
@@ -370,4 +370,4 @@ You can then write the kernel driver itself, by creating a `linux/drivers/mtd/ma
 
  // Macros defining license and author, parameters can be defined here too.
  MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Me, myself and I <memyselfandi@domain.tld>");`                                  |
+ MODULE_AUTHOR("Me, myself and I <memyselfandi@domain.tld>");`                                |

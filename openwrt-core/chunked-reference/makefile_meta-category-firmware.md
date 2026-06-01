@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: firmware packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 1431
+token_count: 1581
 source_file: L1-raw/openwrt-core/makefile_meta-category-firmware.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/firmware
 source_locator: package/firmware
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/firmware](https://github.com/openwrt/openwrt/blob/unknown/package/firmware)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # OpenWrt Buildroot: firmware packages
 
@@ -124,7 +124,7 @@ This package contains the microcode needed to use the network engines in IXP4xx 
 
 | Field | Value |
 |---|---|
-| Version | 20260410 |
+| Version | 20260519 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -173,6 +173,18 @@ Firmware binaries for the microcontroller on the Turris Omnia router. These are 
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/prism54-firmware
+---
+
+## rtl826x-firmware
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-only include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Build/Compile (set -e; cd $(PKG_BUILD_DIR); $(HOSTCC) rtl8261n_rtl8264b.c phy_patch.c -o phy_patch; ./phy_patch ) endef define Package/rtl826x-fir |
+| Maintainer | Balázs Triszka <info@balika011.hu> |
+| Source URL | https://github.com/balika011/realtek_phy_firmware |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/rtl826x-firmware
 ---
 
 ## wireless-regdb

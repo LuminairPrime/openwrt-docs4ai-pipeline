@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: utils packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 5862
+token_count: 5864
 source_file: L1-raw/openwrt-core/makefile_meta-category-utils.md
-last_pipeline_run: '2026-05-16T06:02:48.732143+00:00'
+last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/utils
 source_locator: package/utils
@@ -25,7 +25,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/utils](https://github.com/openwrt/openwrt/blob/unknown/package/utils)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-05-16
+> **Normalized:** 2026-06-01
 
 # OpenWrt Buildroot: utils packages
 
@@ -696,7 +696,7 @@ The libblkid library is used to identify block devices (disks) as to their conte
 
 | Field | Value |
 |---|---|
-| Version | 2.42 |
+| Version | 2.42.1 |
 | Source URL | @KERNEL/linux/utils/$(PKG_NAME)/v2.42 |
 
 

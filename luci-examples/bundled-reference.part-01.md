@@ -1,18 +1,18 @@
 ---
 module: luci-examples
-total_token_count: 99436
+total_token_count: 99417
 section_count: 24
 is_monolithic: false
 is_sharded_part: true
 part_number: 1
 part_count: 2
-generated: '2026-05-16T06:03:07.782309+00:00'
+generated: '2026-06-01T15:07:54.396462+00:00'
 ---
 
 # luci-examples Bundled Reference (Part 1 of 2)
 
 > **Contains:** 24 documents
-> **Tokens:** ~99436 (cl100k_base)
+> **Tokens:** ~99417 (cl100k_base)
 > **Index:** [./bundled-reference.md](./bundled-reference.md)
 
 ---
@@ -489,16 +489,16 @@ return view.extend({
 	},
 
 	handleReloadDDnsRule(m, section_id, ev) {
-		return fs.exec('/usr/lib/ddns/dynamic_dns_lucihelper.sh',
-							[ '-S', section_id, '--', 'start' ])
+		return fs.exec('/etc/init.d/ddns',
+							[ 'restart', section_id ])
 			.then(L.bind(m.load, m))
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
 
-	HandleStopDDnsRule(m, section_id, ev) {
+	handleStopDDnsRule(m, section_id, ev) {
 		return fs.exec('/usr/lib/ddns/dynamic_dns_lucihelper.sh',
-							[ '-S', section_id, '--', 'start' ])
+							[ '-S', section_id, '--', 'stop' ])
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
@@ -876,7 +876,7 @@ return view.extend({
 				},
 				stop_opt = {
 					'class': 'cbi-button cbi-button-neutral stop',
-					'click': ui.createHandlerFn(_this, 'HandleStopDDnsRule', m, section_id),
+					'click': ui.createHandlerFn(_this, 'handleStopDDnsRule', m, section_id),
 					'title': _('Stop this service'),
 				};
 
@@ -1204,6 +1204,7 @@ return view.extend({
 					o.modalonly = true;
 					o.multiple = false;
 					o.default = 'wan';
+					o.rmempty = false;
 					o.depends("ip_source", "web");
 					o.depends("ip_source", "script");
 					o.depends("ip_source", "interface");
@@ -1566,7 +1567,12 @@ const luci_helper = '/usr/lib/ddns/dynamic_dns_lucihelper.sh';
 const ddns_version_file = '/usr/share/ddns/version';
 
 
+function shellquote(value) {
+	if (value == null)
+		value = '';
 
+	return "'" + replace(value, "'", "'\\''") + "'";
+}
 
 function get_dateformat() {
 	return uci.get('ddns', 'global', 'ddns_dateformat') || '%F %R';
@@ -1677,9 +1683,9 @@ const methods = {
 					if (forceDnsTcp == 1) push(command, '-t');
 					// if (isGlue == 1) push(command, '-g');
 
-					push(command, '-l', lookupHost);
-					push(command, '-S', section);
-					if (length(dnsServer) > 0) push(command, '-d', dnsServer);
+					push(command, '-l', shellquote(lookupHost));
+					push(command, '-S', shellquote(section));
+					if (length(dnsServer) > 0) push(command, '-d', shellquote(dnsServer));
 					push(command, '-- get_registered_ip');
 
 					const result = system(`${join(' ', command)}`);
@@ -1772,50 +1778,40 @@ const methods = {
 
 			const hasCommand = (command) => { return (system(`command -v ${command} 1>/dev/null`) == 0) ? true : false };
 
-			const hasWget = () => hasCommand('wget');
+			const hasWget = () => {
+				return cache.has_wget ??= hasCommand('wget');
+			};
 
 			const hasWgetSsl = () => {
-				if (cache['has_wgetssl']) return cache['has_wgetssl'];
-				const result = hasWget() && system(`wget 2>&1 | grep -iqF 'https'`) == 0 ? true : false;
-				cache['has_wgetssl'] = result;
-				return result;
+				return cache.has_wgetssl ??= hasWget() && system(`wget 2>&1 | grep -iqF 'https'`) == 0 ? true : false;
 			};
 
 			const hasGNUWgetSsl = () => {
-				if (cache['has_gnuwgetssl']) return cache['has_gnuwgetssl'];
-				const result = hasWget() && system(`wget -V 2>&1 | grep -iqF '+https'`) == 0 ? true : false;
-				cache['has_gnuwgetssl'] = result;
-				return result;
+				return cache.has_gnuwgetssl ??= hasWget() && system(`wget -V 2>&1 | grep -iqF '+https'`) == 0 ? true : false;
 			};
 
 			const hasCurl = () => {
-				if (cache['has_curl']) return cache['has_curl'];
-				const result = hasCommand('curl');
-				cache['has_curl'] = result;
-				return result;
+				return cache.has_curl ??= hasCommand('curl');
 			};
 
 			const hasCurlSsl = () => {
-				return system(`curl -V 2>&1 | grep -qF 'https'`) == 0 ? true : false;
+				return cache.has_curl_ssl ??= system(`curl -V 2>&1 | grep -qF 'https'`) == 0 ? true : false;
 			};
 
 			const hasFetch = () => {
-				if (cache['has_fetch']) return cache['has_fetch'];
-				const result = hasCommand('uclient-fetch');
-				cache['has_fetch'] = result;
-				return result;
+				return cache.has_fetch ??= hasCommand('uclient-fetch');
 			};
 
 			const hasFetchSsl = () => {
-				return stat('/lib/libustream-ssl.so') == 0 ? true : false;
+				return cache.has_fetch_ssl ??= stat('/lib/libustream-ssl.so') ? true : false;
 			};
 
 			const hasCurlPxy = () => {
-				return system(`grep -i 'all_proxy' /usr/lib/libcurl.so*`) == 0 ? true : false;
+				return cache.has_curl_proxy ??= system(`grep -i 'all_proxy' /usr/lib/libcurl.so*`) == 0 ? true : false;
 			};
 
 			const hasBbwget = () => {
-				return system(`wget -V 2>&1 | grep -iqF 'busybox'`) == 0 ? true : false;
+				return cache.has_bbwget ??= system(`wget -V 2>&1 | grep -iqF 'busybox'`) == 0 ? true : false;
 			};
 
 
@@ -2911,7 +2907,7 @@ const dv = view.extend({
 
 	parseMemory(value) {
 		if (!value) return 0;
-		const rex = /^([0-9.]+) *([bkmgt])?i? *[Bb]?/i;
+		const rex = /^([0-9.]+) *([bkmgtp])?i? *[Bb]?/i;
 		let [, amount, unit] = rex.exec(value.toLowerCase());
 		amount = amount ? Number.parseFloat(amount) : 0;
 		switch (unit) {
@@ -5123,7 +5119,7 @@ return dm2.dv.extend({
 
 			o = s.taboption('wsconsole', form.DummyValue, 'wsconsole_controls', _('WebSocket Console'));
 			o.render = L.bind(function() {
-				const status = this.getContainerStatus();
+				const status = this.getContainerStatus(this_container);
 				const isRunning = status === 'running';
 
 				if (!isRunning) {
@@ -5364,6 +5360,7 @@ return dm2.dv.extend({
 			.then(() => {
 				const this_container = map.data.get('json', 'cont');
 				const id = this_container?.Id;
+				const nc = gethc('NanoCpus');
 				/* In the container edit context, there are not many items we
 				can change - duplicate the container */
 				const createBody = {
@@ -5372,11 +5369,11 @@ return dm2.dv.extend({
 					Memory: toInt(gethc('Memory')),
 					MemorySwap: toInt(gethc('MemorySwap')),
 					MemoryReservation: toInt(gethc('MemoryReservation')),
-					BlkioWeight: toInt(gethc('blkio_weight')),
+					BlkioWeight: toInt(gethc('BlkioWeight')),
 
 					CpuPeriod: toInt(gethc('CpuPeriod')),
 					CpuQuota: toInt(gethc('CpuQuota')),
-					NanoCPUs: toInt(gethc('NanoCpus') * (10 ** 9)), // unit: 10^-9, input: float
+					NanoCPUs: nc ? Math.round(nc * 1e9) : undefined, // unit: 10^-9, input: float
 					OomKillDisable: toBool(gethc('OomKillDisable')),
 
 					RestartPolicy: { Name: get('restart_policy') || this_container.HostConfig?.RestartPolicy?.Name },
@@ -9536,7 +9533,7 @@ return dm2.dv.extend({
 
 	render([volumes, containers]) {
 		if (volumes?.code !== 200) {
-			return E('div', {}, [ volumes.body.message ]);
+			return E('div', {}, [ volumes?.body?.message ?? _('Failed to load volumes') ]);
 		}
 
 		// this.volumes = volumes || {};
@@ -10142,7 +10139,7 @@ function run_ttyd(request) {
 
 	const id = request.args.id || '';
 	const cmd = request.args.cmd || '/bin/sh';
-	const port = request.args.port || 7682;
+	const port = int(request.args.port) || 7682;
 	const uid = request.args.uid || '';
 
 	if (!id) {

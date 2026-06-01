@@ -6,7 +6,7 @@ is_monolithic: false
 is_sharded_part: true
 part_number: 2
 part_count: 2
-generated: '2026-05-16T06:03:07.782309+00:00'
+generated: '2026-06-01T15:07:54.396462+00:00'
 ---
 
 # luci-examples Bundled Reference (Part 2 of 2)

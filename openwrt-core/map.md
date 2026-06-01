@@ -1,7 +1,7 @@
 # openwrt-core Navigation Map
 
 > **Contains:** Headers and function signatures for openwrt-core.
-> **Generated:** 2026-05-16T06:03:07.782309+00:00
+> **Generated:** 2026-06-01T15:07:54.396462+00:00
 
 ---
 
@@ -73,6 +73,7 @@
 ## murata-nvram
 ## omnia-mcu-firmware
 ## prism54-firmware
+## rtl826x-firmware
 ## wireless-regdb
 
 > **Summary:** The OpenWrt Buildroot kernel packages module provides a collection of kernel-related packages essential for various hardware functionalities. It includes drivers and firmware for specific devices, such as ath10k-ct for Qualcomm Atheros chipsets and bcm27xx-gpu-fw for Raspberry Pi GPU support. Other packages like button-hotplug and gpio-button-hotplug facilitate button handling and GPIO support, respectively. Each package is maintained by specific contributors and is available through designated source URLs.
