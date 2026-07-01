@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: boot packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 3680
+token_count: 4007
 source_file: L1-raw/openwrt-core/makefile_meta-category-boot.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/boot
 source_locator: package/boot
@@ -24,11 +24,25 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/boot](https://github.com/openwrt/openwrt/blob/unknown/package/boot)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # OpenWrt Buildroot: boot packages
 
 > **Source:** https://github.com/openwrt/openwrt/tree/master/package/boot
+---
+
+## apboot-aruba-ipq806x
+
+Patched build of the Aruba APBoot bootloader (a vendor fork of U-Boot) for the Aruba AP-324 / AP-325 access points (board "octomore"). The factory bootloader enforces RSA signatures on the firmware; this build removes the signature check and switches the console to 115200 baud so that OpenWrt can be booted. The resulting "u-boot.mbn" is meant to be flashed to the APPSBL SPI-flash partition via the serial console.
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-or-later |
+| Maintainer | Lukas Stockner <lukas@lukasstockner.de> # Legacy U-Boot tree, not Kbuild-parallel safe. |
+| Source URL | https://github.com/lukasstockner/ap325-apboot-openwrt.git |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/boot/apboot-aruba-ipq806x
 ---
 
 ## apex
@@ -52,6 +66,17 @@ ai_related_topics:
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/arm-trusted-firmware-bcm63xx
+---
+
+## arm-trusted-firmware-imx
+
+| Field | Value |
+|---|---|
+| Version | 2.14.0 |
+| Maintainer | Martin Schiller <ms@dev.tdt.de> include $(INCLUDE_DIR)/[kernel.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/trusted-firmware-a.mk include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Trusted-Firmware-A/Default BUILD_TARGET:=imx BUIL |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/boot/arm-trusted-firmware-imx
 ---
 
 ## arm-trusted-firmware-mediatek
@@ -262,7 +287,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 6.12.20.2.0.0 |
+| Version | 6.18.2.1.0.0 |
 | Source URL | https://github.com/nxp-qoriq/atf |
 
 
@@ -364,7 +389,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 2022.01 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-imx
@@ -406,7 +431,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 6.12.20.2.0.0 |
+| Version | 6.18.2.1.0.0 |
 | Source URL | https://github.com/nxp-qoriq/u-boot |
 
 
@@ -417,7 +442,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.01 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mediatek
@@ -458,7 +483,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2021.07 |
+| Version | 2024.07 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-omap

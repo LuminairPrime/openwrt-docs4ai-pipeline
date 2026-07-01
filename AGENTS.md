@@ -32,5 +32,5 @@ Check `[module]/AGENTS.md` before beginning work on a specific subsystem.
 
 ## Current Context
 - **Module Count:** 9
-- **Total Token Count:** ~473154
-- **Indexed Symbols:** 458
+- **Total Token Count:** ~479267
+- **Indexed Symbols:** 483

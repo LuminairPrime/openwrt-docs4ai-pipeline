@@ -2,9 +2,9 @@
 title: Debugging
 module: wiki
 origin_type: wiki_page
-token_count: 1994
+token_count: 2016
 source_file: L1-raw/wiki/wiki_page-guide-developer-debugging.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_url: https://openwrt.org/docs/guide-developer/debugging
 language: text
 ai_summary: The Debugging module in OpenWrt provides essential tools and techniques for diagnosing issues related to hardware, kernel, and driver development. It covers methods such as adding a serial console, utilizing JTAG for debugging, and employing GDB for code analysis. Additionally, it offers guidance on capturing wireless management traffic using tools like tcpdump and iwcap, as well as adjusting the logging level for hostapd to facilitate troubleshooting. These resources are crucial for developers working on embedded network devices to effectively identify and resolve issues.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/debugging](https://openwrt.org/docs/guide-developer/debugging)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # Debugging
 
@@ -61,7 +61,7 @@ ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interf
 
 ### Logging hostapd behaviour
 
-Note that recent versions of openwrt ship with a version of hostapd which has verbose debug messages disabled in order to save on space (see <https://dev.openwrt.org/ticket/15658> ).
+Note that recent versions of openwrt ship with a version of hostapd which has verbose debug messages disabled in order to save on space (see <https://dev.openwrt.org/ticket/15658> ). Set "Minimum debug message priority" in menuconfig to 0 to have all log levels available for debugging.
 
 \<del\>To enable debug you need to install the debug build of hostapd from the packages for your router (package name hostapd), having first removed the cut-down version:
 

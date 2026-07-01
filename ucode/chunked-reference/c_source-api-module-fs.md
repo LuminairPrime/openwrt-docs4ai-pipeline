@@ -2,9 +2,9 @@
 title: 'ucode module: fs'
 module: ucode
 origin_type: c_source
-token_count: 11211
+token_count: 11215
 source_file: L1-raw/ucode/c_source-api-module-fs.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/fs.c
 source_locator: lib/fs.c
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/fs.c](https://github.com/nicowillis/ucode/blob/unknown/lib/fs.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # ucode module: fs
 
@@ -1194,7 +1194,7 @@ In case of an error, null is returned and error details are available via
 | Param | Type | Description |
 | --- | --- | --- |
 | direction | `number` | The direction of the ioctl operation. Use constants IOC_DIR_*. |
-| type | `number` | The ioctl type (see https://www.kernel.org/doc/html/latest/userspace-api/ioctl/ioctl-number.html) |
+| type | `number` \| `null` | The ioctl type (see https://www.kernel.org/doc/html/latest/userspace-api/ioctl/ioctl-number.html) |
 | num | `number` | The ioctl sequence number. |
 | [value] | `number` \| `string` | The value to pass to the ioctl system call. For `IOC_DIR_NONE`, this argument is ignored. With `IOC_DIR_READ`, the value should be a positive integer specifying the number of bytes to expect from the kernel. For the other directions, `IOC_DIR_WRITE` and `IOC_DIR_RW`, that value parameter must be a string, serving as buffer for the data to send. |
 

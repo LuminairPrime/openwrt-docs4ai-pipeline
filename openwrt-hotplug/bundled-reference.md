@@ -1,15 +1,15 @@
 ---
 module: openwrt-hotplug
-total_token_count: 1412
+total_token_count: 1421
 section_count: 1
 is_monolithic: true
-generated: '2026-06-01T15:07:54.396462+00:00'
+generated: '2026-07-01T13:52:18.761392+00:00'
 ---
 
 # openwrt-hotplug Bundled Reference
 
 > **Contains:** 1 documents concatenated
-> **Tokens:** ~1412 (cl100k_base)
+> **Tokens:** ~1421 (cl100k_base)
 
 ---
 
@@ -53,7 +53,7 @@ generated: '2026-06-01T15:07:54.396462+00:00'
 ```bash
 #!/bin/sh
 
-[ "${ACTION}" = "add" ] && {
+[ "${ACTION}" = "add" ] && [ -f /etc/board.json ] && {
 	/sbin/wifi config
 	ubus call network.wireless retry
 }

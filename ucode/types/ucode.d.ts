@@ -231,18 +231,43 @@ declare module "log" {
 
 declare module "math" {
     export function abs(number: any): any;
+    export function acos(x: any): any;
+    export function asin(x: any): any;
+    export function atan(x: any): any;
     export function atan2(y: any, x: any): any;
+    export function cbrt(x: any): any;
+    export function ceil(x: any, output_type: any): any;
+    export function clamp(x: any, upper: any, lower: any): any;
+    export function copysign(x: any, y: any): any;
     export function cos(x: any): any;
+    export function cosh(x: any): any;
     export function deg2rad(number: any): any;
     export function exp(x: any): any;
+    export function expm1(x: any): any;
+    export function floor(x: any, output_type: any): any;
+    export function fmax(x: any, y: any): any;
+    export function fmin(x: any, y: any): any;
+    export function hypot(x: any, y: any): any;
+    export function isinf(x: any): any;
     export function isnan(x: any): any;
     export function log(x: any): any;
+    export function log10(x: any): any;
+    export function log1p(x: any): any;
+    export function log2(x: any): any;
     export function pow(x: any, y: any): any;
     export function rad2deg(number: any): any;
     export function rand(a?: any, b?: any): any;
+    export function round(x: any, output_type: any): any;
+    export function sign(x: any): any;
+    export function signbit(x: any): any;
+    export function signnz(x: any): any;
     export function sin(x: any): any;
+    export function sinh(x: any): any;
     export function sqrt(x: any): any;
     export function srand(seed: any): any;
+    export function tan(x: any): any;
+    export function tanh(x: any): any;
+    export function trunc(x: any, output_type: any): any;
 }
 
 declare module "nl80211" {
@@ -284,7 +309,6 @@ declare module "process" {
 declare module "request" {
     export function defer(): any;
     export function error(rcode?: any): any;
-    export function get(): any;
     export function new(): any;
     export function reply(data: any): any;
     export function set(): any;

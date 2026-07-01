@@ -2,9 +2,9 @@
 title: OpenWrt Core Hotplug Events
 module: openwrt-hotplug
 origin_type: hotplug_event
-token_count: 1412
+token_count: 1421
 source_file: L1-raw/openwrt-hotplug/hotplug_event-netifd-hotplug-events.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/**/etc/hotplug.d/*
 source_locator: package/**/etc/hotplug.d/*
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/**/etc/hotplug.d/*](https://github.com/openwrt/openwrt/blob/unknown/package/**/etc/hotplug.d/*)
 > **Kind:** hotplug_event | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # OpenWrt Core Hotplug Events
 
@@ -64,7 +64,7 @@ ai_related_topics:
 ```bash
 #!/bin/sh
 
-[ "${ACTION}" = "add" ] && {
+[ "${ACTION}" = "add" ] && [ -f /etc/board.json ] && {
 	/sbin/wifi config
 	ubus call network.wireless retry
 }

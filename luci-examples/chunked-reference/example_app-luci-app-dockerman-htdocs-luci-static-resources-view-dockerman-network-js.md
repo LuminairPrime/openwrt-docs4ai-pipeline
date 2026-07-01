@@ -4,7 +4,7 @@ module: luci-examples
 origin_type: example_app
 token_count: 1465
 source_file: L1-raw/luci-examples/example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-network-js.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/htdocs/luci-static/resources/view/dockerman/network.js
 source_locator: applications/luci-app-dockerman/htdocs/luci-static/resources/view/dockerman/network.js
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/htdocs/luci-static/resources/view/dockerman/network.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/htdocs/luci-static/resources/view/dockerman/network.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # network.js
 ```javascript

@@ -1,15 +1,17 @@
 # openwrt-core Navigation Map
 
 > **Contains:** Headers and function signatures for openwrt-core.
-> **Generated:** 2026-06-01T15:07:54.396462+00:00
+> **Generated:** 2026-07-01T13:52:18.761392+00:00
 
 ---
 
 > **Summary:** The OpenWrt Buildroot boot packages module provides essential firmware components required for the boot process of various ARM-based devices. It includes several trusted firmware implementations for different hardware platforms, such as bcm63xx, mediatek, microchipsw, mvebu, rockchip, stm32, and sunxi. Each package is maintained by specific individuals and is sourced from respective repositories. The module facilitates the integration of these boot packages into the OpenWrt build system, ensuring compatibility and functionality across supported devices.
 > **Use Case:** Use this module when building OpenWrt firmware for ARM devices that require specific boot firmware. It is particularly useful for developers targeting various hardware platforms needing trusted firmware.
 # OpenWrt Buildroot: boot packages
+## apboot-aruba-ipq806x
 ## apex
 ## arm-trusted-firmware-bcm63xx
+## arm-trusted-firmware-imx
 ## arm-trusted-firmware-mediatek
 ## arm-trusted-firmware-microchipsw
 ## arm-trusted-firmware-mvebu
@@ -65,6 +67,7 @@
 ## broadcom-sprom
 ## cypress-firmware
 ## cypress-nvram
+## firmware-imx
 ## intel-microcode
 ## ipq-wifi
 ## ixp4xx-microcode

@@ -2,9 +2,9 @@
 title: commands.js
 module: luci-examples
 origin_type: example_app
-token_count: 247
+token_count: 280
 source_file: L1-raw/luci-examples/example_app-luci-app-commands-htdocs-luci-static-resources-view-commands-js.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js
 source_locator: applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # commands.js
 ```javascript
@@ -41,8 +41,12 @@ return view.extend({
 		s.anonymous = true;
 		s.addremove = true;
 
-		o = s.option(form.Value, 'name', _('Description'),
-			_('A short textual description of the configured command'));
+		o = s.option(form.Value, 'name', _('Name'),
+			_('A short name for the configured command'));
+
+		o = s.option(form.Value, 'description', _('Description'),
+			_('An optional longer description to display on the execution page'));
+		o.optional = true;
 
 		o = s.option(form.Value, 'command', _('Command'), _('Command line to execute'));
 		o.textvalue = function(section_id) {

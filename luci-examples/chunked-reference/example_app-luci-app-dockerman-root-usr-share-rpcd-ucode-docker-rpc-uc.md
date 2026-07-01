@@ -4,7 +4,7 @@ module: luci-examples
 origin_type: example_app
 token_count: 5821
 source_file: L1-raw/luci-examples/example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc
 source_locator: applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-dockerman/root/usr/share/rpcd/ucode/docker_rpc.uc)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # docker_rpc.uc
 ```ucode

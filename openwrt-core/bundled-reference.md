@@ -1,21 +1,35 @@
 ---
 module: openwrt-core
-total_token_count: 23374
+total_token_count: 23787
 section_count: 7
 is_monolithic: true
-generated: '2026-06-01T15:07:54.396462+00:00'
+generated: '2026-07-01T13:52:18.761392+00:00'
 ---
 
 # openwrt-core Bundled Reference
 
 > **Contains:** 7 documents concatenated
-> **Tokens:** ~23374 (cl100k_base)
+> **Tokens:** ~23787 (cl100k_base)
 
 ---
 
 # OpenWrt Buildroot: boot packages
 
 > **Source:** https://github.com/openwrt/openwrt/tree/master/package/boot
+---
+
+## apboot-aruba-ipq806x
+
+Patched build of the Aruba APBoot bootloader (a vendor fork of U-Boot) for the Aruba AP-324 / AP-325 access points (board "octomore"). The factory bootloader enforces RSA signatures on the firmware; this build removes the signature check and switches the console to 115200 baud so that OpenWrt can be booted. The resulting "u-boot.mbn" is meant to be flashed to the APPSBL SPI-flash partition via the serial console.
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-or-later |
+| Maintainer | Lukas Stockner <lukas@lukasstockner.de> # Legacy U-Boot tree, not Kbuild-parallel safe. |
+| Source URL | https://github.com/lukasstockner/ap325-apboot-openwrt.git |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/boot/apboot-aruba-ipq806x
 ---
 
 ## apex
@@ -39,6 +53,17 @@ generated: '2026-06-01T15:07:54.396462+00:00'
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/arm-trusted-firmware-bcm63xx
+---
+
+## arm-trusted-firmware-imx
+
+| Field | Value |
+|---|---|
+| Version | 2.14.0 |
+| Maintainer | Martin Schiller <ms@dev.tdt.de> include $(INCLUDE_DIR)/[kernel.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/trusted-firmware-a.mk include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Trusted-Firmware-A/Default BUILD_TARGET:=imx BUIL |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/boot/arm-trusted-firmware-imx
 ---
 
 ## arm-trusted-firmware-mediatek
@@ -249,7 +274,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 6.12.20.2.0.0 |
+| Version | 6.18.2.1.0.0 |
 | Source URL | https://github.com/nxp-qoriq/atf |
 
 
@@ -351,7 +376,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 2022.01 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-imx
@@ -393,7 +418,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 6.12.20.2.0.0 |
+| Version | 6.18.2.1.0.0 |
 | Source URL | https://github.com/nxp-qoriq/u-boot |
 
 
@@ -404,7 +429,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.01 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mediatek
@@ -445,7 +470,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2021.07 |
+| Version | 2024.07 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-omap
@@ -601,6 +626,18 @@ Alternative ath10k firmware for QCA9887 from Candela Technologies. Enables [IBSS
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/cypress-nvram
 ---
 
+## firmware-imx
+
+| Field | Value |
+|---|---|
+| Version | 8.28-994fa14 |
+| License | LA_OPT_NXP_Software_License |
+| Source URL | https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/ |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/firmware-imx
+---
+
 ## intel-microcode
 
 | Field | Value |
@@ -637,7 +674,7 @@ This package contains the microcode needed to use the network engines in IXP4xx 
 
 | Field | Value |
 |---|---|
-| Version | 20260519 |
+| Version | 20260622 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -704,7 +741,7 @@ Firmware binaries for the microcontroller on the Turris Omnia router. These are 
 
 | Field | Value |
 |---|---|
-| Version | 2026.03.18 |
+| Version | 2026.05.30 |
 | License | ISC |
 | Maintainer | Felix Fietkau <nbd@nbd.name> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/wireless-regdb PKGARCH:=all SECTION:=firmware CATEGORY:=Firmware URL:=https://git.kernel.org/pub/scm/linux/kernel/git/wens |
 | Source URL | @KERNEL/software/network/wireless-regdb/ |
@@ -1078,7 +1115,7 @@ GNU libc hierarchial argument parsing library broken out from glibc.
 
 | Field | Value |
 |---|---|
-| Version | 0.192 |
+| Version | 0.195 |
 | License | GPL-2.0-or-later LGPL-3.0-or-later |
 | Maintainer | Luiz Angelo Daros de Luca <luizluca@gmail.com> |
 | Source URL | https://sourceware.org/$(PKG_NAME)/ftp/$(PKG_VERSION) https://mirrors.kernel.org/sourceware/$(PKG_NAME)/$(PKG_VERSION) |
@@ -1233,7 +1270,7 @@ This library provides message digest functions found on BSD systems either on th
 
 | Field | Value |
 |---|---|
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | License | BSD-3-Clause |
 | Source URL | https://archive.hadrons.org/software/libmd/ |
 
@@ -1490,7 +1527,7 @@ A library for manipulating XML and HTML resources.
 
 | Field | Value |
 |---|---|
-| Version | 2.15.1 |
+| Version | 2.15.3 |
 | License | MIT |
 | Source URL | @GNOME/libxml2/$(basename $(PKG_VERSION)) |
 
@@ -1572,7 +1609,7 @@ $(call Package/openssl/Default/description) This package contains the OpenSSL sh
 
 | Field | Value |
 |---|---|
-| Version | 3.5.6 |
+| Version | 3.5.7 |
 | License | Apache-2.0 |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://www.openssl.org/source/ https://www.openssl.org/source/old/$(PKG_BASE)/ https://github.com/openssl/openssl/relea |
@@ -1732,7 +1769,7 @@ zlib is a lossless data-compression library. This package includes the shared li
 
 | Field | Value |
 |---|---|
-| Version | 20260223 |
+| Version | 20260601 |
 | License | GPL-2.0-or-later MPL-2.0 |
 | Maintainer | PKG_LICENSE:=GPL-2.0-or-later MPL-2.0 |
 | Source URL | @DEBIAN/pool/main/c/ca-certificates |
@@ -2030,7 +2067,7 @@ The Swiss Army Knife of embedded Linux. It slices, it dices, it makes Julian Fri
 
 | Field | Value |
 |---|---|
-| Version | 1.37.0 |
+| Version | 1.38.0 |
 | License | GPL-2.0 |
 | Source URL | https://www.busybox.net/downloads https://sources.buildroot.net/$(PKG_NAME) |
 
@@ -2117,7 +2154,7 @@ Device Tree Compiler for Flat Device Trees Device Tree Compiler, dtc, takes as i
 
 | Field | Value |
 |---|---|
-| Version | 1.7.2 |
+| Version | 1.8.1 |
 | License | GPL-2.0-only |
 | Maintainer | Yousong Zhou <yszhou4tech@gmail.com> |
 | Source URL | @KERNEL/software/utils/dtc |
@@ -2374,7 +2411,7 @@ Utilities for manipulating memory technology devices.
 
 | Field | Value |
 |---|---|
-| Version | 2.2.12 |
+| Version | 2.3.0 |
 | License | GPL-2.0 |
 | Maintainer | Pavlo Samko <bulldozerbsg@gmail.com> |
 | Source URL | https://nilfs.sourceforge.io/download/ |
@@ -2624,7 +2661,7 @@ The libblkid library is used to identify block devices (disks) as to their conte
 
 | Field | Value |
 |---|---|
-| Version | 2.42.1 |
+| Version | 2.42.2 |
 | Source URL | @KERNEL/linux/utils/$(PKG_NAME)/v2.42 |
 
 

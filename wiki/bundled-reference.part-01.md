@@ -1,18 +1,18 @@
 ---
 module: wiki
-total_token_count: 99226
+total_token_count: 99288
 section_count: 49
 is_monolithic: false
 is_sharded_part: true
 part_number: 1
 part_count: 2
-generated: '2026-06-01T15:07:54.396462+00:00'
+generated: '2026-07-01T13:52:18.761392+00:00'
 ---
 
 # wiki Bundled Reference (Part 1 of 2)
 
 > **Contains:** 49 documents
-> **Tokens:** ~99226 (cl100k_base)
+> **Tokens:** ~99288 (cl100k_base)
 > **Index:** [./bundled-reference.md](./bundled-reference.md)
 
 ---
@@ -1968,7 +1968,7 @@ ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interf
 
 ### Logging hostapd behaviour
 
-Note that recent versions of openwrt ship with a version of hostapd which has verbose debug messages disabled in order to save on space (see <https://dev.openwrt.org/ticket/15658> ).
+Note that recent versions of openwrt ship with a version of hostapd which has verbose debug messages disabled in order to save on space (see <https://dev.openwrt.org/ticket/15658> ). Set "Minimum debug message priority" in menuconfig to 0 to have all log levels available for debugging.
 
 \<del\>To enable debug you need to install the debug build of hostapd from the packages for your router (package name hostapd), having first removed the cut-down version:
 
@@ -3814,7 +3814,7 @@ The [umdns](/packages/pkgdata/umdns) package provides a compact implementation o
 
 ### Configuration
 
-**I NEED HELP NAILING DOWN THE DEFAULT, AND THE [CORRECT](../cookbook/chunked-reference/ucode-rpcd-service-pattern.md) DESCRIPTION OF ALL THE FOLLOWING LINES**
+**I NEED HELP NAILING DOWN THE DEFAULT, AND THE [CORRECT](../cookbook/chunked-reference/luci-form-with-uci.md) DESCRIPTION OF ALL THE FOLLOWING LINES**
 
 **Hostname:** `umdns` advertises the hostname that is present in `/etc/config/system`.
 
@@ -5003,6 +5003,8 @@ scons is only used by a few packages: [iotivity](https://github.com/openwrt/pack
 # Creating packages
 
 **See also -\> [Package Policy Guide](package-policies)**, which contains a wealth of extra technical information not covered here.
+
+**See instead -\> [Working with Patches](/docs/guide-developer/toolchain/use-patches-with-buildsystem)**, if you only need to make minor modifications to existing packages.
 
 One of the things that we've attempted to do with OpenWrt's template system is make it incredibly easy to port software to OpenWrt. If you look at a typical package directory in OpenWrt you'll find three things:
 
@@ -6526,7 +6528,7 @@ This table lists the support status of various OpenWrt releases:
 | Version           | Current status       | Initial Release    | EoL (Projected)   | Latest Release | Release Date      |
 |:------------------|:---------------------|:-------------------|:------------------|:---------------|:------------------|
 | @lightgreen:25.12 | Supported            | 2026, March 06     | TBD               | 25.12.4        | 2026, May 14      |
-| @yellow:24.10     | Security Maintenance | 2025, February 06  | (2026, September) | 24.10.6        | 2026, March 18    |
+| @yellow:24.10     | Security Maintenance | 2025, February 06  | (2026, September) | 24.10.7        | 2026, May 31      |
 | @pink:23.05       | End of Life          | 2023, October 13   | 2025, August      | 23.05.6        | 2025, August 20   |
 | @pink:22.03       | End of Life          | 2022, September 06 | 2024, July        | 22.03.7        | 2024, July 25     |
 | @pink:21.02       | End of Life          | 2021, September 04 | 2023, May         | 21.02.7        | 2023, May 01      |

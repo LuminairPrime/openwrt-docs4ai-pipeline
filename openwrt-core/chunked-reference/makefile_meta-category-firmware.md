@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: firmware packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 1581
+token_count: 1667
 source_file: L1-raw/openwrt-core/makefile_meta-category-firmware.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/firmware
 source_locator: package/firmware
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/firmware](https://github.com/openwrt/openwrt/blob/unknown/package/firmware)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # OpenWrt Buildroot: firmware packages
 
@@ -88,6 +88,18 @@ Alternative ath10k firmware for QCA9887 from Candela Technologies. Enables [IBSS
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/cypress-nvram
 ---
 
+## firmware-imx
+
+| Field | Value |
+|---|---|
+| Version | 8.28-994fa14 |
+| License | LA_OPT_NXP_Software_License |
+| Source URL | https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/ |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/firmware-imx
+---
+
 ## intel-microcode
 
 | Field | Value |
@@ -124,7 +136,7 @@ This package contains the microcode needed to use the network engines in IXP4xx 
 
 | Field | Value |
 |---|---|
-| Version | 20260519 |
+| Version | 20260622 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -191,7 +203,7 @@ Firmware binaries for the microcontroller on the Turris Omnia router. These are 
 
 | Field | Value |
 |---|---|
-| Version | 2026.03.18 |
+| Version | 2026.05.30 |
 | License | ISC |
 | Maintainer | Felix Fietkau <nbd@nbd.name> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/wireless-regdb PKGARCH:=all SECTION:=firmware CATEGORY:=Firmware URL:=https://git.kernel.org/pub/scm/linux/kernel/git/wens |
 | Source URL | @KERNEL/software/network/wireless-regdb/ |

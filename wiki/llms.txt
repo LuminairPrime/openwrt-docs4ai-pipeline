@@ -1,12 +1,12 @@
 # wiki module
 > OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support.
-> **Total Context:** ~195910 tokens
+> **Total Context:** ~195972 tokens
 
 ## Recommended Entry Points
 
 - [map.md](./map.md): Structural map for wiki that prioritizes quick orientation and symbol discovery. (~20603 tokens, l3-skeleton)
 - [bundled-reference.md](./bundled-reference.md): Sharded complete reference index for wiki with links to smaller part files. (~194 tokens, l4-monolith)
-- [bundled-reference.part-01.md](./bundled-reference.part-01.md): Part 1 of the sharded complete reference for wiki when the full module exceeds the token budget. (~99911 tokens, l4-monolith-part)
+- [bundled-reference.part-01.md](./bundled-reference.part-01.md): Part 1 of the sharded complete reference for wiki when the full module exceeds the token budget. (~99971 tokens, l4-monolith-part)
 - [bundled-reference.part-02.md](./bundled-reference.part-02.md): Part 2 of the sharded complete reference for wiki when the full module exceeds the token budget. (~98049 tokens, l4-monolith-part)
 
 ## Source Documents
@@ -23,7 +23,7 @@
 - [wiki_page-guide-developer-config-scripting.md](./chunked-reference/wiki_page-guide-developer-config-scripting.md): The Configuration in scripts module provides a set of shell procedures for interacting with UCI (Unified Configuration Interface) to read and process configuration files within shell scripts in OpenWrt. (~2800 tokens, l2-source)
 - [wiki_page-guide-developer-creating-a-cmake-package-in-openwrt.md](./chunked-reference/wiki_page-guide-developer-creating-a-cmake-package-in-openwrt.md): This document provides a guide for creating a CMake package in OpenWrt, highlighting the differences from the Meson package creation process. (~631 tokens, l2-source)
 - [wiki_page-guide-developer-creating-a-meson-based-package.md](./chunked-reference/wiki_page-guide-developer-creating-a-meson-based-package.md): This tutorial outlines the process of creating and installing Meson-based packages in OpenWrt, providing a comprehensive guide for developers. (~1314 tokens, l2-source)
-- [wiki_page-guide-developer-debugging.md](./chunked-reference/wiki_page-guide-developer-debugging.md): The Debugging module in OpenWrt provides essential tools and techniques for diagnosing issues related to hardware, kernel, and driver development. (~1994 tokens, l2-source)
+- [wiki_page-guide-developer-debugging.md](./chunked-reference/wiki_page-guide-developer-debugging.md): The Debugging module in OpenWrt provides essential tools and techniques for diagnosing issues related to hardware, kernel, and driver development. (~2016 tokens, l2-source)
 - [wiki_page-guide-developer-defining-firmware-partitions.md](./chunked-reference/wiki_page-guide-developer-defining-firmware-partitions.md): The Device Tree Usage in OpenWrt (DTS) module outlines the transition from older 'mach' files to Device Tree (DT) files, which include .dts, .dtsi, and .dtb formats. (~1049 tokens, l2-source)
 - [wiki_page-guide-developer-dependencies.md](./chunked-reference/wiki_page-guide-developer-dependencies.md): The 'Using Dependencies' module provides guidance on how to define package dependencies in OpenWrt Makefiles. (~1486 tokens, l2-source)
 - [wiki_page-guide-developer-device-support-policies.md](./chunked-reference/wiki_page-guide-developer-device-support-policies.md): The Device support policies / best practices document outlines guidelines for developers submitting device support patches in OpenWrt. (~2003 tokens, l2-source)
@@ -44,7 +44,7 @@
 - [wiki_page-guide-developer-overview.md](./chunked-reference/wiki_page-guide-developer-overview.md): The OpenWrt API module provides an overview of how the OpenWrt GNU/Linux distribution is structured, focusing on package management and compilation. (~1468 tokens, l2-source)
 - [wiki_page-guide-developer-package-policies.md](./chunked-reference/wiki_page-guide-developer-package-policies.md): OpenWrt packages are essential components of the OpenWrt system, providing software in the form of source and binary packages. (~5457 tokens, l2-source)
 - [wiki_page-guide-developer-packages-flags.md](./chunked-reference/wiki_page-guide-developer-packages-flags.md): The Overriding Build Options module in OpenWrt provides developers with the ability to customize build configurations for packages, particularly when cross-compiling. (~695 tokens, l2-source)
-- [wiki_page-guide-developer-packages.md](./chunked-reference/wiki_page-guide-developer-packages.md): Step-by-step guide for creating a new OpenWrt package from scratch. (~11047 tokens, l2-source)
+- [wiki_page-guide-developer-packages.md](./chunked-reference/wiki_page-guide-developer-packages.md): Step-by-step guide for creating a new OpenWrt package from scratch. (~11087 tokens, l2-source)
 - [wiki_page-guide-developer-procd-init-script-example.md](./chunked-reference/wiki_page-guide-developer-procd-init-script-example.md): This document provides a comprehensive guide on creating a sample procd init script for OpenWrt, illustrating how to set up a simple shell script as a service. (~2384 tokens, l2-source)
 - [wiki_page-guide-developer-procd-init-scripts.md](./chunked-reference/wiki_page-guide-developer-procd-init-scripts.md): Practical guide for writing procd-based /etc/init.d/ service scripts. (~5333 tokens, l2-source)
 - [wiki_page-guide-developer-rpcd.md](./chunked-reference/wiki_page-guide-developer-rpcd.md): The RPC daemon (rpcd) in OpenWrt serves as a lightweight solution for enabling communication between various software components that do not have their own persistent daemons. (~274 tokens, l2-source)

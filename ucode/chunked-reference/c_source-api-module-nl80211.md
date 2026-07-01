@@ -4,7 +4,7 @@ module: ucode
 origin_type: c_source
 token_count: 3950
 source_file: L1-raw/ucode/c_source-api-module-nl80211.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/nl80211.c
 source_locator: lib/nl80211.c
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/nl80211.c](https://github.com/nicowillis/ucode/blob/unknown/lib/nl80211.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # ucode module: nl80211
 

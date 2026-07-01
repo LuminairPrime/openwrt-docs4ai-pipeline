@@ -1,18 +1,18 @@
 ---
 module: luci-examples
-total_token_count: 99417
+total_token_count: 99450
 section_count: 24
 is_monolithic: false
 is_sharded_part: true
 part_number: 1
 part_count: 2
-generated: '2026-06-01T15:07:54.396462+00:00'
+generated: '2026-07-01T13:52:18.761392+00:00'
 ---
 
 # luci-examples Bundled Reference (Part 1 of 2)
 
 > **Contains:** 24 documents
-> **Tokens:** ~99417 (cl100k_base)
+> **Tokens:** ~99450 (cl100k_base)
 > **Index:** [./bundled-reference.md](./bundled-reference.md)
 
 ---
@@ -36,8 +36,12 @@ return view.extend({
 		s.anonymous = true;
 		s.addremove = true;
 
-		o = s.option(form.Value, 'name', _('Description'),
-			_('A short textual description of the configured command'));
+		o = s.option(form.Value, 'name', _('Name'),
+			_('A short name for the configured command'));
+
+		o = s.option(form.Value, 'description', _('Description'),
+			_('An optional longer description to display on the execution page'));
+		o.optional = true;
 
 		o = s.option(form.Value, 'command', _('Command'), _('Command line to execute'));
 		o.textvalue = function(section_id) {

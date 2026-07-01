@@ -2,9 +2,9 @@
 title: Creating packages
 module: wiki
 origin_type: wiki_page
-token_count: 11047
+token_count: 11087
 source_file: L1-raw/wiki/wiki_page-guide-developer-packages.md
-last_pipeline_run: '2026-06-01T15:07:34.054622+00:00'
+last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
 source_url: https://openwrt.org/docs/guide-developer/packages
 language: text
 ai_summary: Step-by-step guide for creating a new OpenWrt package from scratch. Covers directory layout under package/mypackage/, the minimal Makefile skeleton (include $(TOPDIR)/rules.mk, Package/define, Build/Compile, Package/install), adding dependencies via DEPENDS:=, using PKG_INSTALL=1 vs. custom Build/Compile, creating conffiles, installing init scripts, and submitting packages to the upstream feed.
@@ -21,11 +21,13 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/packages](https://openwrt.org/docs/guide-developer/packages)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-06-01
+> **Normalized:** 2026-07-01
 
 # Creating packages
 
 **See also -\> [Package Policy Guide](package-policies)**, which contains a wealth of extra technical information not covered here.
+
+**See instead -\> [Working with Patches](/docs/guide-developer/toolchain/use-patches-with-buildsystem)**, if you only need to make minor modifications to existing packages.
 
 One of the things that we've attempted to do with OpenWrt's template system is make it incredibly easy to port software to OpenWrt. If you look at a typical package directory in OpenWrt you'll find three things:
 

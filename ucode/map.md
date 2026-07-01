@@ -1,7 +1,7 @@
 # ucode Navigation Map
 
 > **Contains:** Headers and function signatures for ucode.
-> **Generated:** 2026-06-01T15:07:54.396462+00:00
+> **Generated:** 2026-07-01T13:52:18.761392+00:00
 
 ---
 
@@ -171,18 +171,43 @@
 # ucode module: math
 ## Mathematical Functions
 ### math.abs(number) ⇒ `number`
+### math.acos(x) ⇒ `double`
+### math.asin(x) ⇒ `double`
+### math.atan(x) ⇒ `double`
+### math.cosh(x) ⇒ `double`
+### math.sinh(x) ⇒ `double`
+### math.tanh(x) ⇒ `double`
 ### math.atan2(y, x) ⇒ `number`
+### math.tan(x) ⇒ `double`
 ### math.cos(x) ⇒ `number`
 ### math.exp(x) ⇒ `number`
 ### math.log(x) ⇒ `number`
+### math.log10(x) ⇒ `double`
+### math.log2(x) ⇒ `double`
+### math.log1p(x) ⇒ `double`
+### math.expm1(x) ⇒ `double`
 ### math.sin(x) ⇒ `number`
 ### math.sqrt(x) ⇒ `number`
+### math.cbrt(x) ⇒ `double`
+### math.hypot(x, y) ⇒ `double`
 ### math.pow(x, y) ⇒ `number`
 ### math.rand([a], [b]) ⇒ `number`
 ### math.srand(seed)
 ### math.isnan(x) ⇒ `boolean`
+### math.isinf(x) ⇒ `boolean`
 ### math.deg2rad(number) ⇒ `number`
 ### math.rad2deg(number) ⇒ `number`
+### math.fmin(x, y) ⇒ `double`
+### math.fmax(x, y) ⇒ `double`
+### math.clamp(x, upper, lower) ⇒ `double`
+### math.sign(x) ⇒ `integer`
+### math.signbit(x) ⇒ `integer`
+### math.signnz(x) ⇒ `integer`
+### math.copysign(x, y) ⇒ `double`
+### math.floor(x, output_type) ⇒ `number`
+### math.ceil(x, output_type) ⇒ `number`
+### math.round(x, output_type) ⇒ `number`
+### math.trunc(x, output_type) ⇒ `number`
 
 > **Summary:** Provides netlink 802.11 wireless configuration API bindings for ucode. Implements request() to send and receive nl80211 commands including NL80211_CMD_GET_INTERFACE, NL80211_CMD_GET_STATION, NL80211_CMD_TRIGGER_SCAN, and regulatory domain queries. Returns structured attribute dictionaries parsed from kernel nl80211 netlink messages.
 > **Use Case:** Use in ucode-based wireless management handlers that need direct kernel-level 802.11 interface control, station enumeration, or scan triggering beyond what iwinfo or standard UCI wireless config expose.
