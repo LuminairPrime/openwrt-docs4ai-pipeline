@@ -1,25 +1,25 @@
 # ucode module
 > ucode scripting language: standard library, runtime modules (fs, ubus, uci, uloop, nl80211, rtnl), and C API.
-> **Total Context:** ~95429 tokens
+> **Total Context:** ~95900 tokens
 
 ## Recommended Entry Points
 
-- [map.md](./map.md): Structural map for ucode that prioritizes quick orientation and symbol discovery. (~6664 tokens, l3-skeleton)
-- [bundled-reference.md](./bundled-reference.md): Complete monolithic reference for ucode when a larger context window is available. (~95637 tokens, l4-monolith)
+- [map.md](./map.md): Structural map for ucode that prioritizes quick orientation and symbol discovery. (~6687 tokens, l3-skeleton)
+- [bundled-reference.md](./bundled-reference.md): Complete monolithic reference for ucode when a larger context window is available. (~96108 tokens, l4-monolith)
 
 ## Tooling Surfaces
 
-- [types/ucode.d.ts](./types/ucode.d.ts): TypeScript declarations for IDE navigation and static analysis of ucode. (~4212 tokens, l3-ide-schema)
+- [types/ucode.d.ts](./types/ucode.d.ts): TypeScript declarations for IDE navigation and static analysis of ucode. (~4219 tokens, l3-ide-schema)
 
 ## Source Documents
 
-- [c_source-api-module-debug.md](./chunked-reference/c_source-api-module-debug.md): Provides runtime introspection and tracing utilities for ucode scripts. (~3902 tokens, l2-source)
+- [c_source-api-module-debug.md](./chunked-reference/c_source-api-module-debug.md): Provides runtime introspection and tracing utilities for ucode scripts. (~3937 tokens, l2-source)
 - [c_source-api-module-digest.md](./chunked-reference/c_source-api-module-digest.md): Provides cryptographic hash and HMAC computation for ucode. (~1833 tokens, l2-source)
-- [c_source-api-module-fs.md](./chunked-reference/c_source-api-module-fs.md): Provides POSIX-style filesystem access for ucode scripts. (~11215 tokens, l2-source)
+- [c_source-api-module-fs.md](./chunked-reference/c_source-api-module-fs.md): Provides POSIX-style filesystem access for ucode scripts. (~11343 tokens, l2-source)
 - [c_source-api-module-io.md](./chunked-reference/c_source-api-module-io.md): Provides buffered I/O stream primitives for ucode. (~4062 tokens, l2-source)
 - [c_source-api-module-log.md](./chunked-reference/c_source-api-module-log.md): Provides syslog integration for ucode scripts via the POSIX syslog API. (~5093 tokens, l2-source)
 - [c_source-api-module-math.md](./chunked-reference/c_source-api-module-math.md): Provides standard mathematical functions for ucode scripts, mirroring the JavaScript Math object surface. (~8716 tokens, l2-source)
-- [c_source-api-module-nl80211.md](./chunked-reference/c_source-api-module-nl80211.md): Provides netlink 802.11 wireless configuration API bindings for ucode. (~3950 tokens, l2-source)
+- [c_source-api-module-nl80211.md](./chunked-reference/c_source-api-module-nl80211.md): Provides netlink 802.11 wireless configuration API bindings for ucode. (~4258 tokens, l2-source)
 - [c_source-api-module-resolv.md](./chunked-reference/c_source-api-module-resolv.md): Provides DNS name resolution for ucode scripts using the system resolver. (~2516 tokens, l2-source)
 - [c_source-api-module-rtnl.md](./chunked-reference/c_source-api-module-rtnl.md): Provides rtnetlink interface bindings for ucode to enumerate and monitor kernel network state. (~7614 tokens, l2-source)
 - [c_source-api-module-socket.md](./chunked-reference/c_source-api-module-socket.md): Provides low-level socket programming for ucode via POSIX socket API bindings. (~13517 tokens, l2-source)

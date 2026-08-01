@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 5864
 source_file: L1-raw/openwrt-core/makefile_meta-category-utils.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/utils
 source_locator: package/utils
@@ -25,7 +25,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/utils](https://github.com/openwrt/openwrt/blob/unknown/package/utils)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # OpenWrt Buildroot: utils packages
 
@@ -67,7 +67,7 @@ BCM27xx scripts and simple applications. Replaces bcm27xx-userland scripts and a
 
 | Field | Value |
 |---|---|
-| Version | 2025.03.14 |
+| Version | 2026.06.21 |
 | License | BSD-3-Clause |
 | Source URL | https://github.com/raspberrypi/utils.git |
 
@@ -446,7 +446,7 @@ Utilities for manipulating memory technology devices.
 
 | Field | Value |
 |---|---|
-| Version | 2.3.0 |
+| Version | 2.3.1 |
 | License | GPL-2.0 |
 | Maintainer | Pavlo Samko <bulldozerbsg@gmail.com> |
 | Source URL | https://nilfs.sourceforge.io/download/ |

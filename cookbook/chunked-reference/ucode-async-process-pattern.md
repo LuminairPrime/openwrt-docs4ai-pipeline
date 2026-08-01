@@ -4,7 +4,7 @@ module: cookbook
 origin_type: authored
 token_count: 1604
 source_file: L1-raw/cookbook/ucode-async-process-pattern.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_locator: static/cookbook-source/ucode-async-process-pattern.md
 description: Source-backed pattern for running external commands from ucode with fs.popen()
   and wiring live output into the uloop event system with explicit read events.
@@ -25,7 +25,7 @@ last_reviewed: '2026-04-05'
 
 > **Source:** `static/cookbook-source/ucode-async-process-pattern.md`
 > **Kind:** authored | **Method:** hand-authored
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # ucode Async Process Pattern
 

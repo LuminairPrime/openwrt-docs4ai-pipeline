@@ -1,7 +1,7 @@
 # openwrt-core Navigation Map
 
 > **Contains:** Headers and function signatures for openwrt-core.
-> **Generated:** 2026-07-01T13:52:18.761392+00:00
+> **Generated:** 2026-08-01T13:35:11.474886+00:00
 
 ---
 
@@ -100,8 +100,6 @@
 ## mwlwifi
 ## nat46
 ## ntfs
-## qca-nss-dp
-## qca-ssdk
 ## r8101
 ## r8125
 ## r8126

@@ -2,9 +2,9 @@
 title: overview.js
 module: luci-examples
 origin_type: example_app
-token_count: 11211
+token_count: 11177
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
 source_locator: applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # overview.js
 ```javascript
@@ -194,22 +194,21 @@ return view.extend({
 	},
 
 	handleReloadDDnsRule(m, section_id, ev) {
-		return fs.exec('/etc/init.d/ddns',
-							[ 'restart', section_id ])
+		return fs.exec('/etc/init.d/ddns', [ 'restart', section_id ])
 			.then(L.bind(m.load, m))
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
 
 	handleStopDDnsRule(m, section_id, ev) {
-		return fs.exec('/usr/lib/ddns/dynamic_dns_lucihelper.sh',
-							[ '-S', section_id, '--', 'stop' ])
+		return fs.exec('/etc/init.d/ddns', [ 'stop', section_id ])
+			.then(L.bind(m.load, m))
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
 
 	handleToggleDDns(m, ev) {
-        let action = this.status['_enabled'];
+		let action = this.status['_enabled'];
 		return this.callInitAction('ddns', action ? 'disable' : 'enable')
 			.then(L.bind(function () { return this.callInitAction('ddns', action ? 'stop' : 'start')}, this))
 			.then(L.bind(m.render, m))
@@ -250,8 +249,8 @@ return view.extend({
 			const stop = rows[i].querySelector('.cbi-section-actions .stop');
 			const cfg_enabled = uci.get('ddns', section_id, 'enabled');
 
-			reload.disabled = (status['_enabled'] == 0 || cfg_enabled == 0);
-			stop.disabled = (!service[section_id].pid);
+			reload.disabled = (cfg_enabled == 0)
+			stop.disabled = !(service[section_id] && service[section_id].pid);
 
 			const host = uci.get('ddns', section_id, 'lookup_host') || _('Configuration Error');
 			const ip = service[section_id]?.ip || _('No Data');
@@ -585,11 +584,9 @@ return view.extend({
 					'title': _('Stop this service'),
 				};
 
-			if (status['_enabled'] == 0 || cfg_enabled == 0)
+			if (cfg_enabled == 0)
 				reload_opt['disabled'] = 'disabled';
-
-			if (!resolved[section_id] || !resolved[section_id].pid ||
-					(resolved[section_id].pid && cfg_enabled == '1'))
+			if (!(resolved[section_id] && resolved[section_id].pid))
 				stop_opt['disabled'] = 'disabled';
 
 			dom.content(tdEl.lastChild, [

@@ -1,12 +1,12 @@
 # wiki module
 > OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support.
-> **Total Context:** ~195972 tokens
+> **Total Context:** ~195969 tokens
 
 ## Recommended Entry Points
 
 - [map.md](./map.md): Structural map for wiki that prioritizes quick orientation and symbol discovery. (~20603 tokens, l3-skeleton)
 - [bundled-reference.md](./bundled-reference.md): Sharded complete reference index for wiki with links to smaller part files. (~194 tokens, l4-monolith)
-- [bundled-reference.part-01.md](./bundled-reference.part-01.md): Part 1 of the sharded complete reference for wiki when the full module exceeds the token budget. (~99971 tokens, l4-monolith-part)
+- [bundled-reference.part-01.md](./bundled-reference.part-01.md): Part 1 of the sharded complete reference for wiki when the full module exceeds the token budget. (~99968 tokens, l4-monolith-part)
 - [bundled-reference.part-02.md](./bundled-reference.part-02.md): Part 2 of the sharded complete reference for wiki when the full module exceeds the token budget. (~98049 tokens, l4-monolith-part)
 
 ## Source Documents
@@ -49,7 +49,7 @@
 - [wiki_page-guide-developer-procd-init-scripts.md](./chunked-reference/wiki_page-guide-developer-procd-init-scripts.md): Practical guide for writing procd-based /etc/init.d/ service scripts. (~5333 tokens, l2-source)
 - [wiki_page-guide-developer-rpcd.md](./chunked-reference/wiki_page-guide-developer-rpcd.md): The RPC daemon (rpcd) in OpenWrt serves as a lightweight solution for enabling communication between various software components that do not have their own persistent daemons. (~274 tokens, l2-source)
 - [wiki_page-guide-developer-security-incidents-response.md](./chunked-reference/wiki_page-guide-developer-security-incidents-response.md): The High-level security incident response handling process outlines the steps necessary for effectively managing security incidents within OpenWrt. (~901 tokens, l2-source)
-- [wiki_page-guide-developer-security.md](./chunked-reference/wiki_page-guide-developer-security.md): The Security module of OpenWrt outlines the processes, tools, and mechanisms utilized to ensure the security of the OpenWrt distribution and its official package feeds. (~2142 tokens, l2-source)
+- [wiki_page-guide-developer-security.md](./chunked-reference/wiki_page-guide-developer-security.md): The Security module of OpenWrt outlines the processes, tools, and mechanisms utilized to ensure the security of the OpenWrt distribution and its official package feeds. (~2139 tokens, l2-source)
 - [wiki_page-guide-developer-selinux-policy-development.md](./chunked-reference/wiki_page-guide-developer-selinux-policy-development.md): The OpenWrt SELinux policy development module provides guidance on customizing, developing, and testing SELinux policies for OpenWrt devices. (~8662 tokens, l2-source)
 - [wiki_page-guide-developer-ubus.md](./chunked-reference/wiki_page-guide-developer-ubus.md): Practical guide for using ubus from shell scripts, C code, and Lua/ucode. (~405 tokens, l2-source)
 - [wiki_page-guide-developer-uci-defaults.md](./chunked-reference/wiki_page-guide-developer-uci-defaults.md): The UCI defaults module in OpenWrt allows for the preconfiguration of system settings using the Unified Configuration Interface (UCI) during the initial boot of a device. (~1137 tokens, l2-source)

@@ -4,7 +4,7 @@ module: luci
 origin_type: js_source
 token_count: 143
 source_file: L1-raw/luci/js_source-api-form.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/modules/luci-base/htdocs/luci-static/resources/form.js
 source_locator: modules/luci-base/htdocs/luci-static/resources/form.js
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/modules/luci-base/htdocs/luci-static/resources/form.js](https://github.com/openwrt/luci/blob/unknown/modules/luci-base/htdocs/luci-static/resources/form.js)
 > **Kind:** js_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # LuCI API: form
 

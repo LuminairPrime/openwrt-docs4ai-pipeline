@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 4007
 source_file: L1-raw/openwrt-core/makefile_meta-category-boot.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/boot
 source_locator: package/boot
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/boot](https://github.com/openwrt/openwrt/blob/unknown/package/boot)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # OpenWrt Buildroot: boot packages
 
@@ -298,7 +298,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 2026.01 |
+| Version | 2026.07 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-airoha
@@ -442,7 +442,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.04 |
+| Version | 2026.07 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mediatek
@@ -503,7 +503,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.01 |
+| Version | 2026.07 |
 | Maintainer | Sarah Maedel <openwrt@tbspace.de> |
 
 
@@ -559,7 +559,7 @@ dumpimage lists and extracts data from U-Boot images. If -l is specified, dumpim
 
 | Field | Value |
 |---|---|
-| Version | 2026.04 |
+| Version | 2026.07 |
 | License | GPL-2.0 GPL-2.0+ |
 | Source URL | https://ftp.denx.de/pub/u-boot https://mirror.cyberbits.eu/u-boot |
 

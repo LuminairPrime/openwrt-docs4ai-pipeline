@@ -1,15 +1,15 @@
 ---
 module: openwrt-core
-total_token_count: 23787
+total_token_count: 23664
 section_count: 7
 is_monolithic: true
-generated: '2026-07-01T13:52:18.761392+00:00'
+generated: '2026-08-01T13:35:11.474886+00:00'
 ---
 
 # openwrt-core Bundled Reference
 
 > **Contains:** 7 documents concatenated
-> **Tokens:** ~23787 (cl100k_base)
+> **Tokens:** ~23664 (cl100k_base)
 
 ---
 
@@ -285,7 +285,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
-| Version | 2026.01 |
+| Version | 2026.07 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-airoha
@@ -429,7 +429,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.04 |
+| Version | 2026.07 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mediatek
@@ -490,7 +490,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.01 |
+| Version | 2026.07 |
 | Maintainer | Sarah Maedel <openwrt@tbspace.de> |
 
 
@@ -546,7 +546,7 @@ dumpimage lists and extracts data from U-Boot images. If -l is specified, dumpim
 
 | Field | Value |
 |---|---|
-| Version | 2026.04 |
+| Version | 2026.07 |
 | License | GPL-2.0 GPL-2.0+ |
 | Source URL | https://ftp.denx.de/pub/u-boot https://mirror.cyberbits.eu/u-boot |
 
@@ -775,7 +775,7 @@ GPU and kernel boot firmware for bcm27xx.
 
 | Field | Value |
 |---|---|
-| Version | 2025.04.30 |
+| Version | 2026.05.21 |
 | Source URL | https://github.com/raspberrypi/firmware/releases/download/$(PKG_VERSION_REAL) |
 
 
@@ -892,7 +892,7 @@ CFE RAM binaries for bcm63xx.
 
 | Field | Value |
 |---|---|
-| Version | 6.18.26 |
+| Version | 6.18.39 |
 | License | GPL-2.0-only |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | https://github.com/openwrt/backports/releases/download/backports-v$(PKG_VERSION) |
@@ -958,26 +958,6 @@ CFE RAM binaries for bcm63xx.
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/ntfs
----
-
-## qca-nss-dp
-
-| Field | Value |
-|---|---|
-| Source URL | https://github.com/openwrt/qca-nss-dp.git |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/qca-nss-dp
----
-
-## qca-ssdk
-
-| Field | Value |
-|---|---|
-| Source URL | https://github.com/openwrt/qca-ssdk.git |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/qca-ssdk
 ---
 
 ## r8101
@@ -1128,7 +1108,7 @@ GNU libc hierarchial argument parsing library broken out from glibc.
 
 | Field | Value |
 |---|---|
-| Version | 0.24.1 |
+| Version | 0.24.2 |
 | License | LGPL-2.1-or-later |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
 | Source URL | @GNU/gettext |
@@ -2032,7 +2012,7 @@ BCM27xx scripts and simple applications. Replaces bcm27xx-userland scripts and a
 
 | Field | Value |
 |---|---|
-| Version | 2025.03.14 |
+| Version | 2026.06.21 |
 | License | BSD-3-Clause |
 | Source URL | https://github.com/raspberrypi/utils.git |
 
@@ -2411,7 +2391,7 @@ Utilities for manipulating memory technology devices.
 
 | Field | Value |
 |---|---|
-| Version | 2.3.0 |
+| Version | 2.3.1 |
 | License | GPL-2.0 |
 | Maintainer | Pavlo Samko <bulldozerbsg@gmail.com> |
 | Source URL | https://nilfs.sourceforge.io/download/ |

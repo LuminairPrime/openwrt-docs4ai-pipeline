@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 5270
 source_file: L1-raw/openwrt-core/makefile_meta-category-libs.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/libs
 source_locator: package/libs
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/libs](https://github.com/openwrt/openwrt/blob/unknown/package/libs)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # OpenWrt Buildroot: libs packages
 
@@ -65,7 +65,7 @@ GNU libc hierarchial argument parsing library broken out from glibc.
 
 | Field | Value |
 |---|---|
-| Version | 0.24.1 |
+| Version | 0.24.2 |
 | License | LGPL-2.1-or-later |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
 | Source URL | @GNU/gettext |

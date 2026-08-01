@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: kernel packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 2865
+token_count: 2742
 source_file: L1-raw/openwrt-core/makefile_meta-category-kernel.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/kernel
 source_locator: package/kernel
@@ -27,7 +27,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/kernel](https://github.com/openwrt/openwrt/blob/unknown/package/kernel)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # OpenWrt Buildroot: kernel packages
 
@@ -52,7 +52,7 @@ GPU and kernel boot firmware for bcm27xx.
 
 | Field | Value |
 |---|---|
-| Version | 2025.04.30 |
+| Version | 2026.05.21 |
 | Source URL | https://github.com/raspberrypi/firmware/releases/download/$(PKG_VERSION_REAL) |
 
 
@@ -169,7 +169,7 @@ CFE RAM binaries for bcm63xx.
 
 | Field | Value |
 |---|---|
-| Version | 6.18.26 |
+| Version | 6.18.39 |
 | License | GPL-2.0-only |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | https://github.com/openwrt/backports/releases/download/backports-v$(PKG_VERSION) |
@@ -235,26 +235,6 @@ CFE RAM binaries for bcm63xx.
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/ntfs
----
-
-## qca-nss-dp
-
-| Field | Value |
-|---|---|
-| Source URL | https://github.com/openwrt/qca-nss-dp.git |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/qca-nss-dp
----
-
-## qca-ssdk
-
-| Field | Value |
-|---|---|
-| Source URL | https://github.com/openwrt/qca-ssdk.git |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/qca-ssdk
 ---
 
 ## r8101

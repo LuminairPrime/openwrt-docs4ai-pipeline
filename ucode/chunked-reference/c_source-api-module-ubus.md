@@ -4,7 +4,7 @@ module: ucode
 origin_type: c_source
 token_count: 8467
 source_file: L1-raw/ucode/c_source-api-module-ubus.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/ubus.c
 source_locator: lib/ubus.c
@@ -13,7 +13,7 @@ language: c
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/ubus.c](https://github.com/nicowillis/ucode/blob/unknown/lib/ubus.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # ucode module: ubus
 

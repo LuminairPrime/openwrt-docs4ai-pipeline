@@ -2,9 +2,9 @@
 title: 'ucode module: nl80211'
 module: ucode
 origin_type: c_source
-token_count: 3950
+token_count: 4258
 source_file: L1-raw/ucode/c_source-api-module-nl80211.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/nl80211.c
 source_locator: lib/nl80211.c
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/nl80211.c](https://github.com/nicowillis/ucode/blob/unknown/lib/nl80211.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # ucode module: nl80211
 
@@ -307,3 +307,27 @@ Constants for BSS use-for and cannot-use-reasons bitmasks.
 | NL80211_IFTYPE_P2P_GO | `number` | P2P group owner interface |
 | NL80211_IFTYPE_P2P_DEVICE | `number` | P2P device interface |
 | NL80211_IFTYPE_OCB | `number` | Outside context of BSS (OCB) interface |
+
+### nl80211~States of a mesh peer link
+**Kind**: inner typedef of [`nl80211`](#module_nl80211)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| NL80211_PLINK_LISTEN | `number` | initial state of non-existent mesh peer links |
+| NL80211_PLINK_OPN_SNT | `number` | mesh plink open frame has been sent |
+| NL80211_PLINK_OPN_RCVD | `number` | mesh plink open frame has been received |
+| NL80211_PLINK_CNF_RCVD | `number` | mesh plink confirm frame has been received |
+| NL80211_PLINK_ESTAB | `number` | mesh peer link is established |
+| NL80211_PLINK_HOLDING | `number` | mesh peer link is being closed or cancelled |
+| NL80211_PLINK_BLOCKED | `number` | all frames are discarded, except for authentication frames |
+
+### nl80211~Actions on mesh peer links
+**Kind**: inner typedef of [`nl80211`](#module_nl80211)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| NL80211_PLINK_ACTION_NO_ACTION | `number` | perform no action |
+| NL80211_PLINK_ACTION_OPEN | `number` | start mesh peer link establishment |
+| NL80211_PLINK_ACTION_BLOCK | `number` | block traffic from this mesh peer |

@@ -1,7 +1,7 @@
 # ucode Navigation Map
 
 > **Contains:** Headers and function signatures for ucode.
-> **Generated:** 2026-07-01T13:52:18.761392+00:00
+> **Generated:** 2026-08-01T13:35:11.474886+00:00
 
 ---
 
@@ -221,6 +221,8 @@
 ### nl80211~BSS use-for and cannot-use-reasons constants
 ### nl80211~HWSIM commands
 ### nl80211~Interface types
+### nl80211~States of a mesh peer link
+### nl80211~Actions on mesh peer links
 
 > **Summary:** Provides DNS name resolution for ucode scripts using the system resolver. Implements query() for raw DNS record lookups (A, AAAA, MX, TXT, etc.) and getaddrinfo() for hostname-to-address resolution returning both IPv4 and IPv6 results in a structured array.
 > **Use Case:** Use in ucode-based network management scripts that must resolve hostnames to IP addresses before establishing connections, checking reachability, or populating firewall rules — replaces spawning nslookup or dig subprocesses.

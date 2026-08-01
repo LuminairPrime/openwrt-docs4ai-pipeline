@@ -1,15 +1,15 @@
 ---
 module: ucode
-total_token_count: 95429
+total_token_count: 95900
 section_count: 15
 is_monolithic: true
-generated: '2026-07-01T13:52:18.761392+00:00'
+generated: '2026-08-01T13:35:11.474886+00:00'
 ---
 
 # ucode Bundled Reference
 
 > **Contains:** 15 documents concatenated
-> **Tokens:** ~95429 (cl100k_base)
+> **Tokens:** ~95900 (cl100k_base)
 
 ---
 
@@ -66,7 +66,8 @@ memory leaks in scripts.
 
 The file parameter can be either a string value containing a file path, in
 which case this function tries to create and write the report file at the
-given location, or an already open file handle this function should write to.
+given location, a numeric file descriptor, or a resource implementing a
+`fileno()` method which returns a numeric file descriptor.
 
 Returns `true` if the report has been written.
 
@@ -76,7 +77,7 @@ Returns `null` if the file could not be opened or if the handle was invalid.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| file | `string` \| `module:fs.file` \| `module:fs.proc` | The file path or open file handle to write report to. |
+| file | `string` \| `number` \| `module:fs.file` \| `module:fs.proc` \| `module:uloop.handle` \| `module:socket.socket` | The file path, file descriptor number, or open file handle to write report to. |
 
 ### debug.traceback([level]) ⇒ [`Array.<StackTraceEntry>`](#module_debug.StackTraceEntry)
 Capture call stack trace.
@@ -657,13 +658,18 @@ Returns `null` if an error occurred.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| command | `string` |  | The command to be executed. |
+| command | `string` \| `Array.<\*>` |  | The command to be executed, either as a plain shell command string or as an array of arguments. When an array is provided the process is started directly via execvp() without involving a shell, so argument values are never interpreted as shell syntax. Non-string array elements are converted to their string representation. A string command is passed to /bin/sh -c as usual. |
 | [mode] | `string` | `"\"r\""` | The open mode of the process handle. |
 
 **Example**  
 ```ucode
-// Open a process
-const process = popen('command', 'r');
+// Open a process with a command string (interpreted by the shell)
+const process = popen('ls -la /tmp', 'r');
+```
+**Example**  
+```ucode
+// Open a process with an argument array (no shell involved)
+const process = popen(['ls', '-la', '/tmp'], 'r');
 ```
 
 ### fs.open(path, [mode], [perm]) ⇒ [`file`](#module_fs.file)
@@ -4203,6 +4209,30 @@ Constants for BSS use-for and cannot-use-reasons bitmasks.
 | NL80211_IFTYPE_P2P_GO | `number` | P2P group owner interface |
 | NL80211_IFTYPE_P2P_DEVICE | `number` | P2P device interface |
 | NL80211_IFTYPE_OCB | `number` | Outside context of BSS (OCB) interface |
+
+### nl80211~States of a mesh peer link
+**Kind**: inner typedef of [`nl80211`](#module_nl80211)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| NL80211_PLINK_LISTEN | `number` | initial state of non-existent mesh peer links |
+| NL80211_PLINK_OPN_SNT | `number` | mesh plink open frame has been sent |
+| NL80211_PLINK_OPN_RCVD | `number` | mesh plink open frame has been received |
+| NL80211_PLINK_CNF_RCVD | `number` | mesh plink confirm frame has been received |
+| NL80211_PLINK_ESTAB | `number` | mesh peer link is established |
+| NL80211_PLINK_HOLDING | `number` | mesh peer link is being closed or cancelled |
+| NL80211_PLINK_BLOCKED | `number` | all frames are discarded, except for authentication frames |
+
+### nl80211~Actions on mesh peer links
+**Kind**: inner typedef of [`nl80211`](#module_nl80211)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| NL80211_PLINK_ACTION_NO_ACTION | `number` | perform no action |
+| NL80211_PLINK_ACTION_OPEN | `number` | start mesh peer link establishment |
+| NL80211_PLINK_ACTION_BLOCK | `number` | block traffic from this mesh peer |
 
 ---
 

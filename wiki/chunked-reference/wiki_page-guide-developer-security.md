@@ -2,9 +2,9 @@
 title: Security
 module: wiki
 origin_type: wiki_page
-token_count: 2142
+token_count: 2139
 source_file: L1-raw/wiki/wiki_page-guide-developer-security.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_url: https://openwrt.org/docs/guide-developer/security
 language: text
 ai_summary: The Security module of OpenWrt outlines the processes, tools, and mechanisms utilized to ensure the security of the OpenWrt distribution and its official package feeds. It includes guidelines for vulnerability reporting, emphasizing confidentiality and the appropriate channels for communication, such as contacting <contact@openwrt.org> or the public mailing list <openwrt-adm@lists.openwrt.org>. Additionally, the module provides information on security advisories specifically for components maintained by OpenWrt, while noting that third-party components are not covered. The support status of various OpenWrt releases is also detailed, indicating their current status and projected end-of-life dates.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/security](https://openwrt.org/docs/guide-developer/security)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # Security
 
@@ -41,16 +41,16 @@ This only lists security advisories for components directly maintained by the Op
 
 This table lists the support status of various OpenWrt releases:
 
-| Version           | Current status       | Initial Release    | EoL (Projected)   | Latest Release | Release Date      |
-|:------------------|:---------------------|:-------------------|:------------------|:---------------|:------------------|
-| @lightgreen:25.12 | Supported            | 2026, March 06     | TBD               | 25.12.4        | 2026, May 14      |
-| @yellow:24.10     | Security Maintenance | 2025, February 06  | (2026, September) | 24.10.7        | 2026, May 31      |
-| @pink:23.05       | End of Life          | 2023, October 13   | 2025, August      | 23.05.6        | 2025, August 20   |
-| @pink:22.03       | End of Life          | 2022, September 06 | 2024, July        | 22.03.7        | 2024, July 25     |
-| @pink:21.02       | End of Life          | 2021, September 04 | 2023, May         | 21.02.7        | 2023, May 01      |
-| @pink:19.07       | End of Life          | 2020, January 06   | 2022, April       | 19.07.10       | 2022, April 20    |
-| @pink:18.06       | End of Life          | 2018, July 31      | 2020, December    | 18.06.9        | 2020, December 09 |
-| @pink:17.01       | End of Life          | 2017, February 22  | 2019, June        | 17.01.7        | 2019, June 20     |
+| Version           | Current status       | Initial Release    | EoL (Projected) | Latest Release | Release Date      |
+|:------------------|:---------------------|:-------------------|:----------------|:---------------|:------------------|
+| @lightgreen:25.12 | Supported            | 2026, March 06     | TBD             | 25.12.5        | 2026, July 01     |
+| @yellow:24.10     | Security Maintenance | 2025, February 06  | 2026, September | 24.10.8        | 2026, July 26     |
+| @pink:23.05       | End of Life          | 2023, October 13   | 2025, August    | 23.05.6        | 2025, August 20   |
+| @pink:22.03       | End of Life          | 2022, September 06 | 2024, July      | 22.03.7        | 2024, July 25     |
+| @pink:21.02       | End of Life          | 2021, September 04 | 2023, May       | 21.02.7        | 2023, May 01      |
+| @pink:19.07       | End of Life          | 2020, January 06   | 2022, April     | 19.07.10       | 2022, April 20    |
+| @pink:18.06       | End of Life          | 2018, July 31      | 2020, December  | 18.06.9        | 2020, December 09 |
+| @pink:17.01       | End of Life          | 2017, February 22  | 2019, June      | 17.01.7        | 2019, June 20     |
 
 The listed **Version** numbers reference the code base and the support status applies to the the latest minor release of that branch:
 

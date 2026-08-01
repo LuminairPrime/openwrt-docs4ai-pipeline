@@ -309,6 +309,7 @@ declare module "process" {
 declare module "request" {
     export function defer(): any;
     export function error(rcode?: any): any;
+    export function get(): any;
     export function new(): any;
     export function reply(data: any): any;
     export function set(): any;

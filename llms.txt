@@ -1,8 +1,8 @@
 # openwrt-docs4ai - LLM Routing Index
 > For a flat file listing, see [llms-full.txt](./llms-full.txt)
 
-> **Version:** openwrt/openwrt@10631d2, openwrt/luci@2d05d31, jow-/ucode@fecacb8
-> **Total Context Available:** ~479267 tokens
+> **Version:** openwrt/openwrt@f59200b, openwrt/luci@fe9d6b4, jow-/ucode@81205a2
+> **Total Context Available:** ~479671 tokens
 
 ## Guides
 - [cookbook](./cookbook/llms.txt): Task-oriented OpenWrt guides: era-appropriate patterns, common AI mistakes, architecture overview, and cross-component howtos. (~40574 tokens)
@@ -14,14 +14,14 @@
 
 ## Scripting & Logic
 - [luci](./luci/llms.txt): LuCI web interface framework: JavaScript client API for forms, UCI bindings, RPC, DOM, and UI widgets. (~19723 tokens)
-- [ucode](./ucode/llms.txt): ucode scripting language: standard library, runtime modules (fs, ubus, uci, uloop, nl80211, rtnl), and C API. (~95429 tokens)
+- [ucode](./ucode/llms.txt): ucode scripting language: standard library, runtime modules (fs, ubus, uci, uloop, nl80211, rtnl), and C API. (~95900 tokens)
 
 ## Ecosystem
-- [luci-examples](./luci-examples/llms.txt): LuCI community application examples: full plugin source code for Docker, statistics, DDNS, and more. (~101589 tokens)
-- [openwrt-core](./openwrt-core/llms.txt): OpenWrt buildroot core packages: early boot firmware, kernel module infrastructure, and base-files. (~23787 tokens)
+- [luci-examples](./luci-examples/llms.txt): LuCI community application examples: full plugin source code for Docker, statistics, DDNS, and more. (~101648 tokens)
+- [openwrt-core](./openwrt-core/llms.txt): OpenWrt buildroot core packages: early boot firmware, kernel module infrastructure, and base-files. (~23664 tokens)
 
 ## Manuals
-- [wiki](./wiki/llms.txt): OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support. (~195972 tokens)
+- [wiki](./wiki/llms.txt): OpenWrt project documentation: developer guides, architecture references, release notes, and hardware support. (~195969 tokens)
 
 ## Complete Aggregation
 If your context window permits, you may fetch the flat URL index:

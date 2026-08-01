@@ -4,7 +4,7 @@ module: luci-examples
 origin_type: example_app
 token_count: 2734
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-root-usr-share-rpcd-ucode-ddns-uc.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
 source_locator: applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # ddns.uc
 ```ucode

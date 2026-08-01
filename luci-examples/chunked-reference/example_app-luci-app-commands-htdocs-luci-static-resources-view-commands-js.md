@@ -2,9 +2,9 @@
 title: commands.js
 module: luci-examples
 origin_type: example_app
-token_count: 280
+token_count: 287
 source_file: L1-raw/luci-examples/example_app-luci-app-commands-htdocs-luci-static-resources-view-commands-js.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js
 source_locator: applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-commands/htdocs/luci-static/resources/view/commands.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # commands.js
 ```javascript
@@ -40,6 +40,7 @@ return view.extend({
 		s.nodescriptions = true;
 		s.anonymous = true;
 		s.addremove = true;
+		s.sortable = true;
 
 		o = s.option(form.Value, 'name', _('Name'),
 			_('A short name for the configured command'));

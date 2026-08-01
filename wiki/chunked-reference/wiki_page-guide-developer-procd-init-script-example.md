@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 2384
 source_file: L1-raw/wiki/wiki_page-guide-developer-procd-init-script-example.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_url: https://openwrt.org/docs/guide-developer/procd-init-script-example
 language: text
 ai_summary: This document provides a comprehensive guide on creating a sample procd init script for OpenWrt, illustrating how to set up a simple shell script as a service. It includes detailed instructions on configuring the script to accept parameters for a message and timeout, as well as how to create the corresponding init script in `/etc/init.d/`. The guide emphasizes the use of procd features such as service lifecycle management and configuration handling through UCI. Additionally, it explains how to enable the service and manage its startup and shutdown order.
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/procd-init-script-example](https://openwrt.org/docs/guide-developer/procd-init-script-example)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # Create a sample procd init script
 

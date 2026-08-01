@@ -1,19 +1,19 @@
 # luci-examples module
 > LuCI community application examples: full plugin source code for Docker, statistics, DDNS, and more.
-> **Total Context:** ~101589 tokens
+> **Total Context:** ~101648 tokens
 
 ## Recommended Entry Points
 
 - [map.md](./map.md): Structural map for luci-examples that prioritizes quick orientation and symbol discovery. (~4066 tokens, l3-skeleton)
 - [bundled-reference.md](./bundled-reference.md): Sharded complete reference index for luci-examples with links to smaller part files. (~212 tokens, l4-monolith)
-- [bundled-reference.part-01.md](./bundled-reference.part-01.md): Part 1 of the sharded complete reference for luci-examples when the full module exceeds the token budget. (~99604 tokens, l4-monolith-part)
+- [bundled-reference.part-01.md](./bundled-reference.part-01.md): Part 1 of the sharded complete reference for luci-examples when the full module exceeds the token budget. (~99663 tokens, l4-monolith-part)
 - [bundled-reference.part-02.md](./bundled-reference.part-02.md): Part 2 of the sharded complete reference for luci-examples when the full module exceeds the token budget. (~2272 tokens, l4-monolith-part)
 
 ## Source Documents
 
-- [example_app-luci-app-commands-htdocs-luci-static-resources-view-commands-js.md](./chunked-reference/example_app-luci-app-commands-htdocs-luci-static-resources-view-commands-js.md): The commands.js module in the luci-examples application provides a web interface for configuring custom shell commands in OpenWrt. (~280 tokens, l2-source)
+- [example_app-luci-app-commands-htdocs-luci-static-resources-view-commands-js.md](./chunked-reference/example_app-luci-app-commands-htdocs-luci-static-resources-view-commands-js.md): The commands.js module in the luci-examples application provides a web interface for configuring custom shell commands in OpenWrt. (~287 tokens, l2-source)
 - [example_app-luci-app-commands-ucode-controller-commands-uc.md](./chunked-reference/example_app-luci-app-commands-ucode-controller-commands-uc.md): The commands.uc module in the luci-examples application provides functionality to parse command-line arguments and execute commands within the OpenWrt environment. (~1625 tokens, l2-source)
-- [example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md](./chunked-reference/example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md): The overview.js module is part of the luci-examples application in OpenWrt, designed to manage Dynamic DNS (DDNS) services. (~11211 tokens, l2-source)
+- [example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md](./chunked-reference/example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md): The overview.js module is part of the luci-examples application in OpenWrt, designed to manage Dynamic DNS (DDNS) services. (~11177 tokens, l2-source)
 - [example_app-luci-app-ddns-htdocs-luci-static-resources-view-status-include-70-ddns-js.md](./chunked-reference/example_app-luci-app-ddns-htdocs-luci-static-resources-view-status-include-70-ddns-js.md): The 70_ddns.js module is part of the luci-examples package in OpenWrt, designed to manage Dynamic DNS (DDNS) services through a web interface. (~392 tokens, l2-source)
 - [example_app-luci-app-ddns-root-usr-share-rpcd-ucode-ddns-uc.md](./chunked-reference/example_app-luci-app-ddns-root-usr-share-rpcd-ucode-ddns-uc.md): The ddns.uc module is designed for managing Dynamic DNS (DDNS) services within the OpenWrt environment. (~2734 tokens, l2-source)
 - [example_app-luci-app-dockerman-htdocs-luci-static-resources-dockerman-api-js.md](./chunked-reference/example_app-luci-app-dockerman-htdocs-luci-static-resources-dockerman-api-js.md): The api.js module provides a JavaScript interface for interacting with Docker through the LuCI web interface in OpenWrt. (~5921 tokens, l2-source)
@@ -29,7 +29,7 @@
 - [example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-networks-js.md](./chunked-reference/example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-networks-js.md): The networks.js module is part of the Luci interface for managing Docker networks within OpenWrt. (~1998 tokens, l2-source)
 - [example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-overview-js.md](./chunked-reference/example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-overview-js.md): The overview.js module is part of the luci-examples application for managing Docker containers through the LuCI interface in OpenWrt. (~2680 tokens, l2-source)
 - [example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-volumes-js.md](./chunked-reference/example_app-luci-app-dockerman-htdocs-luci-static-resources-view-dockerman-volumes-js.md): The volumes.js module is part of the Luci application for managing Docker containers in OpenWrt. (~2730 tokens, l2-source)
-- [example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md](./chunked-reference/example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md): The docker_rpc.uc module provides an interface for interacting with Docker's API using ucode in OpenWrt. (~5821 tokens, l2-source)
+- [example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md](./chunked-reference/example_app-luci-app-dockerman-root-usr-share-rpcd-ucode-docker-rpc-uc.md): The docker_rpc.uc module provides an interface for interacting with Docker's API using ucode in OpenWrt. (~5907 tokens, l2-source)
 - [example_app-luci-app-dockerman-ucode-controller-docker-uc.md](./chunked-reference/example_app-luci-app-dockerman-ucode-controller-docker-uc.md): The docker.uc module provides a Docker HTTP streaming endpoint for handling file uploads and streaming responses in OpenWrt applications. (~3114 tokens, l2-source)
 - [example_app-luci-app-dockerman-ucode-docker-socket-uc.md](./chunked-reference/example_app-luci-app-dockerman-ucode-docker-socket-uc.md): The docker_socket.uc module provides functions to retrieve the Docker socket path from UCI configuration in OpenWrt, ensuring backward compatibility. (~724 tokens, l2-source)
 - [example_app-luci-app-example-htdocs-luci-static-resources-view-example-form-js.md](./chunked-reference/example_app-luci-app-example-htdocs-luci-static-resources-view-example-form-js.md): The form.js module is a JavaScript file used in the LuCI framework for creating a user interface form that interacts with UCI configuration files in OpenWrt. (~476 tokens, l2-source)

@@ -2,9 +2,9 @@
 title: 'ucode module: debug'
 module: ucode
 origin_type: c_source
-token_count: 3902
+token_count: 3937
 source_file: L1-raw/ucode/c_source-api-module-debug.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/debug.c
 source_locator: lib/debug.c
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/debug.c](https://github.com/nicowillis/ucode/blob/unknown/lib/debug.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # ucode module: debug
 
@@ -74,7 +74,8 @@ memory leaks in scripts.
 
 The file parameter can be either a string value containing a file path, in
 which case this function tries to create and write the report file at the
-given location, or an already open file handle this function should write to.
+given location, a numeric file descriptor, or a resource implementing a
+`fileno()` method which returns a numeric file descriptor.
 
 Returns `true` if the report has been written.
 
@@ -84,7 +85,7 @@ Returns `null` if the file could not be opened or if the handle was invalid.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| file | `string` \| `module:fs.file` \| `module:fs.proc` | The file path or open file handle to write report to. |
+| file | `string` \| `number` \| `module:fs.file` \| `module:fs.proc` \| `module:uloop.handle` \| `module:socket.socket` | The file path, file descriptor number, or open file handle to write report to. |
 
 ### debug.traceback([level]) ⇒ [`Array.<StackTraceEntry>`](#module_debug.StackTraceEntry)
 Capture call stack trace.

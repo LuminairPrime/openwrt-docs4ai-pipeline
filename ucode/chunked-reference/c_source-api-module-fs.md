@@ -2,9 +2,9 @@
 title: 'ucode module: fs'
 module: ucode
 origin_type: c_source
-token_count: 11215
+token_count: 11343
 source_file: L1-raw/ucode/c_source-api-module-fs.md
-last_pipeline_run: '2026-07-01T13:51:57.973723+00:00'
+last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/fs.c
 source_locator: lib/fs.c
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/fs.c](https://github.com/nicowillis/ucode/blob/unknown/lib/fs.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-07-01
+> **Normalized:** 2026-08-01
 
 # ucode module: fs
 
@@ -94,13 +94,18 @@ Returns `null` if an error occurred.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| command | `string` |  | The command to be executed. |
+| command | `string` \| `Array.<\*>` |  | The command to be executed, either as a plain shell command string or as an array of arguments. When an array is provided the process is started directly via execvp() without involving a shell, so argument values are never interpreted as shell syntax. Non-string array elements are converted to their string representation. A string command is passed to /bin/sh -c as usual. |
 | [mode] | `string` | `"\"r\""` | The open mode of the process handle. |
 
 **Example**  
 ```ucode
-// Open a process
-const process = popen('command', 'r');
+// Open a process with a command string (interpreted by the shell)
+const process = popen('ls -la /tmp', 'r');
+```
+**Example**  
+```ucode
+// Open a process with an argument array (no shell involved)
+const process = popen(['ls', '-la', '/tmp'], 'r');
 ```
 
 ### fs.open(path, [mode], [perm]) ⇒ [`file`](#module_fs.file)
