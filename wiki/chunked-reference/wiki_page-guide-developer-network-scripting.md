@@ -2,9 +2,9 @@
 title: Network scripts
 module: wiki
 origin_type: wiki_page
-token_count: 3765
+token_count: 4017
 source_file: L1-raw/wiki/wiki_page-guide-developer-network-scripting.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_url: https://openwrt.org/docs/guide-developer/network-scripting
 language: text
 ai_summary: 'The Network scripts module in OpenWrt provides a framework for implementing protocol handlers that enable various network configurations through the netifd daemon. Each protocol handler is a shell script located in `/lib/netifd/proto/` and must define at least two functions: `proto_protocolname_init_config` for parameter validation and monitoring, and `proto_protocolname_setup` for executing the protocol-specific setup logic. The handlers are invoked with configuration parameters in JSON format, allowing for dynamic updates to network interfaces. Changes to the protocol handlers require a restart of the netifd daemon to take effect.'
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/network-scripting](https://openwrt.org/docs/guide-developer/network-scripting)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # Network scripts
 
@@ -122,7 +122,9 @@ This only works once, however. If someone called `ifconfig iface down`, netifd w
 
 ### renew
 
-The renew procedure implements logic for when an interface or daemon config has changed and it might need a restart or reload, or SIGHUP to reload its config.
+The renew procedure [was added with the intent](https://github.com/openwrt/netifd/commit/3d317e90f15eec480b23f4dcddb841c292bef690) that it will be called whenever devices are added or removed to a bridge device. That way, if some of the DHCP servers were on that added/removed bridge member, a DHCP client using the bridge will be able to renew its lease. This is how DHCP and DHCPv6 protocol handlers currently use it.
+
+However, it can also be triggered manually via ubus: `ubus call network.interface.config renew`. This can be used as a workaround to trigger config reload of an interface or daemon when netifd cannot on its own detect changes in that config. Such workaround was proposed for [wireguard peers](https://github.com/openwrt/openwrt/pull/21784)
 
 When called, one or two parameters are passed:
 
@@ -137,6 +139,14 @@ proto_protocolname_renew() {
 ```
 
 This function can be implemented by any protocol back-end.
+
+### Restart (unreleased)
+
+The restart procedure [was added in July 2026](https://github.com/openwrt/netifd/commit/d155e4cefbd964b7c022618c1d74b549de25e8a8) and as of writing has not made it to an official release yet.
+
+It can also be called via ubus. In theory it should fall back to full interface restart (including teardown and setup) for protocols handlers that do not implement `proto_protocolname_restart`.
+
+\<!-- TODO: test if it works and add more info once this functionality is released --\>
 
 ### Teardown
 
@@ -223,7 +233,6 @@ Flags can be added to a proto handler in `proto_protoname_init_config`, by setti
 | no_device | no_device | Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device. |
 | no_device_config | no_device_config | Protocol has no device-specific configuration (config applies to the protocol itself). |
 | no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'. |
-| peer_detect | peer_detect | netifd calls renew when it detects that a \_peer in the config changed. |
 | renew_handler | renew_available | Protocol implements the "renew" action/handler `proto_*_renew()`, which can be called by netifd. |
 | teardown_on_l3_link_down | teardown_on_l3_link_down | If the l3 device receives state down (e.g. ifdown), call the `proto_*_teardown()`. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task |
 

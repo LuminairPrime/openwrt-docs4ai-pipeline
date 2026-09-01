@@ -1,18 +1,18 @@
 ---
 module: luci-examples
-total_token_count: 99509
+total_token_count: 99526
 section_count: 24
 is_monolithic: false
 is_sharded_part: true
 part_number: 1
 part_count: 2
-generated: '2026-08-01T13:35:11.474886+00:00'
+generated: '2026-09-01T13:11:46.627102+00:00'
 ---
 
 # luci-examples Bundled Reference (Part 1 of 2)
 
 > **Contains:** 24 documents
-> **Tokens:** ~99509 (cl100k_base)
+> **Tokens:** ~99526 (cl100k_base)
 > **Index:** [./bundled-reference.md](./bundled-reference.md)
 
 ---
@@ -363,10 +363,10 @@ return view.extend({
 	}),
 
 	callInitAction: rpc.declare({
-		object: 'luci',
-		method: 'setInitAction',
+		object: 'rc',
+		method: 'init',
 		params: [ 'name', 'action' ],
-		expect: { result: false }
+		reject: true
 	}),
 
 	callDDnsGetStatus: rpc.declare({
@@ -517,7 +517,8 @@ return view.extend({
 
 	handleRestartDDns(m, ev) {
 		return this.callInitAction('ddns', 'restart')
-			.then(L.bind(m.render, m));
+			.then(L.bind(m.render, m))
+			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
 
 	poll_status(map, data) {
@@ -1597,7 +1598,7 @@ function trimnonewline(input) {
 }
 
 function get_date(seconds, format) {
-	return trimnonewline( popen(`date -d @${seconds} "+${format}" 2>/dev/null`, 'r')?.read?.('line') );
+	return trimnonewline( popen(`date -d @${seconds} +${shellquote(format)} 2>/dev/null`, 'r')?.read?.('line') );
 }
 
 // convert epoch date to given format

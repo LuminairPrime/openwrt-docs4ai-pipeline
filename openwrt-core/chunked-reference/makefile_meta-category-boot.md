@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: boot packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 4007
+token_count: 4087
 source_file: L1-raw/openwrt-core/makefile_meta-category-boot.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/boot
 source_locator: package/boot
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/boot](https://github.com/openwrt/openwrt/blob/unknown/package/boot)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # OpenWrt Buildroot: boot packages
 
@@ -55,6 +55,17 @@ Patched build of the Aruba APBoot bootloader (a vendor fork of U-Boot) for the A
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/apex
+---
+
+## arm-trusted-firmware-airoha
+
+| Field | Value |
+|---|---|
+| Version | 2.10 |
+| Maintainer | Christian Marangi <ansuelsmth@gmail.com> |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/boot/arm-trusted-firmware-airoha
 ---
 
 ## arm-trusted-firmware-bcm63xx
@@ -116,7 +127,7 @@ Patched build of the Aruba APBoot bootloader (a vendor fork of U-Boot) for the A
 
 | Field | Value |
 |---|---|
-| Version | 2.14.0 |
+| Version | 2.15.0 |
 | Maintainer | Sarah Maedel <openwrt@tbspace.de> include $(INCLUDE_DIR)/[kernel.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/trusted-firmware-a.mk include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Trusted-Firmware-A/Default NAME:=Rockchip $(1)  |
 
 
@@ -253,6 +264,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
+| Version | 1.9 |
 | License | BSD-2-Clause |
 | Maintainer | Zoltan HERPAI <wigyori@uid0.hu> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/opensbi SECTION:=boot CATEGORY:=Boot Loaders DEPENDS:=@(TARGET_sifiveu||TARGET_d1) URL:=https://github.com/riscv/opensb |
 | Source URL | https://github.com/riscv/opensbi |
@@ -514,7 +526,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2023.10 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-sifiveu
@@ -571,7 +583,7 @@ dumpimage lists and extracts data from U-Boot images. If -l is specified, dumpim
 
 | Field | Value |
 |---|---|
-| Version | 2019.07 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-zynq

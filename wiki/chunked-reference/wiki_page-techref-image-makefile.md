@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 1303
 source_file: L1-raw/wiki/wiki_page-techref-image-makefile.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_url: https://openwrt.org/docs/techref/image.makefile
 language: text
 ai_summary: The image/Makefile module in OpenWrt defines how to create and manage images for different platforms using the buildroot system. It provides functions such as Image/Prepare for data manipulation and Image/Build for invoking various image formats like jffs2 and squashfs. Additionally, it outlines the structure for platform-specific configurations and kernel options necessary for building device images. This module is essential for developers looking to customize or add new platforms to the OpenWrt build system.
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/image.makefile](https://openwrt.org/docs/techref/image.makefile)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # image/Makefile Details
 

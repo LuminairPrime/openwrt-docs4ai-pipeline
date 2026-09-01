@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 430
 source_file: L1-raw/wiki/wiki_page-guide-developer-gdb.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_url: https://openwrt.org/docs/guide-developer/gdb
 language: text
 ai_summary: The GNU Debugger (GDB) guide provides instructions for using GDB on OpenWrt, focusing on compiling tools and adding debugging capabilities to packages. Users can enable GDB and gdbserver in the menuconfig and add CFLAGS to package Makefiles to include debugging information. The guide also outlines how to start gdbserver on the target device and connect to it from the host for debugging sessions. Key commands for setting breakpoints and running programs within GDB are also included.
@@ -18,7 +18,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/gdb](https://openwrt.org/docs/guide-developer/gdb)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # GNU Debugger
 

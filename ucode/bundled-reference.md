@@ -1,15 +1,15 @@
 ---
 module: ucode
-total_token_count: 95900
+total_token_count: 96286
 section_count: 15
 is_monolithic: true
-generated: '2026-08-01T13:35:11.474886+00:00'
+generated: '2026-09-01T13:11:46.627102+00:00'
 ---
 
 # ucode Bundled Reference
 
 > **Contains:** 15 documents concatenated
-> **Tokens:** ~95900 (cl100k_base)
+> **Tokens:** ~96286 (cl100k_base)
 
 ---
 
@@ -4889,6 +4889,40 @@ listener.close();
 | HSR_PROTOCOL_HSR | `number` | HSR protocol |
 | HSR_PROTOCOL_PRP | `number` | PRP protocol |
 
+### rtnl~CAN controller modes
+Flag bits used in the `mask` and `flags` members of the `ctrlmode`
+attribute of `can` type links.
+
+**Kind**: inner typedef of [`rtnl`](#module_rtnl)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| CAN_CTRLMODE_LOOPBACK | `number` | Loopback mode |
+| CAN_CTRLMODE_LISTENONLY | `number` | Listen-only mode |
+| CAN_CTRLMODE_3_SAMPLES | `number` | Triple sampling mode |
+| CAN_CTRLMODE_ONE_SHOT | `number` | One-shot mode |
+| CAN_CTRLMODE_BERR_REPORTING | `number` | Bus error reporting |
+| CAN_CTRLMODE_FD | `number` | CAN FD mode |
+| CAN_CTRLMODE_PRESUME_ACK | `number` | Ignore missing CAN ACKs |
+| CAN_CTRLMODE_FD_NON_ISO | `number` | CAN FD in non-ISO mode |
+| CAN_CTRLMODE_CC_LEN8_DLC | `number` | Classic CAN DLC option |
+
+### rtnl~CAN operational states
+Values of the `state` attribute of `can` type links.
+
+**Kind**: inner typedef of [`rtnl`](#module_rtnl)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| CAN_STATE_ERROR_ACTIVE | `number` | RX/TX error count < 96 |
+| CAN_STATE_ERROR_WARNING | `number` | RX/TX error count < 128 |
+| CAN_STATE_ERROR_PASSIVE | `number` | RX/TX error count < 256 |
+| CAN_STATE_BUS_OFF | `number` | RX/TX error count >= 256 |
+| CAN_STATE_STOPPED | `number` | Device is stopped |
+| CAN_STATE_SLEEPING | `number` | Device is sleeping |
+
 ### rtnl~Link extended statistics types
 **Kind**: inner typedef of [`rtnl`](#module_rtnl)  
 **Properties**
@@ -6188,11 +6222,11 @@ print(socket.error(true), "\n");  //
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| family | `number` |  | Address family, one of AF_INET, AF_INET6, AF_UNIX or AF_PACKET. |
+| family | `number` |  | Address family, one of AF_INET, AF_INET6, AF_UNIX, AF_PACKET or AF_CAN. |
 | address | `string` |  | IPv4/IPv6 address string (AF_INET or AF_INET6 only) or hardware address in hexadecimal notation (AF_PACKET only). |
 | [port] | `number` |  | Port number (AF_INET or AF_INET6 only). |
 | [flowinfo] | `number` |  | IPv6 flow information (AF_INET6 only). |
-| [interface] | `string` \| `number` |  | Link local address scope (for IPv6 sockets) or bound network interface (for packet sockets), either a network device name string or a nonzero positive integer representing a network interface index (AF_INET6 and AF_PACKET only). |
+| [interface] | `string` \| `number` |  | Link local address scope (for IPv6 sockets) or bound network interface (for packet and CAN sockets), either a network device name string or a nonzero positive integer representing a network interface index (AF_INET6, AF_PACKET and AF_CAN only). |
 | path | `string` |  | Domain socket filesystem path (AF_UNIX only). |
 | [protocol] | `number` | `0` | Physical layer protocol (AF_PACKET only). |
 | [hardware_type] | `number` | `0` | ARP hardware type (AF_PACKET only). |
@@ -6280,6 +6314,7 @@ Constants representing address families and socket domains.
 | AF_INET | `number` | IPv4 Internet protocols. |
 | AF_INET6 | `number` | IPv6 Internet protocols. |
 | AF_PACKET | `number` | Low-level packet interface. |
+| AF_CAN | `number` | Controller Area Network sockets. |
 
 ### socket~Socket Types
 The `SOCK_*` type and flag constants are used by
@@ -6479,9 +6514,7 @@ the socket.
 | SO_PROTOCOL | `number` | Retrieves the protocol number. |
 | SO_RCVBUF | `number` | Set the receive buffer size. |
 | SO_RCVBUFFORCE | `number` | Set the receive buffer size forcefully. |
-| SO_RCVLOWAT | `number` | Set the minimum number of bytes to process for input operations. |
-| SO_RCVTIMEO | `number` | Set the timeout for receiving data. |
-| SO_REUSEADDR | `number` | Allow the socket to
+| SO_RCVLOWAT | `number` | Set the minimum number of bytes to
 
 ---
 

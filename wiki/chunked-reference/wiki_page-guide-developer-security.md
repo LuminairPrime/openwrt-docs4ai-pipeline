@@ -2,9 +2,9 @@
 title: Security
 module: wiki
 origin_type: wiki_page
-token_count: 2139
+token_count: 2475
 source_file: L1-raw/wiki/wiki_page-guide-developer-security.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_url: https://openwrt.org/docs/guide-developer/security
 language: text
 ai_summary: The Security module of OpenWrt outlines the processes, tools, and mechanisms utilized to ensure the security of the OpenWrt distribution and its official package feeds. It includes guidelines for vulnerability reporting, emphasizing confidentiality and the appropriate channels for communication, such as contacting <contact@openwrt.org> or the public mailing list <openwrt-adm@lists.openwrt.org>. Additionally, the module provides information on security advisories specifically for components maintained by OpenWrt, while noting that third-party components are not covered. The support status of various OpenWrt releases is also detailed, indicating their current status and projected end-of-life dates.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/security](https://openwrt.org/docs/guide-developer/security)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # Security
 
@@ -74,6 +74,19 @@ A major release will move into **End of Life** status one year after the initial
 
 :!: The **Projected EoL** date may be subject to change depending on circumstances, such as the timing of the next release.
 
+## Set strong root password
+
+Right after a fresh OpenWrt installation or a fresh upgrade, there is no initial root password set. This is both normal and expected. While at the same time, this is a significant security risk. Why? Because this root account allows access to your OpenWrt device. For stronger security, at your earliest convenience, it is suggested to set a strong password for your root account.
+
+**Steps to set strong root password:**
+
+1.  [Choose an appropriate maximum length for your root password](/docs/guide-user/troubleshooting/root_password#root_password_maximum_length). This length depends on which type of connection(s) you need.
+2.  Choose one option below to set a strong root password:
+    - **Option 1. LuCI**
+      -  Using OpenWrt version 25 or more recent, using [LuCI](/docs/guide-quick-start/walkthrough_login), navigate to **System** menu -\> **Administration** menu option -\> **Router Password** horizontal tab. This [documentation with screenshots](/docs/guide-quick-start/walkthrough_login#set_up_root_password) might be of interest.
+    - **Option 2. Command line** (e.g., console or SSH)
+      - Run the command `passwd`.
+
 ## Identifying problems
 
 The OpenWrt project uses multiple tools to identify potential security problems. This information is normally available to everyone and we appreciate fixes for problems reported by these tools from everyone.
@@ -97,6 +110,11 @@ OpenWrt operates multiple [build bot instances](/infrastructure#Buildbot) which 
 When a change to a package is committed to the OpenWrt base repository of package feed, the build bots are automatically detecting this change and will rebuild this package. The newly built package can then be installed with opkg or be integrated with the image builder by users of OpenWrt. This allows us to ship updates in about 2 days to the end users.
 
 The kernel is normally located in its own partition and upgrades are not so easily possible. Therefore this mechanism currently does not work for the kernel itself and kernel modules and a new minor release is needed to ship fixes to end users.
+
+## LAN side attack
+
+Keep in mind, Luci in OpenWRT does not have build-in any tools to prevent brute-force attack like `fail2ban` , user need to install it manual.
+For more info please read [Accessing LuCI web interface securely](/docs/guide-user/luci/luci.secure)
 
 ## Hardening build options
 

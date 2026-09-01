@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 2031
 source_file: L1-raw/openwrt-core/makefile_meta-category-system.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/system
 source_locator: package/system
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/system](https://github.com/openwrt/openwrt/blob/unknown/package/system)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # OpenWrt Buildroot: system packages
 
@@ -50,7 +50,7 @@ ai_related_topics:
 
 | Field | Value |
 |---|---|
-| Version | 20260601 |
+| Version | 20260816 |
 | License | GPL-2.0-or-later MPL-2.0 |
 | Maintainer | PKG_LICENSE:=GPL-2.0-or-later MPL-2.0 |
 | Source URL | @DEBIAN/pool/main/c/ca-certificates |

@@ -1,15 +1,15 @@
 ---
 module: openwrt-core
-total_token_count: 23664
+total_token_count: 23749
 section_count: 7
 is_monolithic: true
-generated: '2026-08-01T13:35:11.474886+00:00'
+generated: '2026-09-01T13:11:46.627102+00:00'
 ---
 
 # openwrt-core Bundled Reference
 
 > **Contains:** 7 documents concatenated
-> **Tokens:** ~23664 (cl100k_base)
+> **Tokens:** ~23749 (cl100k_base)
 
 ---
 
@@ -42,6 +42,17 @@ Patched build of the Aruba APBoot bootloader (a vendor fork of U-Boot) for the A
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/apex
+---
+
+## arm-trusted-firmware-airoha
+
+| Field | Value |
+|---|---|
+| Version | 2.10 |
+| Maintainer | Christian Marangi <ansuelsmth@gmail.com> |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/boot/arm-trusted-firmware-airoha
 ---
 
 ## arm-trusted-firmware-bcm63xx
@@ -103,7 +114,7 @@ Patched build of the Aruba APBoot bootloader (a vendor fork of U-Boot) for the A
 
 | Field | Value |
 |---|---|
-| Version | 2.14.0 |
+| Version | 2.15.0 |
 | Maintainer | Sarah Maedel <openwrt@tbspace.de> include $(INCLUDE_DIR)/[kernel.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/trusted-firmware-a.mk include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Trusted-Firmware-A/Default NAME:=Rockchip $(1)  |
 
 
@@ -240,6 +251,7 @@ Preloader image for mt7623n based boards like Banana Pi R2.
 
 | Field | Value |
 |---|---|
+| Version | 1.9 |
 | License | BSD-2-Clause |
 | Maintainer | Zoltan HERPAI <wigyori@uid0.hu> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/opensbi SECTION:=boot CATEGORY:=Boot Loaders DEPENDS:=@(TARGET_sifiveu||TARGET_d1) URL:=https://github.com/riscv/opensb |
 | Source URL | https://github.com/riscv/opensbi |
@@ -501,7 +513,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2023.10 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-sifiveu
@@ -558,7 +570,7 @@ dumpimage lists and extracts data from U-Boot images. If -l is specified, dumpim
 
 | Field | Value |
 |---|---|
-| Version | 2019.07 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-zynq
@@ -657,29 +669,27 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/ipq-wifi
 ---
 
-## ixp4xx-microcode
-
-This package contains the microcode needed to use the network engines in IXP4xx CPUs for ethernet on all three NPEs.
-
-| Field | Value |
-|---|---|
-| Version | 2.4 |
-| Source URL | @OPENWRT |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/ixp4xx-microcode
----
-
 ## linux-firmware
 
 | Field | Value |
 |---|---|
-| Version | 20260622 |
+| Version | 20260810 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/linux-firmware
+---
+
+## mipi-dbi
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-or-later |
+| Maintainer | Matt Eaton <linux@divinehawk.com> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/mipi-dbi-default SECTION:=firmware CATEGORY:=Firmware endef define Build/Compile endef # From https://github.com/notr |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/mipi-dbi
 ---
 
 ## murata-firmware
@@ -892,10 +902,9 @@ CFE RAM binaries for bcm63xx.
 
 | Field | Value |
 |---|---|
-| Version | 6.18.39 |
 | License | GPL-2.0-only |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
-| Source URL | https://github.com/openwrt/backports/releases/download/backports-v$(PKG_VERSION) |
+| Source URL | https://github.com/openwrt/backports/releases/download/backports-v$(PKG_SOURCE_VERSION) |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/mac80211
@@ -1521,7 +1530,7 @@ $(call Package/mbedtls/Default/description) This package contains the mbedtls li
 
 | Field | Value |
 |---|---|
-| Version | 3.6.6 |
+| Version | 3.6.7 |
 | License | GPL-2.0-or-later |
 | Source URL | https://github.com/Mbed-TLS/$(PKG_NAME)/releases/download/$(PKG_NAME)-$(PKG_VERSION) |
 
@@ -1563,9 +1572,8 @@ The musl-fts package implements the fts(3) functions fts_open, fts_read, fts_chi
 
 | Field | Value |
 |---|---|
-| Version | 6.4 |
 | License | MIT |
-| Source URL | @GNU/$(PKG_NAME) |
+| Source URL | https://github.com/ThomasDickey/ncurses-snapshots.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/ncurses
@@ -1589,7 +1597,7 @@ $(call Package/openssl/Default/description) This package contains the OpenSSL sh
 
 | Field | Value |
 |---|---|
-| Version | 3.5.7 |
+| Version | 3.5.8 |
 | License | Apache-2.0 |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://www.openssl.org/source/ https://www.openssl.org/source/old/$(PKG_BASE)/ https://github.com/openssl/openssl/relea |
@@ -1702,7 +1710,7 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 | Field | Value |
 |---|---|
-| Version | 5.9.1 |
+| Version | 5.9.2 |
 | License | GPL-3.0-or-later |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://github.com/wolfSSL/wolfssl/archive/v$(PKG_REAL_VERSION) |
@@ -1749,7 +1757,7 @@ zlib is a lossless data-compression library. This package includes the shared li
 
 | Field | Value |
 |---|---|
-| Version | 20260601 |
+| Version | 20260816 |
 | License | GPL-2.0-or-later MPL-2.0 |
 | Maintainer | PKG_LICENSE:=GPL-2.0-or-later MPL-2.0 |
 | Source URL | @DEBIAN/pool/main/c/ca-certificates |

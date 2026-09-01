@@ -1,15 +1,15 @@
 # ucode module
 > ucode scripting language: standard library, runtime modules (fs, ubus, uci, uloop, nl80211, rtnl), and C API.
-> **Total Context:** ~95900 tokens
+> **Total Context:** ~96286 tokens
 
 ## Recommended Entry Points
 
-- [map.md](./map.md): Structural map for ucode that prioritizes quick orientation and symbol discovery. (~6687 tokens, l3-skeleton)
-- [bundled-reference.md](./bundled-reference.md): Complete monolithic reference for ucode when a larger context window is available. (~96108 tokens, l4-monolith)
+- [map.md](./map.md): Structural map for ucode that prioritizes quick orientation and symbol discovery. (~6703 tokens, l3-skeleton)
+- [bundled-reference.md](./bundled-reference.md): Complete monolithic reference for ucode when a larger context window is available. (~96494 tokens, l4-monolith)
 
 ## Tooling Surfaces
 
-- [types/ucode.d.ts](./types/ucode.d.ts): TypeScript declarations for IDE navigation and static analysis of ucode. (~4219 tokens, l3-ide-schema)
+- [types/ucode.d.ts](./types/ucode.d.ts): TypeScript declarations for IDE navigation and static analysis of ucode. (~4157 tokens, l3-ide-schema)
 
 ## Source Documents
 
@@ -21,8 +21,8 @@
 - [c_source-api-module-math.md](./chunked-reference/c_source-api-module-math.md): Provides standard mathematical functions for ucode scripts, mirroring the JavaScript Math object surface. (~8716 tokens, l2-source)
 - [c_source-api-module-nl80211.md](./chunked-reference/c_source-api-module-nl80211.md): Provides netlink 802.11 wireless configuration API bindings for ucode. (~4258 tokens, l2-source)
 - [c_source-api-module-resolv.md](./chunked-reference/c_source-api-module-resolv.md): Provides DNS name resolution for ucode scripts using the system resolver. (~2516 tokens, l2-source)
-- [c_source-api-module-rtnl.md](./chunked-reference/c_source-api-module-rtnl.md): Provides rtnetlink interface bindings for ucode to enumerate and monitor kernel network state. (~7614 tokens, l2-source)
-- [c_source-api-module-socket.md](./chunked-reference/c_source-api-module-socket.md): Provides low-level socket programming for ucode via POSIX socket API bindings. (~13517 tokens, l2-source)
+- [c_source-api-module-rtnl.md](./chunked-reference/c_source-api-module-rtnl.md): Provides rtnetlink interface bindings for ucode to enumerate and monitor kernel network state. (~8016 tokens, l2-source)
+- [c_source-api-module-socket.md](./chunked-reference/c_source-api-module-socket.md): Provides low-level socket programming for ucode via POSIX socket API bindings. (~13501 tokens, l2-source)
 - [c_source-api-module-struct.md](./chunked-reference/c_source-api-module-struct.md): Provides binary data packing and unpacking for ucode using a Python struct-style format string syntax. (~7325 tokens, l2-source)
 - [c_source-api-module-ubus.md](./chunked-reference/c_source-api-module-ubus.md): ucode module: ubus > **Live docs:** https://ucode.mein.io/module-ubus.html --- Ubus IPC The ubus module provides functions for OpenWrt inter-process communication, including access to ubus registered modules and their methods, as well as... (~8467 tokens, l2-source)
 - [c_source-api-module-uci.md](./chunked-reference/c_source-api-module-uci.md): Provides direct ucode bindings for OpenWrt libuci to read and write UCI configuration. (~7849 tokens, l2-source)

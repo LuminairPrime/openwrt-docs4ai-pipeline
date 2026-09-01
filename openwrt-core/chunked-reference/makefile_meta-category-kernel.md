@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: kernel packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 2742
+token_count: 2733
 source_file: L1-raw/openwrt-core/makefile_meta-category-kernel.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/kernel
 source_locator: package/kernel
@@ -27,7 +27,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/kernel](https://github.com/openwrt/openwrt/blob/unknown/package/kernel)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # OpenWrt Buildroot: kernel packages
 
@@ -169,10 +169,9 @@ CFE RAM binaries for bcm63xx.
 
 | Field | Value |
 |---|---|
-| Version | 6.18.39 |
 | License | GPL-2.0-only |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
-| Source URL | https://github.com/openwrt/backports/releases/download/backports-v$(PKG_VERSION) |
+| Source URL | https://github.com/openwrt/backports/releases/download/backports-v$(PKG_SOURCE_VERSION) |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/mac80211

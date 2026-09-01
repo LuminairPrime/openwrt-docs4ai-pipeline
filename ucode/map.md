@@ -1,7 +1,7 @@
 # ucode Navigation Map
 
 > **Contains:** Headers and function signatures for ucode.
-> **Generated:** 2026-08-01T13:35:11.474886+00:00
+> **Generated:** 2026-09-01T13:11:46.627102+00:00
 
 ---
 
@@ -261,6 +261,8 @@
 ### rtnl~Port profile responses
 ### rtnl~IPoIB modes
 ### rtnl~HSR protocols
+### rtnl~CAN controller modes
+### rtnl~CAN operational states
 ### rtnl~Link extended statistics types
 ### rtnl~XDP attach types
 ### rtnl~FDB notification bits

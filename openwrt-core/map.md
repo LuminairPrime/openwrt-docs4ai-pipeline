@@ -1,7 +1,7 @@
 # openwrt-core Navigation Map
 
 > **Contains:** Headers and function signatures for openwrt-core.
-> **Generated:** 2026-08-01T13:35:11.474886+00:00
+> **Generated:** 2026-09-01T13:11:46.627102+00:00
 
 ---
 
@@ -10,6 +10,7 @@
 # OpenWrt Buildroot: boot packages
 ## apboot-aruba-ipq806x
 ## apex
+## arm-trusted-firmware-airoha
 ## arm-trusted-firmware-bcm63xx
 ## arm-trusted-firmware-imx
 ## arm-trusted-firmware-mediatek
@@ -70,8 +71,8 @@
 ## firmware-imx
 ## intel-microcode
 ## ipq-wifi
-## ixp4xx-microcode
 ## linux-firmware
+## mipi-dbi
 ## murata-firmware
 ## murata-nvram
 ## omnia-mcu-firmware

@@ -4,7 +4,7 @@ module: ucode
 origin_type: c_source
 token_count: 3937
 source_file: L1-raw/ucode/c_source-api-module-debug.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/debug.c
 source_locator: lib/debug.c
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/debug.c](https://github.com/nicowillis/ucode/blob/unknown/lib/debug.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # ucode module: debug
 

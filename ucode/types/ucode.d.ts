@@ -145,9 +145,7 @@ declare module "fs" {
     export function open(path: any, mode?: any, _perm_______file____module_fs_file: any): any;
     export function opendir(path______dir____module_fs_dir: any): any;
     export function pipe(______Array__file_____module_fs_file: any): any;
-    export function popen(command: any, _mode_______proc____module_fs_proc: any): any;
     export function proc(): any;
-    export function readfile(path: any, limit?: any): any;
     export function readlink(path: any): any;
     export function realpath(path: any): any;
     export function rename(oldPath: any, newPath: any): any;
@@ -309,7 +307,6 @@ declare module "process" {
 declare module "request" {
     export function defer(): any;
     export function error(rcode?: any): any;
-    export function get(): any;
     export function new(): any;
     export function reply(data: any): any;
     export function set(): any;
@@ -417,12 +414,10 @@ declare module "uloop" {
     export function done(): any;
     export function end(): any;
     export function error(): any;
-    export function handle(): any;
     export function init(): any;
     export function interval(): any;
     export function pipe(): any;
     export function process(): any;
-    export function run(timeout?: any): any;
     export function running(): any;
     export function signal(): any;
     export function task(): any;

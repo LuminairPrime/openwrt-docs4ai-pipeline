@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: firmware packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 1667
+token_count: 1681
 source_file: L1-raw/openwrt-core/makefile_meta-category-firmware.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/firmware
 source_locator: package/firmware
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/firmware](https://github.com/openwrt/openwrt/blob/unknown/package/firmware)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # OpenWrt Buildroot: firmware packages
 
@@ -119,29 +119,27 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/ipq-wifi
 ---
 
-## ixp4xx-microcode
-
-This package contains the microcode needed to use the network engines in IXP4xx CPUs for ethernet on all three NPEs.
-
-| Field | Value |
-|---|---|
-| Version | 2.4 |
-| Source URL | @OPENWRT |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/ixp4xx-microcode
----
-
 ## linux-firmware
 
 | Field | Value |
 |---|---|
-| Version | 20260622 |
+| Version | 20260810 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/linux-firmware
+---
+
+## mipi-dbi
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-or-later |
+| Maintainer | Matt Eaton <linux@divinehawk.com> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/mipi-dbi-default SECTION:=firmware CATEGORY:=Firmware endef define Build/Compile endef # From https://github.com/notr |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/mipi-dbi
 ---
 
 ## murata-firmware

@@ -1,7 +1,7 @@
 # wiki Navigation Map
 
 > **Contains:** Headers and function signatures for wiki.
-> **Generated:** 2026-08-01T13:35:11.474886+00:00
+> **Generated:** 2026-09-01T13:11:46.627102+00:00
 
 ---
 
@@ -448,6 +448,7 @@
 ### init_config
 ### Setup
 ### renew
+### Restart (unreleased)
 ### Teardown
 ### Coldplug
 ### Keep config
@@ -683,11 +684,13 @@
 ## Security advisories
 ## Support Status
 #### Notes
+## Set strong root password
 ## Identifying problems
 ### uscan
 ### Coverity Scan
 ## Reproducible builds
 ## Deliver to users
+## LAN side attack
 ## Hardening build options
 
 > **Summary:** The OpenWrt SELinux policy development module provides guidance on customizing, developing, and testing SELinux policies for OpenWrt devices. It outlines the prerequisites, including the use of Fedora 34 for building images and the necessity of a git repository for accessing policy components. The module emphasizes the importance of tailoring the SELinux policy to specific device configurations to enhance efficiency and reduce unnecessary resource usage. Additionally, it encourages contributors to submit patches for improvements once their policies are tested and deemed beneficial for the community.

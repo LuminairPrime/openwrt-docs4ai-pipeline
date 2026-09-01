@@ -2,9 +2,9 @@
 title: The Bootloader
 module: wiki
 origin_type: wiki_page
-token_count: 2139
+token_count: 2166
 source_file: L1-raw/wiki/wiki_page-techref-bootloader.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_url: https://openwrt.org/docs/techref/bootloader
 language: text
 ai_summary: The Bootloader is a critical piece of software executed upon powering up a hardware device, responsible for initializing low-level hardware details and passing a hardware description to the Kernel. It is typically stored on flash storage and is device-specific, though it is not part of OpenWrt itself. While not strictly necessary for booting Linux, bootloaders provide additional functionalities such as firmware flashing and device recovery options. Limitations may exist based on OEM designs, affecting kernel size and firmware formats.
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/bootloader](https://openwrt.org/docs/techref/bootloader)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # The Bootloader
 
@@ -102,6 +102,7 @@ An embedded bootloader fulfills the same functionality as the [BIOS](https://en.
 - [jboot](/docs/techref/bootloader/jboot) unknown
 - [myloader](/docs/techref/bootloader/myloader) unknown
 - [pp_boot](/docs/techref/bootloader/pp_boot) unknown
+- [tcBoot](/docs/techref/bootloader/tcBoot) unknown used by EcoNet and Airoha devices.
 - [yamon](/docs/techref/bootloader/yamon) unknown by [Imagination Technology](https://en.wikipedia.org/wiki/Imagination Technology); the Linux kernel can only be booted when it is in SREC format.
 - [Breed](/docs/techref/bootloader/Breed) - Breed booatloader
 - [bl-mt798x](/docs/techref/bootloader/bl-mt798x) - ATF and u-boot for mt798x-based routers

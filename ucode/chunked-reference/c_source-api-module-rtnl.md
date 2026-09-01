@@ -2,9 +2,9 @@
 title: 'ucode module: rtnl'
 module: ucode
 origin_type: c_source
-token_count: 7614
+token_count: 8016
 source_file: L1-raw/ucode/c_source-api-module-rtnl.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/rtnl.c
 source_locator: lib/rtnl.c
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/rtnl.c](https://github.com/nicowillis/ucode/blob/unknown/lib/rtnl.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # ucode module: rtnl
 
@@ -342,6 +342,40 @@ listener.close();
 | --- | --- | --- |
 | HSR_PROTOCOL_HSR | `number` | HSR protocol |
 | HSR_PROTOCOL_PRP | `number` | PRP protocol |
+
+### rtnl~CAN controller modes
+Flag bits used in the `mask` and `flags` members of the `ctrlmode`
+attribute of `can` type links.
+
+**Kind**: inner typedef of [`rtnl`](#module_rtnl)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| CAN_CTRLMODE_LOOPBACK | `number` | Loopback mode |
+| CAN_CTRLMODE_LISTENONLY | `number` | Listen-only mode |
+| CAN_CTRLMODE_3_SAMPLES | `number` | Triple sampling mode |
+| CAN_CTRLMODE_ONE_SHOT | `number` | One-shot mode |
+| CAN_CTRLMODE_BERR_REPORTING | `number` | Bus error reporting |
+| CAN_CTRLMODE_FD | `number` | CAN FD mode |
+| CAN_CTRLMODE_PRESUME_ACK | `number` | Ignore missing CAN ACKs |
+| CAN_CTRLMODE_FD_NON_ISO | `number` | CAN FD in non-ISO mode |
+| CAN_CTRLMODE_CC_LEN8_DLC | `number` | Classic CAN DLC option |
+
+### rtnl~CAN operational states
+Values of the `state` attribute of `can` type links.
+
+**Kind**: inner typedef of [`rtnl`](#module_rtnl)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| CAN_STATE_ERROR_ACTIVE | `number` | RX/TX error count < 96 |
+| CAN_STATE_ERROR_WARNING | `number` | RX/TX error count < 128 |
+| CAN_STATE_ERROR_PASSIVE | `number` | RX/TX error count < 256 |
+| CAN_STATE_BUS_OFF | `number` | RX/TX error count >= 256 |
+| CAN_STATE_STOPPED | `number` | Device is stopped |
+| CAN_STATE_SLEEPING | `number` | Device is sleeping |
 
 ### rtnl~Link extended statistics types
 **Kind**: inner typedef of [`rtnl`](#module_rtnl)  

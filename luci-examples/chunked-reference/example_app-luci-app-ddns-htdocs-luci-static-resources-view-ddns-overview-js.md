@@ -2,9 +2,9 @@
 title: overview.js
 module: luci-examples
 origin_type: example_app
-token_count: 11177
+token_count: 11192
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
 source_locator: applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # overview.js
 ```javascript
@@ -63,10 +63,10 @@ return view.extend({
 	}),
 
 	callInitAction: rpc.declare({
-		object: 'luci',
-		method: 'setInitAction',
+		object: 'rc',
+		method: 'init',
 		params: [ 'name', 'action' ],
-		expect: { result: false }
+		reject: true
 	}),
 
 	callDDnsGetStatus: rpc.declare({
@@ -217,7 +217,8 @@ return view.extend({
 
 	handleRestartDDns(m, ev) {
 		return this.callInitAction('ddns', 'restart')
-			.then(L.bind(m.render, m));
+			.then(L.bind(m.render, m))
+			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
 	},
 
 	poll_status(map, data) {

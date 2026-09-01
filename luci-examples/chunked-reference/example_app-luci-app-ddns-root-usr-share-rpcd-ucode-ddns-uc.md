@@ -2,9 +2,9 @@
 title: ddns.uc
 module: luci-examples
 origin_type: example_app
-token_count: 2734
+token_count: 2736
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-root-usr-share-rpcd-ucode-ddns-uc.md
-last_pipeline_run: '2026-08-01T13:34:50.607547+00:00'
+last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
 source_locator: applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-08-01
+> **Normalized:** 2026-09-01
 
 # ddns.uc
 ```ucode
@@ -69,7 +69,7 @@ function trimnonewline(input) {
 }
 
 function get_date(seconds, format) {
-	return trimnonewline( popen(`date -d @${seconds} "+${format}" 2>/dev/null`, 'r')?.read?.('line') );
+	return trimnonewline( popen(`date -d @${seconds} +${shellquote(format)} 2>/dev/null`, 'r')?.read?.('line') );
 }
 
 // convert epoch date to given format
