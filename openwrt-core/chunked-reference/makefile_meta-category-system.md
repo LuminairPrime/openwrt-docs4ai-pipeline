@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: system packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 2031
+token_count: 2145
 source_file: L1-raw/openwrt-core/makefile_meta-category-system.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/system
 source_locator: package/system
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/system](https://github.com/openwrt/openwrt/blob/unknown/package/system)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # OpenWrt Buildroot: system packages
 
@@ -79,6 +79,19 @@ ai_related_topics:
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/system/fwtool
+---
+
+## hardware-support
+
+Feature gate for audio devices. Allocates the audio, audio-capture and midi groups and installs the hotplug rules which put the ALSA character devices into them. Kernel modules exposing audio devices and userspace using those groups depend on this package.
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-only |
+| Maintainer | Daniel Golle <daniel@makrotopia.org> |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/system/hardware-support
 ---
 
 ## iucode-tool

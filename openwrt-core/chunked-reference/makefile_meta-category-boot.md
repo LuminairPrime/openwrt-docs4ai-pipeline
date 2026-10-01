@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: boot packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 4087
+token_count: 4099
 source_file: L1-raw/openwrt-core/makefile_meta-category-boot.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/boot
 source_locator: package/boot
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/boot](https://github.com/openwrt/openwrt/blob/unknown/package/boot)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # OpenWrt Buildroot: boot packages
 
@@ -464,8 +464,9 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
+| Version | 2026.10-rc5 |
 | Maintainer | Robert Marko <robert.marko@sartura.hr> include $(INCLUDE_DIR)/u-boot.mk include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/[kernel.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define U-Boot/Default BUILD_TARGET:=microchipsw HIDDEN:=1 UBO |
-| Source URL | https://github.com/microchip-ung/u-boot.git |
+| Source URL | https://git.u-boot-project.org/u-boot/u-boot.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-microchipsw
@@ -485,7 +486,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2020.04 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mxs
@@ -558,7 +559,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2025.04 |
+| Version | 2026.04 |
 | Maintainer | Tomasz Maciej Nowak <tmn505@gmail.com> |
 
 

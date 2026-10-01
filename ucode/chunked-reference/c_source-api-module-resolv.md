@@ -2,9 +2,9 @@
 title: 'ucode module: resolv'
 module: ucode
 origin_type: c_source
-token_count: 2516
+token_count: 2537
 source_file: L1-raw/ucode/c_source-api-module-resolv.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/resolv.c
 source_locator: lib/resolv.c
@@ -18,7 +18,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/resolv.c](https://github.com/nicowillis/ucode/blob/unknown/lib/resolv.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # ucode module: resolv
 
@@ -248,7 +248,7 @@ for failed queries.
 | [options.type] | `Array.<string>` |  | Array of DNS record types to query for. Valid types are: 'A', 'AAAA', 'CNAME', 'MX', 'NS', 'PTR', 'SOA', 'SRV', 'TXT', 'ANY'. If not specified, defaults to 'A' and 'AAAA' for domain names, or 'PTR' for IP addresses. |
 | [options.nameserver] | `Array.<string>` |  | Array of DNS nameserver addresses to query. Each address can optionally include a port number using '#' separator (e.g., '8.8.8.8#53'). IPv6 addresses can include interface scope using '%' separator. If not specified, nameservers are read from /etc/resolv.conf, falling back to '127.0.0.1'. |
 | [options.timeout] | `number` | `5000` | Total timeout for all queries in milliseconds. |
-| [options.retries] | `number` | `2` | Number of retry attempts for failed queries. |
+| [options.retries] | `number` | `2` | Number of attempts spread over the timeout; must be at least 1. Passing 0 or a negative value is rejected with an EINVAL error. |
 | [options.edns_maxsize] | `number` | `4096` | Maximum UDP packet size for EDNS (Extension Mechanisms for DNS). Set to 0 to disable EDNS. |
 | [options.txt_as_array] | `boolean` | `false` | Return TXT record strings as array elements instead of space-joining all record strings into one single string per record. |
 

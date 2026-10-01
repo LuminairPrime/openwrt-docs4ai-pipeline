@@ -2,9 +2,9 @@
 title: 'ucode module: io'
 module: ucode
 origin_type: c_source
-token_count: 4062
+token_count: 4061
 source_file: L1-raw/ucode/c_source-api-module-io.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/io.c
 source_locator: lib/io.c
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/io.c](https://github.com/nicowillis/ucode/blob/unknown/lib/io.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # ucode module: io
 
@@ -139,10 +139,12 @@ Returns `null` if an error occurred.
 **Kind**: instance method of [`io`](#module_io)  
 **Example**  
 ```ucode
-const pipe_handles = io.pipe();
-const reader = pipe_handles[0];
-const writer = pipe_handles[1];
+const pair = io.pipe();
+const reader = pair[0], writer = pair[1];
+
 writer.write('Hello from pipe!');
+writer.close();
+
 const data = reader.read(100);
 print(data, "\n");  // Prints: Hello from pipe!
 ```

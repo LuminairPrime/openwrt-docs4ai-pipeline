@@ -1,7 +1,7 @@
 # openwrt-core Navigation Map
 
 > **Contains:** Headers and function signatures for openwrt-core.
-> **Generated:** 2026-09-01T13:11:46.627102+00:00
+> **Generated:** 2026-10-01T18:43:48.394133+00:00
 
 ---
 
@@ -170,6 +170,7 @@
 ## ca-certificates
 ## fstools
 ## fwtool
+## hardware-support
 ## iucode-tool
 ## mtd
 ## openwrt-keyring
@@ -306,6 +307,8 @@
 ## toolchain-build.mk
 # Documentation
 ## toplevel.mk
+# Documentation
+## trusted-firmware-a.mk
 # Documentation
 ## unpack.mk
 # Documentation

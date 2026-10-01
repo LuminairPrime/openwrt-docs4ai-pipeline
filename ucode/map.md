@@ -1,7 +1,7 @@
 # ucode Navigation Map
 
 > **Contains:** Headers and function signatures for ucode.
-> **Generated:** 2026-09-01T13:11:46.627102+00:00
+> **Generated:** 2026-10-01T18:43:48.394133+00:00
 
 ---
 
@@ -17,6 +17,9 @@
 ### debug.setlocal([level], variable, [value]) ⇒ [`LocalInfo`](#module_debug.LocalInfo)
 ### debug.getupval(target, variable) ⇒ [`UpvalInfo`](#module_debug.UpvalInfo)
 ### debug.setupval(target, variable, value) ⇒ [`UpvalInfo`](#module_debug.UpvalInfo)
+### debug.breakpoint(spec, [mainfn]) ⇒ `number` \| `boolean`
+### debug.notifyExit(status, exitCode, [exception])
+### debug.debugger([target])
 ### debug.StackTraceEntry : `Object`
 ### debug.SourcePosition : `Object`
 ### debug.UpvalRef : `Object`

@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 5270
 source_file: L1-raw/openwrt-core/makefile_meta-category-libs.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/libs
 source_locator: package/libs
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/libs](https://github.com/openwrt/openwrt/blob/unknown/package/libs)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # OpenWrt Buildroot: libs packages
 
@@ -52,7 +52,7 @@ GNU libc hierarchial argument parsing library broken out from glibc.
 
 | Field | Value |
 |---|---|
-| Version | 0.195 |
+| Version | 0.196 |
 | License | GPL-2.0-or-later LGPL-3.0-or-later |
 | Maintainer | Luiz Angelo Daros de Luca <luizluca@gmail.com> |
 | Source URL | https://sourceware.org/$(PKG_NAME)/ftp/$(PKG_VERSION) https://mirrors.kernel.org/sourceware/$(PKG_NAME)/$(PKG_VERSION) |
@@ -308,7 +308,7 @@ This package contains a system-independent library for user-level network packet
 
 | Field | Value |
 |---|---|
-| Version | 1.10.6 |
+| Version | 1.10.7 |
 | License | BSD-3-Clause |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | https://www.tcpdump.org/release/ |

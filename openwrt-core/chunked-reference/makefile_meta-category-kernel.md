@@ -4,7 +4,7 @@ module: openwrt-core
 origin_type: makefile_meta
 token_count: 2733
 source_file: L1-raw/openwrt-core/makefile_meta-category-kernel.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/kernel
 source_locator: package/kernel
@@ -27,7 +27,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/kernel](https://github.com/openwrt/openwrt/blob/unknown/package/kernel)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # OpenWrt Buildroot: kernel packages
 
@@ -52,7 +52,7 @@ GPU and kernel boot firmware for bcm27xx.
 
 | Field | Value |
 |---|---|
-| Version | 2026.05.21 |
+| Version | 2026.09.15 |
 | Source URL | https://github.com/raspberrypi/firmware/releases/download/$(PKG_VERSION_REAL) |
 
 

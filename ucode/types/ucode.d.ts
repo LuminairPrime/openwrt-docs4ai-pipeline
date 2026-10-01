@@ -63,10 +63,13 @@ declare module "debug" {
     export function UpvalInfo(): any;
     export function UpvalRef(): any;
     export function ValueInformation(): any;
+    export function breakpoint(spec: any, mainfn?: any): any;
+    export function debugger(target?: any): any;
     export function getinfo(value______ValueInformation____module_debug_ValueInformation: any): any;
     export function getlocal(level?: any, variable______LocalInfo____module_debug_LocalInfo: any): any;
     export function getupval(target: any, variable______UpvalInfo____module_debug_UpvalInfo: any): any;
     export function memdump(file: any): any;
+    export function notifyExit(status: any, exitCode: any, exception?: any): any;
     export function setlocal(level?: any, variable: any, _value_______LocalInfo____module_debug_LocalInfo: any): any;
     export function setupval(target: any, variable: any, value______UpvalInfo____module_debug_UpvalInfo: any): any;
     export function sourcepos(______SourcePosition____module_debug_SourcePosition: any): any;
@@ -145,7 +148,9 @@ declare module "fs" {
     export function open(path: any, mode?: any, _perm_______file____module_fs_file: any): any;
     export function opendir(path______dir____module_fs_dir: any): any;
     export function pipe(______Array__file_____module_fs_file: any): any;
+    export function popen(command: any, _mode_______proc____module_fs_proc: any): any;
     export function proc(): any;
+    export function readfile(path: any, limit?: any): any;
     export function readlink(path: any): any;
     export function realpath(path: any): any;
     export function rename(oldPath: any, newPath: any): any;
@@ -307,6 +312,7 @@ declare module "process" {
 declare module "request" {
     export function defer(): any;
     export function error(rcode?: any): any;
+    export function get(): any;
     export function new(): any;
     export function reply(data: any): any;
     export function set(): any;
@@ -414,10 +420,12 @@ declare module "uloop" {
     export function done(): any;
     export function end(): any;
     export function error(): any;
+    export function handle(): any;
     export function init(): any;
     export function interval(): any;
     export function pipe(): any;
     export function process(): any;
+    export function run(timeout?: any): any;
     export function running(): any;
     export function signal(): any;
     export function task(): any;

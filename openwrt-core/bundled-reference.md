@@ -1,15 +1,15 @@
 ---
 module: openwrt-core
-total_token_count: 23749
+total_token_count: 23895
 section_count: 7
 is_monolithic: true
-generated: '2026-09-01T13:11:46.627102+00:00'
+generated: '2026-10-01T18:43:48.394133+00:00'
 ---
 
 # openwrt-core Bundled Reference
 
 > **Contains:** 7 documents concatenated
-> **Tokens:** ~23749 (cl100k_base)
+> **Tokens:** ~23895 (cl100k_base)
 
 ---
 
@@ -451,8 +451,9 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
+| Version | 2026.10-rc5 |
 | Maintainer | Robert Marko <robert.marko@sartura.hr> include $(INCLUDE_DIR)/u-boot.mk include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/[kernel.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define U-Boot/Default BUILD_TARGET:=microchipsw HIDDEN:=1 UBO |
-| Source URL | https://github.com/microchip-ung/u-boot.git |
+| Source URL | https://git.u-boot-project.org/u-boot/u-boot.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-microchipsw
@@ -472,7 +473,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2020.04 |
+| Version | 2026.04 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mxs
@@ -545,7 +546,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2025.04 |
+| Version | 2026.04 |
 | Maintainer | Tomasz Maciej Nowak <tmn505@gmail.com> |
 
 
@@ -673,7 +674,7 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 
 | Field | Value |
 |---|---|
-| Version | 20260810 |
+| Version | 20260910 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -785,7 +786,7 @@ GPU and kernel boot firmware for bcm27xx.
 
 | Field | Value |
 |---|---|
-| Version | 2026.05.21 |
+| Version | 2026.09.15 |
 | Source URL | https://github.com/raspberrypi/firmware/releases/download/$(PKG_VERSION_REAL) |
 
 
@@ -1104,7 +1105,7 @@ GNU libc hierarchial argument parsing library broken out from glibc.
 
 | Field | Value |
 |---|---|
-| Version | 0.195 |
+| Version | 0.196 |
 | License | GPL-2.0-or-later LGPL-3.0-or-later |
 | Maintainer | Luiz Angelo Daros de Luca <luizluca@gmail.com> |
 | Source URL | https://sourceware.org/$(PKG_NAME)/ftp/$(PKG_VERSION) https://mirrors.kernel.org/sourceware/$(PKG_NAME)/$(PKG_VERSION) |
@@ -1360,7 +1361,7 @@ This package contains a system-independent library for user-level network packet
 
 | Field | Value |
 |---|---|
-| Version | 1.10.6 |
+| Version | 1.10.7 |
 | License | BSD-3-Clause |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | https://www.tcpdump.org/release/ |
@@ -1788,6 +1789,19 @@ zlib is a lossless data-compression library. This package includes the shared li
 > Source: https://github.com/openwrt/openwrt/tree/master/package/system/fwtool
 ---
 
+## hardware-support
+
+Feature gate for audio devices. Allocates the audio, audio-capture and midi groups and installs the hotplug rules which put the ALSA character devices into them. Kernel modules exposing audio devices and userspace using those groups depend on this package.
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-only |
+| Maintainer | Daniel Golle <daniel@makrotopia.org> |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/system/hardware-support
+---
+
 ## iucode-tool
 
 | Field | Value |
@@ -2020,7 +2034,7 @@ BCM27xx scripts and simple applications. Replaces bcm27xx-userland scripts and a
 
 | Field | Value |
 |---|---|
-| Version | 2026.06.21 |
+| Version | 2026.09.17 |
 | License | BSD-3-Clause |
 | Source URL | https://github.com/raspberrypi/utils.git |
 
@@ -2388,7 +2402,7 @@ Utilities for manipulating memory technology devices.
 |---|---|
 | Version | 2.3.1 |
 | License | GPLv2 |
-| Maintainer | John Crispin <john@phrozen.org> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/mtd-utils/Default SECTION:=utils CATEGORY:=Utilities URL:=http://www.linux-mtd.infradead.org/ DEPENDS:=@NAND_SUPPORT en |
+| Maintainer | John Crispin <john@phrozen.org> |
 | Source URL | https://infraroot.at/pub/mtd/ |
 
 
@@ -3045,6 +3059,18 @@ Copyright (C) 2007-2020 OpenWrt.org
 
 
 > Source: https://github.com/openwrt/openwrt/blob/master/include/toplevel.mk
+---
+
+## trusted-firmware-a.mk
+
+# Documentation
+```text
+TF-A embeds __TIME__ and __DATE__ by default, which makes the binaries
+differ on every build.
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/trusted-firmware-a.mk
 ---
 
 ## unpack.mk

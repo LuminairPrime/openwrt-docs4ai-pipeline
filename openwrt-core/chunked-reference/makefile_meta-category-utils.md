@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: utils packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 5864
+token_count: 5820
 source_file: L1-raw/openwrt-core/makefile_meta-category-utils.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/utils
 source_locator: package/utils
@@ -25,7 +25,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/utils](https://github.com/openwrt/openwrt/blob/unknown/package/utils)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # OpenWrt Buildroot: utils packages
 
@@ -67,7 +67,7 @@ BCM27xx scripts and simple applications. Replaces bcm27xx-userland scripts and a
 
 | Field | Value |
 |---|---|
-| Version | 2026.06.21 |
+| Version | 2026.09.17 |
 | License | BSD-3-Clause |
 | Source URL | https://github.com/raspberrypi/utils.git |
 
@@ -435,7 +435,7 @@ Utilities for manipulating memory technology devices.
 |---|---|
 | Version | 2.3.1 |
 | License | GPLv2 |
-| Maintainer | John Crispin <john@phrozen.org> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/mtd-utils/Default SECTION:=utils CATEGORY:=Utilities URL:=http://www.linux-mtd.infradead.org/ DEPENDS:=@NAND_SUPPORT en |
+| Maintainer | John Crispin <john@phrozen.org> |
 | Source URL | https://infraroot.at/pub/mtd/ |
 
 

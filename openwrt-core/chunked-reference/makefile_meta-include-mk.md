@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: Build System Include Files'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 2083
+token_count: 2147
 source_file: L1-raw/openwrt-core/makefile_meta-include-mk.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/include/
 source_locator: include/
@@ -31,7 +31,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/include/](https://github.com/openwrt/openwrt/blob/unknown/include/)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # OpenWrt Buildroot: Build System Include Files
 
@@ -391,6 +391,18 @@ Copyright (C) 2007-2020 OpenWrt.org
 
 
 > Source: https://github.com/openwrt/openwrt/blob/master/include/toplevel.mk
+---
+
+## trusted-firmware-a.mk
+
+# Documentation
+```text
+TF-A embeds __TIME__ and __DATE__ by default, which makes the binaries
+differ on every build.
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/trusted-firmware-a.mk
 ---
 
 ## unpack.mk

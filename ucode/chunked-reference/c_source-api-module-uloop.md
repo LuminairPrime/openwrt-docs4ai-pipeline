@@ -2,9 +2,9 @@
 title: 'ucode module: uloop'
 module: ucode
 origin_type: c_source
-token_count: 7457
+token_count: 7482
 source_file: L1-raw/ucode/c_source-api-module-uloop.md
-last_pipeline_run: '2026-09-01T13:11:24.874494+00:00'
+last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/uloop.c
 source_locator: lib/uloop.c
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/uloop.c](https://github.com/nicowillis/ucode/blob/unknown/lib/uloop.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-09-01
+> **Normalized:** 2026-10-01
 
 # ucode module: uloop
 
@@ -299,7 +299,7 @@ Returns `null` on error, e.g. due to `exec()` failure or invalid arguments.
 | executable | `string` | The path to the executable program. |
 | [args] | `Array.<string>` | Optional. An array of strings representing the arguments passed to the executable. |
 | [env] | `Object.<string, \*>` | Optional. A dictionary describing environment variables for the process. |
-| callback | `function` | The callback function to be invoked when the invoked process ends. |
+| callback | `function` | The callback function to be invoked when the invoked process ends. Receives the exit code for a normally exited process, or the negative signal number if the process was terminated by a signal. |
 
 **Example**  
 ```ucode
