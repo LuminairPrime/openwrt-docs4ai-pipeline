@@ -2,9 +2,9 @@
 title: Create a Cmake package in OpenWrt
 module: wiki
 origin_type: wiki_page
-token_count: 631
+token_count: 635
 source_file: L1-raw/wiki/wiki_page-guide-developer-creating-a-cmake-package-in-openwrt.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/creating-a-cmake-package-in-openwrt
 language: text
 ai_summary: This document provides a guide for creating a CMake package in OpenWrt, highlighting the differences from the Meson package creation process. It includes a basic `CMakeLists.txt` example for a simple 'Hello, World' application and details the structure of the corresponding `Makefile`. Key sections cover how to pass CMake options and how to build the package using OpenWrt's build system. The guide concludes with instructions on enabling the package through the configuration menu and locating the built package files.
@@ -18,7 +18,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/creating-a-cmake-package-in-openwrt](https://openwrt.org/docs/guide-developer/creating-a-cmake-package-in-openwrt)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Create a Cmake package in OpenWrt
 
@@ -26,7 +26,7 @@ In the [Meson tutorial](/docs/guide-developer/creating_a_meson_based_package), w
 
 ## CMakeLists.txt
 
-To begin, let's create a CMake project. The `main.c` file for this project will be the same as the one in the Meson tutorial, which includes a single `"Hello, World"` program. However, in order to use CMake, we need to include a `CMakeLists.txt` file. The most basic CMake file is presented here for simplicity.
+To begin, let‘s create a CMake project. The ’‘[main.c](../../wiki/chunked-reference/wiki_page-guide-developer-creating-a-meson-based-package.md)’’ file for this project will be the same as the one in the Meson tutorial, which includes a single `“Hello, World”` program. However, in order to use CMake, we need to include a `CMakeLists.txt` file. The most basic CMake file is presented here for simplicity.
 
 ``` cmake
 cmake_minimum_required(VERSION 3.1...3.27)

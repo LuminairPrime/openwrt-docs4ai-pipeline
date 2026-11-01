@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: firmware packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 1681
+token_count: 1668
 source_file: L1-raw/openwrt-core/makefile_meta-category-firmware.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/firmware
 source_locator: package/firmware
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/firmware](https://github.com/openwrt/openwrt/blob/unknown/package/firmware)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # OpenWrt Buildroot: firmware packages
 
@@ -104,8 +104,8 @@ Alternative ath10k firmware for QCA9887 from Candela Technologies. Enables [IBSS
 
 | Field | Value |
 |---|---|
-| Version | 20260227 |
-| Source URL | @DEBIAN/pool/non-free-firmware/i/intel-microcode/ |
+| Version | 20260925 |
+| Source URL | https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/archive/refs/tags/ |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/intel-microcode
@@ -123,7 +123,7 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 
 | Field | Value |
 |---|---|
-| Version | 20260910 |
+| Version | 20261019 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -136,7 +136,8 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 | Field | Value |
 |---|---|
 | License | GPL-2.0-or-later |
-| Maintainer | Matt Eaton <linux@divinehawk.com> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/mipi-dbi-default SECTION:=firmware CATEGORY:=Firmware endef define Build/Compile endef # From https://github.com/notr |
+| Maintainer | Matt Eaton <linux@divinehawk.com> |
+| Source URL | https://github.com/notro/panel-mipi-dbi.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/mipi-dbi
@@ -201,7 +202,7 @@ Firmware binaries for the microcontroller on the Turris Omnia router. These are 
 
 | Field | Value |
 |---|---|
-| Version | 2026.05.30 |
+| Version | 2026.09.03 |
 | License | ISC |
 | Maintainer | Felix Fietkau <nbd@nbd.name> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/wireless-regdb PKGARCH:=all SECTION:=firmware CATEGORY:=Firmware URL:=https://git.kernel.org/pub/scm/linux/kernel/git/wens |
 | Source URL | @KERNEL/software/network/wireless-regdb/ |

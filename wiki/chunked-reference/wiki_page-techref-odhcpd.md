@@ -2,9 +2,9 @@
 title: odhcpd
 module: wiki
 origin_type: wiki_page
-token_count: 2900
+token_count: 2879
 source_file: L1-raw/wiki/wiki_page-techref-odhcpd.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/odhcpd
 language: text
 ai_summary: odhcpd is a daemon designed for managing DHCP, DHCPv6, Router Advertisements (RA), and Neighbor Discovery Protocol (NDP) in embedded systems, particularly for IPv6 home routers. It supports both stateless and stateful DHCPv4 and DHCPv6, as well as prefix delegation and dynamic reconfiguration. The module can operate in server or relay modes for both DHCPv6 and Router Discovery, enabling seamless IP management across routed interfaces. Configuration is handled via a UCI file located at `/etc/config/dhcp`.
@@ -18,7 +18,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/odhcpd](https://openwrt.org/docs/techref/odhcpd)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # odhcpd
 
@@ -65,9 +65,9 @@ DHCPv6 support with 2 modes of operation:
 Proxy for Neighbor Discovery solicitation and advertisement messages (NDP):
 
 1.  Supports auto-learning of routes to the local routing table.
-2.  Supports marking interfaces as "external".
+2.  Supports marking interfaces as “external”.
 
-Interfaces marked as "external" will not receive any proxyied NDP content and are only served with NDP for Duplicate Address Detection (DAD) and traffic to the router itself.
+Interfaces marked as “external” will not receive any proxyied NDP content and are only served with NDP for Duplicate Address Detection (DAD) and traffic to the router itself.
 
 :!: Interfaces marked as external need additional firewall rules for security!
 
@@ -79,26 +79,26 @@ odhcpd uses a UCI configuration file in `/etc/config/dhcp` for configuration and
 
 Configuration for the odhcp daemon.
 
-| Name           | Type    | Default                   | Description                                                                                    |
-|:---------------|:--------|:--------------------------|:-----------------------------------------------------------------------------------------------|
-| `legacy`       | boolean | `0`                       | Enable DHCPv4 if the 'dhcp' section contains a `start` option, but no `dhcpv4` option set.     |
-| `maindhcp`     | boolean | `0`                       | Use odhcpd as the main DHCPv4 service.                                                         |
-| `leasefile`    | string  | `/tmp/odhcpd.leases`      | Location of the lease/hostfile for DHCPv4 and DHCPv6.                                          |
-| `leasetrigger` | string  | `/usr/sbin/odhcpd-update` | Location of the lease trigger script.                                                          |
-| `hostsdir`     | string  | `/tmp/hosts`              | Directory to store hosts files (IP address to hostname mapping) in. Used by e.g. dnsmasq.      |
-| `piodir`       | string  | `/tmp/odhcpd-piodir`      | Directory to store IPv6 prefix information (to detect stale prefixes, see RFC9096, §3.5).      |
-| `loglevel`     | integer | `4`                       | Syslog level priority (0-7). 0=emer, 1=alert, 2=crit, 3=err, 4=warn, 5=notice, 6=info, 7=debug |
-| `enable_tz`    | boolean | `1`                       | Set to `0` to disable sending option 41 and 42 timezone info to clients that request them      |
+| Name | Type | Default | Description |
+|:---|:---|:---|:---|
+| `legacy` | boolean | `0` | Enable DHCPv4 if the ‘dhcp’ section contains a `start` option, but no `dhcpv4` option set. |
+| `maindhcp` | boolean | `0` | Use odhcpd as the main DHCPv4 service. |
+| `leasefile` | string | `/tmp/odhcpd.leases` | Location of the lease/hostfile for DHCPv4 and DHCPv6. |
+| `leasetrigger` | string | `/usr/sbin/odhcpd-update` | Location of the lease trigger script. |
+| `hostsdir` | string | `/tmp/hosts` | Directory to store hosts files (IP address to hostname mapping) in. Used by e.g. dnsmasq. |
+| `piodir` | string | `/tmp/odhcpd-piodir` | Directory to store IPv6 prefix information (to detect stale prefixes, see [RFC9096](https://www.rfc-editor.org/info/rfc9096/#name-signaling-stale-configurati)). |
+| `loglevel` | integer | `4` | Logging level (0-7). 0=`emergency`, 1=`alert`, 2=`critical`, 3=`error`, 4=`warning`, 5=`notice`, 6=`info`, 7=`debug` |
+| `enable_tz` | boolean | `1` | Set to `0` to disable sending option 41 and 42 timezone info to clients that request them |
 
- **RFC9096 § 3.5 SLAAC compliance relies on the `piodir` option, which may wear out the flash under certain conditions.
+ \*\*RFC9096 § 3.5 SLAAC compliance relies on the `piodir` option, which may wear out the flash under certain conditions.
 For example: ISPs with dynamic IPv6 prefixes which disconnect the clients every X hours.
-Therefore, setting `dhcp.odhcpd.piodir` to persistent storage in the router flash is not advisable and should be set to other kinds of persistent storage such as USBs, SDs, NVMEs...
-In order to prevent wearing out the router flash it's set to ephemeral storage by default:
-`uci set dhcp.odhcpd.piodir=/tmp/odhcpd-piodir`
-`uci commit dhcp`**
+Therefore, setting `dhcp.odhcpd.piodir` to persistent storage in the router flash is not advisable and should be set to other kinds of persistent storage such as USBs, SDs, NVMEs…
+In order to prevent wearing out the router flash it‘s set to ephemeral storage by default:
+’‘uci set dhcp.odhcpd.piodir=/tmp/odhcpd-piodir’‘
+’‘uci commit dhcp’‘\*\*
 
 If dhcp.odhcpd.piodir is set to persistent storage, you should also add that directory to sysupgrade.conf in order to preserve the PIOs when OpenWrt is upgraded.
-`$(uci -q get dhcp.odhcpd.piodir) >> /etc/sysupgrade.conf`
+’‘\$(uci -q get dhcp.odhcpd.piodir) \>\> /etc/sysupgrade.conf’’
 
 ### dhcp section
 
@@ -139,8 +139,7 @@ Name	Type	Required	Default	Description
 `ra_mininterval`	integer	 	`200`	Minimum time allowed between sending unsolicited Router Advertisements (RA).
 `ra_lifetime`	integer	 	`1800`	Router Lifetime published in Router Advertisement (RA) messages.
 `ra_useleasetime`	boolean	 	`0`	If set, the configured DHCPv4 `leasetime` is used both as limit for the preferred and valid lifetime of an IPv6 prefix.
-`ra_reachabletime`	integer	 	`0`	Reachable Time in milliseconds to be published in Router Advertisement (RA) messages'.
-`ra_retranstime`	integer	 	`0`	Retransmit Time in milliseconds to be published in Router Advertisment (RA) messages.
+`ra_reachabletime`	integer	 	`0`	Reachable Time in milliseconds to be published in Router Advertisement (RA) messages‘. \| \| ’‘ra_retranstime’’
 `ra_hoplimit`	integer	 	`0`	The maximum hops to be published in Router Advertisement (RA) messages.
 `ra_mtu`	integer	 	`0`	The MTU to be published in Router Advertisement (RA) messages.
 `ra_dns`	boolean	 	`1`	Announce DNS configuration in RA messages ([RFC 8106](https://datatracker.ietf.org/doc/html/rfc8106)).
@@ -164,7 +163,7 @@ The `host` section is where static leases are defined.
 | `name`      | string | no       | *(none)* | Hostname             |
 | `leasetime` | string | no       | *(none)* | DHCPv4/v6 leasetime  |
 
-Example `hostid='105ee0badc0de`' =\> IPv6 '::1:5ee:bad:c0de'
+Example `hostid=‘105ee0badc0de’` =\> IPv6 ‘::1:5ee:bad:c0de’
 
 ## ubus API
 

@@ -2,9 +2,9 @@
 title: procd init.d API Reference
 module: procd
 origin_type: header_api
-token_count: 352
+token_count: 367
 source_file: L1-raw/procd/header_api-procd-api.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/system/procd/files/procd.sh
 source_locator: package/system/procd/files/procd.sh
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/system/procd/files/procd.sh](https://github.com/openwrt/openwrt/blob/unknown/package/system/procd/files/procd.sh)
 > **Kind:** header_api | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # procd init.d API Reference
 
@@ -52,6 +52,7 @@ pidfile: file name to write pid into
 stdout: boolean whether to redirect commands stdout to syslog (default: 0)
 stderr: boolean whether to redirect commands stderr to syslog (default: 0)
 facility: syslog facility used when logging to syslog (default: daemon)
+vrf: bind all sockets of the service to this VRF device
 No space separation is done for arrays/tables - use one function argument per command line argument
 procd_close_instance():
 Complete the instance being prepared

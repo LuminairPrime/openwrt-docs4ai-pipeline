@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 540
 source_file: L1-raw/wiki/wiki_page-guide-developer-building-kernels-for-debian-binaries.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/building_kernels_for_debian_binaries
 language: text
 ai_summary: This document provides guidance on building OpenWrt kernels for use with the Debian operating system, highlighting key compatibility issues and configuration settings. It discusses the implications of using soft-FPU instructions in OpenWrt versus hard FPU instructions in Debian, and how to enable FPU emulation in the kernel. Additionally, it covers the requirements for udev and SELinux support, as well as the potential discrepancies in kernel configuration options. Finally, it suggests enabling IKConfig to save the kernel configuration within the kernel itself for easier reference.
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/building_kernels_for_debian_binaries](https://openwrt.org/docs/guide-developer/building_kernels_for_debian_binaries)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Building OpenWrt Kernel for Debian System
 
@@ -33,7 +33,7 @@ If you boot OpenWrt kernel and expects it to start init but you see a kernel pan
 
 OpenWrt userland packages are compiled with soft-FPU instructions by default. (The floating point math is emulated by the compiler during compile time.)
 
-Debian binaries (jessie) are compiled with hard FPU instructions. As most embedded devices do not have FPUs, it's usually necessary for the kernel to emulate them in order for these instructions to be executed correctly. Since OpenWrt makes use of soft-FPU, the FPU emulation is turned off in the kernel by default. Inability to execute FP instructions is a possible reason for the crash.
+Debian binaries (jessie) are compiled with hard FPU instructions. As most embedded devices do not have FPUs, it’s usually necessary for the kernel to emulate them in order for these instructions to be executed correctly. Since OpenWrt makes use of soft-FPU, the FPU emulation is turned off in the kernel by default. Inability to execute FP instructions is a possible reason for the crash.
 
 To compile the kernel with FPU emulation, in kernel configuration check that you set CONFIG_MIPS_FPU_EMULATOR=y. See [use-buildsystem#Kernel configuration (optional)](/docs/guide-developer/toolchain/use-buildsystem#Kernel configuration (optional)).
 

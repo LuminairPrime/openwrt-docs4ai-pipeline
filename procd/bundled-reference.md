@@ -1,15 +1,15 @@
 ---
 module: procd
-total_token_count: 352
+total_token_count: 367
 section_count: 1
 is_monolithic: true
-generated: '2026-10-01T18:43:48.394133+00:00'
+generated: '2026-11-01T18:18:06.554594+00:00'
 ---
 
 # procd Bundled Reference
 
 > **Contains:** 1 documents concatenated
-> **Tokens:** ~352 (cl100k_base)
+> **Tokens:** ~367 (cl100k_base)
 
 ---
 
@@ -41,6 +41,7 @@ pidfile: file name to write pid into
 stdout: boolean whether to redirect commands stdout to syslog (default: 0)
 stderr: boolean whether to redirect commands stderr to syslog (default: 0)
 facility: syslog facility used when logging to syslog (default: daemon)
+vrf: bind all sockets of the service to this VRF device
 No space separation is done for arrays/tables - use one function argument per command line argument
 procd_close_instance():
 Complete the instance being prepared

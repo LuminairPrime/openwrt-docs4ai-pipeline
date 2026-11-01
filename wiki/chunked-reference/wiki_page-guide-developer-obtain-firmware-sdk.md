@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 1599
 source_file: L1-raw/wiki/wiki_page-guide-developer-obtain-firmware-sdk.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/obtain.firmware.sdk
 language: text
 ai_summary: The SDK (Software Development Kit) for OpenWrt is a relocatable, precompiled toolchain designed for cross-compiling single userspace packages for specific targets without the need to compile the entire system. It allows developers to compile custom software for specific releases, update certain packages, or recompile existing packages with custom patches. To use the SDK, one can download a precompiled version or compile it themselves using 'make menuconfig'. After setting up the SDK, package definitions must be obtained and the desired packages can be compiled using standard buildroot commands.
@@ -18,7 +18,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/obtain.firmware.sdk](https://openwrt.org/docs/guide-developer/obtain.firmware.sdk)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Using the SDK
 
@@ -35,7 +35,7 @@ Reasons for using the SDK are:
 
 ## Obtain SDK
 
-You can either download an already compiled SDK, or compile it yourself by using the "make menuconfig" command.
+You can either download an already compiled SDK, or compile it yourself by using the “make menuconfig” command.
 
 #### Prerequisites
 
@@ -153,6 +153,6 @@ See [Creating packages](/docs/guide-developer/packages)
 
 :!: Some SDK versions have bugs.
 
-Bug: BB SDK for BRCM2708: wants to compile with "ccache_cc" see <https://dev.openwrt.org/ticket/13949>
+Bug: BB SDK for BRCM2708: wants to compile with “ccache_cc” see <https://dev.openwrt.org/ticket/13949>
 
 Bug: BB SDK for BRCM2708: static compilation broken

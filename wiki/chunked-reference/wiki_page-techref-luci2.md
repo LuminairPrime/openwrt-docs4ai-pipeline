@@ -2,9 +2,9 @@
 title: LuCI2 (OpenWrt web user interface)
 module: wiki
 origin_type: wiki_page
-token_count: 1821
+token_count: 1845
 source_file: L1-raw/wiki/wiki_page-techref-luci2.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/luci2
 language: text
 ai_summary: LuCI2 is an experimental web user interface for OpenWrt, designed to replace the older Lua-based LuCI. It utilizes static HTML and JavaScript XHR for client-side rendering, significantly reducing resource consumption on devices with limited CPU and RAM. Communication with OpenWrt subsystems is handled through `ubus`, and a custom `rpcd` plugin extends `ubus` namespaces for additional functionality. The menu and views are dynamically generated, allowing for a flexible and user-specific interface.
@@ -19,23 +19,23 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/luci2](https://openwrt.org/docs/techref/luci2)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # LuCI2 (OpenWrt web user interface)
 
 ![outdated&noheader&nofooter&noeditbtn](/page>meta/infobox/outdated&noheader&nofooter&noeditbtn)
 
-### NOTE: This page currently mixes the five+ years old abandoned original "luci2" and the new JavaScript based standard LuCI implementation. Information on this page can be partially misleading
+### NOTE: This page currently mixes the five+ years old abandoned original “luci2” and the new JavaScript based standard LuCI implementation. Information on this page can be partially misleading
 
-For years OpenWrt was using [LuCI](LuCI), a web user interface written in [Lua](http://en.wikipedia.org/wiki/Lua_(programming_language)). It required several Lua extensions (like `ubus`, `luci.model.uci`, `nixio.fs`, etc.) to access system info and settings. Unfortunately this solution appeared to be quite resource consuming and didn't work well on devices with slow CPU and little amount of RAM.
+For years OpenWrt was using [LuCI](LuCI), a web user interface written in [Lua](http://en.wikipedia.org/wiki/Lua_(programming_language)). It required several Lua extensions (like `ubus`, `luci.model.uci`, `nixio.fs`, etc.) to access system info and settings. Unfortunately this solution appeared to be quite resource consuming and didn’t work well on devices with slow CPU and little amount of RAM.
 
-This led to developing LuCI2, a new web interface with a different architecture. It doesn't use Lua anymore, but static HTML page and [JavaScript XHR](http://en.wikipedia.org/wiki/XMLHttpRequest) method. It means building HTML pages is done on client (browser) side offloading OpenWrt device. To access any kind of system data [ubus](ubus) is used (with the help of [uhttpd-mod-ubus](ubus#access_to_ubus_over_http) to provide [HTTP](../../wiki/chunked-reference/wiki_page-guide-developer-adding-new-device.md) based API).
+This led to developing LuCI2, a new web interface with a different architecture. It doesn’t use Lua anymore, but static HTML page and [JavaScript XHR](http://en.wikipedia.org/wiki/XMLHttpRequest) method. It means building HTML pages is done on client (browser) side offloading OpenWrt device. To access any kind of system data [ubus](ubus) is used (with the help of [uhttpd-mod-ubus](ubus#access_to_ubus_over_http) to provide [HTTP](../../wiki/chunked-reference/wiki_page-guide-developer-adding-new-device.md) based API).
 
 LuCI2 is still experimental. Its predecessor is still used by default in all builds, including the trunk.
 
 ## Implementation details
 
-As explained above, LuCI2 uses `ubus` to communicate with OpenWrt subsystems (that includes for example `network` and `service` but also many others). Unfortunately not every major OpenWrt tool registers itself with `ubus`. For example it's not possible to use `opkg` (packages management) that way. LuCI2 resolves this problem providing it's own `rpcd` plugin which adds extra `ubus` namespaces. For the previous example of `opkg` it registers new `luci2.opkg` path in the `ubus`.
+As explained above, LuCI2 uses `ubus` to communicate with OpenWrt subsystems (that includes for example `network` and `service` but also many others). Unfortunately not every major OpenWrt tool registers itself with `ubus`. For example it‘s not possible to use ’‘opkg’’ (packages management) that way. LuCI2 resolves this problem providing it‘s own ’‘rpcd’’ plugin which adds extra `ubus` namespaces. For the previous example of `opkg` it registers new `luci2.opkg` path in the `ubus`.
 
 To sum up, LuCI2 consists of two things: a pack of HTML/CSS/JS files (`htdocs`) and few extra small tools working in the OpenWrt environment.
 
@@ -43,7 +43,7 @@ In next sections you will find details about various LuCI2 parts that should hel
 
 ### Menu
 
-The first thing to know about LuCI2 menu is that it is not hardcoded in any file received by a browser. Instead of that, it's provided by `ubus` using `luci2.ui` path and `menu` method. For debugging purposes menu layout can be verified using:
+The first thing to know about LuCI2 menu is that it is not hardcoded in any file received by a browser. Instead of that, it‘s provided by ’‘ubus’’ using `luci2.ui` path and `menu` method. For debugging purposes menu layout can be verified using:
 
     ubus call luci2.ui menu '{ "ubus_rpc_session": "invalid" }'
 
@@ -71,15 +71,15 @@ Please note that second level entries may be located in separated files. This al
 
 ### Templates
 
-Every LuCI2 subpage has to have it's template located in `/www/luci2/template/`. These are very simple HTML files providing place for a content. Please note they don't contain references to any variables, it's JavaScript role to access them and fill with a content. The only special syntax in these files is for internationalization (i18n) system that uses following special tags:
+Every LuCI2 subpage has to have it‘s template located in ’‘/www/luci2/template/’’. These are very simple HTML files providing place for a content. Please note they don’t contain references to any variables, it’s JavaScript role to access them and fill with a content. The only special syntax in these files is for internationalization (i18n) system that uses following special tags:
 
     <p><%:Hello world%></p>
 
 ### Views
 
-Apart from a template, every LuCI2 subpage requires also it's view to be defined and placed in `/www/luci2/view/`. Views are JavaScript files extending `L.ui.view` using subpage specific object. They are obligated to provide `execute` method that will be called after loading a template. Optionally they may also provide subpage `title` and `description`.
+Apart from a template, every LuCI2 subpage requires also it‘s view to be defined and placed in ’‘/www/luci2/view/’‘. Views are JavaScript files extending ’‘L.ui.view’’ using subpage specific object. They are obligated to provide `execute` method that will be called after loading a template. Optionally they may also provide subpage `title` and `description`.
 
-A bit of attention requires `execute` method. Building a view may fail because of various reasons, especially when it requires loading extra data using `ubus`. So it makes sense for `execute` method to provide info if it succeed or failed. Unfortunately it can't simply return `true` of `false`, as loading extra data is done asynchronously. To resolve this problem a `Promise` object should be returned which allows to postpone taking a decision about a success or failure.
+A bit of attention requires `execute` method. Building a view may fail because of various reasons, especially when it requires loading extra data using `ubus`. So it makes sense for `execute` method to provide info if it succeed or failed. Unfortunately it can‘t simply return ’‘true’’ of `false`, as loading extra data is done asynchronously. To resolve this problem a `Promise` object should be returned which allows to postpone taking a decision about a success or failure.
 
 The simplest view could look like this:
 
@@ -98,13 +98,13 @@ The simplest view could look like this:
 
 Before starting, please know that LuCI2 provides many helpers for accessing [UCI](UCI) system. To write a simple view managing config files in `/etc/config/`, the full understanding of `ubus` calls is not required and this section can be skipped.
 
-For more complicated LuCI2 views it's good to first figure out all needed `ubus` calls. A complete list of objects and methods can be listed using `ubus -v list` command.
+For more complicated LuCI2 views it‘s good to first figure out all needed ’‘ubus’’ calls. A complete list of objects and methods can be listed using `ubus -v list` command.
 
 Below is an example of simple call to `log` object and `write` method. It requires `event` parameter to be passed as an argument. When using `ubus` command-line tool, this call could be done with:
 
     ubus call log write '{ "event": "Foo" }'
 
-LuCI2 provides a helper for `ubus` communication called `L.rpc.declare`. This is JavaScript helper magically creating a function that will call specified `ubus` method. Please note that at declaring time no call is executed and no arguments are passed. This is only preparing a function that will be used later. Below is an example function calling `log` object and it's `write` method:
+LuCI2 provides a helper for `ubus` communication called `L.rpc.declare`. This is JavaScript helper magically creating a function that will call specified `ubus` method. Please note that at declaring time no call is executed and no arguments are passed. This is only preparing a function that will be used later. Below is an example function calling `log` object and it‘s ’‘write’’ method:
 
     var writeToLog = L.rpc.declare({
         object: 'log',
@@ -116,7 +116,7 @@ Once declared such a function, it can be called at anytime simply using:
 
     writeToLog('Foo');
 
-In the above example result of the call was silently ignored. It's not an option if view has to access data returned by an `ubus` call. The next example will access `info` method of the `system` object. In the command-line this would be following call:
+In the above example result of the call was silently ignored. It‘s not an option if view has to access data returned by an ’‘ubus’’ call. The next example will access `info` method of the `system` object. In the command-line this would be following call:
 
     # ubus call system info
     {

@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: Build System Include Files'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 2147
+token_count: 2335
 source_file: L1-raw/openwrt-core/makefile_meta-include-mk.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/include/
 source_locator: include/
@@ -31,7 +31,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/include/](https://github.com/openwrt/openwrt/blob/unknown/include/)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # OpenWrt Buildroot: Build System Include Files
 
@@ -342,6 +342,42 @@ Copyright (C) 2007-2020 OpenWrt.org
 
 
 > Source: https://github.com/openwrt/openwrt/blob/master/include/quilt.mk
+---
+
+## rust-host-build.mk
+
+# Documentation
+```text
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2023 Luca Barbato and Donald Hoskins
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/rust-host-build.mk
+---
+
+## rust-package.mk
+
+# Documentation
+```text
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2023 Luca Barbato and Donald Hoskins
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/rust-package.mk
+---
+
+## rust-values.mk
+
+# Documentation
+```text
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2023 Luca Barbato and Donald Hoskins
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/rust-values.mk
 ---
 
 ## subdir.mk

@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 748
 source_file: L1-raw/wiki/wiki_page-techref-libubox.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/libubox
 language: text
 ai_summary: Documents libubox, the OpenWrt utility library that underpins ubus, procd, and netifd. Covers the blob/blobmsg API for binary/JSON message encoding (blob_buf_init, blobmsg_add_*), the uloop event loop (uloop_run, uloop_fd_add, uloop_timeout_*), avl/list data structures, and the json_script policy-based configuration evaluator used by procd.
@@ -21,11 +21,11 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/libubox](https://openwrt.org/docs/techref/libubox)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # libubox
 
-It's one of the core libraries used within openwrt because it's a set of utilities, mostly wrappers, that are present usually in programs and that have been coded in a flexible and reusable way to avoid wasting time.
+It’s one of the core libraries used within openwrt because it’s a set of utilities, mostly wrappers, that are present usually in programs and that have been coded in a flexible and reusable way to avoid wasting time.
 
 The library consists mostly on independent functionalities, ones higher level than others.
 
@@ -59,7 +59,7 @@ The method is to create a type-value chained data, supporting nested data. This 
 
 ## libubox/blobmsg.h
 
-Blobmsg sits on top of blob.h, providing tables and arrays, providing it's own but parallel datatypes.
+Blobmsg sits on top of blob.h, providing tables and arrays, providing it’s own but parallel datatypes.
 
 ## libubox/list.h
 

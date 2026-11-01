@@ -2,9 +2,9 @@
 title: overview.js
 module: luci-examples
 origin_type: example_app
-token_count: 11192
+token_count: 11184
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-htdocs-luci-static-resources-view-ddns-overview-js.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
 source_locator: applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js
@@ -24,7 +24,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/htdocs/luci-static/resources/view/ddns/overview.js)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # overview.js
 ```javascript
@@ -388,7 +388,7 @@ return view.extend({
 			o.titleref = L.url("admin", "system", "package-manager")
 			o.rawhtml  = true;
 			o.title = '<b>' + _("DNS requests via TCP not supported") + '</b>';
-			o.cfgvalue = function() { return _("BusyBox's nslookup and hostip do not support TCP " +
+			o.cfgvalue = function() { return _("BusyBox's nslookup does not support TCP " +
 				"instead of the default UDP when sending requests to the DNS server!") +
 				"<br />- " +
 				_("Install 'bind-host' or 'knot-host' or 'drill' package if you know you need TCP for DNS requests.")};
@@ -402,7 +402,7 @@ return view.extend({
 			o.cfgvalue = function() { return _("BusyBox's nslookup in the current compiled version " +
 			"does not handle given DNS Servers correctly!") +
 			"<br />- " +
-			_("You should install 'bind-host' or 'knot-host' or 'drill' or 'hostip' package, " +
+			_("You should install 'bind-host' or 'knot-host' or 'drill' package, " +
 			"if you need to specify a DNS server to detect your registered IP.")};
 		}
 

@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 1344
 source_file: L1-raw/wiki/wiki_page-guide-developer-imagebuilder-frontends.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/imagebuilder_frontends
 language: text
 ai_summary: The Image Builder frontends module provides a collection of software tools designed to simplify and automate the generation of OpenWrt images. It includes various frontends such as the OpenWrt Firmware Selector for locating images, Chef Online Imagebuilder for customizing images via an API, and Gluon for creating firmware for wireless mesh nodes. Additionally, it features tools like Temba for generating custom firmware files and openwrt-tools for image generation using YAML templates. These tools cater to different user needs, from simple image downloads to complex custom firmware builds.
@@ -23,7 +23,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/imagebuilder_frontends](https://openwrt.org/docs/guide-developer/imagebuilder_frontends)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Image Builder frontends
 
@@ -41,7 +41,7 @@ Based on original Attended Sysupgrade interface from <https://sudhanshu16.github
 
 ### Chef Online Imagebuilder / Attended Sysupgrade(asu)
 
-Javascript app that connects to a Attendedsysupgrade server via an API, this is a work in progress. It's frontend resembles the Firmware Selector although provides customization options such as package selection.
+Javascript app that connects to a Attendedsysupgrade server via an API, this is a work in progress. It’s frontend resembles the Firmware Selector although provides customization options such as package selection.
 
 Web-based asu frontends:
 
@@ -100,7 +100,7 @@ Code: <https://redmine.tetaneutral.net/projects/git-tetaneutral-net/repository/o
 
 ## lime-sdk cooker
 
-The "LibreMesh software development kit" uses the OpenWRT SDK and ImageBuilder to generate (cook) LibreMesh packages and firmware. If you want to create your own LibreMesh flavor because you need some specific configuration or you just want to have control over your binaries, the cooker is your friend!
+The “LibreMesh software development kit” uses the OpenWRT SDK and ImageBuilder to generate (cook) LibreMesh packages and firmware. If you want to create your own LibreMesh flavor because you need some specific configuration or you just want to have control over your binaries, the cooker is your friend!
 
 Command-line interface, but can also be used with [Chef](https://github.com/libremesh/chef/).
 

@@ -2,9 +2,9 @@
 title: ddns.uc
 module: luci-examples
 origin_type: example_app
-token_count: 2736
+token_count: 2857
 source_file: L1-raw/luci-examples/example_app-luci-app-ddns-root-usr-share-rpcd-ucode-ddns-uc.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
 source_locator: applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc](https://github.com/openwrt/luci/blob/unknown/applications/luci-app-ddns/root/usr/share/rpcd/ucode/ddns.uc)
 > **Kind:** example_app | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # ddns.uc
 ```ucode
@@ -28,7 +28,7 @@ ai_related_topics:
 
 'use strict';
 
-import { readfile, popen, stat, glob } from 'fs';
+import { readfile, writefile, mkdir, popen, stat, glob } from 'fs';
 import { init_enabled } from 'luci.sys';
 import { isnan } from 'math';
 import { cursor } from 'uci';
@@ -141,8 +141,12 @@ const methods = {
 				if (section == '.anonymous')
 					return;
 
-				if (stat(`${rundir}/${section}.ip`)?.type == 'file') {
-					ip = readfile(`${rundir}/${section}.ip`);
+				// ddns-scripts runs a service only if it is enabled; it is disabled by default
+				const enabled = s['enabled'] in [ '1', 'on', 'true', 'yes', 'enabled' ];
+				const ipFile = `${rundir}/${section}.ip`;
+
+				if (stat(ipFile)?.type == 'file') {
+					ip = readfile(ipFile);
 				} else {
 					const dnsServer = s['dns_server'] || '';
 					const forceIpVersion = int(s['force_ipversion'] || 0);
@@ -162,7 +166,14 @@ const methods = {
 					if (length(dnsServer) > 0) push(command, '-d', shellquote(dnsServer));
 					push(command, '-- get_registered_ip');
 
-					const result = system(`${join(' ', command)}`);
+					/* Without a working DNS the lookup takes 10 s or more, and LuCI fetches
+					this status together with the rest of a page such as the Overview. So the
+					lookup runs in the background, and the helper writes its result to the IP
+					file for a later call. The file is created empty first, so that the calls
+					in between do not start the lookup again. */
+					mkdir(rundir);
+					writefile(ipFile, '');
+					system(`${join(' ', command)} >/dev/null 2>&1 &`);
 				}
 
 				lastUpdate = int(readfile(`${rundir}/${section}.update`) || 0);
@@ -204,9 +215,9 @@ const methods = {
 					nextUpdate = 'Verify';
 				} else if (forcedUpdateInterval === 0) {
 					nextUpdate = 'Run once';
-				} else if (pid == 0 && s['enabled'] == '0') {
+				} else if (pid == 0 && !enabled) {
 					nextUpdate = 'Disabled';
-				} else if (pid == 0 && s['enabled'] != '0') {
+				} else if (pid == 0) {
 					nextUpdate = 'Stopped';
 				}
 
@@ -313,15 +324,11 @@ const methods = {
 
 			res['has_bindhost'] = cache['has_bindhost'] || hasBindHost();
 
-			const hasHostIp = () => {
-				return hasCommand('hostip');
-			};
-
 			const hasNslookup = () => {
 				return hasCommand('nslookup');
 			};
 
-			res['has_dnsserver'] = cache['has_bindhost'] || hasNslookup() || hasHostIp() || hasBindHost();
+			res['has_dnsserver'] = cache['has_bindhost'] || hasNslookup() || hasBindHost();
 
 			const checkCerts = () => {
 				let present = false;

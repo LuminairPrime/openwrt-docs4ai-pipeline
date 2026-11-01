@@ -1,7 +1,7 @@
 # ucode Navigation Map
 
 > **Contains:** Headers and function signatures for ucode.
-> **Generated:** 2026-10-01T18:43:48.394133+00:00
+> **Generated:** 2026-11-01T18:18:06.554594+00:00
 
 ---
 
@@ -212,6 +212,47 @@
 ### math.round(x, output_type) ⇒ `number`
 ### math.trunc(x, output_type) ⇒ `number`
 
+# ucode module: netaddr
+## Network Address
+### netaddr.new(address, [netmask]) ⇒ [`range`](#module_netaddr.range)
+### netaddr.v4(address, [netmask]) ⇒ [`range`](#module_netaddr.range)
+### netaddr.v6(address, [netmask], [scope]) ⇒ [`range`](#module_netaddr.range)
+### netaddr.mac(address, [netmask]) ⇒ [`range`](#module_netaddr.range)
+### netaddr.checkv4(address) ⇒ `string`
+### netaddr.checkv6(address) ⇒ `string`
+### netaddr.checkmac(address) ⇒ `string`
+### netaddr.range
+#### range.is4() ⇒ `boolean`
+#### range.is4rfc1918() ⇒ `boolean`
+#### range.is4linklocal() ⇒ `boolean`
+#### range.is6() ⇒ `boolean`
+#### range.is6linklocal() ⇒ `boolean`
+#### range.is6mapped4() ⇒ `boolean`
+#### range.ismac() ⇒ `boolean`
+#### range.ismaclocal() ⇒ `boolean`
+#### range.ismacmcast() ⇒ `boolean`
+#### range.lower(addr) ⇒ `boolean`
+#### range.higher(addr) ⇒ `boolean`
+#### range.equal(addr) ⇒ `boolean`
+#### range.prefix([mask]) ⇒ `number`
+#### range.network([mask]) ⇒ [`range`](#module_netaddr.range)
+#### range.mask([mask]) ⇒ [`range`](#module_netaddr.range)
+#### range.broadcast([mask]) ⇒ [`range`](#module_netaddr.range)
+#### range.scoped() ⇒ [`range`](#module_netaddr.range)
+#### range.unscoped() ⇒ [`range`](#module_netaddr.range)
+#### range.tomac() ⇒ [`range`](#module_netaddr.range)
+#### range.tolinklocal() ⇒ [`range`](#module_netaddr.range)
+#### range.contains(addr) ⇒ `boolean`
+#### range.add(amount, [inplace]) ⇒ [`range`](#module_netaddr.range) \| `boolean` \| `null`
+#### range.sub(amount, [inplace]) ⇒ [`range`](#module_netaddr.range) \| `boolean` \| `null`
+#### range.minhost() ⇒ [`range`](#module_netaddr.range)
+#### range.maxhost() ⇒ [`range`](#module_netaddr.range)
+#### range.string() ⇒ `string`
+#### range.tostring() ⇒ `string`
+#### range.\_\_get\_\_(key) ⇒ `number` \| `string` \| `null`
+#### range.\_\_set\_\_(key, value) ⇒ `null`
+
+
 > **Summary:** Provides netlink 802.11 wireless configuration API bindings for ucode. Implements request() to send and receive nl80211 commands including NL80211_CMD_GET_INTERFACE, NL80211_CMD_GET_STATION, NL80211_CMD_TRIGGER_SCAN, and regulatory domain queries. Returns structured attribute dictionaries parsed from kernel nl80211 netlink messages.
 > **Use Case:** Use in ucode-based wireless management handlers that need direct kernel-level 802.11 interface control, station enumeration, or scan triggering beyond what iwinfo or standard UCI wireless config expose.
 # ucode module: nl80211
@@ -244,10 +285,11 @@
 # ucode module: rtnl
 ## Routing Netlink
 ### rtnl.error() ⇒ `string`
-### rtnl.request(cmd, flags, payload) ⇒ `\*`
+### rtnl.request(cmd, flags, payload) ⇒ `Object` \| `Array.<Object>` \| `boolean`
 ### rtnl.listener(callback, [commands], [groups]) ⇒ [`listener`](#module_rtnl.listener)
 ### rtnl.listener
 #### listener.set\_commands(commands) ⇒ `boolean`
+#### listener.set\_overrun\_handler(handler) ⇒ `boolean`
 #### listener.close() ⇒ `boolean`
 ### rtnl~Netlink message flags
 ### rtnl~IPv6 address generation modes
@@ -292,6 +334,41 @@
 ### rtnl~Bridge flags
 ### rtnl~Bridge modes
 ### rtnl~Bridge VLAN information flags
+
+# ucode module: serial
+## Serial Port Access
+### serial.error() ⇒ `string`
+### serial.isatty(fd) ⇒ `boolean`
+### serial.attr(fd) ⇒ `object`
+### serial.setattr(fd, attrs, [when]) ⇒ `boolean`
+### serial.setspeed(fd, speed, [when]) ⇒ `boolean`
+### serial.setraw(fd, [when]) ⇒ `boolean`
+### serial.setblocking(fd, vmin, vtime, [when]) ⇒ `boolean`
+### serial.mget(fd) ⇒ `number`
+### serial.mset(fd, bits) ⇒ `boolean`
+### serial.mbis(fd, bits) ⇒ `boolean`
+### serial.mbic(fd, bits) ⇒ `boolean`
+### serial.dtr(fd, on) ⇒ `boolean`
+### serial.rts(fd, on) ⇒ `boolean`
+### serial.sendbreak(fd, [duration]) ⇒ `boolean`
+### serial.drain(fd) ⇒ `boolean`
+### serial.flush(fd, [queue]) ⇒ `boolean`
+### serial.input\_waiting(fd) ⇒ `number`
+### serial.output\_waiting(fd) ⇒ `number`
+### serial.getinfo(fd) ⇒ `object`
+### serial.setinfo(fd, opts) ⇒ `boolean`
+### serial.lowlatency(fd, on) ⇒ `boolean`
+### serial~Apply Modes
+### serial~Flush Queues
+### serial~Control Flags
+### serial~Input Flags
+### serial~Output Flags
+### serial~Local Flags
+### serial~Control Character Indices
+### serial~Baud Rates
+### serial~Modem Control Line Bits
+### serial~Serial Port Flags
+### serial~Serial Port Types
 
 > **Summary:** Provides low-level socket programming for ucode via POSIX socket API bindings. Implements create() for AF_INET, AF_INET6, and AF_UNIX socket creation, plus connect(), bind(), listen(), accept(), send(), recv(), recvfrom(), sendto(), close(), setsockopt(), and getsockopt() for full network and IPC socket lifecycle management.
 > **Use Case:** Use when a ucode service must open a raw or domain socket for custom IPC, network monitoring daemons, or protocol implementation that does not go through ubus and requires direct kernel socket access.

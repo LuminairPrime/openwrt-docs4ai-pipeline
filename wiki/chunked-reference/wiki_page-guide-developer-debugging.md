@@ -2,9 +2,9 @@
 title: Debugging
 module: wiki
 origin_type: wiki_page
-token_count: 1962
+token_count: 1972
 source_file: L1-raw/wiki/wiki_page-guide-developer-debugging.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/debugging
 language: text
 ai_summary: The Debugging module in OpenWrt provides essential tools and techniques for diagnosing issues related to hardware, kernel, and driver development. It covers methods such as adding a serial console, utilizing JTAG for debugging, and employing GDB for code analysis. Additionally, it offers guidance on capturing wireless management traffic using tools like tcpdump and iwcap, as well as adjusting the logging level for hostapd to facilitate troubleshooting. These resources are crucial for developers working on embedded network devices to effectively identify and resolve issues.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/debugging](https://openwrt.org/docs/guide-developer/debugging)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Debugging
 
@@ -52,7 +52,7 @@ ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interf
     /sbin/ifconfig mon0 up; /usr/sbin/tcpdump -s 0 -i mon0 -y IEEE802_11_RADIO -w -' > /tmp/wifi.pcap
 ```
 
-A smaller alternative to `tcpdump` is the `iwcap` utility. It's a MIPS binary only ~5KB and does not require `libpcap` to function. It also supports the filtering of data frames through the `-D` switch to cut down the amount of captured traffic.
+A smaller alternative to `tcpdump` is the `iwcap` utility. It‘s a MIPS binary only ~5KB and does not require ’‘libpcap’’ to function. It also supports the filtering of data frames through the `-D` switch to cut down the amount of captured traffic.
 
 ``` bash
 ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interface add mon0 type monitor;
@@ -61,7 +61,7 @@ ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interf
 
 ### Logging hostapd behaviour
 
-OpenWrt ships with a version of hostapd which has verbose debug messages disabled in order to save space (see <https://dev.openwrt.org/ticket/15658>). Set "minimum debug message priority" in menuconfig to 0 to have all log levels available for debugging.
+OpenWrt ships with a version of hostapd which has verbose debug messages disabled in order to save space (see <https://dev.openwrt.org/ticket/15658>). Set “minimum debug message priority” in menuconfig to 0 to have all log levels available for debugging.
 
 To enable debug, first remove the cut-down version, then install the debug build of hostapd which is contained in the wpad package:
 
@@ -81,7 +81,7 @@ Levels (minimum value for logged events):
 4 = warning
 ```
 
-The default is 2 for "informational messages". The example below shows you how to change check this and change it to "debugging".
+The default is 2 for “informational messages”. The example below shows you how to change check this and change it to “debugging”.
 
 Check the log level currently being used:
 
@@ -92,7 +92,7 @@ root@OpenWrt:~# ps | grep hostapd
  7019 root      1448 S    grep hostapd
 ```
 
-Lets say you're interested in addressing a problem with the phy0 hostapd. First check the current level for this hostapd:
+Lets say you’re interested in addressing a problem with the phy0 hostapd. First check the current level for this hostapd:
 
 ``` bash
 root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf
@@ -100,7 +100,7 @@ logger_syslog_level=2
 logger_stdout_level=2
 ```
 
-Here we see that log level 2 is selected. Let's change this to 1 which is debug:
+Here we see that log level 2 is selected. Let’s change this to 1 which is debug:
 
 ``` bash
 root@OpenWrt:~# uci set wireless.radio0.log_level=1
@@ -127,7 +127,7 @@ Tue Apr 22 11:35:41 2014 daemon.debug hostapd: wlan0: STA 20:16:d8:db:aa:56 WPA:
 
 See [log.essentials](/docs/guide-user/base-system/log.essentials) for more information about logging.
 
-You may want to setup remote logging via syslog to another computer by setting a logfile (warning: this won't be auto-rotated, so make sure it doesn't fill up a vital filesystem).
+You may want to setup remote logging via syslog to another computer by setting a logfile (warning: this won’t be auto-rotated, so make sure it doesn’t fill up a vital filesystem).
 
 ``` bash
 uci set system.@system[0].log_file=[path-to-my-logfile]
@@ -143,7 +143,7 @@ If you wish to debug on the command line instead, you may use a command like thi
 kill `cat /var/run/wifi-phy0.pid` ; /usr/sbin/hostapd -dd -P /var/run/wifi-phy0.pid  /var/run/hostapd-phy0.conf
 ```
 
-Use the output of `ps` above to create the necessary command line, remove the '-B' argument to stop hostapd forking into the background, and add '-dd' to verbose debug to stdout.
+Use the output of `ps` above to create the necessary command line, remove the ‘-B’ argument to stop hostapd forking into the background, and add ‘-dd’ to verbose debug to stdout.
 
 Depending on your hardware and interface state, it may be necessary to create or re-create the relevant wlan device before starting hostapd:
 
@@ -154,21 +154,21 @@ iw phy phy0 interface add wlan0 type managed
 
 ## Add and modify compiler debug flags
 
-The "Compile with debug" entry in advanced developer menu enables "-g3" compile option.
+The “Compile with debug” entry in advanced developer menu enables “-g3” compile option.
 
 You have to disable \_sstrip\_ to keep debug information.
 
-If you just want to build a single package unstripped, try, "make package/foo/compile STRIP=true". Unstripped binaries are placed in "staging_dir/target-\*/root-\*/" where your host side tools can use them. Remember, gdbserver can attach to the stripped binary, while gdb loads the unstripped binary. See [gdb](/docs/guide-developer/gdb).
+If you just want to build a single package unstripped, try, “make package/foo/compile STRIP=true”. Unstripped binaries are placed in “staging_dir/target-\*/root-\*/” where your host side tools can use them. Remember, gdbserver can attach to the stripped binary, while gdb loads the unstripped binary. See [gdb](/docs/guide-developer/gdb).
 
-Alternatively you can add or modify "Custom Target Options" like add "-g3 -ggdb3".
+Alternatively you can add or modify “Custom Target Options” like add “-g3 -ggdb3”.
 
-Be aware there are default compiler options defined in include/[target.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) for example ("-Os -pipe").
+Be aware there are default compiler options defined in include/[target.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) for example (“-Os -pipe”).
 
 Some packets might overwrite or not use the flags. Check your compile log.
 
 Additional tips:
 
 - Check with different GCC versions
-- There is "-O0" to disable compiler optimizations
-- "-Wall -Wextra" might provide useful warnings
+- There is “-O0” to disable compiler optimizations
+- “-Wall -Wextra” might provide useful warnings
 - See <https://gcc.gnu.org/bugs/>

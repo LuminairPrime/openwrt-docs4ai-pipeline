@@ -2,9 +2,9 @@
 title: OpenWrt – operating system architecture
 module: wiki
 origin_type: wiki_page
-token_count: 1656
+token_count: 1734
 source_file: L1-raw/wiki/wiki_page-techref-architecture.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/architecture
 language: text
 ai_summary: OpenWrt's operating system architecture is designed to be lightweight and efficient, utilizing components like libubox, ubus, and procd instead of the larger libraries commonly found in desktop distributions. This architecture allows OpenWrt to function effectively on devices with limited resources, such as 32 MiB to 512 MiB of RAM. Key features include a custom init system (procd), a package management system (opkg), and a unique network configuration tool (netifd). The system is built on the Linux kernel, providing essential functionalities without the overhead of traditional desktop environments.
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/architecture](https://openwrt.org/docs/techref/architecture)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # OpenWrt – operating system architecture
 
@@ -43,19 +43,22 @@ non-volatile storage space	100 MiB	 	8 MiB[^2]	 	150MiB for Android 2.1; 512MiB 
 network configuration	[NetworkManager](https://en.wikipedia.org/wiki/NetworkManager) + GUI	 	`netifd`	 	ConnectivityManager; (not [ConnMan = ConnectionManager](https://connman.net/)!)	?	ConnMan
  	[GLib](https://en.wikipedia.org/wiki/GLib); (GObject, Glib, GModule, GThread, GIO)	 	[libubox](/docs/techref/libubox)	 	?	?	Qt-based?
  	[PulseAudio](https://en.wikipedia.org/wiki/PulseAudio)	 	[pulseaudio](/docs/guide-user/hardware/audio/pulseaudio) (optional)	 	PulseAudio	PulseAudio	PulseAudio
-[Package management system](https://en.wikipedia.org/wiki/Package management system)	[dpkg](https://en.wikipedia.org/wiki/dpkg)/[APT](https://en.wikipedia.org/wiki/Advanced Packaging Tool); [RPM](https://en.wikipedia.org/wiki/RPM Package Manager)/[yum](https://en.wikipedia.org/wiki/Yellowdog Updater, Modified); [portage](https://en.wikipedia.org/wiki/Portage (software)); [pacman](https://en.wikipedia.org/wiki/pacman (package manager)); ...	 	`opkg`	 	[apk](https://en.wikipedia.org/wiki/APK (file format))	?	[RPM](https://en.wikipedia.org/wiki/RPM Package Manager)
+[Package management system](https://en.wikipedia.org/wiki/Package management system)	[dpkg](https://en.wikipedia.org/wiki/dpkg)/[APT](https://en.wikipedia.org/wiki/Advanced Packaging Tool); [RPM](https://en.wikipedia.org/wiki/RPM Package Manager)/[yum](https://en.wikipedia.org/wiki/Yellowdog Updater, Modified); [portage](https://en.wikipedia.org/wiki/Portage (software)); [pacman](https://en.wikipedia.org/wiki/pacman (package manager)); …	 	`opkg`	 	[apk](https://en.wikipedia.org/wiki/APK (file format))	?	[RPM](https://en.wikipedia.org/wiki/RPM Package Manager)
 ```
 
-[^1]: yes, *heavily* stripped OpenWrt can run on 16 or even 8MiB
-[^2]: yes, 4MiB and 2MiB possible
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>yes, *heavily* stripped OpenWrt can run on 16 or even 8MiB[↩︎](#fnref1)</p></li>
+<li id="fn2"><p>yes, 4MiB and 2MiB possible[↩︎](#fnref2)</p></li>
+</ol>
+</section>
 
-### What's the difference between ubus vs dbus?
-
-`dbus` is bloated, its C API is very annoying to use and requires writing large amounts of boilerplate code. In fact, the pure C API is so annoying that its own API documentation states: "If you use this low-level API directly, you're signing up for some pain."
+==== What‘s the difference between ubus vs dbus? ==== ’‘dbus’’ is bloated, its C API is very annoying to use and requires writing large amounts of boilerplate code. In fact, the pure C API is so annoying that its own API documentation states: “If you use this low-level API directly, you’re signing up for some pain.”
 
 `ubus` is tiny and has the advantage of being easy to use from regular C code, as well as automatically making all exported API functionality also available to shell scripts with no extra effort.
 
-"Of course, NetworkManager should be renamed to ***`"unetwork"`***, dbus to ***`"ubus"`***, PulseAudio to ***`"usound"`***, and X.Org-Server/Wayland-Compositor to ***`"udisplay"`***; and then indescribable happiness would come down to all people of this world." – [Lennart Poettering](http://lists.freedesktop.org/archives/dbus/2010-April/012545.html)
+“Of course, NetworkManager should be renamed to ***`”unetwork”`***, dbus to ***`”ubus”`***, PulseAudio to ***`”usound”`***, and X.Org-Server/Wayland-Compositor to ***`”udisplay”`***; and then indescribable happiness would come down to all people of this world.” – [Lennart Poettering](http://lists.freedesktop.org/archives/dbus/2010-April/012545.html)
 
 ------------------------------------------------------------------------
 

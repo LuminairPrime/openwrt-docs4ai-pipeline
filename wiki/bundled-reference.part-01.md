@@ -1,18 +1,18 @@
 ---
 module: wiki
-total_token_count: 99846
+total_token_count: 99196
 section_count: 49
 is_monolithic: false
 is_sharded_part: true
 part_number: 1
 part_count: 2
-generated: '2026-10-01T18:43:48.394133+00:00'
+generated: '2026-11-01T18:18:06.554594+00:00'
 ---
 
 # wiki Bundled Reference (Part 1 of 2)
 
 > **Contains:** 49 documents
-> **Tokens:** ~99846 (cl100k_base)
+> **Tokens:** ~99196 (cl100k_base)
 > **Index:** [./bundled-reference.md](./bundled-reference.md)
 
 ---
@@ -32,14 +32,14 @@ If you already solved the puzzle and are looking for device support submission g
 
 ## GPIOs
 
-Most of devices use [GPIOs](/docs/techref/hardware/port.gpio) for controlling LEDs and buttons. There aren't any generic GPIOs numbers, so OpenWrt has to use device specific mappings. It means we need to find out GPIOs for every controllable LED and button on every supported device.
+Most of devices use [GPIOs](/docs/techref/hardware/port.gpio) for controlling LEDs and buttons. There aren’t any generic GPIOs numbers, so OpenWrt has to use device specific mappings. It means we need to find out GPIOs for every controllable LED and button on every supported device.
 
 ### GPIO LEDs
 
 If LED is controlled by GPIO, direction has to be set to `out` and we need to know the polarity:
 
-- If LED turns on for value 1, it's active high
-- If LED turns on for value 0, it's active low
+- If LED turns on for value 1, it’s active high
+- If LED turns on for value 0, it’s active low
 
 A single GPIO can be tested in the following way:
 
@@ -91,7 +91,7 @@ while [ $gpio -lt $max ] ; do
 done
 ```
 
-- Save the above content as a file `gpio-test.sh` & then transfer inside router's `/tmp` directory, or copy above content & paste inside `vi` editor in router & save as `gpio-test.sh` file.
+- Save the above content as a file `gpio-test.sh` & then transfer inside router‘s ’‘/tmp’’ directory, or copy above content & paste inside `vi` editor in router & save as `gpio-test.sh` file.
 - to make it executable, run: `chmod +x /tmp/gpio-test.sh`
 
 ### GPIO buttons
@@ -123,10 +123,10 @@ while [ $gpio -lt $max ] ; do
 done
 ```
 
-- Save the above content as a file `gpio-dump.sh` & then transfer inside router's `/tmp` directory, or copy above content & paste inside `vi` editor in router & save as `gpio-dump.sh` file
+- Save the above content as a file `gpio-dump.sh` & then transfer inside router‘s ’‘/tmp’’ directory, or copy above content & paste inside `vi` editor in router & save as `gpio-dump.sh` file
 - to make it executable, run: `chmod +x /tmp/gpio-dump.sh`
 
-If GPIO value changes from 1 to 0 while pressing the button, it's active low. Otherwise it's active high.
+If GPIO value changes from 1 to 0 while pressing the button, it’s active low. Otherwise it’s active high.
 
 Example table:
 
@@ -141,7 +141,7 @@ For getting MAC addresses, EEPROM and other calibration data for your board, you
 
 If you are reviewing the code for initializing a board similar to your own and you see this idium: KSEG1ADDR(0x1fff0000), the number at first appears to be magic but it is logical if you understand two things. Firstly, Atheros SoCs using NOR flash wire it to the physical address 0x1f000000 (there are no guarantees about where the flash will be wired for your board but this is a common location). You cannot rely on the address given in the bootloader, you might see 0xbf000000 but this is probably also a virtual address. If your board wires flash to these memory locations, you may obviously access flash using KSEG1ADDR(0x1f000000 + OFFSET_FROM_BEGIN) but in the event that you have to access data which you know will exist at the very end of the flash, you can use a trick to make your code compatible with multiple sizes of flash memory.
 
-Often flash will be mapped to a full 16MB of address space no matter whether it is 4MB, 8MB or 16MB so in this case KSEG1ADDR(0x20000000 - OFFSET_FROM_END) will work for accessing things which you know to be a certain distance from the end of the flash memory. When you see KSEG1ADDR(0x1fff0000), on devices with 4MB or 8MB of flash, it's fair to guess that it's using this trick to reference the flash which resides 64k below the end of the flash (where Atheros Radio Test data is stored).
+Often flash will be mapped to a full 16MB of address space no matter whether it is 4MB, 8MB or 16MB so in this case KSEG1ADDR(0x20000000 - OFFSET_FROM_END) will work for accessing things which you know to be a certain distance from the end of the flash memory. When you see KSEG1ADDR(0x1fff0000), on devices with 4MB or 8MB of flash, it’s fair to guess that it’s using this trick to reference the flash which resides 64k below the end of the flash (where Atheros Radio Test data is stored).
 
 ## Examples
 
@@ -151,7 +151,7 @@ If you have the OEM sourcecode for your [bcm63xx](/docs/techref/hardware/soc/soc
 
 - Look for your Board Id at `shared/opensource/boardparms/boardparms.c`
 - Adapt the `imagetag.c` to create a different tag (see `shared/opensource/inlude/bcm963xx/bcmTag.h` in the GPL tar for the layout)
-- Finally xor the whole image with '12345678' (the ascii string, not hex).
+- Finally xor the whole image with ‘12345678’ (the ascii string, not hex).
 
 (from <https://forum.openwrt.org/viewtopic.php?pid=123105#p123105>)
 
@@ -160,7 +160,7 @@ For creating the OpenWrt firmware your [bcm63xx](/docs/techref/hardware/soc/soc.
 1.  Obtain the [source and follow the compile procedure](/docs/guide-developer/toolchain/start) with the make menuconfig as last step.
 2.  During **menuconfig** select the correct target system.
 3.  Next generate the board_bcm963xx.c file for the selected platform with all board parameters execute the following command:
-    `make kernel_menuconfig`
+        make kernel_menuconfig
 4.  Add the board-id to the ./target/linux/brcm63xx/image/Makefile.
     **Example**
     \\# Davolink DV2020
@@ -225,9 +225,8 @@ At a minimum, you need to make the following changes to make a basic build, all 
 - Reference the new machine name in `files/arch/mips/include/asm/mach-ralink/machine.h`
 - Add your board to `base-files/lib/ramips.sh` for userspace scripts to read the board name
 
-Then you'll want to modify some of these files depending on your board's features:
+Then you‘ll want to modify some of these files depending on your board’s features: \* ’‘base-files/etc/diag.sh’’ to set a LED which OpenWRT should blink on bootup
 
-- `base-files/etc/diag.sh` to set a LED which OpenWRT should blink on bootup
 - `base-files/lib/upgrade/platform.sh` to allow sysupgrade to work on your board
 - `base-files/etc/uci-defaults/network` to configure default network interface settings, particularly MAC addresses
 - `base-files/etc/uci-defaults/leds` if you have configurable LEDs which should default to a behavior, like a WLAN activity LED
@@ -244,7 +243,7 @@ Example commits:
 
 After add a new board, you may should clean the `tmp` folder first. \<code\> cd trunk rm -rf tmp make menuconfig \</code\>
 
-If you have added a device profile, and it isn't showing up in "make menuconfig" try touching the main target makefile
+If you have added a device profile, and it isn’t showing up in “make menuconfig” try touching the main target makefile
 
     touch target/linux/*/Makefile
 
@@ -254,7 +253,7 @@ If you have added a device profile, and it isn't showing up in "make menuconfig"
 
 You can find a list of all currently supported [start](/docs/platforms/start). Maybe there is no need to add a completely new platform, but only a new device, see -\>[add.new.device](/docs/guide-developer/add.new.device).
 
-Linux is now one of the most widespread operating system for embedded devices due to its openess as well as the wide variety of platforms it can run on. Many manufacturer actually use it in firmware you can find on many devices: DVB-T decoders, routers, print servers, DVD players ... Most of the time the stock firmware is not really open to the consumer, even if it uses open source software.
+Linux is now one of the most widespread operating system for embedded devices due to its openess as well as the wide variety of platforms it can run on. Many manufacturer actually use it in firmware you can find on many devices: DVB-T decoders, routers, print servers, DVD players … Most of the time the stock firmware is not really open to the consumer, even if it uses open source software.
 
 You might be interested in running a Linux based firmware for your router for various reasons: extending the use of a network protocol (such as IPv6), having new features, new piece of software inside, or for security reasons. A fully open-source firmware is de-facto needed for such applications, since you want to be free to use this or that version of a particular reason, be able to correct a particular bug. Few manufacturers do ship their routers with a Sample Development Kit, that would allow you to create your own and custom firmware and most of the time, when they do, you will most likely not be able to complete the firmware creation process.
 
@@ -268,40 +267,44 @@ There is a lot of methods to ensure your device is running Linux. Some of them d
 
 A large bunch of tools over the Internet exists in order to let you do OS fingerprinting, we will show here an example using *nmap*:
 
-|                                                                      |
-|----------------------------------------------------------------------|
-| `nmap -P0 -O //IP address//|
- Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET
- Interesting ports on 192.168.2.1:
- Not shown: 1693 closed ports
- PORT   STATE SERVICE
- 22/tcp open  ssh
- 23/tcp open  telnet
- 53/tcp open  domain
- 80/tcp open  http
- MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
- Device type: broadband router
- Running: Linksys embedded
- OS details: Linksys WRT54GS v4 running OpenWrt w/Linux kernel 2.4.30
- Network Distance: 1 hop`                                              |
+\|
+
+    nmap -P0 -O //IP address//|
+    Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:05 CET
+    Interesting ports on 192.168.2.1:
+    Not shown: 1693 closed ports
+    PORT   STATE SERVICE
+    22/tcp open  ssh
+    23/tcp open  telnet
+    53/tcp open  domain
+    80/tcp open  http
+    MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
+    Device type: broadband router
+    Running: Linksys embedded
+    OS details: Linksys WRT54GS v4 running OpenWrt w/Linux kernel 2.4.30
+    Network Distance: 1 hop
+
+\|
 
 The *nmap* utility is able to report whether your device uses a Linux TCP/IP stack, and if so, will show you which Linux kernel version is probably runs. This report is quite reliable and it can make the distinction between BSD and Linux TCP/IP stacks and others.
 
 Using the same tool, you can also do port scanning and service version discovery. For instance, the following command will report which IP-based services are running on the device, and which version of the service is being used:
 
-|                                                                    |
-|--------------------------------------------------------------------|
-| `nmap -P0 -sV //IP address//|
- Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET
- Interesting ports on 192.168.2.1:
- Not shown: 1693 closed ports
- PORT   STATE SERVICE VERSION
- 22/tcp open  ssh     Dropbear sshd 0.48 (protocol 2.0)
- 23/tcp open  telnet  Busybox telnetd
- 53/tcp open  domain  ISC Bind dnsmasq-2.35
- 80/tcp open  http    OpenWrt BusyBox httpd
- MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
- Service Info: Device: WAP`                                          |
+\|
+
+    nmap -P0 -sV //IP address//|
+    Starting Nmap 4.20 ( http://insecure.org ) at 2007-01-08 11:06 CET
+    Interesting ports on 192.168.2.1:
+    Not shown: 1693 closed ports
+    PORT   STATE SERVICE VERSION
+    22/tcp open  ssh     Dropbear sshd 0.48 (protocol 2.0)
+    23/tcp open  telnet  Busybox telnetd
+    53/tcp open  domain  ISC Bind dnsmasq-2.35
+    80/tcp open  http    OpenWrt BusyBox httpd
+    MAC Address: 00:13:xx:xx:xx:xx (Cisco-Linksys)
+    Service Info: Device: WAP
+
+\|
 
 The web server version, if identified, can be determining in knowing the Operating System. For instance, the BOA web server is typical from devices running an open-source Unix or Unix-like.
 
@@ -311,7 +314,7 @@ Although this method is not really known and widespread, using a wireless scanne
 
 ### Web server security exploits
 
-The Linksys WRT54G was originally hacked by using a "ping bug" discovered in the web interface. This tip has not been fixed for months by Linksys, allowing people to enable the "boot_wait" helper process via the web interface. Many web servers used in firmwares are open source web server, thus allowing the code to be audited to find an exploit. Once you know the web server version that runs on your device, by using nmap -sV or so, you might be interested in using exploits to reach shell access on your device.
+The Linksys WRT54G was originally hacked by using a “ping bug” discovered in the web interface. This tip has not been fixed for months by Linksys, allowing people to enable the “boot_wait” helper process via the web interface. Many web servers used in firmwares are open source web server, thus allowing the code to be audited to find an exploit. Once you know the web server version that runs on your device, by using nmap -sV or so, you might be interested in using exploits to reach shell access on your device.
 
 ### Native Telnet/SSH access
 
@@ -323,15 +326,17 @@ You are very likely to find a firmware binary image on the manufacturer website,
 
 Some Unix tools like `hexdump` or `strings` can be used to analyze the firmware. Below there is an example with a binary firmware found on the Internet:
 
-|                                                                                 |
-|---------------------------------------------------------------------------------|
-| `hexdump -C <binary image.extension> | less|
- 00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|
- 00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|
- 00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|
- 00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|
- 00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|
- 00000050  da ff f3 9b f7 39 7b ef  73 f6 19 3b 53 67 ea 44  |???.?9{?s?.;Sg?D|`  |
+\|
+
+    hexdump -C <binary image.extension> | less|
+    00000000  46 49 52 45 32 2e 35 2e  30 00 00 00 00 00 00 00  |FIRE2.5.0.......|
+    00000010  00 00 00 00 31 2e 30 2e  30 00 00 00 00 00 00 00  |....1.0.0.......|
+    00000020  00 00 00 00 00 00 00 38  00 43 36 29 00 0a e6 dc  |.......8.C6)..??|
+    00000030  54 49 44 45 92 89 54 66  1f 8b 08 08 f8 10 68 42  |TIDE..Tf....?.hB|
+    00000040  02 03 72 61 6d 64 69 73  6b 00 ec 7d 09 bc d5 d3  |..ramdisk.?}.???|
+    00000050  da ff f3 9b f7 39 7b ef  73 f6 19 3b 53 67 ea 44  |???.?9{?s?.;Sg?D|
+
+\|
 
 Scroll over the firmware to find printable words that can be significant.
 
@@ -355,22 +360,24 @@ Some manufacturers do release a Linux based binary firmware, with no sources at 
 
 You will find below a sample letter that can be sent to the manufacturer:
 
-|                                                                                                               |
-|---------------------------------------------------------------------------------------------------------------|
-| `Miss, Mister,|
+\|
 
- I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM
- the open source software used to build or modify the firmware.
+    Miss, Mister,|
 
- In conformance to the GPL license, you have to release the following sources:
+    I am using a //device name//, and I cannot find neither on your website nor on the CD-ROM
+    the open source software used to build or modify the firmware.
 
-  * complete toolchain that made the kernel and applications be compiled (gcc, binutils, libc)
-  * tools to build a custom firmware (mksquashfs, mkcramfs ...)
-  * kernel sources with patches to make it run on this specific hardware, this does not include binary drivers
+    In conformance to the GPL license, you have to release the following sources:
 
- Thank you very much in advance for your answer.
+     * complete toolchain that made the kernel and applications be compiled (gcc, binutils, libc)
+     * tools to build a custom firmware (mksquashfs, mkcramfs ...)
+     * kernel sources with patches to make it run on this specific hardware, this does not include binary drivers
 
- Best regards, //Your Name//`                                                                                   |
+    Thank you very much in advance for your answer.
+
+    Best regards, //Your Name//
+
+\|
 
 ### Using the SDK
 
@@ -395,38 +402,38 @@ Your work can be divided into the following tasks:
 
 Most of the time, the kernel source that comes along with the SDK is not really clean, and is not a standard Linux version, it also has architecture specific fixes backported from the CVS or the git repository of the kernel development trees. Anyway, some parts can be easily isolated and used as a good start to make a vanilla kernel work your hardware.
 
-Some directories are very likely to have local modifications needed to make your hardware be recognized and used under Linux. First of all, you need to find out the linux kernel version that is used by your hardware, this can be found by editing the linux/Makefile file.
+Some directories are very likely to have local modifications needed to make your hardware be recognized and used under Linux. First of all, you need to find out the linux kernel version that is used by your hardware, this can be found by editing the linux/Makefile file. \|
 
-|                                |
-|--------------------------------|
-| `head -5 linux-2.x.x/Makefile|
- VERSION = 2
- PATCHLEVEL = x
- SUBLEVEL = y
- EXTRAVERSION = z
- NAME=A fancy name`              |
+    head -5 linux-2.x.x/Makefile|
+    VERSION = 2
+    PATCHLEVEL = x
+    SUBLEVEL = y
+    EXTRAVERSION = z
+    NAME=A fancy name
+
+\|
 
 So now, you know that you have to download a standard kernel tarball at kernel.org that matches the version being used by your hardware.
 
-Then you can create a diff file between the two trees, especially for the following directories:
+Then you can create a diff file between the two trees, especially for the following directories: \|
 
-|                                                                                                                          |
-|--------------------------------------------------------------------------------------------------------------------------|
-| `diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch|
- diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch
- diff -urN linux-2.x.x/drivers/ linux-2.x.x-modified/drivers > 03-drivers.patch`                                           |
+    diff -urN linux-2.x.x/arch///sub architecture// linux-2.x.x-modified/arch///sub architecture// > 01-architecture.patch|
+    diff -urN linux-2.x.x/include/ linux-2.x.x-modified/include > 02-includes.patch
+    diff -urN linux-2.x.x/drivers/ linux-2.x.x-modified/drivers > 03-drivers.patch
 
-This will constitute a basic set of three patches that are very likely to contain any needed modifications that has been made to the stock Linux kernel to run on your specific device. Of course, the content produced by the diff -urN may not always be relevant, so that you have to clean up those patches to only let the "must have" code into them.
+\|
+
+This will constitute a basic set of three patches that are very likely to contain any needed modifications that has been made to the stock Linux kernel to run on your specific device. Of course, the content produced by the diff -urN may not always be relevant, so that you have to clean up those patches to only let the “must have” code into them.
 
 The first patch will contain all the code that is needed by the board to be initialized at startup, as well as processor detection and other boot time specific fixes.
 
-The second patch will contain all useful definitions for that board: addresses, kernel granularity, redefinitions, processor family and features ...
+The second patch will contain all useful definitions for that board: addresses, kernel granularity, redefinitions, processor family and features …
 
-The third patch may contain drivers for: serial console, ethernet NIC, wireless NIC, USB NIC ... Most of the time this patch contains nothing else than "glue" code that has been added to make the binary driver work with the Linux kernel. This code might not be useful if you plan on writing drivers from scratch for this hardware.
+The third patch may contain drivers for: serial console, ethernet NIC, wireless NIC, USB NIC … Most of the time this patch contains nothing else than “glue” code that has been added to make the binary driver work with the Linux kernel. This code might not be useful if you plan on writing drivers from scratch for this hardware.
 
 ### Using the device bootloader
 
-The [bootloader](/docs/techref/bootloader) is the first program that is started right after your device has been powered on. This program, can be more or less sophisticated, some do let you do network booting, USB mass storage booting ... The bootloader is device and architecture specific, some bootloaders were designed to be universal such as RedBoot or [Das U-Boot](/docs/techref/bootloader/uboot) so that you can meet those loaders on totally different platforms and expect them to behave the same way.
+The [bootloader](/docs/techref/bootloader) is the first program that is started right after your device has been powered on. This program, can be more or less sophisticated, some do let you do network booting, USB mass storage booting … The bootloader is device and architecture specific, some bootloaders were designed to be universal such as RedBoot or [Das U-Boot](/docs/techref/bootloader/uboot) so that you can meet those loaders on totally different platforms and expect them to behave the same way.
 
 If your device runs a proprietary operating system, you are very likely to deal with a proprietary boot loader as well. This may not always be a limitation, some proprietary bootloaders can even have source code available (i.e : Broadcom CFE).
 
@@ -469,7 +476,7 @@ You might want to understand the firmware format, even if you are not yet capabl
 
 A firmware format is most of the time composed of the following fields:
 
-- header, containing a firmware version and additional fields: Vendor, Hardware version ...
+- header, containing a firmware version and additional fields: Vendor, Hardware version …
 - CRC32 checksum on either the whole file or just part of it
 - Binary and/or compressed kernel image
 - Binary and/or compressed root filesystem image
@@ -485,14 +492,16 @@ Writing your own flash map driver is not really a hard task once you know how yo
 
 First of all, you need to make your flash map driver be visible in the kernel configuration options, this can be done by editing the file `linux/drivers/mtd/maps/Kconfig`:
 
-|                                                                          |
-|--------------------------------------------------------------------------|
-| `config MTD_DEVICE_FLASH|
-         tristate "Device Flash device"
-         depends on ARCHITECTURE && DEVICE
-         help
-          Flash memory access on DEVICE boards. Currently only works with
-          Bootloader Foo and Bootloader Bar.`                              |
+\|
+
+    config MTD_DEVICE_FLASH|
+            tristate "Device Flash device"
+            depends on ARCHITECTURE && DEVICE
+            help
+             Flash memory access on DEVICE boards. Currently only works with
+             Bootloader Foo and Bootloader Bar.
+
+\|
 
 Then add your source file to the linux/drivers/mtd/maps/Makefile, so that it will be compiled along with the kernel.
 
@@ -502,107 +511,111 @@ Then add your source file to the linux/drivers/mtd/maps/Makefile, so that it wil
 
 You can then write the kernel driver itself, by creating a `linux/drivers/mtd/maps/device-flash.c` C source file.
 
-|                                                                                             |
-|---------------------------------------------------------------------------------------------|
-| `// Includes that are required for the flash map driver to know of the prototypes:|
- #include <asm/io.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/vmalloc.h>
+\|
 
- // Put some flash map definitions here:
- #define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */
- #define WINDOW_SIZE 0x400000    /* Size of flash */
- #define BUSWIDTH 2      /* Buswidth */
+``` c
+// Includes that are required for the flash map driver to know of the prototypes:|
+#include <asm/io.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/mtd/map.h>
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/partitions.h>
+#include <linux/vmalloc.h>
 
- static void __exit device_mtd_cleanup(void);
+// Put some flash map definitions here:
+#define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */
+#define WINDOW_SIZE 0x400000    /* Size of flash */
+#define BUSWIDTH 2      /* Buswidth */
 
- static struct mtd_info *device_mtd_info;
+static void __exit device_mtd_cleanup(void);
 
- static struct map_info devicd_map = {
-     .name = "device",
-     .size = WINDOW_SIZE,
-     .bankwidth = BUSWIDTH,
-     .phys = WINDOW_ADDR,
- };
+static struct mtd_info *device_mtd_info;
 
- static int __init device_mtd_init(void)
- {
-     // Display that we found a flash map device
-     printk("device: 0x\%08x at 0x\%08x\n", WINDOW_SIZE, WINDOW_ADDR);
+static struct map_info devicd_map = {
+    .name = "device",
+    .size = WINDOW_SIZE,
+    .bankwidth = BUSWIDTH,
+    .phys = WINDOW_ADDR,
+};
 
-     // Remap the device address to a kernel address
-     device_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
+static int __init device_mtd_init(void)
+{
+    // Display that we found a flash map device
+    printk("device: 0x\%08x at 0x\%08x\n", WINDOW_SIZE, WINDOW_ADDR);
 
-     // If impossible to remap, exit with the EIO error
-     if (!device_map.virt) {
-         printk("device: Failed to ioremap\n");
-         return -EIO;
-     }
-     // Initialize the device map
-     simple_map_init(&device_map);
+    // Remap the device address to a kernel address
+    device_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
 
-     /* MTD informations are closely linked to the flash map device
-        you might also use "jedec_probe" "amd_probe" or "intel_probe" */
-     device_mtd_info = do_map_probe("cfi_probe", &device_map);
+    // If impossible to remap, exit with the EIO error
+    if (!device_map.virt) {
+        printk("device: Failed to ioremap\n");
+        return -EIO;
+    }
+    // Initialize the device map
+    simple_map_init(&device_map);
 
-     if (device_mtd_info) {
-         device_mtd_info->owner = THIS_MODULE;
+    /* MTD informations are closely linked to the flash map device
+       you might also use "jedec_probe" "amd_probe" or "intel_probe" */
+    device_mtd_info = do_map_probe("cfi_probe", &device_map);
 
-         int parsed_nr_parts = 0;
+    if (device_mtd_info) {
+        device_mtd_info->owner = THIS_MODULE;
 
-         // We try here to use the partition schema provided by the bootloader specific code
-         if (parsed_nr_parts == 0) {
-             int ret =
-                 parse_bootloader_partitions(device_mtd_info,
-                             &parsed_parts, 0);
-             if (ret > 0) {
-                 part_type = "BootLoader";
-                 parsed_nr_parts = ret;
-             }
-         }
+        int parsed_nr_parts = 0;
 
-         add_mtd_partitions(devicd_mtd_info, parsed_parts,
-                    parsed_nr_parts);
+        // We try here to use the partition schema provided by the bootloader specific code
+        if (parsed_nr_parts == 0) {
+            int ret =
+                parse_bootloader_partitions(device_mtd_info,
+                            &parsed_parts, 0);
+            if (ret > 0) {
+                part_type = "BootLoader";
+                parsed_nr_parts = ret;
+            }
+        }
 
-         return 0;
-     }
-     iounmap(device_map.virt);
+        add_mtd_partitions(devicd_mtd_info, parsed_parts,
+                   parsed_nr_parts);
 
-     return -ENXIO;
- }
+        return 0;
+    }
+    iounmap(device_map.virt);
 
- // This function will make the driver clean up the MTD device mapping
- static void __exit device_mtd_cleanup(void)
- {
-     // If we found a MTD device before
-     if (device_mtd_info) {
-         // Delete every partitions
-         del_mtd_partitions(device_mtd_info);
-         // Delete the associated map
-         map_destroy(device_mtd_info);
-     }
+    return -ENXIO;
+}
 
-     // If the virtual address is already in use
-     if (device_map.virt) {
-         // Unmap the physical address to a kernel space address
-         iounmap(device_map.virt);
+// This function will make the driver clean up the MTD device mapping
+static void __exit device_mtd_cleanup(void)
+{
+    // If we found a MTD device before
+    if (device_mtd_info) {
+        // Delete every partitions
+        del_mtd_partitions(device_mtd_info);
+        // Delete the associated map
+        map_destroy(device_mtd_info);
+    }
 
-         // Reset the structure field
-         device_map.virt = 0;
-     }
- }
+    // If the virtual address is already in use
+    if (device_map.virt) {
+        // Unmap the physical address to a kernel space address
+        iounmap(device_map.virt);
 
- // Macros that indicate which function is called on loading/unloading the module
- module_init(device_mtd_init);
- module_exit(device_mtd_cleanup);
+        // Reset the structure field
+        device_map.virt = 0;
+    }
+}
 
- // Macros defining license and author, parameters can be defined here too.
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Me, myself and I <memyselfandi@domain.tld>");`                                |
+// Macros that indicate which function is called on loading/unloading the module
+module_init(device_mtd_init);
+module_exit(device_mtd_cleanup);
+
+// Macros defining license and author, parameters can be defined here too.
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Me, myself and I <memyselfandi@domain.tld>");
+```
+
+\|
 
 ---
 
@@ -692,7 +705,7 @@ After edit the files above, you need to touch the makefiles
 ## Patches
 
 The patches-\* subdirectories contain the kernel patches applied for every target.
-All patches should be named 'NNN-lowercase_shortname.patch' and sorted into the following categories:
+All patches should be named ‘NNN-lowercase_shortname.patch’ and sorted into the following categories:
 
 **0xx** - upstream backports
 **1xx** - code awaiting upstream merge
@@ -716,7 +729,7 @@ Test firmware images without writing them to flash by using ramdisk images.
 
 In **make menuconfig** select **Target Images** and then you can select the **ramdisk** option.
 
-This will create an image with kernel + initramfs, that will have **initramfs** in the name. The resulting image can be loaded in the device through the bootloader's tftp function and should boot to a prompt without relying on flash/filesystem support.
+This will create an image with kernel + initramfs, that will have **initramfs** in the name. The resulting image can be loaded in the device through the bootloader’s tftp function and should boot to a prompt without relying on flash/filesystem support.
 
 ## Tips and tricks
 
@@ -763,7 +776,7 @@ With [nmrpflash](https://github.com/jclehner/nmrpflash) many Netgear devices can
 
 ### Collecting relevant data
 
-On [WikiDevi](https://wikidevi.com/wiki/Main_Page) lots of information can be found, e.g. the FCC ID is very useful when searching for documentation, datasheets and internal photo's (to be able to distinguish used chips without having to open the casing).
+On [WikiDevi](https://wikidevi.com/wiki/Main_Page) lots of information can be found, e.g. the FCC ID is very useful when searching for documentation, datasheets and internal photo’s (to be able to distinguish used chips without having to open the casing).
 
 Typically one can use the following commands:
 
@@ -1069,7 +1082,7 @@ Faster build time can be achieved by enabling multiple build jobs. In case of qu
 
 If build process is successful, your firmware images will be located on `bin/target-platform/`.
 
-If your hardware-specific image name could not be found, it's possible that you added too many packages that don't fit your hardware flash memory. Try reducing packages and restart the build process if such case happens.
+If your hardware-specific image name could not be found, it’s possible that you added too many packages that don’t fit your hardware flash memory. Try reducing packages and restart the build process if such case happens.
 
 ---
 
@@ -1094,7 +1107,7 @@ Detect the area in the Makefile involved with the full MPD installation. Add `+p
       PROVIDES:=mpd
       VARIANT:=full
 
-Edit the --disable-pulse to **--enable-pulse**
+Edit the –disable-pulse to **–enable-pulse**
 
          --disable-nfs \
          --disable-openal \
@@ -1123,7 +1136,7 @@ More information about building from source: [OpenWrt Buildroot - Usage](/docs/g
 Based on the following reference:
 [Help on compiling MPD full](https://forum.openwrt.org/viewtopic.php?pid=158385#p158385)
 If you build from source you will only be able to select the MPD-mini from the make menuconfig interface.
-To display and enable the full version in the menuconfig interface, you'll have to edit the MPD Makefile.
+To display and enable the full version in the menuconfig interface, you’ll have to edit the MPD Makefile.
 
 ### Barrier Breaker and Chaos Calmer
 
@@ -1152,15 +1165,15 @@ Edited file:
       PROVIDES:=mpd
       VARIANT:=full
 
-Now if you start `make menuconfig`, you'll have the choice to build the full or the mini MPD version
+Now if you start `make menuconfig`, you’ll have the choice to build the full or the mini MPD version
 
 ---
 
 # Building OpenWrt for Netgear WNDR3700
 
-**WNDR3700 Developers' Overview**
+**WNDR3700 Developers’ Overview**
 
-This page contains, thus far, one user's complete notes on how to build a working OpenWrt WNDR3700 image from scratch, including working wireless on 2.4 GHz and 5 GHz bands. This page assumes that you are comfortable with building software and using kernel-style makefile systems, but otherwise, the page describes how to build the system from the ground up (including getting your base OS ready to build OpenWrt in the first place).
+This page contains, thus far, one user’s complete notes on how to build a working OpenWrt WNDR3700 image from scratch, including working wireless on 2.4 GHz and 5 GHz bands. This page assumes that you are comfortable with building software and using kernel-style makefile systems, but otherwise, the page describes how to build the system from the ground up (including getting your base OS ready to build OpenWrt in the first place).
 
 This page also describes the method used to unbrick a WNDR3700 (which does NOT require a serial cable), as well as optional instructions for manufacturing a serial cable (should you wish to use it for running ramdisk images).
 
@@ -1171,7 +1184,7 @@ These instructions are working fine as of the relatively-recent trunk revision 1
 - [OpenWrt Buildroot – Installation](/docs/guide-developer/toolchain/install-buildsystem)
 - [OpenWrt Buildroot – Usage](/docs/guide-developer/toolchain/start)
 
-Until WNDR3700 support is integrated into a release, you'll need to execute the following commands to pull down the latest bleeding-edge code:
+Until WNDR3700 support is integrated into a release, you’ll need to execute the following commands to pull down the latest bleeding-edge code:
 
 ``` bash
 cd ~
@@ -1191,7 +1204,7 @@ cd ~/openwrt/trunk
 
 ## Configuration
 
-Run the OpenWrt's BuildRoot menu configuration system to get started:
+Run the OpenWrt’s BuildRoot menu configuration system to get started:
 
 ``` bash
 cd ~/openwrt/trunk
@@ -1202,25 +1215,25 @@ Make the following selections beyond the defaults. You might be able to get away
 
 1.  Target System: Atheros AR71xx/AR7240/AR913x
 2.  Target Profile: NETGEAR WNDR3700
-3.  Target Images: if you want to build a ramdisk image, select "ramdisk" and ensure that LZMA compression is listed. Otherwise, leave the defaults alone (should be jffs2, squashfs and tgz). You seemingly need to rebuild everything except the toolchain if you want to switch from the ramdisk to a firmware image or vice versa.
-4.  Image Configuration: Use this section to set up the defaults for the LAN ports on your router. If you don't have a serial cable connected to the router, you'll need to do this so that you can access the router once your newly-flashed code boots up. I recommend entering values for DNS server (on your ISP's network), LAN network mask (for the addresses to be doled out via DHCP), and LAN IP address (private IP address on your router's side).
+3.  Target Images: if you want to build a ramdisk image, select “ramdisk” and ensure that LZMA compression is listed. Otherwise, leave the defaults alone (should be jffs2, squashfs and tgz). You seemingly need to rebuild everything except the toolchain if you want to switch from the ramdisk to a firmware image or vice versa.
+4.  Image Configuration: Use this section to set up the defaults for the LAN ports on your router. If you don’t have a serial cable connected to the router, you’ll need to do this so that you can access the router once your newly-flashed code boots up. I recommend entering values for DNS server (on your ISP’s network), LAN network mask (for the addresses to be doled out via DHCP), and LAN IP address (private IP address on your router’s side).
     - eg. LAN DNS = (whatever your ISP tells you to use), LAN network mask=255.255.255.0, LAN IP address=192.168.0.1
-    - [NOTE](../wiki/chunked-reference/wiki_page-techref-luci2.md): **pfk3** didn't do this step and by default OpenWrt was built with 192.168.1.1 & 255.255.255.0 for it's LAN IP/subnet.
-    - [NOTE](../wiki/chunked-reference/wiki_page-techref-luci2.md): You still have to "\*" this option in order for the router to be on the network. You don't have to change the settings though
+    - [NOTE](../wiki/chunked-reference/wiki_page-techref-luci2.md): **pfk3** didn’t do this step and by default OpenWrt was built with 192.168.1.1 & 255.255.255.0 for it’s LAN IP/subnet.
+    - [NOTE](../wiki/chunked-reference/wiki_page-techref-luci2.md): You still have to “\*” this option in order for the router to be on the network. You don’t have to change the settings though
     - [NOTE](../wiki/chunked-reference/wiki_page-techref-luci2.md): It is not possible to set this feature in the latest [attitude adjustment](https://dev.openwrt.org/changeset/31258/) release. See this [mailing list post](http://www.mail-archive.com/openwrt-devel@lists.openwrt.org/msg15992.html) for more information.
-5.  Network -\> CRDA = YES (compile as built-in package with "\*", not as a module with "M")
-6.  Kernel Modules -\> LED Modules -\> kmod-leds-wndr3700-usb = YES (compile as built-in driver as "\*", not as a module with "M")
-7.  Kernel Modules -\> Wireless Drivers -\> kmod-ath -\> Configuration -\> Force Atheros drivers to respect the user's regdomain settings = YES
+5.  Network -\> CRDA = YES (compile as built-in package with “\*”, not as a module with “M”)
+6.  Kernel Modules -\> LED Modules -\> kmod-leds-wndr3700-usb = YES (compile as built-in driver as “\*”, not as a module with “M”)
+7.  Kernel Modules -\> Wireless Drivers -\> kmod-ath -\> Configuration -\> Force Atheros drivers to respect the user’s regdomain settings = YES
 
 If you want to slap a USB memory stick in the back of your router to allow you to install many more packages read the pages [USB Basic Support](/docs/guide-user/storage/usb-installing) and [USB Storage](/docs/guide-user/storage/usb-drives).
 
-A sample .config file is linked to below. If you use this, at the very least, you will need to edit the DNS server address listed in the "image configuration" step (see \#4 above).
+A sample .config file is linked to below. If you use this, at the very least, you will need to edit the DNS server address listed in the “image configuration” step (see \#4 above).
 
 Type
 
     make
 
-and it should merrily build away for at least a good half hour (or more). When you're done, you should have the resulting binaries stored in `~/openwrt/trunk/bin/ar71xx`. As of trunk revision 25119, separate binaries will be created for the WNDR3700v1 and WNDR3700v2.
+and it should merrily build away for at least a good half hour (or more). When you‘re done, you should have the resulting binaries stored in ’‘~/openwrt/trunk/bin/ar71xx’’. As of trunk revision 25119, separate binaries will be created for the WNDR3700v1 and WNDR3700v2.
 
 ## Installation
 
@@ -1240,7 +1253,7 @@ If you boot OpenWrt kernel and expects it to start init but you see a kernel pan
 
 OpenWrt userland packages are compiled with soft-FPU instructions by default. (The floating point math is emulated by the compiler during compile time.)
 
-Debian binaries (jessie) are compiled with hard FPU instructions. As most embedded devices do not have FPUs, it's usually necessary for the kernel to emulate them in order for these instructions to be executed correctly. Since OpenWrt makes use of soft-FPU, the FPU emulation is turned off in the kernel by default. Inability to execute FP instructions is a possible reason for the crash.
+Debian binaries (jessie) are compiled with hard FPU instructions. As most embedded devices do not have FPUs, it’s usually necessary for the kernel to emulate them in order for these instructions to be executed correctly. Since OpenWrt makes use of soft-FPU, the FPU emulation is turned off in the kernel by default. Inability to execute FP instructions is a possible reason for the crash.
 
 To compile the kernel with FPU emulation, in kernel configuration check that you set CONFIG_MIPS_FPU_EMULATOR=y. See [use-buildsystem#Kernel configuration (optional)](/docs/guide-developer/toolchain/use-buildsystem#Kernel configuration (optional)).
 
@@ -1283,7 +1296,7 @@ Download the newest VirtualBox (VDI) 64-bit Debian image (currently 12 Bookworm)
 3.  Name: OpenWrtDev
 4.  Type: Linux
 5.  Version: Debian (64-bit). See [here](https://superuser.com/questions/866962/why-does-virtualbox-only-have-32-bit-option-no-64-bit-option-on-windows-7) if 64-bit is not available.
-6.  Hard Disk: Select "Use an existing virtual hard disk file" and choose the Debian .vdi file you just unpacked.
+6.  Hard Disk: Select “Use an existing virtual hard disk file” and choose the Debian .vdi file you just unpacked.
 7.  Click Create
 8.  Right click on the OpenWrtDev image and click Settings
 9.  Select General, Advanced, Shared Clipboard: Bidirectional
@@ -1323,7 +1336,7 @@ nano /etc/apt/sources.list
 
 You are now editing the list of servers to get updates from.
 
-- Delete the lines containing "deb cdrom". Lines can be deleted with ctrl-k.
+- Delete the lines containing “deb cdrom”. Lines can be deleted with ctrl-k.
 - From the last two lines, remove the leading \# and space, and the -updates after bullseye. They should now look like this:
 
     deb http://deb.debian.org/debian/ bullseye main contrib
@@ -1341,7 +1354,7 @@ reboot
 
 Log in and open the terminal again when it has rebooted.
 
-Click Devices (top line), select the last option (Install Guest Additions). The automatic install does not seem to work, so it doesn't matter if you select cancel or run.
+Click Devices (top line), select the last option (Install Guest Additions). The automatic install does not seem to work, so it doesn’t matter if you select cancel or run.
 
 ``` bash
 su -
@@ -1402,7 +1415,7 @@ Additionally, you may call `reset_cb()` to reset all three callbacks to no-op fu
 
 ### `config_cb` callback
 
-The `config_cb` procedure is called every time a UCI section heading is encountered during parsing. Also an extra call to `config_cb` (without any argument) is generated after `config_load` is done. This may be useful if you accumulate something while parsing options (see below) and want to do something with the accumulated values (write them to a file, ...) when a section has been entirely parsed.
+The `config_cb` procedure is called every time a UCI section heading is encountered during parsing. Also an extra call to `config_cb` (without any argument) is generated after `config_load` is done. This may be useful if you accumulate something while parsing options (see below) and want to do something with the accumulated values (write them to a file, …) when a section has been entirely parsed.
 
 When called, the procedure receives two arguments:
 
@@ -1482,7 +1495,7 @@ config_load network
 config_foreach handle_interface interface test
 ```
 
-Note that `config_foreach` will iterate through all sections without regard to the callback function's return value.
+Note that `config_foreach` will iterate through all sections without regard to the callback function’s return value.
 
 Within the per-section callback, the `config_get` or `config_set` procedures may be used to read or set values belonging to the currently processed section.
 
@@ -1524,13 +1537,13 @@ config_set "$config" auto 0
 Note:
 
 - values changed with `config_set` are only kept in memory. Subsequent calls to `config_get` will return the updated values but the underlying configuration files are *not* altered. If you want to alter values, use the uci\_\* functions from /lib/config/uci.sh which are automatically included by /etc/functions.sh.
-- config_set is arcane and buggy (config_get is fine), use "uci set" instead.
+- config_set is arcane and buggy (config_get is fine), use “uci set” instead.
 
 ## Direct access
 
 If the name of a configuration section is known in advance (it is named), options can be read directly without using a section iterator callback.
 
-The example below reads "option proto" from the "config interface wan" section.
+The example below reads “option proto” from the “config interface wan” section.
 
 ``` bash
 ...
@@ -1667,7 +1680,7 @@ The result of this section should be:
 
     redistribute ip 172.22.0.0/15 local metric 128
 
-That is, the type should come first, then selectors (with a special case for `local`, which doesn't take an argument), and finally the action. The basic parsing method is the following:
+That is, the type should come first, then selectors (with a special case for `local`, which doesn’t take an argument), and finally the action. The basic parsing method is the following:
 
 ``` bash
 parse_filter() {
@@ -1698,7 +1711,7 @@ config_foreach parse_filter filter
 
 ### Mixing the two styles
 
-Of course, it is possible to mix the two styles of parsing, for instance parsing one section with callbacks and another section explicitly. Don't forget to reset or unset the callbacks (`reset_cb` or `option_cb() { return; }`) for sections you don't want to parse with callbacks.
+Of course, it is possible to mix the two styles of parsing, for instance parsing one section with callbacks and another section explicitly. Don‘t forget to reset or unset the callbacks (’‘reset_cb’’ or `option_cb() { return; }`) for sections you don’t want to parse with callbacks.
 
 ---
 
@@ -1708,7 +1721,7 @@ In the [Meson tutorial](/docs/guide-developer/creating_a_meson_based_package), w
 
 ## CMakeLists.txt
 
-To begin, let's create a CMake project. The `main.c` file for this project will be the same as the one in the Meson tutorial, which includes a single `"Hello, World"` program. However, in order to use CMake, we need to include a `CMakeLists.txt` file. The most basic CMake file is presented here for simplicity.
+To begin, let‘s create a CMake project. The ’‘[main.c](../wiki/chunked-reference/wiki_page-guide-developer-creating-a-meson-based-package.md)’’ file for this project will be the same as the one in the Meson tutorial, which includes a single `“Hello, World”` program. However, in order to use CMake, we need to include a `CMakeLists.txt` file. The most basic CMake file is presented here for simplicity.
 
 ``` cmake
 cmake_minimum_required(VERSION 3.1...3.27)
@@ -1836,7 +1849,7 @@ touch main.c  meson.build
 
 ### main.c
 
-To demonstrate a basic scenario, we will be populating the `main.c` file with a straightforward yet classic `"Hello World!"` message.
+To demonstrate a basic scenario, we will be populating the `main.c` file with a straightforward yet classic `“Hello World!”` message.
 
 ``` c
 // main.c
@@ -1920,7 +1933,7 @@ To finish building the package, we need to execute the build command. Running th
 make package/helloworld/compile
 ```
 
-If everything goes smoothly, the package that is built will be located in ''\<BIN_DIR\>/packages/\<target\>/mesonpackages/packages'. For instance:
+If everything goes smoothly, the package that is built will be located in ’‘\<BIN_DIR\>/packages/\<target\>/mesonpackages/packages’. For instance:
 
     helloworld_1.0-1_arm_cortex-a7_neon-vfpv4.ipk
 
@@ -1959,7 +1972,7 @@ ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interf
     /sbin/ifconfig mon0 up; /usr/sbin/tcpdump -s 0 -i mon0 -y IEEE802_11_RADIO -w -' > /tmp/wifi.pcap
 ```
 
-A smaller alternative to `tcpdump` is the `iwcap` utility. It's a MIPS binary only ~5KB and does not require `libpcap` to function. It also supports the filtering of data frames through the `-D` switch to cut down the amount of captured traffic.
+A smaller alternative to `tcpdump` is the `iwcap` utility. It‘s a MIPS binary only ~5KB and does not require ’‘libpcap’’ to function. It also supports the filtering of data frames through the `-D` switch to cut down the amount of captured traffic.
 
 ``` bash
 ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interface add mon0 type monitor;
@@ -1968,7 +1981,7 @@ ssh root@192.168.1.1 'grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interf
 
 ### Logging hostapd behaviour
 
-OpenWrt ships with a version of hostapd which has verbose debug messages disabled in order to save space (see <https://dev.openwrt.org/ticket/15658>). Set "minimum debug message priority" in menuconfig to 0 to have all log levels available for debugging.
+OpenWrt ships with a version of hostapd which has verbose debug messages disabled in order to save space (see <https://dev.openwrt.org/ticket/15658>). Set “minimum debug message priority” in menuconfig to 0 to have all log levels available for debugging.
 
 To enable debug, first remove the cut-down version, then install the debug build of hostapd which is contained in the wpad package:
 
@@ -1988,7 +2001,7 @@ Levels (minimum value for logged events):
 4 = warning
 ```
 
-The default is 2 for "informational messages". The example below shows you how to change check this and change it to "debugging".
+The default is 2 for “informational messages”. The example below shows you how to change check this and change it to “debugging”.
 
 Check the log level currently being used:
 
@@ -1999,7 +2012,7 @@ root@OpenWrt:~# ps | grep hostapd
  7019 root      1448 S    grep hostapd
 ```
 
-Lets say you're interested in addressing a problem with the phy0 hostapd. First check the current level for this hostapd:
+Lets say you’re interested in addressing a problem with the phy0 hostapd. First check the current level for this hostapd:
 
 ``` bash
 root@OpenWrt:~# grep _level /var/run/hostapd-phy0.conf
@@ -2007,7 +2020,7 @@ logger_syslog_level=2
 logger_stdout_level=2
 ```
 
-Here we see that log level 2 is selected. Let's change this to 1 which is debug:
+Here we see that log level 2 is selected. Let’s change this to 1 which is debug:
 
 ``` bash
 root@OpenWrt:~# uci set wireless.radio0.log_level=1
@@ -2034,7 +2047,7 @@ Tue Apr 22 11:35:41 2014 daemon.debug hostapd: wlan0: STA 20:16:d8:db:aa:56 WPA:
 
 See [log.essentials](/docs/guide-user/base-system/log.essentials) for more information about logging.
 
-You may want to setup remote logging via syslog to another computer by setting a logfile (warning: this won't be auto-rotated, so make sure it doesn't fill up a vital filesystem).
+You may want to setup remote logging via syslog to another computer by setting a logfile (warning: this won’t be auto-rotated, so make sure it doesn’t fill up a vital filesystem).
 
 ``` bash
 uci set system.@system[0].log_file=[path-to-my-logfile]
@@ -2050,7 +2063,7 @@ If you wish to debug on the command line instead, you may use a command like thi
 kill `cat /var/run/wifi-phy0.pid` ; /usr/sbin/hostapd -dd -P /var/run/wifi-phy0.pid  /var/run/hostapd-phy0.conf
 ```
 
-Use the output of `ps` above to create the necessary command line, remove the '-B' argument to stop hostapd forking into the background, and add '-dd' to verbose debug to stdout.
+Use the output of `ps` above to create the necessary command line, remove the ‘-B’ argument to stop hostapd forking into the background, and add ‘-dd’ to verbose debug to stdout.
 
 Depending on your hardware and interface state, it may be necessary to create or re-create the relevant wlan device before starting hostapd:
 
@@ -2061,30 +2074,30 @@ iw phy phy0 interface add wlan0 type managed
 
 ## Add and modify compiler debug flags
 
-The "Compile with debug" entry in advanced developer menu enables "-g3" compile option.
+The “Compile with debug” entry in advanced developer menu enables “-g3” compile option.
 
 You have to disable \_sstrip\_ to keep debug information.
 
-If you just want to build a single package unstripped, try, "make package/foo/compile STRIP=true". Unstripped binaries are placed in "staging_dir/target-\*/root-\*/" where your host side tools can use them. Remember, gdbserver can attach to the stripped binary, while gdb loads the unstripped binary. See [gdb](/docs/guide-developer/gdb).
+If you just want to build a single package unstripped, try, “make package/foo/compile STRIP=true”. Unstripped binaries are placed in “staging_dir/target-\*/root-\*/” where your host side tools can use them. Remember, gdbserver can attach to the stripped binary, while gdb loads the unstripped binary. See [gdb](/docs/guide-developer/gdb).
 
-Alternatively you can add or modify "Custom Target Options" like add "-g3 -ggdb3".
+Alternatively you can add or modify “Custom Target Options” like add “-g3 -ggdb3”.
 
-Be aware there are default compiler options defined in include/[target.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) for example ("-Os -pipe").
+Be aware there are default compiler options defined in include/[target.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) for example (“-Os -pipe”).
 
 Some packets might overwrite or not use the flags. Check your compile log.
 
 Additional tips:
 
 - Check with different GCC versions
-- There is "-O0" to disable compiler optimizations
-- "-Wall -Wextra" might provide useful warnings
+- There is “-O0” to disable compiler optimizations
+- “-Wall -Wextra” might provide useful warnings
 - See <https://gcc.gnu.org/bugs/>
 
 ---
 
 # Device Tree Usage in OpenWrt (DTS)
 
-Current development (2019) uses kernel based on Device Tree (DT) files (.dts, .dtsi, .dtb) rather than the older "mach" files.
+Current development (2019) uses kernel based on Device Tree (DT) files (.dts, .dtsi, .dtb) rather than the older “mach” files.
 
 This page tries to pull together some of the knowledge about DT usage and conventions used by the OpenWrt project.
 
@@ -2106,7 +2119,7 @@ Use c-style `#include` instead of DT-specific `/include/`
 
 If possible, license the content as `// SPDX-License-Identifier: GPL-2.0-or-later OR MIT`
 
-Use tab indentation -- see also <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst>
+Use tab indentation – see also <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst>
 
 While upstream, architecture-specific .dtsi files *may* remain stable (such as `qcom-ipq4019.dtsi`), board-specific files (such as `qcom-ipq4019-ap.dk07.1.dtsi`) may change, causing breakage to specific devices, perhaps just one, that may go unnoticed. At least if, for example, the generic IPQ4019 .dtsi changes, there is a chance that it would be seen quickly by or more of the boards that use that SoC.
 
@@ -2114,57 +2127,60 @@ While upstream, architecture-specific .dtsi files *may* remain stable (such as `
 
 Partition nodes should be named `partition@<start address>`
 
-Boot loader binaries, firmware, and configuration partitions (such as "ART") should be marked as read-only. This helps reduce the risk of users following outdated or questionable advice in using low-level writes. Users advanced enough to need to write these partitions should be sophisticated enough to be able to compile their own kernel to do so.
+Boot loader binaries, firmware, and configuration partitions (such as “ART”) should be marked as read-only. This helps reduce the risk of users following outdated or questionable advice in using low-level writes. Users advanced enough to need to write these partitions should be sophisticated enough to be able to compile their own kernel to do so.
 
-The MTD labels of "firmware" and "ubi" have special meaning to the OpenWrt kernel.
+The MTD labels of “firmware” and “ubi” have special meaning to the OpenWrt kernel.
 
-See below on supplying the proper "compatible" label so that the OpenWrt kernel can properly "split" the partition and `CONFIG_MTD_SPLIT_FIRMWARE` is not needed. (note that `CONFIG_MTD_SPLIT_UIMAGE_FW` is still required!)
+See below on supplying the proper “compatible” label so that the OpenWrt kernel can properly “split” the partition and `CONFIG_MTD_SPLIT_FIRMWARE` is not needed. (note that `CONFIG_MTD_SPLIT_UIMAGE_FW` is still required!)
 
  this article was an email sent to the OpenWrt-devel mailing list by OpenWrt dev Rafał Miłecki
-**Subject:** \[OpenWrt-Devel\] Specifying "firmware" partition format on all DTS targets
+**Subject:** \[OpenWrt-Devel\] Specifying “firmware” partition format on all DTS targets
 **Date:** Sat, 24 Nov 2018 11:32:25 +0100
 
-Parsing "firmware" partition (to create kernel + rootfs) was implemented using OpenWrt downstream code enabled by CONFIG_MTD_SPLIT_FIRMWARE.
-With recent upstream mtd changes we can do it in a more clean way for DTS targets. It just requires adding a proper "compatible" string to the "firmware" partition node.
+Parsing “firmware” partition (to create kernel + rootfs) was implemented using OpenWrt downstream code enabled by CONFIG_MTD_SPLIT_FIRMWARE.
+With recent upstream mtd changes we can do it in a more clean way for DTS targets. It just requires adding a proper “compatible” string to the “firmware” partition node.
 
-I'd like all DTS supported devices to use that "compatible" and disable CONFIG_MTD_SPLIT_FIRMWARE eventually.
+I’d like all DTS supported devices to use that “compatible” and disable CONFIG_MTD_SPLIT_FIRMWARE eventually.
 
 *Wiki note: This objective may be a challenge for dual-firmware units as the partition to be split will be different depending on which was selected by the boot loader.*
 
 1\) Default uimage
 If you see:
 2 uimage-fw partitions found on MTD device firmware
-please use "denx,uimage"; e.g.
-`partition@70000 {
-        label = "firmware";
-        reg = <0x070000 0x790000>;
-        compatible = "denx,uimage";
-};`
+please use “denx,uimage”; e.g.
 
-2\) Netgear's uimage
+    partition@70000 {
+            label = "firmware";
+            reg = <0x070000 0x790000>;
+            compatible = "denx,uimage";
+    };
+
+2\) Netgear’s uimage
 If you see:
 2 netgear-fw partitions found on MTD device firmware
-please use "netgear,uimage"; e.g.
-`partition@70000 {
-        label = "firmware";
-        reg = <0x070000 0xf80000>;
-        compatible = "netgear,uimage";
-};`
+please use “netgear,uimage”; e.g.
 
-3\) TP-LINK's firmware
+    partition@70000 {
+            label = "firmware";
+            reg = <0x070000 0xf80000>;
+            compatible = "netgear,uimage";
+    };
+
+3\) TP-LINK’s firmware
 If you see:
 2 tplink-fw partitions found on MTD device firmware
-please use "tplink,firmware"; e.g.
-`firmware@20000 {
-        label = "firmware";
-        reg = <0x020000 0xfd0000>;
-        compatible = "tplink,firmware";
-};`
+please use “tplink,firmware”; e.g.
+
+    firmware@20000 {
+            label = "firmware";
+            reg = <0x020000 0xfd0000>;
+            compatible = "tplink,firmware";
+    };
 
 Please kindly:
 1) Use that for all newly added devices
 2) Port already supported devices you can test
---
+–
 Rafał
 
 ---
@@ -2193,35 +2209,35 @@ This page talks about what the DEPENDS:= line should look like.
 
 would mean that tcpdump would not be shown as possible to be selected unless `libpcap` were already selected
 
-     * If you say ''+package'' that means if the current package is selected, it will cause ''package'' to be selected.  This is the case with ''tcpdump'' above.  It says that if ''tcpdump'' is selected, then select ''libpcap''. e.g.
+- If you say `+package` that means if the current package is selected, it will cause `package` to be selected. This is the case with `tcpdump` above. It says that if `tcpdump` is selected, then select `libpcap`. e.g.
 
     DEPENDS:=+libpcap
 
-     * If you say ''+PACKAGE_packageb:packagec'', it means that ''packagec'' will only get selected by the current package (e.g. ''tcpdump'') if ''packageb'' is enabled. e.g.
+- If you say `+PACKAGE_packageb:packagec`, it means that `packagec` will only get selected by the current package (e.g. `tcpdump`) if `packageb` is enabled. e.g.
 
     DEPENDS:=+PACKAGE_arpd:libpcap
 
 would mean that if `tcpdump` was selected, then if `arpd` was also selected, select `libpcap`.
 
-Useful is the negation ! to only select a Package if it's not build into busybox
+Useful is the negation ! to only select a Package if it’s not build into busybox
 
     DEPENDS:=+!BUSYBOX_CONFIG_HOSTNAME:net-tools-hostname
 
-This means select net-tools-hostname only if hostname is not build into busybox. But don't try it the other way around, see the last case.
+This means select net-tools-hostname only if hostname is not build into busybox. But don’t try it the other way around, see the last case.
 
-     * If you say ''@SYMBOL'' that means that CONFIG_SYMBOL must be defined by OpenWrt in order for the ''package'' to be available for selection. e.g
+- If you say `@SYMBOL` that means that CONFIG_SYMBOL must be defined by OpenWrt in order for the `package` to be available for selection. e.g
 
     DEPENDS:=@USB_SUPPORT
 
-would mean that the package wouldn't even appear unless config symbol CONFIG_USB_SUPPORT was defined, for example by the package `usb-core`
+would mean that the package wouldn‘t even appear unless config symbol CONFIG_USB_SUPPORT was defined, for example by the package ’‘usb-core’’
 
-     * If you say ''+@SYMBOL'' that means if the current package is selected, it will cause CONFIG_SYMBOL to be selected.
+- If you say `+@SYMBOL` that means if the current package is selected, it will cause CONFIG_SYMBOL to be selected.
 
     DEPENDS:=+@KERNEL_DEBUG_FS
 
 would mean that the if you select the package, it would automatically set the config symbol CONFIG_KERNEL_DEBUG_FS. Beware: This works while compiling your own image. If you install this package on a running box with opkg, this dependency is not checked!
 
-     * Don't be so clever and combine everything:
+- Don’t be so clever and combine everything:
 
     DEPENDS:=+@!PACKAGE_net-tools-hostname:BUSYBOX_CONFIG_HOSTNAME
 
@@ -2241,22 +2257,22 @@ It is possible to do select and depend on packages outside the usual `DEPENDS` d
 
 then you can include the following directives.
 
-| Directive                    | Meaning                                                                                   |
-|------------------------------|-------------------------------------------------------------------------------------------|
-| select package               | Selects a package if this package is selected                                             |
-| select package if packageb   | Selects a package if packageb is selected as well as this package                         |
-| select package if SYMBOL     | Selects a package if CONFIG_SYMBOL is defined                                             |
-| depends packageb             | This package depends on packageb (i.e. won't even show up, unless packageb is selected)   |
-| depends packageb if packagec | This package depends on packageb if packagec is selected                                  |
-| select SYMBOL                | Sets a symbol to y if this package is selected (.e.g. select BUSYBOX_FEATURE_MKSWAP_UUID) |
-| select SYMBOL if packageb    | Like select SYMBOL but only if packageb is selected                                       |
-| select SYMBOL if SYMBOL2     | Like select SYMBOL but only if SYMBOL2 is defined                                         |
+| Directive | Meaning |
+|----|----|
+| select package | Selects a package if this package is selected |
+| select package if packageb | Selects a package if packageb is selected as well as this package |
+| select package if SYMBOL | Selects a package if CONFIG_SYMBOL is defined |
+| depends packageb | This package depends on packageb (i.e. won’t even show up, unless packageb is selected) |
+| depends packageb if packagec | This package depends on packageb if packagec is selected |
+| select SYMBOL | Sets a symbol to y if this package is selected (.e.g. select BUSYBOX_FEATURE_MKSWAP_UUID) |
+| select SYMBOL if packageb | Like select SYMBOL but only if packageb is selected |
+| select SYMBOL if SYMBOL2 | Like select SYMBOL but only if SYMBOL2 is defined |
 
 The author is not aware of the ability to do `depends SYMBOL`.
 
-Note that the `if` directives may also include &&, \|\|, !, and uses parentheses () to use logical expression for AND (&&), OR (\|\|) and NOT (!), and for order of operations ('()').
+Note that the `if` directives may also include &&, \|\|, !, and uses parentheses () to use logical expression for AND (&&), OR (\|\|) and NOT (!), and for order of operations (‘()’).
 
-There is also a `default 'y' SYMBOL` directive but the author is hazy on the details.
+There is also a `default ‘y’ SYMBOL` directive but the author is hazy on the details.
 
 :!: It is important to note that using `select bar` in `Package/foo/config` directives will select `bar` for building, but it will not be included in the dependencies when `opkg` installs `foo`, nor will it guarantee that `bar` will be built before `foo`. Using `DEPENDS` will take care of all that.
 
@@ -2276,7 +2292,7 @@ There may be bugs in the OpenWrt build system wrt to dependencies. If you can co
 
 - the relevant portions of `$TOPDIR/tmp/.config-package.in` (where \$TOPDIR is the directory where you checked out OpenWrt and where you initiate your builds)
 
-**NB** Many apparent bugs are caused by circular dependencies. The OpenWrt build system doesn't like circular dependencies.
+**NB** Many apparent bugs are caused by circular dependencies. The OpenWrt build system doesn’t like circular dependencies.
 
 ---
 
@@ -2288,7 +2304,7 @@ This page provides additional guidelines for adding device support.
 
 These guidelines are no rules, but may help you to improve the experience for both yourself and the reviewers when you submit a device support patch. Beyond that, they may just describe recommended and/or frequently applied practice throughout OpenWrt.
 
-What's actually *required* will depend on who is reviewing your submission, though.
+What’s actually *required* will depend on who is reviewing your submission, though.
 
 ## Commit message
 
@@ -2298,7 +2314,7 @@ For device support commits, the commit message needs to contain at least the Spe
 
 Beyond that, it is recommended to add an overview of the MAC address assignment that you evaluated (see MAC address section below for further details).
 
-Additional information is always helpful: While you shouldn't tell every detail of your struggle to support the device, it is generally a good idea to provide information that might help other developers in the future to understand why you did things as you did them.
+Additional information is always helpful: While you shouldn’t tell every detail of your struggle to support the device, it is generally a good idea to provide information that might help other developers in the future to understand why you did things as you did them.
 
 ## DTS files
 
@@ -2310,19 +2326,19 @@ A very abundant license for DTS(I) files is:
 
     // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 
-Please don't add a full-text license, but choose the appropriate identifier for it.
+Please don’t add a full-text license, but choose the appropriate identifier for it.
 
 ### dts-v1
 
 The `/dts-v1/;` identifier must only be defined once and needs to be before any other content (except the license).
 
-For several targets, it's already defined in the parent/SoC-based DTSI file, and does not need to be included a second time then.
+For several targets, it’s already defined in the parent/SoC-based DTSI file, and does not need to be included a second time then.
 
 ### Model/device name
 
-**Naming of the device should be consistent.** Many targets enforce that programmatically anyway, but if that's not the case please be consistent in your naming anyway.
+**Naming of the device should be consistent.** Many targets enforce that programmatically anyway, but if that’s not the case please be consistent in your naming anyway.
 
-If your model property contains a "v1", then your compatible should as well. Try to avoid abbreviations, these might cause confusion. The easiest way is to just create the compatible from the model by converting everything to lower case and replacing every space by a hyphen:
+If your model property contains a “v1”, then your compatible should as well. Try to avoid abbreviations, these might cause confusion. The easiest way is to just create the compatible from the model by converting everything to lower case and replacing every space by a hyphen:
 
         model = "TP-Link TL-WR841N v14";
         compatible = "tplink,tl-wr841n-v14", "mediatek,mt7628an-soc";
@@ -2335,7 +2351,7 @@ Indent style for DTS files is **tabs-only**.
 
 To enhance readability, it is recommended to separate all blocks by empty lines. Despite, it may be helpful to structure properties into groups separated by empty lines.
 
-For the status property, a frequent practice is to put it as a node's first line and add an empty line afterwards.
+For the status property, a frequent practice is to put it as a node’s first line and add an empty line afterwards.
 
 ### LEDs
 
@@ -2388,13 +2404,13 @@ Occasionally, you might be tempted to use wildcards in a case like the following
 While this technically could be replaced by `vendor_model-*` to make your code shorter, this is generally not a good idea, because:
 
 - You never know whether a different model will come up later that will be different, but fall within your wildcard
-- Wildcard will prevent effective searching: If you e.g. want to grep for all settings applied to `vendor_model-v1`, grepping won't work because it won't match the wildcard definition. However, you cannot possibly guess the wildcard used in many cases.
+- Wildcard will prevent effective searching: If you e.g. want to grep for all settings applied to `vendor_model-v1`, grepping won’t work because it won’t match the wildcard definition. However, you cannot possibly guess the wildcard used in many cases.
 
 ## MAC addresses
 
-In general, it is safest to define MAC addresses the same way as the vendor does it on it's device. Don't invent your own MAC address assignment scheme.
+In general, it is safest to define MAC addresses the same way as the vendor does it on it’s device. Don’t invent your own MAC address assignment scheme.
 
-This may produce overlapping MAC addresses e.g. for LAN and one WiFi interface for several vendors, but that's still better than having overlapping MAC addresses with another device when using OpenWrt in a network afterwards (consecutive addresses in real world networks do happen).
+This may produce overlapping MAC addresses e.g. for LAN and one WiFi interface for several vendors, but that’s still better than having overlapping MAC addresses with another device when using OpenWrt in a network afterwards (consecutive addresses in real world networks do happen).
 
 Further reading on MAC address setup is found here: [Device support: MAC address setup](/docs/guide-developer/mac.address)
 
@@ -2426,7 +2442,7 @@ Example 2:
 
 ### Data source
 
-When defining MAC addresses in board.d and hotplug.d files, calculate them based on the flash locations and *not* relative to other interfaces. The numbering of interfaces may change, and then the address would be calculated incorrectly ...
+When defining MAC addresses in board.d and hotplug.d files, calculate them based on the flash locations and *not* relative to other interfaces. The numbering of interfaces may change, and then the address would be calculated incorrectly …
 
 For example
 
@@ -2438,7 +2454,7 @@ will always yield the same address while
 
 might be wrong if eth0/eth1 are swapped.
 
-So, effectively, don't chain assignments, but read from the upmost data source where possible.
+So, effectively, don’t chain assignments, but read from the upmost data source where possible.
 
 Try to always use hex locations (0x0 instead of 0) and lower-case characters for consistency.
 
@@ -2507,7 +2523,7 @@ This is a plain copy-paste from mailing list, if you have some time to turn it i
 Hi Karl,
 let me introduce a not strictly new way but another heavily under documented buildroot feature which you can use to implement custom modifications to packages which do not require source code edits.
 For every processed package Makefile, the buildroot tries to include a a Makefile fragment in \$(TOPDIR)/overlay/\*/\$(PKG_DIR_NAME).mk which one can use to monkey-patch internals without directly touching the package recipes.
-For example to amend "base-files" to include a custom banner and inittab, you could create an overlay file called
+For example to amend “base-files” to include a custom banner and inittab, you could create an overlay file called
 
     "overlay/my-example-organization/base-files.mk"\\
 
@@ -2555,13 +2571,14 @@ Alternatively you can download precompiled toolchain from openwrt download page 
 
 1.  Checkout OpenWrt into directory **openwrt**
 2.  Follow normal instruction for openwrt prereq
-3.  Use the utility script to setup your buildroot `   ./scripts/ext-toolchain.sh \
-                --toolchain TOOLCHAIN_FILE_LOCATION \
-                --config TARGET_NAME (example ipq806x/generic)
-      `
+3.  Use the utility script to setup your buildroot
+           ./scripts/ext-toolchain.sh \
+                    --toolchain TOOLCHAIN_FILE_LOCATION \
+                    --config TARGET_NAME (example ipq806x/generic)
+
 4.  Use your buildroot like a normal one. Edit your config with `make menuconfig` and run `make` to compile your image
 
-If you want to update a .config to use an external toolchain you can use the `--overwrite-config`. For example:
+If you want to update a .config to use an external toolchain you can use the `–overwrite-config`. For example:
 
        ./scripts/ext-toolchain.sh \
                 --toolchain TOOLCHAIN_FILE_LOCATION \
@@ -2572,7 +2589,7 @@ If you want to update a .config to use an external toolchain you can use the `--
 
 # OpenWrt Feeds
 
-In OpenWrt, a "feed" is a collection of [packages](/docs/guide-developer/packages) which share a common location. Feeds may reside on a remote server, in a version control system, on the local filesystem, or in any other location addressable by a single name (path/URL) over a protocol with a supported feed method.
+In OpenWrt, a “feed” is a collection of [packages](/docs/guide-developer/packages) which share a common location. Feeds may reside on a remote server, in a version control system, on the local filesystem, or in any other location addressable by a single name (path/URL) over a protocol with a supported feed method.
 
 Feeds are additional predefined package build recipes for OpenWrt Buildroot. They may be configured to support custom feeds or non-default feed packages via a feed configuration file.
 
@@ -2600,21 +2617,21 @@ The git method can specify a specific branch or commit using the following forma
 
 As of this writing, the following feed methods are supported:
 
-| Method       | Function                                                                                                                  |
-|:-------------|---------------------------------------------------------------------------------------------------------------------------|
-| src-bzr      | Data is downloaded from the source path/URL using `bzr`                                                                   |
-| src-cpy      | Data is copied from the source path. The path can be specified as either relative to OpenWrt repository root or absolute. |
-| src-darcs    | Data is downloaded from the source path/URL using `darcs`                                                                 |
-| src-git      | Data is downloaded from the source path/URL using `git` as a shallow (depth of 1) clone                                   |
-| src-git-full | Data is downloaded from the source path/URL using `git` as a full clone                                                   |
-| src-gitsvn   | Bidirectional operation between a Subversion repository and git                                                           |
-| src-hg       | Data is downloaded from the source path/URL using `hg`                                                                    |
-| src-link     | A symlink to the source path is created. The path must be absolute.                                                       |
-| src-svn      | Data is downloaded from the source path/URL using `svn`                                                                   |
+| Method | Function |
+|:---|----|
+| src-bzr | Data is downloaded from the source path/URL using `bzr` |
+| src-cpy | Data is copied from the source path. The path can be specified as either relative to OpenWrt repository root or absolute. |
+| src-darcs | Data is downloaded from the source path/URL using `darcs` |
+| src-git | Data is downloaded from the source path/URL using `git` as a shallow (depth of 1) clone |
+| src-git-full | Data is downloaded from the source path/URL using `git` as a full clone |
+| src-gitsvn | Bidirectional operation between a Subversion repository and git |
+| src-hg | Data is downloaded from the source path/URL using `hg` |
+| src-link | A symlink to the source path is created. The path must be absolute. |
+| src-svn | Data is downloaded from the source path/URL using `svn` |
 
 Feed names are used to identify feeds and serve as the basis for several file and directory names that are created to hold information about the feeds. The feed source is the location from which the feed data is downloaded.
 
-For the methods listed above which rely on version control systems that support a "limited history" option (such as `--depth=1` for git and `--lightweight` for bzr) the smallest available history is downloaded. This is a good default, but developers who are actively committing to a feed and/or using the commit history may want to change this behavior. This can be done by editing `scripts/feeds` to use `src-git-full` or by checking out the feed without using `scripts/feeds`. A shallow git clone can be updated to a "full" clone through use of `git fetch --unshallow`
+For the methods listed above which rely on version control systems that support a “limited history” option (such as `--depth=1` for git and `--lightweight` for bzr) the smallest available history is downloaded. This is a good default, but developers who are actively committing to a feed and/or using the commit history may want to change this behavior. This can be done by editing `scripts/feeds` to use `src-git-full` or by checking out the feed without using `scripts/feeds`. A shallow git clone can be updated to a “full” clone through use of `git fetch --unshallow`
 
 ## Working with Feeds
 
@@ -2665,7 +2682,7 @@ During the `install` step, packages from the feeds obtained during an \`update\`
 
 ### Feed Commands
 
-Feeds can be utilized through the `scripts/feeds` script. A list of the available commands is generated by invoking `scripts/feeds` without any arguments. Most commands require the feed information to be available locally, so running update first is usually necessary. In the following discussion the term "applicable packages" usually refers to the package names given on the command line or all packages in a feed when the -a option is used.
+Feeds can be utilized through the `scripts/feeds` script. A list of the available commands is generated by invoking `scripts/feeds` without any arguments. Most commands require the feed information to be available locally, so running update first is usually necessary. In the following discussion the term “applicable packages” usually refers to the package names given on the command line or all packages in a feed when the -a option is used.
 
 #### Clean
 
@@ -2675,17 +2692,17 @@ The clean command removes the locally stored feed data, including the feed index
 
 The install command installs the applicable packages and any packages on which the applicable packages depend (both direct dependencies and build dependencies). The installation process consists of creating a symbolic link from `package/feeds/$feed_name/$package_name` to `feeds/$feed_name/$package_name` so that the package will be included in the configuration process when the directory hierarchy under `packages` is searched.
 
-| Command                            | Description                                                                                                  |
-|:-----------------------------------|--------------------------------------------------------------------------------------------------------------|
-| ./scripts/feeds install -a         | Install all packages (not required; packages can be installed on an as-needed basis for slow build machines) |
-| ./scripts/feeds install luci       | Install only the package LuCI                                                                                |
-| ./scripts/feeds install -a -p luci | Install the complete LuCI WebUI by installing all (-a) packages from the preferred feed (-p) luci            |
+| Command | Description |
+|:---|----|
+| ./scripts/feeds install -a | Install all packages (not required; packages can be installed on an as-needed basis for slow build machines) |
+| ./scripts/feeds install luci | Install only the package LuCI |
+| ./scripts/feeds install -a -p luci | Install the complete LuCI WebUI by installing all (-a) packages from the preferred feed (-p) luci |
 
 See the above section for a list of the feeds available by default.
 
-|                                                                   |                                                                                                                                               |
-|-------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
-| ![48px-outdated.svg.png](/meta/icons/tango/48px-outdated.svg.png) | Please note that this replaces the old method of creating symlinks, which can be still found on-line in many old forum and user-group entries |
+|  |  |
+|----|:---|
+|  | Please note that this replaces the old method of creating symlinks, which can be still found on-line in many old forum and user-group entries |
 
 #### List
 
@@ -2709,11 +2726,11 @@ When `scripts/feeds update` is invoked, each of the applicable feeds are downloa
 
 Note that update also stores the configured location of the feed in `feeds/$feed_name.tmp/location` such that changes to the configuration can be detected and handled appropriately.
 
-After retrieval the downloaded packages need to be *"installed"*. Only after installation will they be available in the configuration interface!
+After retrieval the downloaded packages need to be *“installed”*. Only after installation will they be available in the configuration interface!
 
 ## Custom Feeds
 
-Ok, you've developed your package, and now you want to use it via make menuconfig, OR you are developing a package and you want to test it in a build before you try to get it included in OpenWrt.
+Ok, you’ve developed your package, and now you want to use it via make menuconfig, OR you are developing a package and you want to test it in a build before you try to get it included in OpenWrt.
 
 The solution is a custom feed. You can either create an entirely new feed, or use a modified version of one of the standard ones.
 
@@ -2730,18 +2747,22 @@ FIXME
 For this example we assume that you name your feed `custom` and your project is called `helloworld` and its openwrt Makefile is located at `/usr/src/openwrt/custom-feed/helloworld/Makefile`.
 
 1.  Edit `/home/user/openwrt/feeds.conf.default`
-2.  Add a new line for your feed. `src-link custom /usr/src/openwrt/custom-feed/`
+2.  Add a new line for your feed.
+        src-link custom /usr/src/openwrt/custom-feed/
 
-1.  Update the feed: from the `<buildroot dir>` (e.g. `/home/user/openwrt`) do: `./scripts/feeds update custom`
-2.  And then install it `./scripts/feeds install -a -p custom`
+1.  Update the feed: from the `<buildroot dir>` (e.g. `/home/user/openwrt`) do:
+        ./scripts/feeds update custom
+2.  And then install it
+        ./scripts/feeds install -a -p custom
 
 ### Using the feed
 
-1.  Now your package(s) should be available when you do `make menuconfig`
+1.  Now your package(s) should be available when you do
+        make menuconfig
 
 ## Explanations
 
-The downloaded sources (referenced in package Makefiles) are not there... The downloads go first to \<buildroot\>/dl as gzipped .gz files. And there they are stored and then they get unzipped to /build_dir. See e.g. \<buildroot\>/build_dir/target-\*/ and below it you will find subdirectories for each package's sources.
+The downloaded sources (referenced in package Makefiles) are not there… The downloads go first to \<buildroot\>/dl as gzipped .gz files. And there they are stored and then they get unzipped to /build_dir. See e.g. \<buildroot\>/build_dir/target-\*/ and below it you will find subdirectories for each package’s sources.
 
 ### Documentation
 
@@ -2755,11 +2776,11 @@ The downloaded sources (referenced in package Makefiles) are not there... The do
 
 ---
 
-# Frequent PR mistakes or "How to prevent my PR from getting delayed for sure"
+# Frequent PR mistakes or “How to prevent my PR from getting delayed for sure”
 
 A lot of PR initial reviews include the very same basic review comments each and every time again.
 
-In order to not have to write the very same things more than a few hundred times, this page is meant to serve as a collection of very frequent "mistakes", or things that you should avoid in order to get a quick(er) review.
+In order to not have to write the very same things more than a few hundred times, this page is meant to serve as a collection of very frequent “mistakes”, or things that you should avoid in order to get a quick(er) review.
 
 If you are pointed here and/or find yourself in the list below, you should probably read [Submitting patches](/submitting-patches) (again).
 
@@ -2787,25 +2808,25 @@ If you accidentally closed the PR, reopen it as described here: [Reopen closed P
 
 Simply posting another, new PR will invalidate all the previous discussion - your work so far - and annoy the reviewers, because they will have to do extra work.
 
-Just don't do it. Please.
+Just don’t do it. Please.
 
 ## 4. Know the difference between the PR (Pull Request) and the commit
 
 PR and commit are not same the same. *PR* is for preparation only, but the *commit(s) inside* the PR are the real thing. They will stay in the Git history. So, they are the important aspect.
 
-So, while keeping the PR up-to-date is not a bad thing, remember: If you are asked to change the *commit*, change the commit; not the PR's initial post or title.
+So, while keeping the PR up-to-date is not a bad thing, remember: If you are asked to change the *commit*, change the commit; not the PR’s initial post or title.
 
 ## 5. Answer questions
 
-If I ask questions in OpenWrt GitHub PRs, in about 90 % of the cases I do not get an answer. I don't fully understand why this is the case, but probably people think my question only implies the necessity to change something. Since without answering the initial question there has been no discussion, these changes might help - or they make it worse.
+If I ask questions in OpenWrt GitHub PRs, in about 90 % of the cases I do not get an answer. I don’t fully understand why this is the case, but probably people think my question only implies the necessity to change something. Since without answering the initial question there has been no discussion, these changes might help - or they make it worse.
 
-So, please, if you are asked a question, just answer it. Maybe the answer is enough, and you don't have to change anything at all. Maybe there is a need to change - but now the reviewers will probably be able to help you with what has to be done, since they have been given information.
+So, please, if you are asked a question, just answer it. Maybe the answer is enough, and you don’t have to change anything at all. Maybe there is a need to change - but now the reviewers will probably be able to help you with what has to be done, since they have been given information.
 
-Thus, if you are asked "Have you tested this?", please answer. "Yes" or "no", and some explanation. If someone wanted you to change anything already, they would simply have said so.
+Thus, if you are asked “Have you tested this?”, please answer. “Yes” or “no”, and some explanation. If someone wanted you to change anything already, they would simply have said so.
 
 ## 6. Do not resolve comment that are not resolved
 
-"Resolved" means the issue/question is dealt with completely and there is no doubt about the correct response.
+“Resolved” means the issue/question is dealt with completely and there is no doubt about the correct response.
 
 If you are not sure - keep it open.
 
@@ -2815,7 +2836,7 @@ If you have done nothing at all - keep it open.
 
 If it might be helpful for review - keep it open.
 
-Having all comments closed won't make the review process faster. Actually, if you have more than a few and they all are resolved it's quite suspicious. Ask yourself: If reviewers find that you closed something that is not resolved, will they trust you more - or less ...
+Having all comments closed won’t make the review process faster. Actually, if you have more than a few and they all are resolved it’s quite suspicious. Ask yourself: If reviewers find that you closed something that is not resolved, will they trust you more - or less …
 
 ## 7. Use checkpatch.pl
 
@@ -2827,7 +2848,7 @@ The OpenWrt core repository includes a script that is able to check most of the 
 
 Occasionally, people do 90 % of the requested changes and simply ignore the rest.
 
-Don't do that. It will waste the reviewer's life-time (since they have to come back for another round) and will have you waiting longer for a chance to be merged (since they have to come back for another round).
+Don’t do that. It will waste the reviewer’s life-time (since they have to come back for another round) and will have you waiting longer for a chance to be merged (since they have to come back for another round).
 
 ---
 
@@ -2884,7 +2905,7 @@ now you have a gdb shell. Set breakpoints, start program, backtrace etc.
     (gdb) c
     (gdb) bt
 
-If you want to restart the program, you'll need to set the remote path and arguments
+If you want to restart the program, you’ll need to set the remote path and arguments
 
     (gdb) set remote exec-file /usr/bin/blah
     (gdb) set args -v -x -merry-fishing
@@ -2894,7 +2915,7 @@ If you want to restart the program, you'll need to set the remote path and argum
 
 # Hardware Hacking First Steps
 
-You bought yourself a new router, and it's nice. You can connect a hard disc to it and then it shares its content over samba. It even can do torrent. Wow. But then you stumbled over OpenWrt and its 2000 packages you can install just like that. Never mind all the other FOSS software you could compile for it. And you started crying and decided: you **neeeed** OpenWrt on your router. And if your router is already supported, dandy, flash it on and have fun. But if your router is not (yet) supported? Well, then do this:
+You bought yourself a new router, and it’s nice. You can connect a hard disc to it and then it shares its content over samba. It even can do torrent. Wow. But then you stumbled over OpenWrt and its 2000 packages you can install just like that. Never mind all the other FOSS software you could compile for it. And you started crying and decided: you **neeeed** OpenWrt on your router. And if your router is already supported, dandy, flash it on and have fun. But if your router is not (yet) supported? Well, then do this:
 
 ## Gain Access
 
@@ -2911,7 +2932,7 @@ You bought yourself a new router, and it's nice. You can connect a hard disc to 
 - <http://www.tldp.org/LDP/tlk/tlk.html> *The Linux Kernel*
 - <http://www.tldp.org/LDP/lkmpg/index.html> *The Linux Kernel Module Programming Guide*
 - <http://lwn.net/Articles/driver-porting/> you could also check this thread
-- ~~<http://linux.junsun.net/porting-howto/porting-howto.html>~~ [Link on archive.org](https://web.archive.org/web/20191031031349/http://linux.junsun.net/porting-howto/porting-howto.html) Jun Sun's *Linux MIPS Porting Guide*
+- ~~<http://linux.junsun.net/porting-howto/porting-howto.html>~~ [Link on archive.org](https://web.archive.org/web/20191031031349/http://linux.junsun.net/porting-howto/porting-howto.html) Jun Sun’s *Linux MIPS Porting Guide*
 - <http://www.win.tue.nl/~aeb/linux/lk/lk.html> an overview over the history and also technical insights
 
 Oh, you should also learn a programming language, like C.
@@ -2919,11 +2940,11 @@ Oh, you should also learn a programming language, like C.
 ## Gather Information about Software
 
 - [bootloader](/docs/techref/bootloader) This is probably going to be the first piece of software you are going to notice. But the rest of the system could be of interest as well:
-- Most probably it's a kind of outdated GNU/Linux Kernel with FOSS drivers or with binary only drivers or both. Then you are lucky, because the source code of the Linux Kernel is licensed under the GPLv2 and this constrains the seller to make the modified source code, if they actually bothered to modify anything, and they probably did, available to the customers (and not necessarily to the public) free of charge.
+- Most probably it’s a kind of outdated GNU/Linux Kernel with FOSS drivers or with binary only drivers or both. Then you are lucky, because the source code of the Linux Kernel is licensed under the GPLv2 and this constrains the seller to make the modified source code, if they actually bothered to modify anything, and they probably did, available to the customers (and not necessarily to the public) free of charge.
 
-Now maybe the drivers for the components have already been integrated into mainline kernel, which means that a newer kernel should work on this device out of the box. If not, you could continue to use the one, from the manufacturer. So combine this kernel with other FOSS software, you want to run on it... ;-)
+Now maybe the drivers for the components have already been integrated into mainline kernel, which means that a newer kernel should work on this device out of the box. If not, you could continue to use the one, from the manufacturer. So combine this kernel with other FOSS software, you want to run on it… ;-)
 
-- In case the manufacturer did not use a Linux Kernel but some kind of \*BSD, you're fucked, since the license the \*BSD sources are under are not GPL. This particularly means, the usurper does not have to make source code available. They could, but they don't have to. Oh may you have much "fun" with \*BSD. :-P
+- In case the manufacturer did not use a Linux Kernel but some kind of \*BSD, you’re fucked, since the license the \*BSD sources are under are not GPL. This particularly means, the usurper does not have to make source code available. They could, but they don’t have to. Oh may you have much “fun” with \*BSD. :-P
 
 ## Gather Information about Flash Layout
 
@@ -2938,11 +2959,11 @@ The overall Flash Layout looks like the [example](/docs/techref/flash.layout#exa
 
 This is more tricky, here you want to know exactly what is written on the flash: [flash.layout](/docs/techref/flash.layout)
 
-The data could be zipped or g'zipped or even be encrypted. Also, there is going to be some number's between the data blocks, like CRC or whatever.
+The data could be zipped or g’zipped or even be encrypted. Also, there is going to be some number’s between the data blocks, like CRC or whatever.
 
 ## Software Development
 
-Now you want to run you own Software on your device. Maybe its hardware has already support in **some projects** or in the **mainline kernel**. If not, then consider adding a new device or a complete new platform to develop software for. Please do not bother developers or potential developers to write code for this. Present the information you gathered, if it is interesting enough, somebody is going to do that ;-) Now to write code, the developer needs only some bread and water and a simple text editor, but to test this code, they're going to need the hardware itself. You could donate or maybe just lend the hardware.
+Now you want to run you own Software on your device. Maybe its hardware has already support in **some projects** or in the **mainline kernel**. If not, then consider adding a new device or a complete new platform to develop software for. Please do not bother developers or potential developers to write code for this. Present the information you gathered, if it is interesting enough, somebody is going to do that ;-) Now to write code, the developer needs only some bread and water and a simple text editor, but to test this code, they’re going to need the hardware itself. You could donate or maybe just lend the hardware.
 
 ### Add Device
 
@@ -2979,7 +3000,7 @@ Based on original Attended Sysupgrade interface from <https://sudhanshu16.github
 
 ### Chef Online Imagebuilder / Attended Sysupgrade(asu)
 
-Javascript app that connects to a Attendedsysupgrade server via an API, this is a work in progress. It's frontend resembles the Firmware Selector although provides customization options such as package selection.
+Javascript app that connects to a Attendedsysupgrade server via an API, this is a work in progress. It’s frontend resembles the Firmware Selector although provides customization options such as package selection.
 
 Web-based asu frontends:
 
@@ -3038,7 +3059,7 @@ Code: <https://redmine.tetaneutral.net/projects/git-tetaneutral-net/repository/o
 
 ## lime-sdk cooker
 
-The "LibreMesh software development kit" uses the OpenWRT SDK and ImageBuilder to generate (cook) LibreMesh packages and firmware. If you want to create your own LibreMesh flavor because you need some specific configuration or you just want to have control over your binaries, the cooker is your friend!
+The “LibreMesh software development kit” uses the OpenWRT SDK and ImageBuilder to generate (cook) LibreMesh packages and firmware. If you want to create your own LibreMesh flavor because you need some specific configuration or you just want to have control over your binaries, the cooker is your friend!
 
 Command-line interface, but can also be used with [Chef](https://github.com/libremesh/chef/).
 
@@ -3086,7 +3107,7 @@ Relevant links:
 
 `jshn` (JSON SHell Notation), a small utility and shell library for parsing and generating [JSON](https://en.wikipedia.org/wiki/JSON) data.
 
-Shell scripts (ash, bash, zsh) doesn't have built-in functions to work with JSON or other hierarchical structures so OpenWrt provides a shell library [/usr/share/libubox/jshn.sh](https://git.openwrt.org/?p=project/libubox.git;a=blob;f=sh/jshn.sh;hb=HEAD) from `libubox` package. You need to include it into your scripts and then you can call it's functions:
+Shell scripts (ash, bash, zsh) doesn‘t have built-in functions to work with JSON or other hierarchical structures so OpenWrt provides a shell library [/usr/share/libubox/jshn.sh](https://git.openwrt.org/?p=project/libubox.git;a=blob;f=sh/jshn.sh;hb=HEAD) from ’‘libubox’’ package. You need to include it into your scripts and then you can call it’s functions:
 
 ``` bash
 #!/bin/sh
@@ -3382,7 +3403,7 @@ Then internally it will call `jshn -w` with the json obj passed via multiple env
     root@OpenWrt:/# JSON_CUR=J_V T_J_V_username=string K_J_V=username J_V_username=root jshn -w
     { "username": "root" }
 
-Here `J_V` stands for "JSON value":
+Here `J_V` stands for “JSON value”:
 
 - `JSON_CUR` means a name of var with root object to format
 - `K_J_V` is a key name i.e. `username`
@@ -3544,7 +3565,7 @@ The first jsonfilter call will output one radio JSON structure object per line, 
 
 ### jq
 
-[jq](https://stedolan.github.io/jq/) jq is a flexible command-line JSON processor that is very popular for scripting. It's not installed by default in OpenWRT because is too big (more than 200Kb) so to install use `opkg update; opkg install jq` By default it just colorize an output e.g. `cat /etc/board.json | jq`
+[jq](https://stedolan.github.io/jq/) jq is a flexible command-line JSON processor that is very popular for scripting. It‘s not installed by default in OpenWRT because is too big (more than 200Kb) so to install use ’‘opkg update; opkg install jq’’ By default it just colorize an output e.g. `cat /etc/board.json | jq`
 
 ### See also
 
@@ -3560,7 +3581,7 @@ Here we could place links to light-build libraries you could link against:
 
 ## C standard library
 
-- [GNU C Library](https://en.wikipedia.org/wiki/GNU C Library) (LGPL) "working horse", up-to-date, heavily worked on, most commonly used on non-embedded Linux distributions
+- [GNU C Library](https://en.wikipedia.org/wiki/GNU C Library) (LGPL) “working horse”, up-to-date, heavily worked on, most commonly used on non-embedded Linux distributions
   - License LGPL:
 - [Embedded GLIBC](https://en.wikipedia.org/wiki/Embedded GLIBC) (LGPL) is an abstraction of the glibc, and more configurable and embedded friendly
   - License LGPL:
@@ -3604,7 +3625,7 @@ Here we could place links to light-build libraries you could link against:
 
 ## Retrieve addresses from stock firmware
 
-The first step is to find out which addresses are present in stock configuration. The procedure depends on your level of access to the device's firmware.
+The first step is to find out which addresses are present in stock configuration. The procedure depends on your level of access to the device’s firmware.
 
 The result would be a list like the following:
 
@@ -3632,7 +3653,7 @@ You would normally expect WiFi MAC addresses in the art partition. To check for 
 
     $ hexdump -C /dev/mtd4
 
-This will dump the whole partition to your console. Now you can look for addresses there: Take one byte of the vendor part of the address (first three bytes) and do text search ...
+This will dump the whole partition to your console. Now you can look for addresses there: Take one byte of the vendor part of the address (first three bytes) and do text search …
 
 The same should be done for other partitions. Usual suspects are:
 
@@ -3648,7 +3669,7 @@ If you are successful, you will have a list of addresses and locations, e.g.
     factory 0xe006 *:0B
     art 0x4 *:0A
 
-You can check your data by using OpenWrt's get_mac_binary command (based on mtdX):
+You can check your data by using OpenWrt’s get_mac_binary command (based on mtdX):
 
     . /lib/functions/system.sh
     get_mac_binary /dev/mtd4 0x4
@@ -3669,11 +3690,11 @@ Now, combine data from stock firmware and your research to have a complete list:
 
 You could also include this list in your commit message to preserve the information.
 
-As in the example, it is possible that the same address is present in different locations. In this case, use the location that "belongs" to the interface, i.e. art for WiFi, others for ethernet.
+As in the example, it is possible that the same address is present in different locations. In this case, use the location that “belongs” to the interface, i.e. art for WiFi, others for ethernet.
 
 ## Set MAC addresses
 
-TBD: mtd_mac_address, 02_network, ...
+TBD: mtd_mac_address, 02_network, …
 
 ### MAC address pulled by driver
 
@@ -3715,7 +3736,7 @@ refs: <https://github.com/openwrt/openwrt/pull/2159> <https://github.com/openwrt
 
 Many devices bear a label with one or several MAC addresses on it. Those may be used to identify the device in the network and thus represent a valuable additional information about the device.
 
-When adding device support, you should also check which of the interface addresses corresponds to address on the label. If we assume the label MAC address ends with `0a`, we could assign either LAN or 5 GHz to it. The choice for an ambiguous address is arbitrary, so let's choose 5 GHz.
+When adding device support, you should also check which of the interface addresses corresponds to address on the label. If we assume the label MAC address ends with `0a`, we could assign either LAN or 5 GHz to it. The choice for an ambiguous address is arbitrary, so let’s choose 5 GHz.
 
 There are two options to specify the label MAC address in OpenWrt:
 
@@ -3755,7 +3776,7 @@ For each of the returned paths (if there are any), retrieve the mac-address, e.g
 
 Valid choices are only `mac-address` or `local-mac-address`. There may be one, two or no paths giving the correct address.
 
-If you find the label MAC address here, check your DTS for the corresponding parent node. The correct node for `/proc/device-tree/ahb/apb/wmac@18100000/mac-address` would be `/ahb/apb/wmac@18100000`. Use this node's alias or add a reasonable one yourself if missing.
+If you find the label MAC address here, check your DTS for the corresponding parent node. The correct node for `/proc/device-tree/ahb/apb/wmac@18100000/mac-address` would be `/ahb/apb/wmac@18100000`. Use this node’s alias or add a reasonable one yourself if missing.
 
 *Attention: Note that label MAC addresses are assigned relatively randomly by vendors, so label-mac-device should be regularly put into DTS files or DTSIs with few users, so it is not inherited by accident.*
 
@@ -3796,8 +3817,8 @@ ath79:
 
 ramips: For ramips, typical locations for ethernet addresses are as follows:
 
-- mt7621: lan mac is at factory 0xe000 and wan mac at factory 0xe006. This is the default location for mt7621 boards in MTK's SDK.
-- For mt7620/mt76x8 boards if there's a lan mac at 0x28 there may be a wan mac at 0x2e. (There's only one GMAC for these two chips so GMAC2_OFFSET defined above isn't used.)
+- mt7621: lan mac is at factory 0xe000 and wan mac at factory 0xe006. This is the default location for mt7621 boards in MTK’s SDK.
+- For mt7620/mt76x8 boards if there’s a lan mac at 0x28 there may be a wan mac at 0x2e. (There’s only one GMAC for these two chips so GMAC2_OFFSET defined above isn’t used.)
 
 //Attention: Those are *typical* addresses. Some vendors mix them, invert them, or even use completely different locations!//
 
@@ -3805,17 +3826,17 @@ ramips: For ramips, typical locations for ethernet addresses are as follows:
 
 # umdns for Local Device Discovery
 
-The [umdns](/packages/pkgdata/umdns) package creates a local DNS name for your router. When `umdns` is installed, the router and all its services are available using the name *hostname.local* instead of requiring the router's IP address.
+The [umdns](/packages/pkgdata/umdns) package creates a local DNS name for your router. When `umdns` is installed, the router and all its services are available using the name *hostname.local* instead of requiring the router’s IP address.
 
-`umdns` relies on mDNS ("multicast DNS") also known as Bonjour, zero-configuration networking (ZeroConf) or DNS Service Discovery (DNS-SD). mDNS enables automatic discovery of computers, devices, and services on the local network. It is an internet standard documented in [RFC6762](https://tools.ietf.org/html/rfc6762).
+`umdns` relies on mDNS (“multicast DNS”) also known as Bonjour, zero-configuration networking (ZeroConf) or DNS Service Discovery (DNS-SD). mDNS enables automatic discovery of computers, devices, and services on the local network. It is an internet standard documented in [RFC6762](https://tools.ietf.org/html/rfc6762).
 
 ## Installation
 
-The [umdns](/packages/pkgdata/umdns) package provides a compact implementation of this standard, well integrated with the OpenWrt system environment. It requires no configuration to work "right out of the box". `umdns` is available using LuCI web interface, or with `opkg install umdns` (OpenWRT 17 and later).
+The [umdns](/packages/pkgdata/umdns) package provides a compact implementation of this standard, well integrated with the OpenWrt system environment. It requires no configuration to work “right out of the box”. `umdns` is available using LuCI web interface, or with `opkg install umdns` (OpenWRT 17 and later).
 
 ### Configuration
 
-**I NEED HELP NAILING DOWN THE DEFAULT, AND THE [CORRECT](../cookbook/chunked-reference/uci-read-write-from-ucode.md) DESCRIPTION OF ALL THE FOLLOWING LINES**
+**I NEED HELP NAILING DOWN THE DEFAULT, AND THE [CORRECT](../cookbook/chunked-reference/ucode-rpcd-service-pattern.md) DESCRIPTION OF ALL THE FOLLOWING LINES**
 
 **Hostname:** `umdns` advertises the hostname that is present in `/etc/config/system`.
 
@@ -3867,7 +3888,7 @@ config rule
         option proto 'udp'
 ```
 
-To configure from GUI see "Firewall rules" section of [Resolving mDNS across VLANs with Avahi on OpenWRT](https://blog.christophersmart.com/2020/03/30/resolving-mdns-across-vlans-with-avahi-on-openwrt/)
+To configure from GUI see “Firewall rules” section of [Resolving mDNS across VLANs with Avahi on OpenWRT](https://blog.christophersmart.com/2020/03/30/resolving-mdns-across-vlans-with-avahi-on-openwrt/)
 
 ### mDNS Alternatives
 
@@ -3928,9 +3949,7 @@ Almost all interaction with the daemon is via [ubus](/docs/guide-developer/ubus)
 ### Issues/Bugs
 
 - IP addresses are missing.
-- TXT records aren't valid json in the dump, so jsonfilter can't be used.
-- How long is data cached? What causes it to update? No idea.
-- You may not see locally advertised services with `ubus call umdns browse`. See the [discussion](https://forum.openwrt.org/t/how-to-announce-service-with-umdns/5029/7)
+- TXT records aren‘t valid json in the dump, so jsonfilter can’t be used. \* How long is data cached? What causes it to update? No idea. \* You may not see locally advertised services with ’‘ubus call umdns browse’’. See the [discussion](https://forum.openwrt.org/t/how-to-announce-service-with-umdns/5029/7)
 
 ### Announcing local services
 
@@ -3955,15 +3974,15 @@ As an example, the following call
 procd_add_mdns "webdav" "tcp" "80" "path=/nextcloud/remote.php/dav/files/YOUR_USER/" "u=YOUR_USER"
 ```
 
-advertises `_webdav._tcp.local` with two text records. In the example we published a WebDAV folder from Nextcloud and now it can be seen in Network folder of a file manager in GNOME and KDE and can be [discovered from a Kodi media player](https://kodi.wiki/view/Avahi_Zeroconf). The service names may be taken from the [IANA register](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml) and the txt-records may be taken from the official DNS-SD keys (see [ServiceTypes](http://www.dns-sd.org/ServiceTypes.html) under "Defined TXT keys".
+advertises `_webdav._tcp.local` with two text records. In the example we published a WebDAV folder from Nextcloud and now it can be seen in Network folder of a file manager in GNOME and KDE and can be [discovered from a Kodi media player](https://kodi.wiki/view/Avahi_Zeroconf). The service names may be taken from the [IANA register](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml) and the txt-records may be taken from the official DNS-SD keys (see [ServiceTypes](http://www.dns-sd.org/ServiceTypes.html) under “Defined TXT keys”.
 
-If you wish to create a more complicated mdns information block, see `procd_add_mdns_service` in `/lib/functions/procd.sh` but be warned that umdns probably can't automatically support everything you can represent in json.
+If you wish to create a more complicated mdns information block, see `procd_add_mdns_service` in `/lib/functions/procd.sh` but be warned that umdns probably can’t automatically support everything you can represent in json.
 
 ### Service description files in /etc/umdns
 
 umdns advertises the services whose `*.json` files are found in `/etc/umdns`. This is similar to how Avahi advertises `*.service` files in `/etc/avahi/services/`.
 
-**IMPORTANT!** Keep the json formating as in the following examples, i.e. the service definition needs to be a one-liner, otherwise it won't work!
+**IMPORTANT!** Keep the json formating as in the following examples, i.e. the service definition needs to be a one-liner, otherwise it won’t work!
 
 For example the same WebDAV service description:
 
@@ -3988,7 +4007,7 @@ The reload the umdns service with: `ubus call umdns reload` or `service umdns re
 
 ### Testing
 
-To see that service was advertised you may use `avahi-discover` GUI application. To see from a command line use `avahi-browse --all`. To find a specific service use: `avahi-browse -d local _webdav._tcp`.
+To see that service was advertised you may use `avahi-discover` GUI application. To see from a command line use `avahi-browse –all`. To find a specific service use: `avahi-browse -d local _webdav._tcp`.
 
 ### Links
 
@@ -4042,7 +4061,7 @@ proto_protocolname_init_config() {
 }
 ```
 
-e.g. It will 'validate' the following: i.e. monitor them for changes, and update the interface with them when they do.
+e.g. It will ‘validate’ the following: i.e. monitor them for changes, and update the interface with them when they do.
 
 ``` bash
 config interface 'foo'
@@ -4054,11 +4073,11 @@ config interface 'foo'
 }
 ```
 
-As you may have noticed, this is good for monitoring properties of an interface. What if an interface has various peer type entries also in the network config? netifd won't see when any of those peer entries related to the interface have changed. It doesn't 'validate' those.
+As you may have noticed, this is good for monitoring properties of an interface. What if an interface has various peer type entries also in the network config? netifd won‘t see when any of those peer entries related to the interface have changed. It doesn’t ’validate’ those.
 
 This is why changes to peers and most WireGuard interface properties are not put into operation until a manual interface restart.
 
-One can employ a work-around: have the proto script 'validate' an option which stores a hash of the peers, a hash which is simultaneously updated when peers are modified and written e.g. in luci, so when the hash of the peers is saved, netifd will notice the interface property change and reload the interface. Note that changes via uci command line go unnoticed by netifd.
+One can employ a work-around: have the proto script ‘validate’ an option which stores a hash of the peers, a hash which is simultaneously updated when peers are modified and written e.g. in luci, so when the hash of the peers is saved, netifd will notice the interface property change and reload the interface. Note that changes via uci command line go unnoticed by netifd.
 
 Another approach is to use a procd handler which can monitor when changes occur to `/etc/config/network` in general, and trigger a reload of the interface.
 
@@ -4080,7 +4099,7 @@ proto_protocolname_setup() {
 
 This function must be implemented by any protocol back-end.
 
-There's usually no need to call `ifconfig iface up` at the end of this function. If `no_device=0`, netifd won't even try to start our profile until the device is already up. It waits for `operstate=up` and `carrier=1`, then starts the profile.
+There‘s usually no need to call ’‘ifconfig *iface* up’’ at the end of this function. If `no_device=0`, netifd won‘t even try to start our profile until the device is already up. It waits for ’‘operstate=up’’ and `carrier=1`, then starts the profile.
 
 If `no_device=1`, netifd will bring it up, when it receives a notification from us:
 
@@ -4093,7 +4112,7 @@ proto_protocolname_setup () {
 }
 ```
 
-This only works once, however. If someone called `ifconfig iface down`, netifd won't try to bring it up again (at least in BB), so just in case you may put the "up" command in the function.
+This only works once, however. If someone called `ifconfig iface down`, netifd won’t try to bring it up again (at least in BB), so just in case you may put the “up” command in the function.
 
 ### renew
 
@@ -4121,7 +4140,7 @@ The restart procedure [was added in July 2026](https://github.com/openwrt/netifd
 
 It can also be called via ubus. In theory it should fall back to full interface restart (including teardown and setup) for protocols handlers that do not implement `proto_protocolname_restart`.
 
-\<!-- TODO: test if it works and add more info once this functionality is released --\>
+\<!– TODO: test if it works and add more info once this functionality is released –\>
 
 ### Teardown
 
@@ -4191,7 +4210,7 @@ An example in context:
 
 ### Debugging
 
-- STDERR in protos is redirected to the syslog. `echo "message" > 2>&1` can be used to print.
+- STDERR in protos is redirected to the syslog. `echo “message” > 2>&1` can be used to print.
 - As `set -x` also prints to STDERR, it can be used to trace which commands are called inside the proto. However this is very spammy.
 - There is a pending patch: <https://patchwork.ozlabs.org/project/openwrt/patch/20201229233319.164640-1-me@irrelefant.net/>.
 
@@ -4207,21 +4226,21 @@ Flags can be added to a proto handler in `proto_protoname_init_config`, by setti
 | lasterror | last_error | True when the last setup attempt failed and the handler wants to expose that state. |
 | no_device | no_device | Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device. |
 | no_device_config | no_device_config | Protocol has no device-specific configuration (config applies to the protocol itself). |
-| no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'. |
-| renew_handler | renew_available | Protocol implements the "renew" action/handler `proto_*_renew()`, which can be called by netifd. |
+| no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd‘s control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or ’proto task’. |
+| renew_handler | renew_available | Protocol implements the “renew” action/handler `proto_*_renew()`, which can be called by netifd. |
 | teardown_on_l3_link_down | teardown_on_l3_link_down | If the l3 device receives state down (e.g. ifdown), call the `proto_*_teardown()`. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task |
 
 ### Error codes
 
-If errors for interfaces occur, the json object in *ifstatus interfacename* or in *ubus call network.interface dump* have an attribute *"error"*. If there are no errors, this attribute is not existing.
+If errors for interfaces occur, the json object in *ifstatus interfacename* or in *ubus call network.interface dump* have an attribute *“error”*. If there are no errors, this attribute is not existing.
 
-| CODE                | Meaning                                                                                                                                                                                                                                                                                                                                                                                        |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NO_DEVICE           | The configured device in ifname is not found.                                                                                                                                                                                                                                                                                                                                                  |
+| CODE | Meaning |
+|----|----|
+| NO_DEVICE | The configured device in ifname is not found. |
 | DEVICE_CLAIM_FAILED | One of the reasons for this is, that the device configured by ifname does not exist. Usually this would result in NO_DEVICE as the device is only claimed when it is available. However when the proto flags *available=1* and *no_device=0* are set, the device specified by ifname is tried to be claimed directly. TBD: Is this the only case? Is this correct? |
-| SETUP_FAILED        | TBD                                                                                                                                                                                                                                                                                                                                                                |
+| SETUP_FAILED | TBD |
 
-Custom error codes can be thrown from the proto scripts aswell. This is done via `proto_notify_error "$config" MY_CUSTOM_ERROR_ID`.
+Custom error codes can be thrown from the proto scripts aswell. This is done via `proto_notify_error “$config” MY_CUSTOM_ERROR_ID`.
 
 ### How does it work internally?
 
@@ -4231,16 +4250,16 @@ init_proto $proto $cmd $interface $data $ifname
 
 This function takes all all arguments from the *proto.sh* file, interprets them and then defines the implementation of *add_protocol()*.
 
-If `$cmd = "dump"` then *add_protocol()* will do the following:
+If `$cmd = “dump”` then *add_protocol()* will do the following:
 
 - A json output dump of the results of `proto_protocolname_init_config` will be printed.
 - Other parameters than `$cmd` will be ignored.
 
-If `$cmd ∈ {"setup", "teardown", "renew"}` *add_protocol()* will do the following:
+If `$cmd ∈ {“setup”, “teardown”, “renew”}` *add_protocol()* will do the following:
 
 - If `$proto ≠ protoname` nothing will be done.
 - `$data` is loaded via *json_load*
-- `proto_protoname_... $interface $ifname` will be called.
+- `proto_protoname_… $interface $ifname` will be called.
 
 Otherwise the script will fail with something like:
 
@@ -4259,7 +4278,7 @@ The following functions are defined in `/lib/netifd/netifd-proto.sh`.
 - `proto_config_add_boolean`
 - `proto_config_add_int`
 - `proto_config_add_string`
-- `proto_config_add_array` (for uci config ''list xxx 'value' '' types
+- `proto_config_add_array` (for uci config ‘’list xxx ’value’ ’’ types
 
 #### notification functions
 
@@ -4268,33 +4287,33 @@ Note: some of these function exit immediately. These functions are dispatched to
 - `proto_block_restart $interface`
 - `proto_init_update $ifname $up [$external]`
 - `proto_kill_command $interface [$signal]`
-- `proto_notify_error $interface $str1 [$str2] [$str3] ...`
+- `proto_notify_error $interface $str1 [$str2] [$str3] …`
 - `proto_run_command`
 
-We can start a daemon that maintains the connection asynchronously by calling `proto_run_command "$config" custom_script`. Netifd remembers its pid. It can be killed manually by calling `proto_kill_command "$config"`. Netifd can automatically kill it, when the profile stopped.
+We can start a daemon that maintains the connection asynchronously by calling `proto_run_command “$config” custom_script`. Netifd remembers its pid. It can be killed manually by calling `proto_kill_command “$config”`. Netifd can automatically kill it, when the profile stopped.
 
 \* `proto_add_host_dependency`
 
 It seems to avoid race conditions in protos. We can register the following type of dependencies by calling:
 
-- `proto_add_host_dependency "$config" "$host" "$ifname"`
-- `proto_add_host_dependency "$config" \'\' "$ifname"` (only wait for an iface)
+- `proto_add_host_dependency “$config” “$host” “$ifname”`
+- `proto_add_host_dependency “$config” \‘\’ “$ifname”` (only wait for an iface)
 - (maybe more?)
 
 Only if `$iface` is up, the corresponding `$config` will be loaded. So we need another proto to be completed, we can use this here.
 
-From some observations I think it looks like technically the `$config` is initially loaded, then the `proto_add_host_dependency` is called inside the proto handler and then the `$config` is removed again until `$iface` is available, up, ... or so. However, currently I do not know where to find the source code, so this is only a vague idea of what happens.
+From some observations I think it looks like technically the `$config` is initially loaded, then the `proto_add_host_dependency` is called inside the proto handler and then the `$config` is removed again until `$iface` is available, up, … or so. However, currently I do not know where to find the source code, so this is only a vague idea of what happens.
 
-- ''proto_send_update \$interface ''
-- '' proto_set_available \$interface \$state''
+- ‘’proto_send_update \$interface ’’
+- ’’ proto_set_available \$interface \$state’’
 
 ### common functions
 
-- '' json_add_string ''
-- '' json_dump ''
-- '' json_init ''
-- '' [json_get_var](../wiki/chunked-reference/wiki_page-guide-developer-jshn.md) ''
-- '' json_get_vars ''
+- ’’ json_add_string ’’
+- ’’ json_dump ’’
+- ’’ json_init ’’
+- ’’ [json_get_var](../wiki/chunked-reference/wiki_page-guide-developer-jshn.md) ’’
+- ’’ json_get_vars ’’
 
 ## Examples
 
@@ -4433,7 +4452,7 @@ Reasons for using the SDK are:
 
 ## Obtain SDK
 
-You can either download an already compiled SDK, or compile it yourself by using the "make menuconfig" command.
+You can either download an already compiled SDK, or compile it yourself by using the “make menuconfig” command.
 
 #### Prerequisites
 
@@ -4551,7 +4570,7 @@ See [Creating packages](/docs/guide-developer/packages)
 
 :!: Some SDK versions have bugs.
 
-Bug: BB SDK for BRCM2708: wants to compile with "ccache_cc" see <https://dev.openwrt.org/ticket/13949>
+Bug: BB SDK for BRCM2708: wants to compile with “ccache_cc” see <https://dev.openwrt.org/ticket/13949>
 
 Bug: BB SDK for BRCM2708: static compilation broken
 
@@ -4561,37 +4580,37 @@ Bug: BB SDK for BRCM2708: static compilation broken
 
 If you are familiar with GNU/Linux systems, you should find your way around pretty easily; if you are not, you will need to learn some basic concepts and terminology first.
 
-You might have read that OpenWrt is a **GNU/Linux distribution** (or "distro") aimed at embedded devices.
-A GNU/Linux **distribution** is a project that creates and maintains *packages*, used with a Linux kernel to create a GNU/Linux operating system tailored to users' needs.
+You might have read that OpenWrt is a **GNU/Linux distribution** (or “distro”) aimed at embedded devices.
+A GNU/Linux **distribution** is a project that creates and maintains *packages*, used with a Linux kernel to create a GNU/Linux operating system tailored to users’ needs.
 A **package** is a compressed archive containing a program, a [library](https://en.wikipedia.org/wiki/Library_(computing)) or some scripts, its accompanying configuration files and also information used to integrate it in the operating system. These packages are handled by a **package manager** (opkg in OpenWrt); a program that downloads/opens/installs/uninstalls the packages.
 So, an OpenWrt firmware is made by assembling packages around a Linux kernel.
 
-Each package is compiled separately, and when all are done the needed packages are "installed" in a temporary directory that will then be the compressed-read-only [SquashFS](https://en.wikipedia.org/wiki/SquashFS) partition in the device firmware.
+Each package is compiled separately, and when all are done the needed packages are “installed” in a temporary directory that will then be the compressed-read-only [SquashFS](https://en.wikipedia.org/wiki/SquashFS) partition in the device firmware.
 
-While the kernel is handled as a package, it is added to firmware images in the special way each device's bootloader expects. So you can replace the stock firmware without touching the bootloader (which is dangerous and not always possible).
+While the kernel is handled as a package, it is added to firmware images in the special way each device’s bootloader expects. So you can replace the stock firmware without touching the bootloader (which is dangerous and not always possible).
 
 The last step in the build process is actually creating the firmware file, the file to install or upgrade OpenWrt.
-This file is usually a memory image ready to be written as is on the internal flash storage of the device. You may notice that many developers simply call it "image" on IRC or in the mailing list.
+This file is usually a memory image ready to be written as is on the internal flash storage of the device. You may notice that many developers simply call it “image” on IRC or in the mailing list.
 
 ## How Packages are Compiled
 
-If you look at a package's **Makefile**[^1], you will notice it states the official download link for the sources to be compiled, a SHA256 hash to check the integrity of such download, a version number of the upstream project as package base and a release number to indicate OpenWrt changes. On some packages the version number states git commit, timestamp or another expression to identify the source code version to pull down and build. They generally favor archives with sources from official releases, but some upstream projects don't always have that.
+If you look at a package’s **Makefile**[^1], you will notice it states the official download link for the sources to be compiled, a SHA256 hash to check the integrity of such download, a version number of the upstream project as package base and a release number to indicate OpenWrt changes. On some packages the version number states git commit, timestamp or another expression to identify the source code version to pull down and build. They generally favor archives with sources from official releases, but some upstream projects don’t always have that.
 
-In **patches** directory of each package you will find any patches that will be applied to the source after downloading and before compiling it: (e.g. [pathches dir of busybox](https://github.com/openwrt/openwrt/tree/master/package/utils/busybox/patches)). There are also other directories for configuration files or uci integration.
+In **patches** directory of each package you will find any patches that will be applied to the source after downloading and before compiling it: (e.g. [patches dir of busybox](https://github.com/openwrt/openwrt/tree/master/package/utils/busybox/patches)). There are also other directories for configuration files or uci integration.
 
-The kernel's Makefile is a bit more complex, but you can see that it still uses the same structure for pulling down the same kernel version depending on device every time. e.g. [Linux Makefile](https://github.com/openwrt/openwrt/blob/master/package/kernel/linux/Makefile)
+The kernel’s Makefile is a bit more complex, but you can see that it still uses the same structure for pulling down the same kernel version depending on device every time. e.g. [Linux Makefile](https://github.com/openwrt/openwrt/blob/master/package/kernel/linux/Makefile)
 
-All packages are compiled by OpenWrt's own toolchain, which is also handled like packages (see /toolchain and /tools in the source), so you will always have the same compilers/tools as everyone else as they are downloaded from the same sources at the same version.
+All packages are compiled by OpenWrt’s own toolchain, which is also handled like packages (see /toolchain and /tools in the source), so you will always have the same compilers/tools as everyone else as they are downloaded from the same sources at the same version.
 
-When you run `make` the OpenWrt build system will use your system's existing building infrastructure to compile the OpenWrt's toolchain first, and then use that to compile the packages. This also has the major benefit of not requiring the user to set up a cross-compiling toolchain that is rather annoying and relatively complex.
+When you run `make` the OpenWrt build system will use your system’s existing building infrastructure to compile the OpenWrt’s toolchain first, and then use that to compile the packages. This also has the major benefit of not requiring the user to set up a cross-compiling toolchain that is rather annoying and relatively complex.
 
 ## Package Feeds
 
 Not all packages you can install in OpenWrt are from OpenWrt project proper, in fact most packages are not.
 
-The packages from OpenWrt's main repository are maintained directly by core developers, and they are the important, even essential components of OpenWrt firmware or parts of the build system. "**package feeds**" are source repositories that contain additional packages maintained by the community, and each package has its own maintainer.
+The packages from OpenWrt’s main repository are maintained directly by core developers, and they are the important, even essential components of OpenWrt firmware or parts of the build system. “**package feeds**” are source repositories that contain additional packages maintained by the community, and each package has its own maintainer.
 
-This is OpenWrt's main repo on github: <https://github.com/openwrt/openwrt>
+This is OpenWrt’s main repo on github: <https://github.com/openwrt/openwrt>
 
 These are official package feeds:
 
@@ -4600,15 +4619,15 @@ These are official package feeds:
 - <https://github.com/openwrt-routing/packages>
 - <https://github.com/openwrt/packages>
 
-Being "official feeds", the packages therein will be compiled and offered by the official download server, but they are not technically OpenWrt proper, they are community-maintained. The "package feed" system is designed to allow easy addition of your own custom feeds to your own custom firmware images, but of course you will have to compile them and host them on your own servers.
+Being “official feeds”, the packages therein will be compiled and offered by the official download server, but they are not technically OpenWrt proper, they are community-maintained. The “package feed” system is designed to allow easy addition of your own custom feeds to your own custom firmware images, but of course you will have to compile them and host them on your own servers.
 
-If you look at the built packages [here](https://downloads.openwrt.org/releases/21.02.1/packages/x86_64/) on the download server (this is the same server opkg uses to download packages in a live OpenWrt system), they are divided by feed name, packages in "base" come from the main repository, and also from main repository are packages that are found in target-specific directories, for example [here](https://downloads.openwrt.org/releases/24.10.1/packages/x86_64/packages/) what you see are mostly drivers like kmod-\*.
+If you look at the built packages [here](https://downloads.openwrt.org/releases/21.02.1/packages/x86_64/) on the download server (this is the same server opkg uses to download packages in a live OpenWrt system), they are divided by feed name, packages in “base” come from the main repository, and also from main repository are packages that are found in target-specific directories, for example [here](https://downloads.openwrt.org/releases/24.10.1/packages/x86_64/packages/) what you see are mostly drivers like kmod-\*.
 
 ## Package Versions
 
 As stated above, package Makefiles have a PKG_VERSION tag that shows the upstream version which is the major version of the package, and a PKG_RELEASE tag that is used to show changes on the OpenWrt side, that is the minor version. If you see a package that lists version as 123-1, its major version is 123 and minor version is 1.
 
-Some packages have timestamp or git commit as major version, for example 2016-09-21-42ad5367-1 where the last "1" is the minor version.
+Some packages have timestamp or git commit as major version, for example 2016-09-21-42ad5367-1 where the last “1” is the minor version.
 
 You can see all versions used in the first page of the [table of packages](/packages/table/start).
 
@@ -4616,9 +4635,9 @@ Or by browsing a Package.manifest in the package download directory <https://dow
 
 ## Repeatable Builds
 
-The aforementioned system allows repeatable builds. The major version of source archives are written in the packages' Makefiles in the git repositories of main and community package feeds; you can see full history of changes to that file with *git*.
+The aforementioned system allows repeatable builds. The major version of source archives are written in the packages’ Makefiles in the git repositories of main and community package feeds; you can see full history of changes to that file with *git*.
 
-There is a cache server that stores source archives because it's more convenient than having the build bots spamming the upstream download servers, and it is also a fallback should the upstream server disappear. It should keep the packages' sources for a long while, as they are used by build bots for as long as the releases that depend on them are supported.
+There is a cache server that stores source archives because it‘s more convenient than having the build bots spamming the upstream download servers, and it is also a fallback should the upstream server disappear. It should keep the packages’ sources for a long while, as they are used by build bots for as long as the releases that depend on them are supported.
 
 This server index may be browsed here: <https://sources.openwrt.org/>
 
@@ -4699,8 +4718,7 @@ Some general considerations when packaging a new piece of software are:
 
 - Do not ship man pages or documentation, a typical installation lacks both the infrastructure and the space to view and store man page databases
 - Minimize external dependencies - try to avoid optional external dependencies whenever possible. An extreme example is `ICU` which weighs around 12MB and is an optional dependency for Unicode multi language support in various packages
-- Modularize packages - if the software you're packaging supports and uses plugins then put those plugins into separate binary package declarations instead of lumping them all together along with the main program. This way you can externalize dependencies and move them into the plugin packages instead of having them in the main component, which makes the package usable on a wider range of targets because users can omit parts with large dependencies.
-- Try to rely on standard facilities - instead of requiring extra programs to implement tasks like user context switching, use the `procd` facilities to run a service as a different user.
+- Modularize packages - if the software you‘re packaging supports and uses plugins then put those plugins into separate binary package declarations instead of lumping them all together along with the main program. This way you can externalize dependencies and move them into the plugin packages instead of having them in the main component, which makes the package usable on a wider range of targets because users can omit parts with large dependencies. \* Try to rely on standard facilities - instead of requiring extra programs to implement tasks like user context switching, use the ’‘procd’’ facilities to run a service as a different user.
 
 Often it is tempting to add various `menuconfig` configuration options to allow the customization of the package features by the users compiling their own variant of OpenWrt but it should be kept in mind that large parts of the userbase will use the package solely by installing binary archives from the OpenWrt repositories.
 
@@ -4716,7 +4734,7 @@ Historically, packages for OpenWrt used to contain a copyright notice at the top
 
 Since contributors likely do not have a formal contract with OpenWrt to develop packages, they cannot disclaim their own copyrights and assign them to the project.
 
-When adding new packages, please don't simply copy the statement from another package but add either your own in the form:
+When adding new packages, please don’t simply copy the statement from another package but add either your own in the form:
 
     # Copyright (C) 2016 Joe Random <joe@example.org>
 
@@ -4738,8 +4756,8 @@ The package revision should start with the value `1` and must be increased whene
 
 Some examples for dealing with the `PKG_RELEASE` are:
 
-- Fixed a typo in the maintainer's mail address -\> `PKG_RELEASE` stays unchanged
-- Added a `--disable-acl` to the configure arguments -\> `PKG_RELEASE` is incremented
+- Fixed a typo in the maintainer‘s mail address -\> ’‘PKG_RELEASE’’ stays unchanged
+- Added a `–disable-acl` to the configure arguments -\> `PKG_RELEASE` is incremented
 - Updated `libfoo` from version `0.2.1` to `0.2.2` -\> `PKG_RELEASE` is reset to `1` and `PKG_VERSION` set to `0.2.2`
 
 ### Downloading
@@ -4781,7 +4799,7 @@ Example for achieving the same using variable overrides:
 
     MAKE_PATH := nonstandard/dir/
 
-Likewise, do not attempt to override `Build/Configure` but use `CONFIGURE_ARGS` to pass switches like `CONFIGURE_ARGS += --enable-acl` or `CONFIGURE_ARGS += --without-systemd` and `CONFIGURE_VARS` to pass environment variables to the configuration script, like `CONFIGURE_VARS += ac_cv_func_snprintf=yes`.
+Likewise, do not attempt to override `Build/Configure` but use `CONFIGURE_ARGS` to pass switches like `CONFIGURE_ARGS += –enable-acl` or `CONFIGURE_ARGS += –without-systemd` and `CONFIGURE_VARS` to pass environment variables to the configuration script, like `CONFIGURE_VARS += ac_cv_func_snprintf=yes`.
 
 #### Hooks
 
@@ -4830,7 +4848,7 @@ Usual problems revolve around:
 Due to the complex nature of the GNU autoconf/automake system there is no single set of solutions to a given problem but rather a general list of guidelines and best practices to adhere to.
 
 - Never patch the generated / shipped `configure` script but fix the underlying `configure.ac` or `configure.in` files and rely on the `PKG_FIXUP:=autoreconf` facility to regenerate the config script. This also has the nice side-effect of updating the embedded `libtool` version and using a cross-compile-safe set of standard macros, replacing unsafe ones in many cases.
-- Make `./configure` invocations as explicit as possible by forcibly disabling or enabling any feature which depends on the presence of an external library, e.g. `--disable-acl` to build a given package without `libacl` support on both systems having `libacl` in their staging directory and systems not providing this library. Failure to do so will result in errors like `Package example is missing dependencies for the following libraries: libfoo.so.1` on systems that happen to build `libfoo` before building example.
+- Make `./configure` invocations as explicit as possible by forcibly disabling or enabling any feature which depends on the presence of an external library, e.g. `–disable-acl` to build a given package without `libacl` support on both systems having `libacl` in their staging directory and systems not providing this library. Failure to do so will result in errors like `Package example is missing dependencies for the following libraries: libfoo.so.1` on systems that happen to build `libfoo` before building example.
 - Pre-seed `configure` tests that cannot be reliably determined in a cross-compile setting. Properly written autoconf test macros can be overridden by cache-variables in the form `ac_cv_somename=value` - use this facility to skip tests which would otherwise fail or result in host-system specific values. For example the `libpcap` package passes `ac_cv_linux_vers=$(LINUX_VERSION)` to prevent `./configure` from calling the host systems `uname` in order to figure out the kernel version. The names of the involved cache variables can be found in the `config.log` file within the package build directory or by inspecting the generated shell code of the `configure` program. Use the `CONFIGURE_VARS` variable to pass the cache variables down to the actual `./configure` invocation
 - Never trust shipped `autogen.sh` and similar scripts, rather use `PKG_FIXUP:=autoreconf` to (re)generate the configure script and automake templates and encode additionally needed steps in the appropriate build recipes.
 
@@ -4838,13 +4856,13 @@ Due to the complex nature of the GNU autoconf/automake system there is no single
 
 A *source package* may depend on a number of other packages, either to satisfy compilation requirements or to enforce the presence of specific functionality, such as shared libraries or support programs at runtime on the target system.
 
-There are two kinds of dependencies; *build dependencies*, specified by the `PKG_BUILD_DEPENDS` Makefile variable and *runtime dependencies*, declared in the `DEPENDS` variable of the corresponding `define Package/...` Makefile sections.
+There are two kinds of dependencies; *build dependencies*, specified by the `PKG_BUILD_DEPENDS` Makefile variable and *runtime dependencies*, declared in the `DEPENDS` variable of the corresponding `define Package/…` Makefile sections.
 
 *Build dependencies* are resolved at package compilation time and instruct the build system to download, patch and compile each mentioned dependency before the source package itself is compiled. This is required when the compilation process of a package depends on resources such as header files from another package. *Build dependencies* are not transformed into *runtime dependencies* and should only be used when the resources of the packages being depended upon are solely required at compilation time. This usually is the case for header-only libraries such as the C++ Boost project or static `.a` library archives that result in no dynamic runtime requirements.
 
-*Runtime dependencies*, on the other hand, specify the relation of *binary packages*, instructing the package manager to fetch and install the listed dependencies before installing the binary package itself. A *runtime dependency* automatically implies a *build dependency*, so if a `DEPENDS` variable within a `define Package/...` section of a given source package specifies the name of a `define Package/...` section of another source package, the build system will take care of compiling the other package before compiling the source package specifiying the runtime dependency.
+*Runtime dependencies*, on the other hand, specify the relation of *binary packages*, instructing the package manager to fetch and install the listed dependencies before installing the binary package itself. A *runtime dependency* automatically implies a *build dependency*, so if a `DEPENDS` variable within a `define Package/…` section of a given source package specifies the name of a `define Package/…` section of another source package, the build system will take care of compiling the other package before compiling the source package specifiying the runtime dependency.
 
-Package dependencies, regardless of whether they're build-time or runtime ones, should only require packages within the same *package feed* or provided by the *base feed* located within the main OpenWrt `package/` directory.
+Package dependencies, regardless of whether they‘re build-time or runtime ones, should only require packages within the same *package feed* or provided by the *base feed* located within the main OpenWrt ’‘package/’’ directory.
 
 Dependencies among packages in different, non-base feeds are strongly discouraged as it is not guaranteed that each build system has access to all feeds.
 
@@ -4874,7 +4892,7 @@ This ensures that incompatible updates to the `libfoo` library, denoted by an `A
 
 Example: when `libfoo` is updated to a new, incompatible version and its `SONAME` property changed from `libfoo.so.1.0` to `libfoo.so.1.1`, then `ABI_VERSION` should be increased from `1.0` to `1.1`, causing the resulting `libfoo` binary package to be called `libfoo1.1`. Source packages linking `libfoo` from then on, will have runtime dependencies on `libfoo1.1`.
 
-When a shared library is packaged, the `ABI_VERSION` variable of the corresponding `define Package/lib...` section should be set to the `SONAME` of the `.so` library file contained within the binary package. The `SONAME` usually reflects the library's internal `ABI` version and is incremented whenever incompatible changes to the public APIs are made within the library, E.G. when changing a function call signature or when removing exported symbols.
+When a shared library is packaged, the `ABI_VERSION` variable of the corresponding `define Package/lib…` section should be set to the `SONAME` of the `.so` library file contained within the binary package. The `SONAME` usually reflects the library‘s internal ’‘ABI’’ version and is incremented whenever incompatible changes to the public APIs are made within the library, E.G. when changing a function call signature or when removing exported symbols.
 
 The public [ABI tracker](https://abi-laboratory.pro/index.php?view=tracker) is useful to decide whether an `ABI_VERSION` change is required when updating an existing library package to a newer upstream version.
 
@@ -4909,7 +4927,7 @@ Instead, use
 
     $(CP) $(PKG_INSTALL_DIR)/usr/lib/libbar.so.* $(1)/usr/lib/
 
-and you'll get the intended result:
+and you’ll get the intended result:
 
     libbar.so.1     -> libbar.so.1.2.3 (symlink)
     libbar.so.1.2.3                    (regular file)
@@ -4920,7 +4938,7 @@ While there has been a proposal to change `$(INSTALL_BIN)` behavior, `$(CP)` wil
 
 Source packages defining binary packages that ship shared libraries should declare a `Build/InstallDev` recipe that copies all resources required to discover and link the shared libraries into the staging directory.
 
-A typical `InstallDev` recipe usually copies all library symlinks (including the unversioned ones), header files and, in case they're provided, pkg-config (`*.pc`) files.
+A typical `InstallDev` recipe usually copies all library symlinks (including the unversioned ones), header files and, in case they‘re provided, pkg-config (’‘\*.pc’’) files.
 
 ---
 
@@ -4963,7 +4981,7 @@ Typically you should only add additional options to compile flags.
 
     TARGET_CFLAGS+= -Wall
 
-Example: Support multiple library versions via .../usr/lib/libname-v1/ or .../usr/lib/libname-v2/ and select them.
+Example: Support multiple library versions via …/usr/lib/libname-v1/ or …/usr/lib/libname-v2/ and select them.
 
 :!: BUG CXXFLAGS can contain wrong options because GCC/G++ accept different ones.
 
@@ -5016,7 +5034,7 @@ scons is only used by a few packages: [iotivity](https://github.com/openwrt/pack
 
 **See instead -\> [Working with Patches](/docs/guide-developer/toolchain/use-patches-with-buildsystem)**, if you only need to make minor modifications to existing packages.
 
-One of the things that we've attempted to do with OpenWrt's template system is make it incredibly easy to port software to OpenWrt. If you look at a typical package directory in OpenWrt you'll find three things:
+One of the things that we’ve attempted to do with OpenWrt’s template system is make it incredibly easy to port software to OpenWrt. If you look at a typical package directory in OpenWrt you’ll find three things:
 
 - package/Makefile
 - package/patches
@@ -5026,7 +5044,7 @@ The patches directory is optional and typically contains bug fixes or optimizati
 
 The package `Makefile` is the important item because it provides the steps actually needed to download and compile the package.
 
-Looking at one of the package makefiles, you'd hardly recognize it as a makefile. Through what can only be described as blatant disregard and abuse of the traditional make format, the `Makefile` has been transformed into an object oriented template which simplifies the entire ordeal.
+Looking at one of the package makefiles, you‘d hardly recognize it as a makefile. Through what can only be described as blatant disregard and abuse of the traditional make format, the ’‘Makefile’’ has been transformed into an object oriented template which simplifies the entire ordeal.
 
 Here, for example, is package/bridge/Makefile:
 
@@ -5071,11 +5089,10 @@ $(eval $(call BuildPackage,bridge))
 
 ## BuildPackage variables
 
-As you can see, there's not much work to be done; everything is hidden in other makefiles and abstracted to the point where you only need to specify a few variables.
+As you can see, there’s not much work to be done; everything is hidden in other makefiles and abstracted to the point where you only need to specify a few variables.
 
-- `PKG_NAME` - The name of the package, as seen via menuconfig and ipkg. Avoid using underscores in the package name, to avoid build failures--for example, the underscore separates name from version information, and may confuse the build system in hard-to-spot places.
-- `PKG_VERSION` - The upstream version number that we're downloading
-- `PKG_RELEASE` - The version of this package Makefile. Should be initially set to 1, and reset to 1 whenever the `PKG_VERSION` is changed. Increment it when `PKG_VERSION` stays the same, but when there are functional changes to the installed artifacts.
+- `PKG_NAME` - The name of the package, as seen via menuconfig and ipkg. Avoid using underscores in the package name, to avoid build failures–for example, the underscore separates name from version information, and may confuse the build system in hard-to-spot places.
+- `PKG_VERSION` - The upstream version number that we‘re downloading \* ’‘PKG_RELEASE’’ - The version of this package Makefile. Should be initially set to 1, and reset to 1 whenever the `PKG_VERSION` is changed. Increment it when `PKG_VERSION` stays the same, but when there are functional changes to the installed artifacts.
 - `PKG_LICENSE` - The license(s) the package is available under, [SPDX](https://spdx.org/licenses/) form.
 - `PKG_LICENSE_FILES`- file containing the license text
 - `PKG_BUILD_DIR` - Where to compile the package
@@ -5086,12 +5103,11 @@ As you can see, there's not much work to be done; everything is hidden in other 
 - `PKG_URL`. - Upstream project homepage
 - `PKG_BUILD_DEPENDS` - Packages that need to be built before this package. Use this option if you need to make sure that your package has access to includes and/or libraries of another package at build time. Specify the directory name (i.e. openssl) rather than the binary package name (i.e. libopenssl). This build variable only establishes the build time dependency. Use `DEPENDS` to establish the runtime dependencies. This variable uses the same syntax as `DEPENDS` below.
 - `PKG_CONFIG_DEPENDS` - specifies which config options influence the build configuration and should trigger a rerun of Build/Configure on change
-- `PKG_INSTALL` - Setting it to "1" will call the package's original "make install" with prefix set to `PKG_INSTALL_DIR`
-- `PKG_INSTALL_DIR` - Where "make install" copies the compiled files
+- `PKG_INSTALL` - Setting it to “1” will call the package‘s original “make install” with prefix set to ’‘PKG_INSTALL_DIR’’
+- `PKG_INSTALL_DIR` - Where “make install” copies the compiled files
 - `PKG_FIXUP` - See below
 - `PKG_CPE_ID` - Variable defining Common Platform Enumeration (CPE) identifier, which uniquely identifies application usually in vulnerability tracking. The CPE standard itself is maintained by NIST and documented at[Official Common Platform Enumeration (CPE) Dictionary](https://nvd.nist.gov/products/cpe)
-- `PKG_CVE_IGNORE` - Variable for defining CVEs that don't apply to this version of the package due to features not enabled, or affecting other platforms (e.g. Windows issues or features that are not used and so not relevant)
-- `PKG_CVE_FIXED` - Variable for defining CVEs that are patches in the current version, but aren't properly marked as fixed at cve.org in the current version
+- `PKG_CVE_IGNORE` - Variable for defining CVEs that don‘t apply to this version of the package due to features not enabled, or affecting other platforms (e.g. Windows issues or features that are not used and so not relevant) \* ’‘PKG_CVE_FIXED’’ - Variable for defining CVEs that are patches in the current version, but aren’t properly marked as fixed at cve.org in the current version
 
 Optional support for fetching sources from a VCS (git, bzr, svn, etc), see [Use source repository](#use_source_repository) below for more information:
 
@@ -5102,9 +5118,9 @@ Optional support for fetching sources from a VCS (git, bzr, svn, etc), see [Use 
 - `PKG_MIRROR_HASH` - SHA256 checksum of the tarball generated from the source repository checkout (previously named `PKG_MIRROR_MD5SUM`). See [below](#use_source_repository) for details.
 - `PKG_SOURCE_SUBDIR` - where the temporary source checkout should be stored, defaults to `$(PKG_NAME)-$(PKG_VERSION)`
 
-The `PKG_*` variables define where to download the package from; @SF is a special keyword for downloading packages from sourceforge. The md5sum is used to verify the package was downloaded correctly and PKG_BUILD_DIR defines where to find the package after the sources are uncompressed into \$(BUILD_DIR). PKG_INSTALL_DIR defines where the files will be copied after calling "make install" (set with the PKG_INSTALL variable), and after that you can package them in the install section.
+The `PKG_*` variables define where to download the package from; @SF is a special keyword for downloading packages from sourceforge. The md5sum is used to verify the package was downloaded correctly and PKG_BUILD_DIR defines where to find the package after the sources are uncompressed into \$(BUILD_DIR). PKG_INSTALL_DIR defines where the files will be copied after calling “make install” (set with the PKG_INSTALL variable), and after that you can package them in the install section.
 
-At the bottom of the file is where the real magic happens, "BuildPackage" is a macro setup by the earlier include statements. BuildPackage only takes one argument directly -- the name of the package to be built, in this case "bridge". All other information is taken from the define blocks. This is a way of providing a level of verbosity, it's inherently clear what the DESCRIPTION variable in Package/bridge is, which wouldn't be the case if we passed this information directly as the Nth argument to BuildPackage.
+At the bottom of the file is where the real magic happens, “BuildPackage” is a macro setup by the earlier include statements. BuildPackage only takes one argument directly – the name of the package to be built, in this case “bridge”. All other information is taken from the define blocks. This is a way of providing a level of verbosity, it’s inherently clear what the DESCRIPTION variable in Package/bridge is, which wouldn’t be the case if we passed this information directly as the Nth argument to BuildPackage.
 
 Avoid reuse of PKG_NAME in call, define and eval lines for consistency and readability. Write the full name instead.
 
@@ -5150,11 +5166,11 @@ If the shipped automake recipes are broken beyond repair, then simply find insta
 
 ##### gettext-version
 
-This fixup suppresses version mismatch errors in automake's gettext support.
+This fixup suppresses version mismatch errors in automake’s gettext support.
 
 #### Tips
 
-Packages that are using Autotools should work with simply "PKG_FIXUP:=autoreconf". However there might be issues with required versions.
+Packages that are using Autotools should work with simply “PKG_FIXUP:=autoreconf”. However there might be issues with required versions.
 
 :!: Instead of patching `./configure`, one should fix the file from which `./configure` is generated in autotools: `configure.ac` (or `configure.in`, for very old packages). Another important file is `Makefile.am` from which `Makefile`s (with `configure` output) are generated.
 
@@ -5205,7 +5221,7 @@ PKG_SOURCE_VERSION:=32fc0925cbc30a4a8f71392e976aa94b586c4086
 PKG_MIRROR_HASH:=caedb66cf6dcbdcee0d1525923e203d003ef15f34a13a328686794666f16171f
 ```
 
-History: `PKG_MIRROR_MD5SUM` was [introduced in 2011](commit>?p=openwrt/openwrt.git;a=commitdiff;h=b568a64f8c1f7c077c83d8c189d4c84ca270aeb4) and [renamed to `PKG_MIRROR_HASH` in 2016](commit>?p=openwrt/openwrt.git;a=commitdiff;h=7416d2e046b87b262b407f8af70b8dd9b2927c70).
+History: `PKG_MIRROR_MD5SUM` was [introduced in 2011](commit>?p=openwrt/openwrt.git;a=commitdiff;h=b568a64f8c1f7c077c83d8c189d4c84ca270aeb4) and [renamed to ''PKG_MIRROR_HASH'' in 2016](commit>?p=openwrt/openwrt.git;a=commitdiff;h=7416d2e046b87b262b407f8af70b8dd9b2927c70).
 
 ### Bundle source code with OpenWrt Makefile
 
@@ -5269,9 +5285,9 @@ matches the argument passed to buildroot, this describes the package the menucon
 -  URL - Where to find the original software
 -  MAINTAINER - (required for new packages) Who to contact concerning the package
 -  DEPENDS - (optional) Which packages must be built/installed before this package. See [below](#dependency_types) for the syntax
--  EXTRA_DEPENDS - (optional) Runtime dependencies, don't get built, only added to package `control` file
+-  EXTRA_DEPENDS - (optional) Runtime dependencies, don‘t get built, only added to package ’‘control’’ file
 -  PROVIDES - (optional) allow to define a virtual package that might be provided by multiple real-packages
--  PKGARCH - (optional) Set this to "all" to produce a package with "Architecture: all" (See below)
+-  PKGARCH - (optional) Set this to “all” to produce a package with “Architecture: all” (See below)
 -  USERID - (optional) a username:groupname pair to create at package installation time.
 
 ##### PKGARCH (optional)
@@ -5292,15 +5308,15 @@ A set of commands to unpack and patch the sources. You may safely leave this und
 
 ##### Build/Configure (optional)
 
-You can leave this undefined if the source doesn't use configure or has a normal config script, otherwise you can put your own commands here or use "\$(call Build/Configure/Default,)" as above to pass in additional arguments for a standard configure script.
+You can leave this undefined if the source doesn’t use configure or has a normal config script, otherwise you can put your own commands here or use “\$(call Build/Configure/Default,)” as above to pass in additional arguments for a standard configure script.
 
 ##### Build/Compile (optional)
 
-How to compile the source; in most cases you should leave this undefined, because then the default is used, which calls make. If you want to pass special arguments to make, use e.g. "\$(call Build/Compile/Default,FOO=bar)"
+How to compile the source; in most cases you should leave this undefined, because then the default is used, which calls make. If you want to pass special arguments to make, use e.g. “\$(call Build/Compile/Default,FOO=bar)”
 
 ##### Build/Install (optional)
 
-How to install the compiled source. The default is to call "make install". Again, to pass special arguments or targets, use "\$(call Build/Install/Default,install install-foo)". Note that you need put all the needed make arguments here. If you just need to add something to the "install" argument, don't forget the "install" itself.
+How to install the compiled source. The default is to call “make install”. Again, to pass special arguments or targets, use “\$(call Build/Install/Default,install install-foo)”. Note that you need put all the needed make arguments here. If you just need to add something to the “install” argument, don’t forget the “install” itself.
 
 ##### Build/InstallDev (optional)
 
@@ -5316,25 +5332,25 @@ A set of commands to copy files into the ipkg which is represented by the \$(1) 
 
 ##### Package/preinst
 
-The actual text of the script which is to be executed before installation. Don't forget to include the `#!/bin/sh`. If you need to abort installation, have the script return `false`.
+The actual text of the script which is to be executed before installation. Don‘t forget to include the ’‘\#!/bin/sh’‘. If you need to abort installation, have the script return ’‘false’’.
 
 ##### Package/postinst
 
-The actual text of the script which is to be executed after installation. Don't forget to include the `#!/bin/sh`. Alternatively you can also use an [uci-default script](/docs/guide-developer/uci-defaults) which will be executed automatically on runtime installations by opkg or embedding into an image.
+The actual text of the script which is to be executed after installation. Don‘t forget to include the ’‘\#!/bin/sh’’. Alternatively you can also use an [uci-default script](/docs/guide-developer/uci-defaults) which will be executed automatically on runtime installations by opkg or embedding into an image.
 
 ##### Package/prerm
 
-The actual text of the script which is to be executed before removal. Don't forget to include the `#!/bin/sh`. If you need to abort removal, have the script return `false`.
+The actual text of the script which is to be executed before removal. Don‘t forget to include the ’‘\#!/bin/sh’‘. If you need to abort removal, have the script return ’‘false’’.
 
 ##### Package/postrm
 
-The actual text of the script which is to be executed after removal. Don't forget to include the `#!/bin/sh`.
+The actual text of the script which is to be executed after removal. Don‘t forget to include the ’‘\#!/bin/sh’’.
 
-The reason that some of the defines are prefixed by "Package/" and others are simply "Build" is because of the possibility of generating multiple packages from a single source. OpenWrt works under the assumption of one source per package `Makefile`, but you can split that source into as many packages as desired. Since you only need to compile the sources once, there's one global set of "Build" defines, but you can add as many "Package/" defines as you want by adding extra calls to BuildPackage -- see the dropbear package for an example.
+The reason that some of the defines are prefixed by “Package/” and others are simply “Build” is because of the possibility of generating multiple packages from a single source. OpenWrt works under the assumption of one source per package `Makefile`, but you can split that source into as many packages as desired. Since you only need to compile the sources once, there’s one global set of “Build” defines, but you can add as many “Package/” defines as you want by adding extra calls to BuildPackage – see the dropbear package for an example.
 
 ## Building in a subdirectory of the source
 
-Some software has no Makefile directly at the root of the tarball. For instance, it is common to have a `src/` directory with all source files and a Makefile. The problem is that OpenWRT's build system will try to run `make` in `PKG_BUILD_DIR`; this will fail if there is no Makefile there. To solve this problem, use the `MAKE_PATH` variable, for instance:
+Some software has no Makefile directly at the root of the tarball. For instance, it is common to have a `src/` directory with all source files and a Makefile. The problem is that OpenWRT‘s build system will try to run ’‘make’’ in `PKG_BUILD_DIR`; this will fail if there is no Makefile there. To solve this problem, use the `MAKE_PATH` variable, for instance:
 
     MAKE_PATH:=src
 
@@ -5344,35 +5360,35 @@ This path is relative to `PKG_BUILD_DIR` and defaults to `.`. Alternatively, you
 
 Various types of dependencies can be specified, which require a bit of explanation for their differences. More documentation is available at [Using Dependencies](/docs/guide-developer/dependencies)
 
-|              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-|:-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| +\<foo\>     | Package will depend on package \<foo\> and will select it when selected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| \<foo\>      | Package will depend on package \<foo\> and will be invisible until \<foo\> is selected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| @FOO         | Package depends on the config symbol CONFIG_FOO and will be invisible unless CONFIG_FOO is set. This usually used for depending on certain Linux versions or targets, e.g. @TARGET_foo will make a package only available for target foo. You can also use boolean expressions for complex dependencies, e.g. @(!TARGET_foo&&!TARGET_bar) will make the package unavailable for foo and bar.                                                                                                                                                                                                                                                                       |
+|  |  |
+|:---|----|
+| +\<foo\> | Package will depend on package \<foo\> and will select it when selected. |
+| \<foo\> | Package will depend on package \<foo\> and will be invisible until \<foo\> is selected. |
+| @FOO | Package depends on the config symbol CONFIG_FOO and will be invisible unless CONFIG_FOO is set. This usually used for depending on certain Linux versions or targets, e.g. @TARGET_foo will make a package only available for target foo. You can also use boolean expressions for complex dependencies, e.g. @(!TARGET_foo&&!TARGET_bar) will make the package unavailable for foo and bar. |
 | +FOO:\<bar\> | Package will depend on \<bar\> if CONFIG_FOO is set, and will select \<bar\> when it is selected itself. The typical use case would be if there are compile time options for this package toggling features that depend on external libraries. :!: Note that the + replaces the @. :!: There is limited support for boolean operators here compared to the @ type above. Negation ! is only supported to negate the whole condition. Parentheses are ignored, so use them only for readability. Like C, && has a higher precedence than \|\|. So +(YYY\|\|FOO&&BAR):package will select package if CONFIG_YYY is set or if both CONFIG_FOO and CONFIG_BAR are set. |
-| @FOO:\<bar\> | Package will depend on \<bar\> if CONFIG_FOO is set, and will be invisible until \<bar\> is selected when CONFIG_FOO is set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| @FOO:\<bar\> | Package will depend on \<bar\> if CONFIG_FOO is set, and will be invisible until \<bar\> is selected when CONFIG_FOO is set. |
 
 Some typical config symbols for (conditional) dependencies are:
 
-|                                   |                                                                                                                                                                                 |
-|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| TARGET\_\<foo\>                   | Target \<foo\> is selected                                                                                                                                                      |
-| TARGET\_\<foo\>\_\<bar\>          | If the target \<foo\> has subtargets, subtarget \<foo\> is selected. If not, profile \<foo\> is selected. This is in addition to TARGET\_\<foo\>                                |
-| TARGET\_\<foo\>\_\<bar\>\_\<baz\> | Target \<foo\> with subtarget \<bar\> and profile \<baz\> is selected.                                                                                                          |
-| LINUX_3_X                         | Linux version used is 3.x.\*                                                                                                                                                    |
-| LINUX_2_6_X                       | Linux version used is 2.6.x.\* (:1: only used for backfire and earlier)                                                                                                         |
-| LINUX_2_4                         | Linux version is 2.4 (:!: only used in backfire and earlier, and only for target brcm-2.4)                                                                                      |
-| USE_UCLIBC, USE_GLIBC, USE_EGLIBC | To (not) depend on a certain libc.                                                                                                                                              |
-| BROKEN                            | Package doesn't build or work, and should only be visible if "Show broken targets/packages" is selected. Prevents the package from failing builds by accidentally selecting it. |
-| IPV6                              | IPv6 support in packages is selected.                                                                                                                                           |
+|  |  |
+|----|----|
+| TARGET\_\<foo\> | Target \<foo\> is selected |
+| TARGET\_\<foo\>\_\<bar\> | If the target \<foo\> has subtargets, subtarget \<foo\> is selected. If not, profile \<foo\> is selected. This is in addition to TARGET\_\<foo\> |
+| TARGET\_\<foo\>\_\<bar\>\_\<baz\> | Target \<foo\> with subtarget \<bar\> and profile \<baz\> is selected. |
+| LINUX_3_X | Linux version used is 3.x.\* |
+| LINUX_2_6_X | Linux version used is 2.6.x.\* (:1: only used for backfire and earlier) |
+| LINUX_2_4 | Linux version is 2.4 (:!: only used in backfire and earlier, and only for target brcm-2.4) |
+| USE_UCLIBC, USE_GLIBC, USE_EGLIBC | To (not) depend on a certain libc. |
+| BROKEN | Package doesn’t build or work, and should only be visible if “Show broken targets/packages” is selected. Prevents the package from failing builds by accidentally selecting it. |
+| IPV6 | IPv6 support in packages is selected. |
 
 Note that the syntax above applies to the `DEPENDS` field only.
 
-`PKG_BUILD_DEPENDS` does not use `+` or `@`, but otherwise uses the same syntax. You can write `FOO:bar` to build `bar` if `CONFIG_FOO` is defined (if you want to build bar if package FOO is selected, use `PACKAGE_FOO:bar`). You may use `!`, `||` and `&&` as explained above. `PKG_BUILD_DEPENDS` uses the name from the `PKG_NAME`, not the individual packages. For example, if you want to have openssl to be a build-dependency, you would write `PKG_BUILD_DEPENDS:=openssl`, whereas if your package depends and selects the openssl library, you'd have `DEPENDS:=+libopenssl`. Notice that there's no installable package named `openssl`: the library is `libopenssl`, the utility is `openssl-util`, but their `PKG_NAME` is `openssl`. If you need a host-built package, append `/host` to the `PKG_NAME`, e.g. `PKG_BUILD_DEPENDS:=openssl/host`. A package listed in `PKG_BUILD_DEPENDS` will be built even if it is not selected in `make menuconfig`.
+`PKG_BUILD_DEPENDS` does not use `+` or `@`, but otherwise uses the same syntax. You can write `FOO:bar` to build `bar` if `CONFIG_FOO` is defined (if you want to build bar if package FOO is selected, use `PACKAGE_FOO:bar`). You may use `!`, `||` and `&&` as explained above. `PKG_BUILD_DEPENDS` uses the name from the `PKG_NAME`, not the individual packages. For example, if you want to have openssl to be a build-dependency, you would write `PKG_BUILD_DEPENDS:=openssl`, whereas if your package depends and selects the openssl library, you‘d have ’‘DEPENDS:=+libopenssl’‘. Notice that there’s no installable package named ’‘openssl’‘: the library is ’‘libopenssl’‘, the utility is ’‘openssl-util’‘, but their ’‘PKG_NAME’’ is `openssl`. If you need a host-built package, append `/host` to the `PKG_NAME`, e.g. `PKG_BUILD_DEPENDS:=openssl/host`. A package listed in `PKG_BUILD_DEPENDS` will be built even if it is not selected in `make menuconfig`.
 
 `EXTRA_DEPENDS` does not accept the conditional or select dependency syntax. However, unlike `DEPENDS` and `PKG_BUILD_DEPENDS`, it is generated at package-build-time, so you may use Makefile functions to add them conditionally. For example, to get the equivalent of `DEPENDS:=@SOMESYMBOL:foo +PACKAGE_somepkg:bar`, you can write `EXTRA_DEPENDS:=$(if $(CONFIG_SOMESYMBOL),foo) $(if $(CONFIG_PACKAGE_somepkg),bar)`. :!: Note that neither `foo` or `bar` will be selected in menuconfig, or guaranteed to be built before your package, even if selected somewhere else. For this reason, it is seldom used in packages.
 
-`EXTRA_DEPENDS` is more often used to depend on specific versions, by adding the desired version specification in parentheses, using \>=,\>,\<,\<=,=. Make sure you add the `PKG_RELEASE` number if you're using '=', such as `EXTRA_DEPENDS:=foo (=2.0.0-1)`: where foo's `PKG_VERSION` is 2.0.0, and `PKG_RELEASE` is 1.
+`EXTRA_DEPENDS` is more often used to depend on specific versions, by adding the desired version specification in parentheses, using \>=,\>,\<,\<=,=. Make sure you add the `PKG_RELEASE` number if you‘re using ’=‘, such as ’‘EXTRA_DEPENDS:=foo (=2.0.0-1)’‘: where foo’s ’‘PKG_VERSION’’ is 2.0.0, and `PKG_RELEASE` is 1.
 
 ## Configure a package source
 
@@ -5398,7 +5414,7 @@ To set variables (autoconfig internal ones or CPPFLAGS,CFLAGS, CXXFLAGS, LDFLAGS
 
 ### Host tools required
 
-In order to build your package, you may require some extra build tools or libraries that are not already in the standard OpenWrt toolchain. These must be built as part of the OpenWrt build process ie. you cannot rely on them being installed via the build system's package manager (or manually by the user or administrator). This is so that OpenWrt can be built reliably and repeatably on a wide variety of machines. These are referred to as *host tools* because they run on (or are compiled for) the host, not the target.
+In order to build your package, you may require some extra build tools or libraries that are not already in the standard OpenWrt toolchain. These must be built as part of the OpenWrt build process ie. you cannot rely on them being installed via the build system’s package manager (or manually by the user or administrator). This is so that OpenWrt can be built reliably and repeatably on a wide variety of machines. These are referred to as *host tools* because they run on (or are compiled for) the host, not the target.
 
 If your package requires host tools in order to be built for the target machine, these should go in `PKG_BUILD_DEPENDS` and will end with `/host`. For example, the `json-glib` package requires the [Meson build system](https://mesonbuild.com/) to generate build files, as well as Glib2 on the host, so it has:
 
@@ -5415,14 +5431,14 @@ HOST_BUILD_DEPENDS:=ninja/host
 The makefile for a package that provides host tools will:
 
 - Include `$(INCLUDE_DIR)/host-build.mk`. You can look at this makefile for the details of the host tool build process.
-- Have sections similar to the `Build/...` sections of other packages, but they will start with `Host/`. For example, `Host/Configure`, `Host/Compile` and `Host/Install` are common.
+- Have sections similar to the `Build/…` sections of other packages, but they will start with `Host/`. For example, `Host/Configure`, `Host/Compile` and `Host/Install` are common.
 - Call `$(eval $(call HostBuild))` at the end.
 
 Some examples of packages that *provide* host tools (and their makefiles):
 
 - [Meson](https://github.com/openwrt/packages/blob/master/devel/meson/Makefile)
 - [Samba 4](https://github.com/openwrt/packages/blob/master/net/samba4/Makefile) - note that the Samba 4 *target* package actually depends on the Samba 4 *host* package provided in the same makefile
-- [Go (golang)](https://github.com/openwrt/packages/blob/master/lang/golang/golang/Makefile) - this is a much more complex example, and useful if you're thinking of adding support for a new language in OpenWrt.
+- [Go (golang)](https://github.com/openwrt/packages/blob/master/lang/golang/golang/Makefile) - this is a much more complex example, and useful if you’re thinking of adding support for a new language in OpenWrt.
 
 ##### BUILD
 
@@ -5443,9 +5459,9 @@ If you want to patch the host and target tool separately, then you have to add `
 
 ##### NOTES
 
-All variables in your pre/post install/removal scripts should have double (\$\$) instead of a single (\$) string characters. This will inform "make" to not interpret the value as a variable, but rather just ignore the string and replace the double \$\$ by a single \$ -- [More Info](https://forum.openwrt.org/viewtopic.php?pid=85197#p85197)
+All variables in your pre/post install/removal scripts should have double (\$\$) instead of a single (\$) string characters. This will inform “make” to not interpret the value as a variable, but rather just ignore the string and replace the double \$\$ by a single \$ – [More Info](https://forum.openwrt.org/viewtopic.php?pid=85197#p85197)
 
-After you've created your package Makefile, the new package will automatically show in the menu the next time you run "make menuconfig" and if selected will be built automatically the next time "make" is run.
+After you’ve created your package Makefile, the new package will automatically show in the menu the next time you run “make menuconfig” and if selected will be built automatically the next time “make” is run.
 
 DESCRIPTION is obsolete, use Package/PKG_NAME/description.
 
@@ -5529,7 +5545,7 @@ Create a Config.in file directory where the Makefile is located with the content
     endmenu
 ```
 
-Above, you can see examples for various types of config parameters. Finally, you can check your configuration parameters in your Makefile in the following way (note that you can reference the parameter's value with its name prefixed with `CONFIG_`):
+Above, you can see examples for various types of config parameters. Finally, you can check your configuration parameters in your Makefile in the following way (note that you can reference the parameter‘s value with its name prefixed with ’‘CONFIG\_’’):
 
 ``` make
 ifeq ($(CONFIG_MJPEG_STREAMER_INPUT_UVC),y)
@@ -5539,18 +5555,18 @@ endif
 
 ## Working on local application source
 
-If you are still working on the application, itself, at the same time as you are working on the packaging, it can be very useful to have OpenWrt build your work in progress code, rather than a specific version+md5sum combination checked out of revision control, or downloaded from your final "release" location. There are a few ways of doing this.
+If you are still working on the application, itself, at the same time as you are working on the packaging, it can be very useful to have OpenWrt build your work in progress code, rather than a specific version+md5sum combination checked out of revision control, or downloaded from your final “release” location. There are a few ways of doing this.
 
 ### CONFIG_SRC_TREE_OVERRIDE
 
-This is an option in menuconfig. See "Advanced configuration options (for developers)" -\> "Enable package source tree override"
+This is an option in menuconfig. See “Advanced configuration options (for developers)” -\> “Enable package source tree override”
 
 This allows you to point to a local git tree. (And only git) Say your package is defined in my_cool_feed/awesome_app.
 
     ln -s /path/to/local/awesome_app_tree/.git feeds/my_cool_feed/awesome_app/git-src
     make package/awesome_app/{clean,compile} V=s
 
-Benefits of this approach are that you don't need any special infrastructure in your package makefiles, they stay completely as they would be for a final build. The downside is that it only builds whatever is currently **committed** in HEAD of your local tree. (This could be a private testing branch, but everything you want to include in the package must be committed: uncommitted local changes will not be included in the build.) This will also use a **separate** directory for building and checking out the code. So, any built objects in your local git tree (for example, a build targeting a different architecture) will be left alone, but whichever **branch** is checked out in your tree determines where HEAD is.
+Benefits of this approach are that you don’t need any special infrastructure in your package makefiles, they stay completely as they would be for a final build. The downside is that it only builds whatever is currently **committed** in HEAD of your local tree. (This could be a private testing branch, but everything you want to include in the package must be committed: uncommitted local changes will not be included in the build.) This will also use a **separate** directory for building and checking out the code. So, any built objects in your local git tree (for example, a build targeting a different architecture) will be left alone, but whichever **branch** is checked out in your tree determines where HEAD is.
 
 ### USE_SOURCE_DIR
 
@@ -5562,13 +5578,13 @@ As part of deprecating `package-version-override.mk` (below), a method to point 
 
 (`V=s` is optional above)
 
-This doesn't require any config change to enable rules, doesn't require that you have a local git tree, and doesn't require any files to be committed.
+This doesn’t require any config change to enable rules, doesn’t require that you have a local git tree, and doesn’t require any files to be committed.
 
 At least at present, however, this has the following problems:
 
-- make clean doesn't clean the source link directory, but still seems to be removing a link
+- make clean doesn’t clean the source link directory, but still seems to be removing a link
 - make prepare needs to be run every time
-- make package/awesome_app/{clean,compile} USE_SOURCE_DIR=~blah doesn't work
+- make package/awesome_app/{clean,compile} USE_SOURCE_DIR=~blah doesn’t work
 - Seems to have bad interactions with leaving USE_SOURCE_DIR set for other (dependent?) packages.
 
 See <http://www.mail-archive.com/openwrt-devel@lists.openwrt.org/msg23122.html> for the original discussion of this new feature
@@ -5577,13 +5593,13 @@ See <http://www.mail-archive.com/openwrt-devel@lists.openwrt.org/msg23122.html> 
 
 ### (Deprecated) package-version-override.mk
 
-:!: \*\* Don't use this anymore! \*\*
+:!: \*\* Don’t use this anymore! \*\*
 
-Support for this style of local source building was removed. This style required a permanent modification to your package makefile, and then entering a path via menuconfig to where the source was found. It was fairly easy to use, and didn't care whether your local source was in git or svn or visual source safe even, but it had the major downside that the "clean" target simply didn't work (as it simply removed a symlink for cleaning).
+Support for this style of local source building was removed. This style required a permanent modification to your package makefile, and then entering a path via menuconfig to where the source was found. It was fairly easy to use, and didn’t care whether your local source was in git or svn or visual source safe even, but it had the major downside that the “clean” target simply didn’t work (as it simply removed a symlink for cleaning).
 
 If you build a current OpenWrt tree, with packages that still attempt to use this style of local building, you **will** receive errors like so: ERROR: please fix package/feeds/feed_name/application_name/Makefile - see logs/package/feeds/feed_name/application_name/dump.txt for details
 
-If you need/want to keep using this style, where it's available, make sure you include without failing if it was missing:
+If you need/want to keep using this style, where it’s available, make sure you include without failing if it was missing:
 
     -include $(INCLUDE_DIR)/package-version-override.mk
 
@@ -5599,7 +5615,7 @@ Many kernel programs are included in the Linux source distribution; typically th
 
 See ***FIX:Customizingthekerneloptions customizing the kernel options*** for including it in the kernel.
 
-To include one of these programs as a loadable module, select the corresponding kernel option in the OpenWrt configuration (see [Build Configuration](/docs/guide-developer/toolchain/use-buildsystem#image_configuration)). If your favorite kernel module does not appear in the OpenWrt configuration menus, you must add a stanza to one of the files in the package/kernel/linux/modules directory. Here is an example extracted from .../modules/block.mk:
+To include one of these programs as a loadable module, select the corresponding kernel option in the OpenWrt configuration (see [Build Configuration](/docs/guide-developer/toolchain/use-buildsystem#image_configuration)). If your favorite kernel module does not appear in the OpenWrt configuration menus, you must add a stanza to one of the files in the package/kernel/linux/modules directory. Here is an example extracted from …/modules/block.mk:
 
 ``` make
 define KernelPackage/loop
@@ -5770,7 +5786,7 @@ $(eval $(call KernelPackage,madwifi))
 
 #### The use of MODPARAMS
 
-If a module require some special param to be passed on Autoload, it's available MODPARAMS using the following syntax:
+If a module require some special param to be passed on Autoload, it’s available MODPARAMS using the following syntax:
 
     MODPARAMS.module_ko:=example_param1=example_value example_param2=example_value2
 
@@ -5794,7 +5810,7 @@ endef
 #### Make a Kernel Module required for boot
 
 Some modules may be required for the correct operation of the device. One example would be an ethernet driver required for the correct operation of the switch on the device.
-To flag a Kernel Module this way it's needed to append `1` to `AUTOLOAD` at the end.
+To flag a Kernel Module this way it‘s needed to append ’‘1’’ to `AUTOLOAD` at the end.
 This cause the module file to get placed in /etc/modules-boot.d/ instead of /etc/modules.d/, modules-boot.d is processed by procd init before launching preinit and correctly works both in a normal boot and in a failsafe boot. All of this is with the assumption that the module is installed in the firmware and not with OPKG on a loaded system as **it needs to be present before /overlay is mounted**. (OPKG installed module are present only in after /overlay is mounted)
 
 For example here is `phy-realtek` in `package/kernel/linux/modules/netdevices.mk`:
@@ -5831,7 +5847,7 @@ A set of commands to copy files out of the compiled source and into the ipkg whi
 
 ## Packaging a service
 
-If you want to install a service (something that should start/stop at boot time, that has a /etc/init.d/blah script), read the [Init Scripts](/docs/techref/initscripts) section of the Technical Reference and the [Procd init scripts](/docs/guide-developer/procd-init-scripts) section of the Developer's Guide. A key point is to make sure that the init.d script can be run on the host. At image build time, all init.d scripts found are run on the host, looking for the START=20/STOP=99 lines. This is what installs the symlinks in /etc/rc.d.
+If you want to install a service (something that should start/stop at boot time, that has a /etc/init.d/blah script), read the [Init Scripts](/docs/techref/initscripts) section of the Technical Reference and the [Procd init scripts](/docs/guide-developer/procd-init-scripts) section of the Developer’s Guide. A key point is to make sure that the init.d script can be run on the host. At image build time, all init.d scripts found are run on the host, looking for the START=20/STOP=99 lines. This is what installs the symlinks in /etc/rc.d.
 
 Packages have default postinst/prerm scripts that will run `/etc/init.d/foo enable` (creating the symlinks) or `/etc/init.d/foo disable` (removing the symlinks) when they are installed/removed by opkg.
 
@@ -5895,7 +5911,7 @@ See [the original announcement](https://web.archive.org/web/20170629071358/https
 # Create a sample procd init script
 
  This article is a mostly verbatim copy of [this archived article](https://web.archive.org/web/20220518121856/https://joostoostdijk.com/posts/service-configuration-with-procd), all credit goes to the original author, **Joost Oostdijk**
-It was adapted to use an equivalent shell script instead of NodeJS JavaScript, because it's lighter and better for a simple testing setup on most OpenWrt devices.
+It was adapted to use an equivalent shell script instead of NodeJS JavaScript, because it’s lighter and better for a simple testing setup on most OpenWrt devices.
 
 Procd init scripts gives us many nice to use features by default such as a restart strategy and the ability to store and read configuration from the UCI system.
 
@@ -5977,7 +5993,7 @@ This will install a symlink for us in directory /etc/rc.d/ called S95myservice (
 
     $ ls -la /etc/rc.d/S*
 
-...
+…
 
 It is useful to be able to influence the order of startup of services, if our service would be dependent on the network we’d make sure that the START sequence ‘index’ is at least 1 more than the START sequence of the network service.
 
@@ -6113,38 +6129,47 @@ There are a couple of more options that can be configured in a procd scripts ‘
 
 - **respawn**
   respawn your service automatically when it terminates for some reason.
-  `[procd_set_param](../cookbook/chunked-reference/procd-service-lifecycle.md) respawn \
+  ``` bash
+  procd_set_param respawn \
         ${respawn_threshold:-3600} \
-        ${respawn_timeout:-5} ${respawn_retry:-5}`
+        ${respawn_timeout:-5} ${respawn_retry:-5}
+  ```
+
   In this example we respawn if process terminates sooner than respawn_threshold, it is considered crashed and after 5 retries the service is stopped. However, if it terminates later than respawn_threshold, it would be respawned indefinitely.
 
 - **pidfile**
   Configure where to store the pid file
-  `procd_set_param pidfile $PIDFILE`
+  ``` bash
+  procd_set_param pidfile $PIDFILE
+  ```
 
 - **env vars**
   Pass environment variables to your process with
-  `procd_set_param env A_VAR=avalue`
+  ``` bash
+  procd_set_param env A_VAR=avalue
+  ```
 
 - **ulimit**
   If you need to set resource limits for your process you can use
-  `procd_set_param limits core="unlimited"`
+  ``` bash
+  procd_set_param limits core="unlimited"
+  ```
+
   To see the system wide settings for ulimt on an OpenWrt device you can run
-  `$ ulimit -a
-  -f: file size (blocks)             unlimited
-  -t: cpu time (seconds)             unlimited
-  -d: data seg size (kb)             unlimited
-  -s: stack size (kb)                8192
-  -c: core file size (blocks)        0
-  -m: resident set size (kb)         unlimited
-  -l: locked memory (kb)             64
-  -p: processes                      475
-  -n: file descriptors               1024
-  -v: address space (kb)             unlimited
-  -w: locks                          unlimited
-  -e: scheduling priority            0
-  -r: real-time priority             0
-  `
+      $ ulimit -a
+      -f: file size (blocks)             unlimited
+      -t: cpu time (seconds)             unlimited
+      -d: data seg size (kb)             unlimited
+      -s: stack size (kb)                8192
+      -c: core file size (blocks)        0
+      -m: resident set size (kb)         unlimited
+      -l: locked memory (kb)             64
+      -p: processes                      475
+      -n: file descriptors               1024
+      -v: address space (kb)             unlimited
+      -w: locks                          unlimited
+      -e: scheduling priority            0
+      -r: real-time priority             0
 - **user**
   To change the user that runs the service you can use
   \<code\> [procd_set_param](../cookbook/chunked-reference/procd-service-lifecycle.md) user nobody \</code\>
@@ -6157,8 +6182,7 @@ There are a couple of more options that can be configured in a procd scripts ‘
 
 A procd init script is similiar to an old init script, but with a few differences:
 
-- procd expects services to start as if they were to **run in the foreground**, but of course procd runs them the background from the user's perspective.
-- Different shebang line: `#!/bin/sh /etc/rc.common`
+- procd expects services to start as if they were to **run in the foreground**, but of course procd runs them the background from the user‘s perspective. \* Different shebang line: ’‘\#!/bin/sh /etc/rc.common’’
 - procd expects that shell variable (not environment variable) `initscript` is set to the path of the script that invoked it
 - Explicitly use procd `USE_PROCD=1`
 
@@ -6207,7 +6231,7 @@ Defining configuration is handled in the `start_service()`. For each instance to
 
 Init script has to specify all possible `procd` events that may require service reconfiguration. Defining all triggers is done in the `service_triggers()` using `procd_add_*_trigger` helpers.
 
-Optionally init script may handle service reconfiguration process on its own. It's useful for services that don't require complete restart to use new configuration. It can be handled by specifying custom `reload_service()` which prevents `start_service()` from being called and so stops `procd` from restarting service.
+Optionally init script may handle service reconfiguration process on its own. It‘s useful for services that don’t require complete restart to use new configuration. It can be handled by specifying custom ’‘reload_service()’’ which prevents `start_service()` from being called and so stops `procd` from restarting service.
 
 ## Service Data
 
@@ -6215,7 +6239,7 @@ Service data is sent to `stdout` by the function `service_data()`. This would ty
 
 ## Defining service instances
 
-The purpose of `start_service()` (see next section to see when it's called) is to define instance(s) with:
+The purpose of `start_service()` (see next section to see when it’s called) is to define instance(s) with:
 
 1.  Command to execute to start service
 2.  Information on what to observe for changes (e.g. files or devices) - optional
@@ -6264,13 +6288,13 @@ If you want to add a check *after* procd has sent the terminate signal (e.g. wai
 
 ### Init scripts during compilation
 
-WARNING: initscripts **will run** while building OpenWrt images (when installing packages in what will become a ROM image) in the **host system** (right now, for actions "*enable*" and "*disable*"). **They must not fail, or have undesired side-effects in that situation.** When being run by the build system, environment variable **\${IPKG_INSTROOT}** will be set to the working directory being used. On the "target system", that environment variable will be empty/unset. Refer to "/lib/functions.sh" and also to "/etc/rc.common" in package "base-files" for the nasty details.
+WARNING: initscripts **will run** while building OpenWrt images (when installing packages in what will become a ROM image) in the **host system** (right now, for actions “*enable*” and “*disable*”). **They must not fail, or have undesired side-effects in that situation.** When being run by the build system, environment variable **\${IPKG_INSTROOT}** will be set to the working directory being used. On the “target system”, that environment variable will be empty/unset. Refer to “/lib/functions.sh” and also to “/etc/rc.common” in package “base-files” for the nasty details.
 
 ## Specifying triggers
 
 While `start_service()` takes care of setting service instances states and submitting them to the `procd` (for a potential service restart), it has to be explicitly called to do so. In most cases it should happen on some related change.
 
-That's where `service_triggers()` comes in handy and allows specifying triggers. Most system important changes result in generating events that `service_triggers()` can use for triggering various actions. There are multiple `procd_add_*_trigger()` helpers for that purpose.
+That‘s where ’‘[service_triggers()](../cookbook/chunked-reference/procd-service-lifecycle.md)’’ comes in handy and allows specifying triggers. Most system important changes result in generating events that `service_triggers()` can use for triggering various actions. There are multiple `procd_add_*_trigger()` helpers for that purpose.
 
 Every configurable service has to specify what system changes should result in its reconfiguration. Those events should be defined in the `service_triggers()` using available helpers. When related `procd` `service` event occurs it will result in executing `/etc/init.d/<foo> reload`.
 
@@ -6285,18 +6309,18 @@ service_triggers()
 }
 ```
 
-| Function                           | Arguments            | Event used      | Description                                     |
-|:-----------------------------------|:---------------------|:----------------|-------------------------------------------------|
-| procd_add_reload_trigger           | list of config files | `config.change` | Uses `/etc/init.d/<foo> reload` as the handler  |
-| procd_add_reload_interface_trigger | interface name       | `interface.*`   | Uses `/etc/init.d/<foo> reload` as the handler  |
-| procd_add_reload_mount_trigger     | paths to watch for   | `mount.add`     | Uses `/etc/init.d/<foo> reload` as the handler  |
-| procd_add_restart_mount_trigger    | paths to watch for   | `mount.add`     | Uses `/etc/init.d/<foo> restart` as the handler |
+| Function | Arguments | Event used | Description |
+|:---|:---|:---|----|
+| procd_add_reload_trigger | list of config files | `config.change` | Uses `/etc/init.d/<foo> reload` as the handler |
+| procd_add_reload_interface_trigger | interface name | `interface.*` | Uses `/etc/init.d/<foo> reload` as the handler |
+| procd_add_reload_mount_trigger | paths to watch for | `mount.add` | Uses `/etc/init.d/<foo> reload` as the handler |
+| procd_add_restart_mount_trigger | paths to watch for | `mount.add` | Uses `/etc/init.d/<foo> restart` as the handler |
 
- When using `uci` from command line `uci commit` doesn't generate `config.change` event. It requires calling `reload_config` afterwards.
+ When using `uci` from command line `uci commit` doesn‘t generate ’‘config.change’’ event. It requires calling `reload_config` afterwards.
 
 This does not apply to using `uci` over `rpcd` plugin.
 
- Adding `interface.*` trigger and having `/etc/init.d/<foo> reload` called won't automatically make `procd` notice any state change and won't make it restart a service.
+ Adding `interface.*` trigger and having `/etc/init.d/<foo> reload` called won‘t automatically make ’‘procd’’ notice any state change and won’t make it restart a service.
 
 Relevant interface has to be made part of service state using the `procd_set_param netdev`.
 
@@ -6308,11 +6332,11 @@ See use cases of [procd_add_interface_trigger](https://github.com/openwrt/packag
 
 ### ucitrack
 
-In older versions of OpenWrt, a system called "ucitrack" attempted to track UCI config files, and the processes that depended on each of them, and would restart them all as needed. This too, is replaced with ubus/procd, and expanded to allow notifying services when network interfaces change.
+In older versions of OpenWrt, a system called “ucitrack” attempted to track UCI config files, and the processes that depended on each of them, and would restart them all as needed. This too, is replaced with ubus/procd, and expanded to allow notifying services when network interfaces change.
 
 ## Manual reload
 
-Sometimes service state may depend on information that doesn't have any events related. This may happen e.g. with service native configuration files that don't get build using UCI config.
+Sometimes service state may depend on information that doesn’t have any events related. This may happen e.g. with service native configuration files that don’t get build using UCI config.
 
 In such cases `procd` should be told to use relevant config file using `procd_set_param file /etc/foo.conf`. After every config file modification `/etc/init.d/foo reload` should be called manually.
 
@@ -6335,9 +6359,9 @@ reload_service()
 
 j==== Reloading service setup ====
 
-Some services may support reloading configuration without a complete restart. It's usually implemented using \`SIGHUP\` or similar signal.
+Some services may support reloading configuration without a complete restart. It’s usually implemented using \`SIGHUP\` or similar signal.
 
-OpenWrt comes with a `procd_send_signal()` helper that doesn't require passing PID directly. Example:
+OpenWrt comes with a `procd_send_signal()` helper that doesn’t require passing PID directly. Example:
 
     reload_service() {
              procd_send_signal service_name [instance_name] [signal]
@@ -6347,7 +6371,7 @@ The *signal* argument is `SIGHUP` by default and must be specified by NAME. You 
 
 The *service_name* is the basename of the `init.d` script, e.g. `yourapp` for the `/etc/init.d/yourapp`.
 
-The *instance_name* allows specifying custom instance name in case it was used like `procd_open_instance [instance_name]`. If *instance_name* is unspecified, or '' '\*' '' then the signal will be delivered to all instances of the service.
+The *instance_name* allows specifying custom instance name in case it was used like `procd_open_instance [instance_name]`. If *instance_name* is unspecified, or ’’ ‘\*’ ’’ then the signal will be delivered to all instances of the service.
 
 **Note** You can also send signals to named procd services from outside initscripts. Simply load the procd functions and send the signal as before.
 
@@ -6361,24 +6385,24 @@ The *instance_name* allows specifying custom instance name in case it was used l
 
 procd can isolate services using various Linux features typically used for (slim-)containers: *chroot* and *namespaces* (and *limits*, *seccomp*, *capabilities* as well as setting `PR_SET_NO_NEW_PRIVS`, see [Service Parameters](#service_parameters)).
 
-| Function                | Arguments        | Description                                                   |
-|:------------------------|:-----------------|:--------------------------------------------------------------|
-| procd_add_jail          | jail name, flags | Set up service jail (with features according to *flags*)      |
-| procd_add_jail_mount    | read-only paths  | Read-only bind the paths listed to the jail's mount namespace |
-| procd_add_jail_mount_rw | read-write paths | Bind the paths listed to the jail's mount namespace           |
+| Function | Arguments | Description |
+|:---|:---|:---|
+| procd_add_jail | jail name, flags | Set up service jail (with features according to *flags*) |
+| procd_add_jail_mount | read-only paths | Read-only bind the paths listed to the jail’s mount namespace |
+| procd_add_jail_mount_rw | read-write paths | Bind the paths listed to the jail’s mount namespace |
 
-| Flag        | Description                                                           |
-|:------------|:----------------------------------------------------------------------|
-| log         | Allow jailed service to log to syslog                                 |
-| ubus        | Allow jailed service to access ubus                                   |
-| procfs      | Mount /proc in jail                                                   |
-| sysfs       | Mount /sys in jail                                                    |
-| ronly       | Re-mount jail rootfs read-only                                        |
+| Flag | Description |
+|:---|:---|
+| log | Allow jailed service to log to syslog |
+| ubus | Allow jailed service to access ubus |
+| procfs | Mount /proc in jail |
+| sysfs | Mount /sys in jail |
+| ronly | Re-mount jail rootfs read-only |
 | requirejail | Do not fall back to run without jail in case jail could not be set up |
-| netns       | Run jailed process in new network namespace                           |
-| userns      | Run jailed process in new user namespace                              |
-| cgroupsns   | Run jailed process in new cgroups namespace                           |
-| console     | Set up console accessible with `ujail-console`                        |
+| netns | Run jailed process in new network namespace |
+| userns | Run jailed process in new user namespace |
+| cgroupsns | Run jailed process in new cgroups namespace |
+| console | Set up console accessible with `ujail-console` |
 
 See use cases of [procd_add_jail](https://github.com/openwrt/packages/search?q=procd_add_jail).
 
@@ -6398,7 +6422,7 @@ tail -f /var/log/messages |  while read -r match; do
 done
 ```
 
-Because this script uses a pipe a sub-process is spawned. Calling `/etc/init.d./<foo> stop` will only terminate the parent process. The sub-process will still be alive and continue running. This is also true if you call `kill` on the main process's PID manually. The program needs to keep track of its sub-processes and terminate them properly when it receives a `SIGTERM` signal.
+Because this script uses a pipe a sub-process is spawned. Calling `/etc/init.d./<foo> stop` will only terminate the parent process. The sub-process will still be alive and continue running. This is also true if you call `kill` on the main process‘s PID manually. The program needs to keep track of its sub-processes and terminate them properly when it receives a ’‘SIGTERM’’ signal.
 
 For this case in particular, here is a working solution:
 
@@ -6432,29 +6456,27 @@ wait $pid
 
 ## Service Parameters
 
-The following table contains a listing of the possible values to `procd_set_param()` and a description of their effects. List values are passed space-separated, e.g. `procd_set_param env HOME=/root ENVIRONMENT=production FOO="bar baz"`. String values are implicitely concatenated, so `procd_set_param error An error occurred` is equivalent to `procd_set_param error "An error occurred"`.
+The following table contains a listing of the possible values to `procd_set_param()` and a description of their effects. List values are passed space-separated, e.g. `procd_set_param env HOME=/root ENVIRONMENT=production FOO=“bar baz”`. String values are implicitely concatenated, so `procd_set_param error An error occurred` is equivalent to `procd_set_param error “An error occurred”`.
 
-| Parameter       | Data Type      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-|-----------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `env`           | Key-Value-List | Sets a number of environment variables in `key=value` notation exported to the spawned process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `data`          | Key-Value-List | Sets arbitrary user data in `key=value` notation to the ubus service state. This is mainly used to store additional meta data with spawned services, such as [mDNS](../wiki/chunked-reference/wiki_page-guide-developer-mdns.md) announcements or firewall rules which may be picked up by other services.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `limits`        | Key-Value-List | Set ulimit values in `key=value` notation for the spawned process. The following limit names are recognized by *procd*: `as` (`RLIMIT_AS`), `core` (`RLIMIT_CORE`), `cpu` (`RLIMIT_CPU`), `data` (`RLIMIT_DATA`), `fsize` (`RLIMIT_FSIZE`), `memlock` (`RLIMIT_MEMLOCK`), `nofile` (`RLIMIT_NOFILE`), `nproc` (`RLIMIT_NPROC`), `rss` (`RLIMIT_RSS`), `stack` (`RLIMIT_STACK`), `nice` (`RLIMIT_NICE`), `rtprio` (`RLIMIT_RTPRIO`), `msgqueue` (`RLIMIT_MSGQUEUE`), `sigpending` (`RLIMIT_SIGPENDING`) **Two numeric values, separated by blank space, are expected for RLIMIT: the first value represents the soft limit and the other the hard limit; e.g.: [procd_set_param](../cookbook/chunked-reference/procd-service-lifecycle.md) limits nofile="10000 20000"; the "unlimited" value can be used in cases where "ulimit -{parameter} unlimited" works, for example for the "core" parameter.**                                                                                               |
-| `command`       | List           | Sets the command vector (`argv`) used to execute the process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `netdev`        | List           | Passes a list of Linux network device names to *procd* to be monitored for changes. Upon starting a service, the interface index of each network device name is resolved and stored as part of *procd*'s in-memory service state. When a service reload request is processed and the interface index of any of the associated network devices changed or if the list itself changed, the running service state is invalidated and *procd* will restart the associated process or deliver a UNIX signal to it, depending on how the service was set up.                                                                                                                                                                                                                                                                                                                                                                                   |
-| `file`          | List           | Passes a list of file names to *procd* to be monitored for changes. Upon starting a service, the content of each passed file is checksummed and stored as part of *procd*'s in-memory service state. When a service reload request is processed and the checksum of one of the associated files changed, or the list of files itself changed, the running service state is invalidated and *procd* will restart the associated process or deliver a UNIX signal to it, depending on how the service was set up.                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `respawn`       | List           | A series of three consecutive numbers which set the *respawn threshold*, the *respawn timeout* and the *respawn retry* respectively. The timeout specifies the amount of seconds to wait before a service restart attempt, the retry value controls how many restart attempts will be made before a service is considered crashed and the threshold value in seconds controls the time frame in which the restart attempts are counted towards the retry limit. For example a threshold of 300 with a retry value of 10 will cause *procd* to consider the service to be crashed if the associated UNIX process terminated more than 10 times within a time frame of 5 minutes. No further restart attempts will be made for such crashed services unless an explicit restart is performed. Setting the retry value to `0` will cause *procd* to try restarting the service indefinitely. The default value for `respawn` is `3600 5 5`. |
-| `watch`         | List           | Passes a list of *ubus* namespaces to watch - *procd* will subcribe to each namespace and wait for incoming *ubus* events which are then forwarded to registered JSON script triggers for evaluation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `error`         | List           | Passes one or more free formed error strings to *procd*. The error strings are stored as part of the in-memory service state and are exposed verbatim in *ubus* for use by other tools. This facility is mainly useful to allow init scripts to signal configuration errors or other transient issues preventing a successful start up. If any error string is passed to *procd*, no attempt will be made to actually spawn the associated UNIX process of the service but the service instance itself is still registered in *procd*.                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `nice`          | Integer        | Set the scheduling priority of the spawned process. Valid values range from `-20` (most favorable) to `19` (least favorable).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `term_timeout`  | Integer        | Specifies the amount of seconds to wait for a clean process exit after delivering the `TERM` signal. If the process fails to completely exit within the specified time frame, the process is forcibly terminated using an uncatchable `KILL` signal. The default termination timeout value is 5 seconds. Services with expensive shutdown operations, such as database systems, should set the `term_timeout` parameter to sufficiently large value.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `reload_signal` | String         | Instructs *procd* to handle process reloads by delivering a UNIX signal instead of terminating the running process and spawning it again. This is useful for programs that provide extensive native configuration reload handling which allows for updated configurations to be applied on the fly without the need to restart the process. Note that this parameter only makes sense in conjunction with fixed command lines. When a reload signal is specified, any updated command line will be ignored since the running process is retained and not executed again. Valid values for this parameter are UNIX signal names as listed by `kill -l`.                                                                                                                                                                                                                                                                                   |
-| `pidfile`       | String         | Instructs *procd* to write the PID of the spawned process into the specified file path. While *procd* itself does not use or require PID files to track spawned processes, this option is useful for sitation where knowledge of the PID is required, e.g. for monitoring or control client software.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `user`          | String         | Specifies the name of the user to spawn the process as. *procd* will look up the given name in `/etc/passwd` and set the effective uid and primary gid of the spawned processaccordingly. If omitted, the process is spawned as `root` (uid 0, gid 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `seccomp`       | String         | Specifies file path to read seccomp filter rules from, the file should be JSON formatted like the [seccomp object of the OCI run-time spec](https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md#seccomp)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `capabilities`  | String         | Specifies file path to read capability set, the file should be JSON formatted like the [capabilities object of the OCI run-time spec](https://github.com/opencontainers/runtime-spec/blob/master/config.md#linux-process)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `stdout`        | Boolean        | If set to `1`, instruct *procd* to relay the spawned process' stdout to the system log. The stdout will be fed line-wise to `syslog(3)` using the basename of the first command argument as identity, `LOG_INFO` as priority and `LOG_DAEMON` as facility.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `stderr`        | Boolean        | If set to `1`, instruct *procd* to relay the spawned process' stderr to the system log. The stderr will be fed line-wise to `syslog(3)` using the basename of the first command argument as identity, `LOG_ERR` as priority and `LOG_DAEMON` as facility.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `no_new_privs`  | Boolean        | Instructs *ujail* to not allow privilege elevation. Sets the *ujail* `-c` parameter when true.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Parameter | Data Type | Description |
+|----|----|----|
+| `env` | Key-Value-List | Sets a number of environment variables in `key=value` notation exported to the spawned process. |
+| `data` | Key-Value-List | Sets arbitrary user data in `key=value` notation to the ubus service state. This is mainly used to store additional meta data with spawned services, such as [mDNS](../wiki/chunked-reference/wiki_page-guide-developer-mdns.md) announcements or firewall rules which may be picked up by other services. |
+| `limits` | Key-Value-List | Set ulimit values in `key=value` notation for the spawned process. The following limit names are recognized by *procd*: `as` (`RLIMIT_AS`), `core` (`RLIMIT_CORE`), `cpu` (`RLIMIT_CPU`), `data` (`RLIMIT_DATA`), `fsize` (`RLIMIT_FSIZE`), `memlock` (`RLIMIT_MEMLOCK`), `nofile` (`RLIMIT_NOFILE`), `nproc` (`RLIMIT_NPROC`), `rss` (`RLIMIT_RSS`), `stack` (`RLIMIT_STACK`), `nice` (`RLIMIT_NICE`), `rtprio` (`RLIMIT_RTPRIO`), `msgqueue` (`RLIMIT_MSGQUEUE`), `sigpending` (`RLIMIT_SIGPENDING`) **Two numeric values, separated by blank space, are expected for RLIMIT: the first value represents the soft limit and the other the hard limit; e.g.: [procd_set_param](../cookbook/chunked-reference/procd-service-lifecycle.md) limits nofile=“10000 20000”; the “unlimited” value can be used in cases where “ulimit -{parameter} unlimited” works, for example for the “core” parameter.** |
+| `command` | List | Sets the command vector (`argv`) used to execute the process. |
+| `netdev` | List | Passes a list of Linux network device names to *procd* to be monitored for changes. Upon starting a service, the interface index of each network device name is resolved and stored as part of *procd*‘s in-memory service state. When a service reload request is processed and the interface index of any of the associated network devices changed or if the list itself changed, the running service state is invalidated and *procd* will restart the associated process or deliver a UNIX signal to it, depending on how the service was set up. \| \| ’‘file’’ |
+| `watch` | List | Passes a list of *ubus* namespaces to watch - *procd* will subcribe to each namespace and wait for incoming *ubus* events which are then forwarded to registered JSON script triggers for evaluation. |
+| `error` | List | Passes one or more free formed error strings to *procd*. The error strings are stored as part of the in-memory service state and are exposed verbatim in *ubus* for use by other tools. This facility is mainly useful to allow init scripts to signal configuration errors or other transient issues preventing a successful start up. If any error string is passed to *procd*, no attempt will be made to actually spawn the associated UNIX process of the service but the service instance itself is still registered in *procd*. |
+| `nice` | Integer | Set the scheduling priority of the spawned process. Valid values range from `-20` (most favorable) to `19` (least favorable). |
+| `term_timeout` | Integer | Specifies the amount of seconds to wait for a clean process exit after delivering the `TERM` signal. If the process fails to completely exit within the specified time frame, the process is forcibly terminated using an uncatchable `KILL` signal. The default termination timeout value is 5 seconds. Services with expensive shutdown operations, such as database systems, should set the `term_timeout` parameter to sufficiently large value. |
+| `reload_signal` | String | Instructs *procd* to handle process reloads by delivering a UNIX signal instead of terminating the running process and spawning it again. This is useful for programs that provide extensive native configuration reload handling which allows for updated configurations to be applied on the fly without the need to restart the process. Note that this parameter only makes sense in conjunction with fixed command lines. When a reload signal is specified, any updated command line will be ignored since the running process is retained and not executed again. Valid values for this parameter are UNIX signal names as listed by `kill -l`. |
+| `pidfile` | String | Instructs *procd* to write the PID of the spawned process into the specified file path. While *procd* itself does not use or require PID files to track spawned processes, this option is useful for sitation where knowledge of the PID is required, e.g. for monitoring or control client software. |
+| `user` | String | Specifies the name of the user to spawn the process as. *procd* will look up the given name in `/etc/passwd` and set the effective uid and primary gid of the spawned processaccordingly. If omitted, the process is spawned as `root` (uid 0, gid 0) |
+| `seccomp` | String | Specifies file path to read seccomp filter rules from, the file should be JSON formatted like the [seccomp object of the OCI run-time spec](https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md#seccomp) |
+| `capabilities` | String | Specifies file path to read capability set, the file should be JSON formatted like the [capabilities object of the OCI run-time spec](https://github.com/opencontainers/runtime-spec/blob/master/config.md#linux-process) |
+| `stdout` | Boolean | If set to `1`, instruct *procd* to relay the spawned process’ stdout to the system log. The stdout will be fed line-wise to `syslog(3)` using the basename of the first command argument as identity, `LOG_INFO` as priority and `LOG_DAEMON` as facility. |
+| `stderr` | Boolean | If set to `1`, instruct *procd* to relay the spawned process’ stderr to the system log. The stderr will be fed line-wise to `syslog(3)` using the basename of the first command argument as identity, `LOG_ERR` as priority and `LOG_DAEMON` as facility. |
+| `no_new_privs` | Boolean | Instructs *ujail* to not allow privilege elevation. Sets the *ujail* `-c` parameter when true. |
 
 ---
 
@@ -6478,38 +6500,38 @@ See details here: [rpcd: OpenWrt ubus RPC daemon for backend server](/docs/techr
 
 The goal of this high-level process is to identify what needs to be done for a security response, and who can help making it happen.
 
-|                               \*\*1. Awareness \*\*                                |          |                                          |                                                                                                                                                                                                                                                          |
-|:----------------------------------------------------------------------------------:|----------|------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|                                        Task                                        | Duration | Who can do it                            | Notes                                                                                                                                                                                                                                                    |
-| [Make security team aware](/docs/guide-developer/security#vulnerability_reporting) | \-       | Whoever being aware about security issue | Its important to handle the issue properly from the beginning.                                                                                                                                                                                           |
-|                                                                                    |          |                                          |                                                                                                                                                                                                                                                          |
-|                             \*\*2. Identification \*\*                             |          |                                          |                                                                                                                                                                                                                                                          |
-|                                        Task                                        | Duration | Who can do it                            | Notes                                                                                                                                                                                                                                                    |
-|                                   Analyze report                                   | \-       | Security response team                   | Assess incoming reports for validity and potential severity.                                                                                                                                                                                             |
-|                                                                                    |          |                                          |                                                                                                                                                                                                                                                          |
-|                               \*\*3. Assesment \*\*                                |          |                                          |                                                                                                                                                                                                                                                          |
-|                                        Task                                        | Duration | Who can do it                            | Notes                                                                                                                                                                                                                                                    |
-|                                 Impact evaluation                                  | \-       | Security response team                   | Determine the potential impact on users and the project (e.g., data exposure, remote code execution).                                                                                                                                                    |
-|                                Risk categorization                                 | \-       | Security response team                   | Assign severity levels (e.g., Critical, High, Medium, Low) using frameworks like CVSS.                                                                                                                                                                   |
-|                                 Confirm the issue                                  | \-       | Security response team                   | Reproduce the issue in a controlled environment to confirm its validity.                                                                                                                                                                                 |
-|                                                                                    |          |                                          |                                                                                                                                                                                                                                                          |
-|                              \*\*4. Containment \*\*                               |          |                                          |                                                                                                                                                                                                                                                          |
-|                                        Task                                        | Duration | Who can do it                            | Notes                                                                                                                                                                                                                                                    |
-|                            Prevent further exploitation                            | \-       | \-                                       | Take immediate action to limit the incident’s impact (e.g., temporarily disabling a vulnerable feature, service)                                                                                                                                         |
-|                               Communicate internally                               | \-       | Security response team                   | Notify relevant maintainers, sysadmins to coordinate the response                                                                                                                                                                                        |
-|                                                                                    |          |                                          |                                                                                                                                                                                                                                                          |
-|                              \*\*5. Remediation \*\*                               |          |                                          |                                                                                                                                                                                                                                                          |
-|                                        Task                                        | Duration | Who can do it                            | Notes                                                                                                                                                                                                                                                    |
-|                               Fix the vulnerability                                | \-       | \-                                       | Patch the issue in the codebase and thoroughly test the fix                                                                                                                                                                                              |
-|                                   Backport fixes                                   | \-       | \-                                       | Apply fixes to older supported versions, if necessary                                                                                                                                                                                                    |
-|                               \*\*6. Disclosure \*\*                               |          |                                          |                                                                                                                                                                                                                                                          |
-|                                        Task                                        | Duration | Who can do it                            | Notes                                                                                                                                                                                                                                                    |
-|                             Communicate with reporter                              | \-       | Security response team                   | Notify the reporter of the fix and thank them for their contribution.                                                                                                                                                                                    |
-|                                     Submit CVE                                     | \-       | Security response team                   | If applicable, request a CVE ID for tracking and disclosure                                                                                                                                                                                              |
-|                         Publish security advisory on wiki                          | \-       | Security response team                   | Use [previous advisories](/advisory/start) as template                                                                                                                                                                                                   |
-|                          Publish advisory to mailing list                          | \-       | Security response team                   | Use [previous emails](https://lists.openwrt.org/pipermail/openwrt-announce/2022-October/thread.html) as template, **GPG sign** email!                                                                                                                    |
-|                             Publish advisory on forum                              | \-       | Security response team                   | Use [previous posts](https://forum.openwrt.org/t/security-advisory-2022-10-04-1-wolfssl-buffer-overflow-during-a-tls-1-3-handshake-cve-2022-39173/138880) as template, probably makes sense always for remotely exploitable or critical vulnerabilities. |
-|                                                                                    |          |                                          |                                                                                                                                                                                                                                                          |
+| \*\*1. Awareness \*\* |  |  |  |
+|:--:|----|----|----|
+| Task | Duration | Who can do it | Notes |
+| [Make security team aware](/docs/guide-developer/security#vulnerability_reporting) | \- | Whoever being aware about security issue | Its important to handle the issue properly from the beginning. |
+|  |  |  |  |
+| \*\*2. Identification \*\* |  |  |  |
+| Task | Duration | Who can do it | Notes |
+| Analyze report | \- | Security response team | Assess incoming reports for validity and potential severity. |
+|  |  |  |  |
+| \*\*3. Assesment \*\* |  |  |  |
+| Task | Duration | Who can do it | Notes |
+| Impact evaluation | \- | Security response team | Determine the potential impact on users and the project (e.g., data exposure, remote code execution). |
+| Risk categorization | \- | Security response team | Assign severity levels (e.g., Critical, High, Medium, Low) using frameworks like CVSS. |
+| Confirm the issue | \- | Security response team | Reproduce the issue in a controlled environment to confirm its validity. |
+|  |  |  |  |
+| \*\*4. Containment \*\* |  |  |  |
+| Task | Duration | Who can do it | Notes |
+| Prevent further exploitation | \- | \- | Take immediate action to limit the incident’s impact (e.g., temporarily disabling a vulnerable feature, service) |
+| Communicate internally | \- | Security response team | Notify relevant maintainers, sysadmins to coordinate the response |
+|  |  |  |  |
+| \*\*5. Remediation \*\* |  |  |  |
+| Task | Duration | Who can do it | Notes |
+| Fix the vulnerability | \- | \- | Patch the issue in the codebase and thoroughly test the fix |
+| Backport fixes | \- | \- | Apply fixes to older supported versions, if necessary |
+| \*\*6. Disclosure \*\* |  |  |  |
+| Task | Duration | Who can do it | Notes |
+| Communicate with reporter | \- | Security response team | Notify the reporter of the fix and thank them for their contribution. |
+| Submit CVE | \- | Security response team | If applicable, request a CVE ID for tracking and disclosure |
+| Publish security advisory on wiki | \- | Security response team | Use [previous advisories](/advisory/start) as template |
+| Publish advisory to mailing list | \- | Security response team | Use [previous emails](https://lists.openwrt.org/pipermail/openwrt-announce/2022-October/thread.html) as template, **GPG sign** email! |
+| Publish advisory on forum | \- | Security response team | Use [previous posts](https://forum.openwrt.org/t/security-advisory-2022-10-04-1-wolfssl-buffer-overflow-during-a-tls-1-3-handshake-cve-2022-39173/138880) as template, probably makes sense always for remotely exploitable or critical vulnerabilities. |
+|  |  |  |  |
 
 ---
 
@@ -6527,7 +6549,7 @@ Note that the <contact@openwrt.org> mail box is not always monitored and we may 
 
 ## Security advisories
 
-/\*\* Omit the footer because the edit/create date is inaccurate because the page's contents are autogenerated. \*/ ![start&link&nofooter](/page>advisory/start&link&nofooter)
+/\*\* Omit the footer because the edit/create date is inaccurate because the page’s contents are autogenerated. \*/ ![start&link&nofooter](/page>advisory/start&link&nofooter)
 
 This only lists security advisories for components directly maintained by the OpenWrt project. This does not list fixed security problems in third-party components used by OpenWrt which may also affect the security of OpenWrt. We do not list known security problems in the Linux kernel, openssl, and other third-party components even when they affect use cases relevant to OpenWrt. The OpenWrt project monitors the upstream projects and backports security fixes for components used in the OpenWrt core repository to supported OpenWrt versions. For example [159 CVEs](https://www.cvedetails.com/product/47/Linux-Linux-Kernel.html?vendor_id=33) were assigned for the Linux kernel in 2021 alone, OpenWrt regularly updates the minor Linux kernel version to get these recent fixes.
 
@@ -6535,16 +6557,16 @@ This only lists security advisories for components directly maintained by the Op
 
 This table lists the support status of various OpenWrt releases:
 
-| Version           | Current status       | Initial Release    | EoL (Projected) | Latest Release | Release Date      |
-|:------------------|:---------------------|:-------------------|:----------------|:---------------|:------------------|
-| @lightgreen:25.12 | Supported            | 2026, March 06     | TBD             | 25.12.5        | 2026, July 01     |
-| @yellow:24.10     | Security Maintenance | 2025, February 06  | 2026, September | 24.10.8        | 2026, July 26     |
-| @pink:23.05       | End of Life          | 2023, October 13   | 2025, August    | 23.05.6        | 2025, August 20   |
-| @pink:22.03       | End of Life          | 2022, September 06 | 2024, July      | 22.03.7        | 2024, July 25     |
-| @pink:21.02       | End of Life          | 2021, September 04 | 2023, May       | 21.02.7        | 2023, May 01      |
-| @pink:19.07       | End of Life          | 2020, January 06   | 2022, April     | 19.07.10       | 2022, April 20    |
-| @pink:18.06       | End of Life          | 2018, July 31      | 2020, December  | 18.06.9        | 2020, December 09 |
-| @pink:17.01       | End of Life          | 2017, February 22  | 2019, June      | 17.01.7        | 2019, June 20     |
+| Version | Current status | Initial Release | EoL (Projected) | Latest Release | Release Date |
+|:---|:---|:---|:---|:---|:---|
+| @lightgreen:25.12 | Supported | 2026, March 06 | TBD | 25.12.6 | 2026, October 18 |
+| @pink:24.10 | End of Life | 2025, February 06 | 2026, September | 24.10.8 | 2026, July 26 |
+| @pink:23.05 | End of Life | 2023, October 13 | 2025, August | 23.05.6 | 2025, August 20 |
+| @pink:22.03 | End of Life | 2022, September 06 | 2024, July | 22.03.7 | 2024, July 25 |
+| @pink:21.02 | End of Life | 2021, September 04 | 2023, May | 21.02.7 | 2023, May 01 |
+| @pink:19.07 | End of Life | 2020, January 06 | 2022, April | 19.07.10 | 2022, April 20 |
+| @pink:18.06 | End of Life | 2018, July 31 | 2020, December | 18.06.9 | 2020, December 09 |
+| @pink:17.01 | End of Life | 2017, February 22 | 2019, June | 17.01.7 | 2019, June 20 |
 
 The listed **Version** numbers reference the code base and the support status applies to the the latest minor release of that branch:
 
@@ -6645,25 +6667,25 @@ This example assumes using Fedora 34 GNU/Linux for image building, and that ther
 
 The purpose of this exercise is to help familiarize potential contributors with the procedure of SELinux policy development for OpenWrt. OpenWrt can be configured and assembled in many ways, and the more scenarios are tested and supported the better. Please see Wish List for a list of known configurations that are not yet currently addressed and that need attention. Also see Feedback Checklist for a list of requested information (and instructions to gather this information) to determine and test whether the policy configuration is accurate and comprehensive.
 
-In this example we're going to start by assembling the OpenWrt SELinux policy. By default, OpenWrt provides a generic policy with the aim to include support for all known common functionality. The goal of this default policy is to cover as many aspects of OpenWrt as possible and to make it "just work" by default on as many devices and device configurations as possible. The downside of this default policy is that, because it is so generic, it is also somewhat inefficient: The policy might include rules for components and functionalitty that you may not have installed or use and thereby it may require more space than strictly needed. Ideally, you would pick and choose a selection of modules appropriate and relevant for your target device's setup. (The goal is to eventually make assembling OpenWrt SELinux policy from available modules as easy as assembling OpenWrt images with the OpenWrt Image Builder.) Once we have assembled and deployed OpenWrt SELinux policy appropriate to our target device, we are going to work on extending functionality by adding policy for a simple `Hello World` shell script. Once tested, we're going to build an image with the resulting policy integrated, and deploy that to our target device.
+In this example we‘re going to start by assembling the OpenWrt SELinux policy. By default, OpenWrt provides a generic policy with the aim to include support for all known common functionality. The goal of this default policy is to cover as many aspects of OpenWrt as possible and to make it “just work” by default on as many devices and device configurations as possible. The downside of this default policy is that, because it is so generic, it is also somewhat inefficient: The policy might include rules for components and functionalitty that you may not have installed or use and thereby it may require more space than strictly needed. Ideally, you would pick and choose a selection of modules appropriate and relevant for your target device’s setup. (The goal is to eventually make assembling OpenWrt SELinux policy from available modules as easy as assembling OpenWrt images with the OpenWrt Image Builder.) Once we have assembled and deployed OpenWrt SELinux policy appropriate to our target device, we are going to work on extending functionality by adding policy for a simple ’‘Hello World’’ shell script. Once tested, we’re going to build an image with the resulting policy integrated, and deploy that to our target device.
 
 Eventually, when everything works as intended and the policy you created is useful to the general public, you may consider submitting a patch with your changes to OpenWrt, so that all interested parties can benefit from your hard work.
 
 ## Installing and setting up build requirements
 
-We're going to start by creating an OpenWrt Image Builder (IB) archive that can be used to assemble OpenWrt factory and sysupgrade images with included SELinux support. We have to ensure that we have all required build dependencies installed on our build system. In addition to the usual required host packages, we also need the `secilc` program, so that we can compile SELinux policy written in [Common Intermediate Language (CIL)](https://github.com/SELinuxProject/selinux/blob/master/secilc/docs/README.md).
+We‘re going to start by creating an OpenWrt Image Builder (IB) archive that can be used to assemble OpenWrt factory and sysupgrade images with included SELinux support. We have to ensure that we have all required build dependencies installed on our build system. In addition to the usual required host packages, we also need the ’‘secilc’’ program, so that we can compile SELinux policy written in [Common Intermediate Language (CIL)](https://github.com/SELinuxProject/selinux/blob/master/secilc/docs/README.md).
 
     [kcinimod@brutus ~]$ sudo dnf install gcc-c++ git make bc make patch wget unzip tar bzip2 gettext ncurses-devel perl-FindBin perl-Data-Dumper perl-Thread-Queue perl-base findutils which diffutils file perl-File-Copy openssl-devel flex libxslt intltool zlib-devel rsync secilc
 
 ### Clone OpenWrt source code using git
 
-Now that we have the build requirements taken care of, we can get the sources for OpenWrt. In this example, we'll clone OpenWrt from its mirror on Github:
+Now that we have the build requirements taken care of, we can get the sources for OpenWrt. In this example, we’ll clone OpenWrt from its mirror on Github:
 
     [kcinimod@brutus ~]$ git clone https://github.com/openwrt/openwrt.git
 
 #### Addressing feeds
 
-We'll now update and install all available feeds:
+We’ll now update and install all available feeds:
 
     [kcinimod@brutus ~]$ ./openwrt/scripts/feeds update -a
     [kcinimod@brutus ~]$ ./openwrt/scripts/feeds install -a
@@ -6681,11 +6703,11 @@ After a short while a menu appears. We will address the Linksys WRT1900ACS targe
       Subtarget (Marvell Armada 37x/38x/XP)  --->
       Target Profile (Linksys WRT1900ACS v1)  --->
 
-Select the "Build OpenWrt Image Builder" option from the menu.
+Select the “Build OpenWrt Image Builder” option from the menu.
 
       [*] Build the OpenWrt Image Builder
 
-Next, we'll enable SELinux in the "Global Build Settings" submenu.
+Next, we’ll enable SELinux in the “Global Build Settings” submenu.
 
       Global build settings  --->
           [*] Enable SELinux (NEW)
@@ -6711,9 +6733,9 @@ There is a good chance that the selinux-policy enclosed n this image is slightly
 
 As an example, we will however exclude an optional module that is not depended on by any other modules to give you an idea of how you would go about assembling and building the policy with a customized module selection. Picking and choosing modules to install can be tricky, as modules may have dependencies on other modules. It is advised that you test locally whether all dependencies of your selection of modules can be resolved.
 
-Depending on how integrated the component you want to target is, it is wise to set the default SELinux mode to "permissive", at least during the policy development phase. Even though this reasoning does not really apply to this contrived example, we will default to permissive mode for now for illustrative purposes.
+Depending on how integrated the component you want to target is, it is wise to set the default SELinux mode to “permissive”, at least during the policy development phase. Even though this reasoning does not really apply to this contrived example, we will default to permissive mode for now for illustrative purposes.
 
-At this point, you are essentially forking the policy. Publish your forked Git repository and ensure that the forked Git repository is accessible with the HTTPS protocol. You can for example use GitLab or Github for this but we'll use Github in this example.
+At this point, you are essentially forking the policy. Publish your forked Git repository and ensure that the forked Git repository is accessible with the HTTPS protocol. You can for example use GitLab or Github for this but we’ll use Github in this example.
 
 ### Creating a new selinux-policy-myfork repository on Github
 
@@ -6738,13 +6760,13 @@ I created a new empty `override/selinux-policy-myfork.git` repository on Github.
 
 One of our goals has been achieved: We forked the OpenWrt selinux-policy straight from upstream, and are working with an up-to-date policy snapshot as of now. To continue, we would like to build the whole policy minus the sandbox.cil module. To that end, we will add a target to ~/selinux-policy-myfork/Makefile that can be used to achieve the desired effect. Before pushing the result to Github, we will ensure that the policy actually builds. Edit ~/selinux-policy-myfork/Makefile and make the following changes.
 
-Add a "myfork" target - Change this line ...:
+Add a “myfork” target - Change this line …:
 
 ``` Makefile
 .PHONY: all clean minimal policy check install
 ```
 
-... to read like this instead:
+… to read like this instead:
 
 ``` Makefile
 .PHONY: all clean minimal myfork policy check install
@@ -6756,20 +6778,20 @@ Define which modules to enclose - locate the following line in the file:
 polvers = 31
 ```
 
-... and insert this block right **after** it:
+… and insert this block right **after** it:
 
 ``` Makefile
 modulesmyfork = $(shell find src -type f -name '*.cil' \
         ! -name sandbox.cil -printf '%p ')
 ```
 
-Now, define the "myfork" target - locate this line:
+Now, define the “myfork” target - locate this line:
 
 ``` Makefile
 policy: policy.$(polvers)
 ```
 
-... and insert this block **right before**:
+… and insert this block **right before**:
 
 ``` Makefile
 myfork: myfork.$(polvers)
@@ -6797,11 +6819,11 @@ First, we create a local feeds directory (example ~/mypackages):
     [kcinimod@brutus selinux-policy-myfork]$ cd ~
     [kcinimod@brutus ~]$ mkdir mypackages
 
-Now we recursively copy `~/selinux-policy-myfork/support/selinux-policy-XXXX` to the local feeds' `~/mypackages` directory and rename it to `selinux-policy-myfork`:
+Now we recursively copy `~/selinux-policy-myfork/support/selinux-policy-XXXX` to the local feeds’ `~/mypackages` directory and rename it to `selinux-policy-myfork`:
 
     [kcinimod@brutus ~]$ cp -r selinux-policy-myfork/support/selinux-policy-XXXX mypackages/selinux-policy-myfork
 
-We will need to replace the PKG_NAME variable's value next, which will determine the name of the package that will be generated:
+We will need to replace the PKG_NAME variable’s value next, which will determine the name of the package that will be generated:
 
     [kcinimod@brutus ~]$ sed -i 's/PKG_NAME:=.*/PKG_NAME:=selinux-policy-myfork/' mypackages/selinux-policy-myfork/Makefile
 
@@ -6817,7 +6839,7 @@ And we alse replace PKG_SOURCE_VERSION (use the commit ID of your latest commit)
 
     [kcinimod@brutus ~]$ sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=4b8d8c06c5f1dc8641b2b08b44d7fde955e2b9db/' mypackages/selinux-policy-myfork/Makefile
 
-Replace PKG_MIRROR_HASH (we'll skip this during development):
+Replace PKG_MIRROR_HASH (we’ll skip this during development):
 
     [kcinimod@brutus ~]$ sed -i 's/PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/' mypackages/selinux-policy/myfork/Makefile
 
@@ -6845,7 +6867,7 @@ Replace define/Package/description:
 
     [kcinimod@brutus ~]$ sed -i 's/XXXX SELinux security policy designed specifically for OpenWrt/Myfork SELinux security policy designed specifically for OpenWrt/' mypackages/selinux-policy-myfork/Makefile
 
-Replace Build/Compile/Default (we'll use our new "myfork" target):
+Replace Build/Compile/Default (we’ll use our new “myfork” target):
 
     [kcinimod@brutus ~]$ sed -i 's#$(call Build/Compile/Default,policy)#$(call Build/Compile/Default,myfork)#' mypackages/selinux-policy-myfork/Makefile
 
@@ -6853,12 +6875,12 @@ Replace the final occurrence of selinux-policy-XXXX:
 
     [kcinimod@brutus ~]$ sed -i 's/selinux-policy-XXXX/selinux-policy-myfork/' mypackages/selinux-policy-myfork/Makefile
 
-Change the "mode from config" to "permissive", and change the policy model to selinux-policy-myfork:
+Change the “mode from config” to “permissive”, and change the policy model to selinux-policy-myfork:
 
     [kcinimod@brutus ~]$ sed -i 's/SELINUX=.*/SELINUX=permissive/' mypackages/selinux-policy-myfork/files/selinux-config
     [kcinimod@brutus ~]$ sed -i 's/SELINUXTYPE=.*/SELINUXTYPE=selinux-policy-myfork/' mypackages/selinux-policy-myfork/files/selinux-config
 
-Add/update the "mypackages" custom feed and selinux-policy-myfork:
+Add/update the “mypackages” custom feed and selinux-policy-myfork:
 
     [kcinimod@brutus ~]$ echo "src-link custom ${HOME}/mypackages" >> openwrt/[feeds.conf](../wiki/chunked-reference/wiki_page-guide-developer-creating-a-meson-based-package.md).default
     [kcinimod@brutus ~]$ ./openwrt/scripts/feeds update custom
@@ -6869,7 +6891,7 @@ After these modifications have succeeded, we have to perform `menuconfig` again,
     [kcinimod@brutus ~]$ cd ~/openwrt
     [kcinimod@brutus openwrt]$ make -j$(($(nproc) + 1)) menuconfig
 
-Now we'll enable selinux-policy-myfork from the "Base system" submenu.
+Now we’ll enable selinux-policy-myfork from the “Base system” submenu.
 
       Base system  --->
           <*> selinux-policy-myfork.................. Myfork SELinux policy for OpenWrt
@@ -6928,11 +6950,11 @@ Give the device a moment to reboot and log back into it over ssh. Verify that yo
 
 ## Policy development overview
 
-The next step will be to extend the policy by targeting a simple "Hello World" shell script. I will not get into the details of writing SELinux policy in this exercise. The policy is written in **Common Intermediate Language** and I am working on documenting that. You can try to find help in [\#selinux on the freenode IRC network](irc://irc.freenode.org/#selinux), but if you need assistance or have any questions related to OpenWrt selinux-policy and SELinux policy/CIL in particular, then I can be reached on the [OFTC IRC network in the \#openwrt-devel](irc://irc.oftc.net/#openwrt-devel) channel under the IRC nickname **grift**.
+The next step will be to extend the policy by targeting a simple “Hello World” shell script. I will not get into the details of writing SELinux policy in this exercise. The policy is written in **Common Intermediate Language** and I am working on documenting that. You can try to find help in [\#selinux on the freenode IRC network](irc://irc.freenode.org/#selinux), but if you need assistance or have any questions related to OpenWrt selinux-policy and SELinux policy/CIL in particular, then I can be reached on the [OFTC IRC network in the \#openwrt-devel](irc://irc.oftc.net/#openwrt-devel) channel under the IRC nickname **grift**.
 
-### Confining "Hello World"
+### Confining “Hello World”
 
-We will be creating a simple script: `/root/helloworld`. It simply prints the output of `echo "Hello from: $(id -Z)"` to standard output and exits. Then, we will develop a policy for this script at runtime and test the result "on-device". Once the policy has been verified to work as intended, we will deploy a sysupgrade image with the resulting customization enclosed, and we will change the default SELinux mode back to "enforcing". This simple example will hopefully be illustrative enough to get you started. Please use the knowledge gained to help improve the policy, so that everyone can benefit.
+We will be creating a simple script: `/root/helloworld`. It simply prints the output of `echo “Hello from: $(id -Z)”` to standard output and exits. Then, we will develop a policy for this script at runtime and test the result “on-device”. Once the policy has been verified to work as intended, we will deploy a sysupgrade image with the resulting customization enclosed, and we will change the default SELinux mode back to “enforcing”. This simple example will hopefully be illustrative enough to get you started. Please use the knowledge gained to help improve the policy, so that everyone can benefit.
 
 #### Creating and testing the script
 
@@ -6941,12 +6963,12 @@ First, we need to create the script that our policy will interact with:
     root@OpenWrt:~# printf '#!/bin/sh\n echo "hello from: $(id -Z)\n"' > /root/helloworld
     root@OpenWrt:~# chmod +x /root/helloworld
 
-To see what it does at this stage, let's run it:
+To see what it does at this stage, let’s run it:
 
     root@OpenWrt:~# /root/helloworld
     hello from: u:r:sys.subj
 
-The script works, but the output of the script indicates that it currently operates within the "unconfined" `u:r:sys.subj` context. We would like the script to be contained, thereby applying the principle of least privilege to this process by subjecting it to our modified SELinux policy.
+The script works, but the output of the script indicates that it currently operates within the “unconfined” `u:r:sys.subj` context. We would like the script to be contained, thereby applying the principle of least privilege to this process by subjecting it to our modified SELinux policy.
 
 We can write a basic skeleton policy for this script off-device, using our cloned `selinux-policy-myfork` repository, then build and test that, and copy the compiled `policy.31` file (along with the updated `file_contexts` file) to the device. Then, we can run the `load_policy` command to apply the updated policy to the running system, and use that procedure to test and refine the policy until it works as we need it to.
 
@@ -6981,15 +7003,15 @@ We perform both these operations here, before re-executing our script:
     root@OpenWrt:~# /root/helloworld
     hello from: u:r:helloworld.subj
 
-The test concluded that the specified domain transition from `u:r:sys.subj` to `u:r:helloworld.subj` took place, due to our custom policy having taken effect. Since we are still operating in "permissive" mode for development purposes, we can use the `dmesg` command to see which permissions would have been denied if we had instead been operating in "enforcing" mode.
+The test concluded that the specified domain transition from `u:r:sys.subj` to `u:r:helloworld.subj` took place, due to our custom policy having taken effect. Since we are still operating in “permissive” mode for development purposes, we can use the `dmesg` command to see which permissions would have been denied if we had instead been operating in “enforcing” mode.
 
     root@OpenWrt:~# dmesg | grep -i denied
 
-The resulting avc denials can be interpreted and translated to policy, that we can then append to our modifications, and then test again. Eventually, no new avc denials should be printed to dmesg when testing in "oermissive" mode, indicating that the resulting process has all the permissions and contexts assigned that it needs to function. Once we arrive at that point, the update should be ready for real-worl use.
+The resulting avc denials can be interpreted and translated to policy, that we can then append to our modifications, and then test again. Eventually, no new avc denials should be printed to dmesg when testing in “oermissive” mode, indicating that the resulting process has all the permissions and contexts assigned that it needs to function. Once we arrive at that point, the update should be ready for real-worl use.
 
 We will now append some of the rules we were able to identify from the output of the `dmesg | grep -i` denied command. Some of these might not be obvious to you at this point. Suffice to say that rules can be (and in fact often are) grouped for common patterns, and with sufficient experience, you learn to recognise these patterns and how to correlate them to provided macros and templates commonly used to address these issues.
 
-There is another gotcha you should be aware of: There are rules present in the policy that instruct SELinux to "silently" block specified events. This functionality can be useful if you want to block some access on purpose without SELinux printing avc denials. However, sometimes, knowing these events actually occurred (and were blocked) might actually be needed. The `secilc` compiler allows you to compile the policy with these "dontaudit" rules removed via the `-D` or `--disable-dontaudit` switches, but that's beyond the scope of this exercise. For now, suffice to say that `helloworld` wants to operate on the terminal (as it needs to print the output to a terminal) but the current policy has rules that tell SELinux to silently block this access. We need to change this to keep our policy-confined program working:
+There is another gotcha you should be aware of: There are rules present in the policy that instruct SELinux to “silently” block specified events. This functionality can be useful if you want to block some access on purpose without SELinux printing avc denials. However, sometimes, knowing these events actually occurred (and were blocked) might actually be needed. The `secilc` compiler allows you to compile the policy with these “dontaudit” rules removed via the `-D` or `–disable-dontaudit` switches, but that‘s beyond the scope of this exercise. For now, suffice to say that ’‘helloworld’’ wants to operate on the terminal (as it needs to print the output to a terminal) but the current policy has rules that tell SELinux to silently block this access. We need to change this to keep our policy-confined program working:
 
     [kcinimod@brutus selinux-policy-myfork]$ cat >> src/agent/helloworld.cil <<EOF
     (in .helloworld ;; insert into existing helloworld container
@@ -7014,7 +7036,7 @@ Following the same procedure as before, copy over the `policy.31` and `file_cont
 
     root@OpenWrt:~# dmesg | grep -i denied
 
-The above dmesg invocation prints one more avc denial in permissive mode, so let's try this in enforcing mode:
+The above dmesg invocation prints one more avc denial in permissive mode, so let’s try this in enforcing mode:
 
     root@OpenWrt:~# dmesg -c
     root@OpenWrt:~# setenforce 1
@@ -7040,14 +7062,14 @@ Next, we will build a new ipk package including our recent work, and also create
 
 For that to work, we need to adjust two things in our local build artifacts:
 
-\* The `~/mypackages/selinux-policy-myfork/Makefile` **PKG_SOURCE_VERSION** has to be updated to point to the new latest git commit ID \* The `~/mypackages/selinux-policy-myfork/files/selinux-config` has to be updated to change the mode from "permissive" to "enforcing".
+\* The `~/mypackages/selinux-policy-myfork/Makefile` **PKG_SOURCE_VERSION** has to be updated to point to the new latest git commit ID \* The `~/mypackages/selinux-policy-myfork/files/selinux-config` has to be updated to change the mode from “permissive” to “enforcing”.
 
 Replace **PKG_SOURCE_VERSION** (use the commit ID of your latest commit):
 
     [kcinimod@brutus selinux-policy-myfork]$ cd ~
     [kcinimod@brutus ~]$ sed -i 's/PKG_SOURCE_VERSION:=4b8d8c06c5f1dc8641b2b08b44d7fde955e2b9db/PKG_SOURCE_VERSION:=c5e28890e61bed077477bcc526b8fb6639728c93/' mypackages/selinux-policy-myfork/Makefile
 
-Change the "mode from config" to enforcing:
+Change the “mode from config” to enforcing:
 
     [kcinimod@brutus ~]$ sed -i 's/SELINUX=.*/SELINUX=enforcing/' mypackages/selinux-policy-myfork/files/selinux-config
 
@@ -7085,7 +7107,7 @@ After the device has booted up again, our policy should be enforcing least privi
 
 ## In closing
 
-This wraps up the exercise. Remember that this is meant to illustrate the SELinux policy development (and deployment) workflow in broad strokes. To be able to contribute your work back your policy, you need to adhere to a number of established style rules. I suggest that you take a close look at the existing policy, to identify patterns and clues on how to make your policy feel familiar to someone who's already familiar with pre-existing upstream policy code. To help with that, see if you can find a module that closely resembles yours, and compare and contrast the two in order to find ways to improve and align your module with existing best practices. If you need help, feel free to just ask [on IRC](irc://irc.oftc.net/#openwrt-devel)! Happy policy hacking! :)
+This wraps up the exercise. Remember that this is meant to illustrate the SELinux policy development (and deployment) workflow in broad strokes. To be able to contribute your work back your policy, you need to adhere to a number of established style rules. I suggest that you take a close look at the existing policy, to identify patterns and clues on how to make your policy feel familiar to someone who’s already familiar with pre-existing upstream policy code. To help with that, see if you can find a module that closely resembles yours, and compare and contrast the two in order to find ways to improve and align your module with existing best practices. If you need help, feel free to just ask [on IRC](irc://irc.oftc.net/#openwrt-devel)! Happy policy hacking! :)
 
 ---
 
@@ -7101,19 +7123,19 @@ See [uBus Technical Reference](/docs/techref/ubus)
 
 **Path only contains the first context. E.g. network for network.interface.wan**
 
-| path                                          | Description                     | Package      |
-|-----------------------------------------------|---------------------------------|--------------|
-| [dhcp](/docs/guide-developer/ubus/dhcp)       | dhcp server                     | odhcpd       |
-| [file](/docs/guide-developer/ubus/file)       | file                            | rpcd         |
-| [hostapd](/docs/guide-developer/ubus/hostapd) | acesspoints                     | wpad/hostapd |
-| [iwinfo](/docs/guide-developer/ubus/iwinfo)   | wireless informations           | rpcd iwinfo  |
-| [log](/docs/guide-developer/ubus/log)         | logging                         | procd        |
-| [mdns](/docs/guide-developer/ubus/mdns)       | mdns avahi replacement          | mdnsd        |
-| [network](/docs/guide-developer/ubus/network) | network                         | netifd       |
-| [service](/docs/guide-developer/ubus/service) | init/service                    | procd        |
-| [session](/docs/guide-developer/ubus/session) | Session management              | rpcd         |
-| [system](/docs/guide-developer/ubus/system)   | system misc                     | procd        |
-| [uci](/docs/guide-developer/ubus/uci)         | Unified Configuration Interface | rpcd         |
+| path | Description | Package |
+|----|----|----|
+| [dhcp](/docs/guide-developer/ubus/dhcp) | dhcp server | odhcpd |
+| [file](/docs/guide-developer/ubus/file) | file | rpcd |
+| [hostapd](/docs/guide-developer/ubus/hostapd) | acesspoints | wpad/hostapd |
+| [iwinfo](/docs/guide-developer/ubus/iwinfo) | wireless informations | rpcd iwinfo |
+| [log](/docs/guide-developer/ubus/log) | logging | procd |
+| [mdns](/docs/guide-developer/ubus/mdns) | mdns avahi replacement | mdnsd |
+| [network](/docs/guide-developer/ubus/network) | network | netifd |
+| [service](/docs/guide-developer/ubus/service) | init/service | procd |
+| [session](/docs/guide-developer/ubus/session) | Session management | rpcd |
+| [system](/docs/guide-developer/ubus/system) | system misc | procd |
+| [uci](/docs/guide-developer/ubus/uci) | Unified Configuration Interface | rpcd |
 
 ---
 
@@ -7200,7 +7222,7 @@ This will make sure, when the key has the correct value set, that the script exi
 
 ## Introduction
 
-UEFI boot has been required for years now, boards that only support UEFI are common, and Intel has stated back in 2017 that "legacy" BIOS will no longer be supported after 2020.[^1][^2]
+UEFI boot has been required for years now, boards that only support UEFI are common, and Intel has stated back in 2017 that “legacy” BIOS will no longer be supported after 2020.[^1][^2]
 
 To accommodate this, the OpenWrt build system generates UEFI bootable images.
 
@@ -7278,7 +7300,7 @@ Remember to import `db.crt` (which may needs to be converted into DER or other f
 
 # Sending patches by git send-email
 
-Send an email to the [development mailing list](https://lists.openwrt.org/mailman/listinfo/openwrt-devel). All patches need to be sent in the same format as those that are listed on [patchwork](https://patchwork.ozlabs.org/project/openwrt/list/). If the patch does not get listed in patchwork then it won't get processed.
+Send an email to the [development mailing list](https://lists.openwrt.org/mailman/listinfo/openwrt-devel). All patches need to be sent in the same format as those that are listed on [patchwork](https://patchwork.ozlabs.org/project/openwrt/list/). If the patch does not get listed in patchwork then it won’t get processed.
 
 Using [git send-email](https://git-scm.com/docs/git-send-email) is warmly recommended, as email clients tend to add spaces and screw up the formatting or add non-printable characters.
 
@@ -7294,7 +7316,7 @@ There are GitHub mirrors of the source repository [here](https://github.com/open
 
 Fork the project to a public repo using GitHub web interface, clone the repo to your computer, create a branch for your changes, push these back to GitHub and submit a pull request.
 
-In case you don't know how to do that, keep reading.
+In case you don’t know how to do that, keep reading.
 
 Create a GitHub account, this will host your public fork of OpenWrt source, and will be used for all interaction on GitHub.
 
@@ -7311,7 +7333,7 @@ You might also want to set the default text editor to your favorite editor. If y
 git config --global core.editor "editor-name-here"
 ```
 
-Then follow GitHub's excellent documentation to [Fork A Repo](https://help.github.com/articles/fork-a-repo/) and [Create a local clone of your fork](https://help.github.com/articles/fork-a-repo/#step-2-create-a-local-clone-of-your-fork).
+Then follow GitHub’s excellent documentation to [Fork A Repo](https://help.github.com/articles/fork-a-repo/) and [Create a local clone of your fork](https://help.github.com/articles/fork-a-repo/#step-2-create-a-local-clone-of-your-fork).
 
 After you have set it up as described, write
 
@@ -7319,7 +7341,7 @@ After you have set it up as described, write
 git checkout -b my-new-branch-name
 ```
 
-to create a branch for your PR ("my-new-branch-name" is just an example name, use a more descriptive name in yours).
+to create a branch for your PR (“my-new-branch-name” is just an example name, use a more descriptive name in yours).
 
 All commits you do after this command will be grouped in this branch. This allows to have multiple branches, one for each PR. To switch between branches you already created, use
 
@@ -7361,7 +7383,7 @@ git push --all
 
 You will be asked your GitHub user and password in the process.
 
-After the code has been uploaded to your GitHub repo, you can submit pull request using GitHub web interface, see again GitHub's documentation about [Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+After the code has been uploaded to your GitHub repo, you can submit pull request using GitHub web interface, see again GitHub’s documentation about [Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
 ## Squashing commits
 
@@ -7388,7 +7410,7 @@ Switch to the your development branch for this PR with:
 git checkout best_code_update
 ```
 
-Look at the git log, so you can count the number of commits you want to squash ( the "X" below ) with:
+Look at the git log, so you can count the number of commits you want to squash ( the “X” below ) with:
 
 ``` bash
 git log
@@ -7434,13 +7456,13 @@ Where X is a number of commits to edit.
 
 ## Reopen closed PR
 
-GitHub will grey out "Reopen" and will not let you reopen a PR if you force-pushed anything to the relevant branch after the PR has been closed, or deleted the branch.
+GitHub will grey out “Reopen” and will not let you reopen a PR if you force-pushed anything to the relevant branch after the PR has been closed, or deleted the branch.
 
 However, reopening is still possible if you just set back the GitHub branch to the exact commit ID/hash it was at when you closed it. This even works when the branch or even the whole repository was deleted on GitHub. It just has to be recreated with the same name (for repo and branch) and the same commit hash at the branches HEAD.
 
 A possible way to do that would be (there might be others, even shorter ones):
 
-*We assume that the git remote referring to GitHub is called "origin", the branch of interest is called "testbranch", and the local and remote branch names are the same.*
+*We assume that the git remote referring to GitHub is called “origin”, the branch of interest is called “testbranch”, and the local and remote branch names are the same.*
 
 ``` bash
 # Get the hash yyyyyyyyyyyyyyy of the current state of "testbranch" (we will move the branch head later)
@@ -7455,7 +7477,7 @@ git checkout -b testbranch
 git push -f origin testbranch
 ```
 
-Now you got GitHub at the state it was at when closing the PR. It should now be possible to "reopen" the PR. Note that this will only be possible if *you* closed it. If it was closed by an admin, you will have to ask an admin to reopen it (though they will also only be able to do that when the branch is at the proper hash). If the PR is reopened, you can update as usual, e.g.
+Now you got GitHub at the state it was at when closing the PR. It should now be possible to “reopen” the PR. Note that this will only be possible if *you* closed it. If it was closed by an admin, you will have to ask an admin to reopen it (though they will also only be able to do that when the branch is at the proper hash). If the PR is reopened, you can update as usual, e.g.
 
 ``` bash
 # Checkout the desired hash yyyyyyyyy (or branch)
@@ -7508,11 +7530,11 @@ For more information, refer to the [shebang](https://en.wikipedia.org/wiki/Sheba
 
 ### Can I change my default shell from ash to bash?
 
-The short answer is "*yes*", but this practice is not recommended.
+The short answer is “*yes*”, but this practice is not recommended.
 
-**WARNING: If you update */etc/passwd* to change the *root* account's default shell to anything other than `#!/bin/sh`, there is a good chance you will be unable to log in to your router via SSH**.
+**WARNING: If you update */etc/passwd* to change the *root* account‘s default shell to anything other than ’‘\#!/bin/sh’’, there is a good chance you will be unable to log in to your router via SSH**.
 
-If you've installed the [OpenWrt bash](/packages/pkgdata/bash) package on your router and then changed your default shell to `#!/bin/bash`, you will be able to login to your device via SSH. However, the risk in doing so is that you may still lock yourself out of your device inadvertently, for example, by upgrading. The working assumption for OpenWrt is that *ash* will be the default shell. If you want to use the *bash* shell regularly, then simply run the *bash* command each time you login to your device.
+If you‘ve installed the [OpenWrt bash](/packages/pkgdata/bash) package on your router and then changed your default shell to ’‘\#!/bin/bash’’, you will be able to login to your device via SSH. However, the risk in doing so is that you may still lock yourself out of your device inadvertently, for example, by upgrading. The working assumption for OpenWrt is that *ash* will be the default shell. If you want to use the *bash* shell regularly, then simply run the *bash* command each time you login to your device.
 
 In the event you are having difficulty accessing your device via SSH, refer to the OpenWrt [failsafe process](/docs/guide-user/troubleshooting/failsafe_and_factory_reset).
 
@@ -7557,19 +7579,22 @@ non-volatile storage space	100 MiB	 	8 MiB[^2]	 	150MiB for Android 2.1; 512MiB 
 network configuration	[NetworkManager](https://en.wikipedia.org/wiki/NetworkManager) + GUI	 	`netifd`	 	ConnectivityManager; (not [ConnMan = ConnectionManager](https://connman.net/)!)	?	ConnMan
  	[GLib](https://en.wikipedia.org/wiki/GLib); (GObject, Glib, GModule, GThread, GIO)	 	[libubox](/docs/techref/libubox)	 	?	?	Qt-based?
  	[PulseAudio](https://en.wikipedia.org/wiki/PulseAudio)	 	[pulseaudio](/docs/guide-user/hardware/audio/pulseaudio) (optional)	 	PulseAudio	PulseAudio	PulseAudio
-[Package management system](https://en.wikipedia.org/wiki/Package management system)	[dpkg](https://en.wikipedia.org/wiki/dpkg)/[APT](https://en.wikipedia.org/wiki/Advanced Packaging Tool); [RPM](https://en.wikipedia.org/wiki/RPM Package Manager)/[yum](https://en.wikipedia.org/wiki/Yellowdog Updater, Modified); [portage](https://en.wikipedia.org/wiki/Portage (software)); [pacman](https://en.wikipedia.org/wiki/pacman (package manager)); ...	 	`opkg`	 	[apk](https://en.wikipedia.org/wiki/APK (file format))	?	[RPM](https://en.wikipedia.org/wiki/RPM Package Manager)
+[Package management system](https://en.wikipedia.org/wiki/Package management system)	[dpkg](https://en.wikipedia.org/wiki/dpkg)/[APT](https://en.wikipedia.org/wiki/Advanced Packaging Tool); [RPM](https://en.wikipedia.org/wiki/RPM Package Manager)/[yum](https://en.wikipedia.org/wiki/Yellowdog Updater, Modified); [portage](https://en.wikipedia.org/wiki/Portage (software)); [pacman](https://en.wikipedia.org/wiki/pacman (package manager)); …	 	`opkg`	 	[apk](https://en.wikipedia.org/wiki/APK (file format))	?	[RPM](https://en.wikipedia.org/wiki/RPM Package Manager)
 ```
 
-[^1]: yes, *heavily* stripped OpenWrt can run on 16 or even 8MiB
-[^2]: yes, 4MiB and 2MiB possible
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>yes, *heavily* stripped OpenWrt can run on 16 or even 8MiB[↩︎](#fnref1)</p></li>
+<li id="fn2"><p>yes, 4MiB and 2MiB possible[↩︎](#fnref2)</p></li>
+</ol>
+</section>
 
-### What's the difference between ubus vs dbus?
-
-`dbus` is bloated, its C API is very annoying to use and requires writing large amounts of boilerplate code. In fact, the pure C API is so annoying that its own API documentation states: "If you use this low-level API directly, you're signing up for some pain."
+==== What‘s the difference between ubus vs dbus? ==== ’‘dbus’’ is bloated, its C API is very annoying to use and requires writing large amounts of boilerplate code. In fact, the pure C API is so annoying that its own API documentation states: “If you use this low-level API directly, you’re signing up for some pain.”
 
 `ubus` is tiny and has the advantage of being easy to use from regular C code, as well as automatically making all exported API functionality also available to shell scripts with no extra effort.
 
-"Of course, NetworkManager should be renamed to ***`"unetwork"`***, dbus to ***`"ubus"`***, PulseAudio to ***`"usound"`***, and X.Org-Server/Wayland-Compositor to ***`"udisplay"`***; and then indescribable happiness would come down to all people of this world." – [Lennart Poettering](http://lists.freedesktop.org/archives/dbus/2010-April/012545.html)
+“Of course, NetworkManager should be renamed to ***`”unetwork”`***, dbus to ***`”ubus”`***, PulseAudio to ***`”usound”`***, and X.Org-Server/Wayland-Compositor to ***`”udisplay”`***; and then indescribable happiness would come down to all people of this world.” – [Lennart Poettering](http://lists.freedesktop.org/archives/dbus/2010-April/012545.html)
 
 ------------------------------------------------------------------------
 
@@ -7599,13 +7624,13 @@ The mounting of block devices is handled by the `block-mount` source package, wh
 
 ## block-mount (binary package)
 
-~~The `block-mount` binary package (i.e. the one you actually install, rather than the source package containing `block-mount` and `block-hotplug`), contains three library scripts (in addition to `/etc/init.d/fstab` and the sample config file `/etc/config/fstab`). These three scripts are: `block.sh`, `mount.sh`, and `fsck.sh`. ~~
+~~The `block-mount` binary package (i.e. the one you actually install, rather than the source package containing `block-mount` and `block-hotplug`), contains three library scripts (in addition to `/etc/init.d/fstab` and the sample config file `/etc/config/fstab`). These three scripts are: `block.sh`, `mount.sh`, and `fsck.sh`.~~
 
-|                                                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-|-------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![48px-outdated.svg.png](/meta/icons/tango/48px-outdated.svg.png) | As of [r26314](https://dev.openwrt.org/changeset/26314/trunk) `block-extroot` and `block-hotplug` have been merged with `block-mount`. That means that once you install `block-mount` the scripts for [extroot](/docs/guide-user/additional-software/extroot_configuration) mounting and hotplug mounting are installed. With [r36988](https://dev.openwrt.org/changeset/36988) the original package `block-mount` was removed. Technically, the new package `ubox` replaced its functionality. For [Fstab configuration](/docs/guide-user/storage/fstab), the new block-mount package now contains the executable `block` which facilitates this. You can run `block <info|mount|umount|detect>`. See [Fstab configuration](/docs/guide-user/storage/fstab). |
+|  |  |
+|----|:---|
+|  | As of [r26314](https://dev.openwrt.org/changeset/26314/trunk) `block-extroot` and `block-hotplug` have been merged with `block-mount`. That means that once you install `block-mount` the scripts for [extroot](/docs/guide-user/additional-software/extroot_configuration) mounting and hotplug mounting are installed. With [r36988](https://dev.openwrt.org/changeset/36988) the original package `block-mount` was removed. Technically, the new package `ubox` replaced its functionality. For [Fstab configuration](/docs/guide-user/storage/fstab), the new block-mount package now contains the executable `block` which facilitates this. You can run `block <info|mount|umount|detect>`. See [Fstab configuration](/docs/guide-user/storage/fstab). |
 
-With the new block mount mechanism you can run `block info` to get the same output that blkid delivered (however it only returns info for filesystems it supports). You can do "block mount" to mount all devices (same as what `/etc/init.d/fstab restart` used to do. If you run "`block detect`" you will get a sample uci file for the currently attached block devices. That way you can do "`block detect | uci import fstab`" to store it
+With the new block mount mechanism you can run `block info` to get the same output that blkid delivered (however it only returns info for filesystems it supports). You can do “block mount” to mount all devices (same as what `/etc/init.d/fstab restart` used to do. If you run “`block detect`” you will get a sample uci file for the currently attached block devices. That way you can do “`block detect | uci import fstab`” to store it
 
 :!: block info cannot detect btrfs (added [r43868](https://dev.openwrt.org/changeset/43868/trunk)), xfs , jfs, ntfs, exfat, and some other FS. Use manual scripting to mount them.
 
@@ -7670,16 +7695,16 @@ With the new block mount mechanism you can run `block info` to get the same outp
         option  enabled '0'
         option  options 'lazytime,noatime,background_gc=off,gc_merge'
 
-you can do "`block detect | uci import fstab`" to store it as a sample config file (already with UUID ;-) )
+you can do “`block detect | uci import fstab`” to store it as a sample config file (already with UUID ;-) )
 
 ### working/not working in Barrier Breaker as of 2015/01/30
 
-|       | info          | detect        | on boot       | on plug       | mount/umount[^1] | needs         | and                                                              |
-|-------|---------------|---------------|---------------|---------------|------------------|---------------|------------------------------------------------------------------|
-| ext4  | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔    | kmod-fs-ext4  | libext2fs, :?: kmod-fs-autofs4                                   |
-| swap  | @lightgreen:✔ | @lightgreen:✔ | ?             | ?             | ?                | ???           | swap-utils                                                       |
-| vfat  | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔    | kmod-fs-vfat  | kmod-nls-base, kmod-nls-cp437, kmod-nls-iso8859-1, kmod-nls-utf8 |
-| btrfs | @red:✘[^2]    | @red:✘        | @red:✘        | @red:✘        | @red:✘           | kmod-fs-btrfs | btrfs-progs                                                      |
+|  | info | detect | on boot | on plug | mount/umount[^1] | needs | and |
+|----|----|----|----|----|----|----|----|
+| ext4 | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | kmod-fs-ext4 | libext2fs, :?: kmod-fs-autofs4 |
+| swap | @lightgreen:✔ | @lightgreen:✔ | ? | ? | ? | ??? | swap-utils |
+| vfat | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | @lightgreen:✔ | kmod-fs-vfat | kmod-nls-base, kmod-nls-cp437, kmod-nls-iso8859-1, kmod-nls-utf8 |
+| btrfs | @red:✘[^2] | @red:✘ | @red:✘ | @red:✘ | @red:✘ | kmod-fs-btrfs | btrfs-progs |
 
 ## block-hotplug (binary package)
 
@@ -7693,7 +7718,7 @@ Block hotplug consists of three scripts, `10-swap`, `20-fsck`, and `40-mount`. W
 
 # The Bootloader
 
-The [Bootloader](https://en.wikipedia.org/wiki/Bootloader) is a piece of software that is executed every time the hardware device is powered up. It is executable machine code and thus [ARCH](/docs/techref/hardware/cpu#the_isa_instruction_set_architecture)-specific. It's quite heavily device-specific because its main task is to initialize all the low-level hardware details. The bootloader can be contained on a separate [EEPROM](https://en.wikipedia.org/wiki/EEPROM) (very seldom) or directly on flash storage (most common).
+The [Bootloader](https://en.wikipedia.org/wiki/Bootloader) is a piece of software that is executed every time the hardware device is powered up. It is executable machine code and thus [ARCH](/docs/techref/hardware/cpu#the_isa_instruction_set_architecture)-specific. It’s quite heavily device-specific because its main task is to initialize all the low-level hardware details. The bootloader can be contained on a separate [EEPROM](https://en.wikipedia.org/wiki/EEPROM) (very seldom) or directly on flash storage (most common).
 
  Being a piece of software, the bootloader is considered part of the firmware, but **the bootloader is not part of OpenWrt!**
 Only on seldom occasions a change of the *bootloader settings* or the *bootloader code* is necessary to allow for booting/installing OpenWrt
@@ -7701,11 +7726,11 @@ There are a number of bootloaders under diverse [software license](https://en.wi
 
 ## Main Function
 
-The bootloader's main function is to initialize the hardware, pass an abstraction of the initialized hardware, a hardware description, to and execute the Kernel. (A very nice technical example can be seen [here](https://web.archive.org/web/20111219072809/http://www.wehavemorefun.de/fritzbox/index.php/ADAM2) or see a suggestion until finding a better example: [here](https://www.moritz.systems/blog/before-the-bsd-kernel-starts-part-one-on-amd64/) and [here](https://0xax.gitbooks.io/linux-insides/content/Booting/linux-bootstrap-1.html)) After that the bootloader is done and not needed in memory any longer. Most bootloaders offer [\#additional functions](#additional functions).
+The bootloader’s main function is to initialize the hardware, pass an abstraction of the initialized hardware, a hardware description, to and execute the Kernel. (A very nice technical example can be seen [here](https://web.archive.org/web/20111219072809/http://www.wehavemorefun.de/fritzbox/index.php/ADAM2) or see a suggestion until finding a better example: [here](https://www.moritz.systems/blog/before-the-bsd-kernel-starts-part-one-on-amd64/) and [here](https://0xax.gitbooks.io/linux-insides/content/Booting/linux-bootstrap-1.html)) After that the bootloader is done and not needed in memory any longer. Most bootloaders offer [\#additional functions](#additional functions).
 
 ### Why this is necessary?
 
-It's not. A bootloader is not required to boot Linux. The use of one (or several) bootloaders in a row to chainload (or [bootstrap](https://en.wikipedia.org/wiki/Bootstrapping (computing))) a Kernel is not a categorical necessity, it is merely a very crafty method to start an operating system. The main advantage for OpenWrt is, that the existence of a bootloader offers users and developers additional possibilities to [debrick](/docs/guide-user/troubleshooting/generic.debrick) a device.
+It’s not. A bootloader is not required to boot Linux. The use of one (or several) bootloaders in a row to chainload (or [bootstrap](https://en.wikipedia.org/wiki/Bootstrapping (computing))) a Kernel is not a categorical necessity, it is merely a very crafty method to start an operating system. The main advantage for OpenWrt is, that the existence of a bootloader offers users and developers additional possibilities to [debrick](/docs/guide-user/troubleshooting/generic.debrick) a device.
 
 ## Features
 
@@ -7716,22 +7741,22 @@ Some bootloader or implementation of universal bootloaders come with certain lim
 - a willfully designed kernel/firmware size limitation
 - make the bootloader expect a certain exotic firmware format
 - inability of the bootloader to execute the [ELF](https://en.wikipedia.org/wiki/Executable and Linkable Format) binary format
-- the need of some obscure "magic value" to be present and correct
+- the need of some obscure “magic value” to be present and correct
 - you name it
 
-The reasons are variable, from simple ineptitude of the creators to the willful sabotage of the users' attempts to run [free software](https://en.wikipedia.org/wiki/free software) on their own property.
+The reasons are variable, from simple ineptitude of the creators to the willful sabotage of the users’ attempts to run [free software](https://en.wikipedia.org/wiki/free software) on their own property.
 
 ### Additional Functions
 
 The bootloader can be more or less sophisticated, and offer none to many additional functions. In many situations additional functions would give the user a huge advantage, so most bootloaders offer them, such as:
 
 - Flash new firmware, see [generic.flashing](/docs/guide-user/installation/generic.flashing)
-- The bootloader can possibly validate data on the flash-storage, and e.g. should the firmware fail to pass a CRC, the bootloader would presume the firmware is corrupt and wait for a new firmware to be uploaded over the network. Of course, this also means, that every time you change something on the flash, you have to update this CRC-value...
+- The bootloader can possibly validate data on the flash-storage, and e.g. should the firmware fail to pass a CRC, the bootloader would presume the firmware is corrupt and wait for a new firmware to be uploaded over the network. Of course, this also means, that every time you change something on the flash, you have to update this CRC-value…
 - this could also be triggered by setting a boot_wait variable or by a command executed in the serial console
 - a [CLI](https://en.wikipedia.org/wiki/Command-line interface) (aka *serial console*), which usually can be accessed over the [serial port](/docs/techref/hardware/port.serial) **only**. There are several ways to access the *serial console* port on your target system, such as using a terminal server, but the most common way is to attach it to a serial port on your host. Additionally, you will need a terminal emulation program on your host system, such as `cu` or `kermit`.
   - once the bootloader has fulfilled its main function - chainload the Kernel - it does not run any longer, so to play with it, you have to login to it before it loads the Kernel and you may also have to prevent it from loading the Kernel, i.e. to stop the boot process.
 - boot from USB
-  - Like the Kernel requires the module `kmod-fs-ext4` to read/write to a EXT3 filesystem, so a bootloader requires such a module to do the same. [GRUB2](https://en.wikipedia.org/wiki/GRUB2) has this functionality implemented, so with it, you can very comfortably configure your boot options and also update and maintain your OS. The lightweight bootloaders we use with OpenWrt, usually do not have this functionality. But see [flash.layout](/docs/techref/flash.layout) for further reference. One exception is the U-Boot implementation of the [dockstar](/toh/seagate/dockstar). It can not only initialize the USB (like all the rest of the hardware) but additionally utilize the USB and also understand the EXT2 filesystem. Thus, the dockstar can be booted directly from an ext2-formated harddisc/usb-stick connected to any of it's USB-ports.
+  - Like the Kernel requires the module `kmod-fs-ext4` to read/write to a EXT3 filesystem, so a bootloader requires such a module to do the same. [GRUB2](https://en.wikipedia.org/wiki/GRUB2) has this functionality implemented, so with it, you can very comfortably configure your boot options and also update and maintain your OS. The lightweight bootloaders we use with OpenWrt, usually do not have this functionality. But see [flash.layout](/docs/techref/flash.layout) for further reference. One exception is the U-Boot implementation of the [dockstar](/toh/seagate/dockstar). It can not only initialize the USB (like all the rest of the hardware) but additionally utilize the USB and also understand the EXT2 filesystem. Thus, the dockstar can be booted directly from an ext2-formated harddisc/usb-stick connected to any of it’s USB-ports.
 - [net booting](/inbox/howto/netboot) functionality via [BOOTP](https://en.wikipedia.org/wiki/Bootstrap Protocol) or [PXE](https://en.wikipedia.org/wiki/Preboot Execution Environment) or DHCP or NFS or [TFTP](https://en.wikipedia.org/wiki/Trivial File Transfer Protocol)
 
 ## Boot Procedure
@@ -7742,8 +7767,8 @@ The bootloader can be more or less sophisticated, and offer none to many additio
 
 [Comparison of boot loaders](https://en.wikipedia.org/wiki/Comparison of boot loaders)
 
-|                                                                                                                                            |
-|--------------------------------------------------------------------------------------------------------------------------------------------|
+|  |
+|----|
 | *Please use `templates` to create and maintain these articles. ATM they are quite unmaintained and without a structure and almost useless* |
 
 ### PC
@@ -7754,7 +7779,7 @@ An embedded bootloader fulfills the same functionality as the [BIOS](https://en.
 - [UEFI](https://en.wikipedia.org/wiki/Extensible Firmware Interface) proprietary successor want-to-be of the BIOS
 - [coreboot](https://en.wikipedia.org/wiki/coreboot) GPLv2 successor of the BIOS, alternative to [UEFI](../wiki/chunked-reference/wiki_page-guide-developer-uefi-bootable-image.md) based on the Linux kernel;
   support for x86, x86-64 and ARM. There is no MIPS support.
-  Coreboot does only "a little bit of hardware initialization"
+  Coreboot does only “a little bit of hardware initialization”
 - [GNU GRUB](https://en.wikipedia.org/wiki/GNU GRUB) GPLv2
 
 ### Embedded Devices
@@ -7775,9 +7800,9 @@ An embedded bootloader fulfills the same functionality as the [BIOS](https://en.
 - [Breed](/docs/techref/bootloader/Breed) - Breed booatloader
 - [bl-mt798x](/docs/techref/bootloader/bl-mt798x) - ATF and u-boot for mt798x-based routers
 
-- VxWorks' own bootloader - most Atheros devices (There is a description of the basic workings on the [Netgear WGT624](/oldwiki/OpenWrtDocs/Hardware/Netgear/WGT624) page.)
+- VxWorks’ own bootloader - most Atheros devices (There is a description of the basic workings on the [Netgear WGT624](/oldwiki/OpenWrtDocs/Hardware/Netgear/WGT624) page.)
 - NetBoot - the standard loader in DWL7100AP allows to boot firmware image via network from [TFTP](../wiki/chunked-reference/wiki_page-guide-developer-adding-new-device.md) server direct to RAM
-- ThreadX - D-Link uses OS called ThreadX on lowend 1MiB Flash storage & 8MiB RAM models. They have custom boot loader that doesn't output anything sensible to serial port but does have recovery mode so you can upload firmware using browser.
+- ThreadX - D-Link uses OS called ThreadX on lowend 1MiB Flash storage & 8MiB RAM models. They have custom boot loader that doesn’t output anything sensible to serial port but does have recovery mode so you can upload firmware using browser.
 
 ## Bootloader Pages
 

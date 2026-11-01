@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 330
 source_file: L1-raw/wiki/wiki_page-techref-filesystems-network.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/filesystems.network
 language: text
 ai_summary: The Network Filesystems module in OpenWrt allows the system to mount various filesystems over an IP network, functioning as both a client and a server. Supported filesystems include ftp, sshfs, sftp, nfs, cifs, iscsi, remotefs, tftp, and webdav, each with specific configurations and capabilities. This module facilitates file sharing and storage solutions across networked devices. Security features vary by filesystem, with some supporting tcp-wrappers and authentication mechanisms.
@@ -23,7 +23,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/filesystems.network](https://openwrt.org/docs/techref/filesystems.network)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Network Filesystems
 
@@ -56,4 +56,4 @@ Files can be provided by other means: see [filesharing](/doc/howto/filesharing)
 
 :FIXME:
 
-The Filesystems mentioned, support varying security. Accessible via TCP often means support for tcp-wrappers (libwrap). Blacklists/Whitelists are sometimes possible. Authentication via ldap ....
+The Filesystems mentioned, support varying security. Accessible via TCP often means support for tcp-wrappers (libwrap). Blacklists/Whitelists are sometimes possible. Authentication via ldap ….

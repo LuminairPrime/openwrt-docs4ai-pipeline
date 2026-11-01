@@ -2,9 +2,9 @@
 title: Network scripts
 module: wiki
 origin_type: wiki_page
-token_count: 4017
+token_count: 4042
 source_file: L1-raw/wiki/wiki_page-guide-developer-network-scripting.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/network-scripting
 language: text
 ai_summary: 'The Network scripts module in OpenWrt provides a framework for implementing protocol handlers that enable various network configurations through the netifd daemon. Each protocol handler is a shell script located in `/lib/netifd/proto/` and must define at least two functions: `proto_protocolname_init_config` for parameter validation and monitoring, and `proto_protocolname_setup` for executing the protocol-specific setup logic. The handlers are invoked with configuration parameters in JSON format, allowing for dynamic updates to network interfaces. Changes to the protocol handlers require a restart of the netifd daemon to take effect.'
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/network-scripting](https://openwrt.org/docs/guide-developer/network-scripting)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Network scripts
 
@@ -67,7 +67,7 @@ proto_protocolname_init_config() {
 }
 ```
 
-e.g. It will 'validate' the following: i.e. monitor them for changes, and update the interface with them when they do.
+e.g. It will ‘validate’ the following: i.e. monitor them for changes, and update the interface with them when they do.
 
 ``` bash
 config interface 'foo'
@@ -79,11 +79,11 @@ config interface 'foo'
 }
 ```
 
-As you may have noticed, this is good for monitoring properties of an interface. What if an interface has various peer type entries also in the network config? netifd won't see when any of those peer entries related to the interface have changed. It doesn't 'validate' those.
+As you may have noticed, this is good for monitoring properties of an interface. What if an interface has various peer type entries also in the network config? netifd won‘t see when any of those peer entries related to the interface have changed. It doesn’t ’validate’ those.
 
 This is why changes to peers and most WireGuard interface properties are not put into operation until a manual interface restart.
 
-One can employ a work-around: have the proto script 'validate' an option which stores a hash of the peers, a hash which is simultaneously updated when peers are modified and written e.g. in luci, so when the hash of the peers is saved, netifd will notice the interface property change and reload the interface. Note that changes via uci command line go unnoticed by netifd.
+One can employ a work-around: have the proto script ‘validate’ an option which stores a hash of the peers, a hash which is simultaneously updated when peers are modified and written e.g. in luci, so when the hash of the peers is saved, netifd will notice the interface property change and reload the interface. Note that changes via uci command line go unnoticed by netifd.
 
 Another approach is to use a procd handler which can monitor when changes occur to `/etc/config/network` in general, and trigger a reload of the interface.
 
@@ -105,7 +105,7 @@ proto_protocolname_setup() {
 
 This function must be implemented by any protocol back-end.
 
-There's usually no need to call `ifconfig iface up` at the end of this function. If `no_device=0`, netifd won't even try to start our profile until the device is already up. It waits for `operstate=up` and `carrier=1`, then starts the profile.
+There‘s usually no need to call ’‘ifconfig *iface* up’’ at the end of this function. If `no_device=0`, netifd won‘t even try to start our profile until the device is already up. It waits for ’‘operstate=up’’ and `carrier=1`, then starts the profile.
 
 If `no_device=1`, netifd will bring it up, when it receives a notification from us:
 
@@ -118,7 +118,7 @@ proto_protocolname_setup () {
 }
 ```
 
-This only works once, however. If someone called `ifconfig iface down`, netifd won't try to bring it up again (at least in BB), so just in case you may put the "up" command in the function.
+This only works once, however. If someone called `ifconfig iface down`, netifd won’t try to bring it up again (at least in BB), so just in case you may put the “up” command in the function.
 
 ### renew
 
@@ -146,7 +146,7 @@ The restart procedure [was added in July 2026](https://github.com/openwrt/netifd
 
 It can also be called via ubus. In theory it should fall back to full interface restart (including teardown and setup) for protocols handlers that do not implement `proto_protocolname_restart`.
 
-\<!-- TODO: test if it works and add more info once this functionality is released --\>
+\<!– TODO: test if it works and add more info once this functionality is released –\>
 
 ### Teardown
 
@@ -216,7 +216,7 @@ An example in context:
 
 ### Debugging
 
-- STDERR in protos is redirected to the syslog. `echo "message" > 2>&1` can be used to print.
+- STDERR in protos is redirected to the syslog. `echo “message” > 2>&1` can be used to print.
 - As `set -x` also prints to STDERR, it can be used to trace which commands are called inside the proto. However this is very spammy.
 - There is a pending patch: <https://patchwork.ozlabs.org/project/openwrt/patch/20201229233319.164640-1-me@irrelefant.net/>.
 
@@ -232,21 +232,21 @@ Flags can be added to a proto handler in `proto_protoname_init_config`, by setti
 | lasterror | last_error | True when the last setup attempt failed and the handler wants to expose that state. |
 | no_device | no_device | Protocol does not create/use a kernel network device. Example: PPP uses a logical proto and does not provide a physical device. |
 | no_device_config | no_device_config | Protocol has no device-specific configuration (config applies to the protocol itself). |
-| no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd's control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or 'proto task'. |
-| renew_handler | renew_available | Protocol implements the "renew" action/handler `proto_*_renew()`, which can be called by netifd. |
+| no_proto_task | no_task | Protocol does not spawn a long-running background task. Mainly for protocols like xl2tpd in which control commands are sent to another daemon xl2tpd to start L2TP negotiation and pppd process who is not under netifd‘s control as proto_task as is the case in other ppp related protocols like pppoe, pptp, etc.; As an example, WireGuard is built into the kernel and has no running daemon, so it has no daemon or ’proto task’. |
+| renew_handler | renew_available | Protocol implements the “renew” action/handler `proto_*_renew()`, which can be called by netifd. |
 | teardown_on_l3_link_down | teardown_on_l3_link_down | If the l3 device receives state down (e.g. ifdown), call the `proto_*_teardown()`. Mainly for shell protocols that have no_proto_task so that we can still do teardown and setup of the interface on l3_dev link lost instead of depending on the running state of proto_task |
 
 ### Error codes
 
-If errors for interfaces occur, the json object in *ifstatus interfacename* or in *ubus call network.interface dump* have an attribute *"error"*. If there are no errors, this attribute is not existing.
+If errors for interfaces occur, the json object in *ifstatus interfacename* or in *ubus call network.interface dump* have an attribute *“error”*. If there are no errors, this attribute is not existing.
 
-| CODE                | Meaning                                                                                                                                                                                                                                                                                                                                                                                        |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NO_DEVICE           | The configured device in ifname is not found.                                                                                                                                                                                                                                                                                                                                                  |
+| CODE | Meaning |
+|----|----|
+| NO_DEVICE | The configured device in ifname is not found. |
 | DEVICE_CLAIM_FAILED | One of the reasons for this is, that the device configured by ifname does not exist. Usually this would result in NO_DEVICE as the device is only claimed when it is available. However when the proto flags *available=1* and *no_device=0* are set, the device specified by ifname is tried to be claimed directly. TBD: Is this the only case? Is this correct? |
-| SETUP_FAILED        | TBD                                                                                                                                                                                                                                                                                                                                                                |
+| SETUP_FAILED | TBD |
 
-Custom error codes can be thrown from the proto scripts aswell. This is done via `proto_notify_error "$config" MY_CUSTOM_ERROR_ID`.
+Custom error codes can be thrown from the proto scripts aswell. This is done via `proto_notify_error “$config” MY_CUSTOM_ERROR_ID`.
 
 ### How does it work internally?
 
@@ -256,16 +256,16 @@ init_proto $proto $cmd $interface $data $ifname
 
 This function takes all all arguments from the *proto.sh* file, interprets them and then defines the implementation of *add_protocol()*.
 
-If `$cmd = "dump"` then *add_protocol()* will do the following:
+If `$cmd = “dump”` then *add_protocol()* will do the following:
 
 - A json output dump of the results of `proto_protocolname_init_config` will be printed.
 - Other parameters than `$cmd` will be ignored.
 
-If `$cmd ∈ {"setup", "teardown", "renew"}` *add_protocol()* will do the following:
+If `$cmd ∈ {“setup”, “teardown”, “renew”}` *add_protocol()* will do the following:
 
 - If `$proto ≠ protoname` nothing will be done.
 - `$data` is loaded via *json_load*
-- `proto_protoname_... $interface $ifname` will be called.
+- `proto_protoname_… $interface $ifname` will be called.
 
 Otherwise the script will fail with something like:
 
@@ -284,7 +284,7 @@ The following functions are defined in `/lib/netifd/netifd-proto.sh`.
 - `proto_config_add_boolean`
 - `proto_config_add_int`
 - `proto_config_add_string`
-- `proto_config_add_array` (for uci config ''list xxx 'value' '' types
+- `proto_config_add_array` (for uci config ‘’list xxx ’value’ ’’ types
 
 #### notification functions
 
@@ -293,33 +293,33 @@ Note: some of these function exit immediately. These functions are dispatched to
 - `proto_block_restart $interface`
 - `proto_init_update $ifname $up [$external]`
 - `proto_kill_command $interface [$signal]`
-- `proto_notify_error $interface $str1 [$str2] [$str3] ...`
+- `proto_notify_error $interface $str1 [$str2] [$str3] …`
 - `proto_run_command`
 
-We can start a daemon that maintains the connection asynchronously by calling `proto_run_command "$config" custom_script`. Netifd remembers its pid. It can be killed manually by calling `proto_kill_command "$config"`. Netifd can automatically kill it, when the profile stopped.
+We can start a daemon that maintains the connection asynchronously by calling `proto_run_command “$config” custom_script`. Netifd remembers its pid. It can be killed manually by calling `proto_kill_command “$config”`. Netifd can automatically kill it, when the profile stopped.
 
 \* `proto_add_host_dependency`
 
 It seems to avoid race conditions in protos. We can register the following type of dependencies by calling:
 
-- `proto_add_host_dependency "$config" "$host" "$ifname"`
-- `proto_add_host_dependency "$config" \'\' "$ifname"` (only wait for an iface)
+- `proto_add_host_dependency “$config” “$host” “$ifname”`
+- `proto_add_host_dependency “$config” \‘\’ “$ifname”` (only wait for an iface)
 - (maybe more?)
 
 Only if `$iface` is up, the corresponding `$config` will be loaded. So we need another proto to be completed, we can use this here.
 
-From some observations I think it looks like technically the `$config` is initially loaded, then the `proto_add_host_dependency` is called inside the proto handler and then the `$config` is removed again until `$iface` is available, up, ... or so. However, currently I do not know where to find the source code, so this is only a vague idea of what happens.
+From some observations I think it looks like technically the `$config` is initially loaded, then the `proto_add_host_dependency` is called inside the proto handler and then the `$config` is removed again until `$iface` is available, up, … or so. However, currently I do not know where to find the source code, so this is only a vague idea of what happens.
 
-- ''proto_send_update \$interface ''
-- '' proto_set_available \$interface \$state''
+- ‘’proto_send_update \$interface ’’
+- ’’ proto_set_available \$interface \$state’’
 
 ### common functions
 
-- '' json_add_string ''
-- '' json_dump ''
-- '' json_init ''
-- '' [json_get_var](../../wiki/chunked-reference/wiki_page-guide-developer-jshn.md) ''
-- '' json_get_vars ''
+- ’’ json_add_string ’’
+- ’’ json_dump ’’
+- ’’ json_init ’’
+- ’’ [json_get_var](../../wiki/chunked-reference/wiki_page-guide-developer-jshn.md) ’’
+- ’’ json_get_vars ’’
 
 ## Examples
 

@@ -2,9 +2,9 @@
 title: Procd system init and daemon management
 module: wiki
 origin_type: wiki_page
-token_count: 1963
+token_count: 1964
 source_file: L1-raw/wiki/wiki_page-techref-procd.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/procd
 language: text
 ai_summary: Describes procd, the OpenWrt process manager and init system that replaces busybox init. Covers the procd init script lifecycle (start_service, stop_service, reload), the procd_add_instance/procd_set_param API for declaring managed processes, service watchdog behavior, instance respawn limits, stdio/logging configuration, trigger-based reload via ubus events, and the /etc/init.d/ enable/disable mechanism.
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/procd](https://openwrt.org/docs/techref/procd)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Procd system init and daemon management
 
@@ -29,13 +29,13 @@ ai_related_topics:
 
 `procd` is the OpenWrt [process](https://en.wikipedia.org/wiki/Process (computing)) management daemon written in [C](https://en.wikipedia.org/wiki/C (programming language)). It keeps track of processes started from init scripts (via ubus calls), and can suppress redundant service start/restart requests when the config/environment has not changed.
 
-`procd` has replaced ... , e.g.
+`procd` has replaced … , e.g.
 
 - `hotplug2`, a dynamic device management subsystem for embedded systems. Hotplug2 is a trivial replacement of some of the UDev functionality in a tiny pack, intended for Linux early userspace: Init RAM FS and InitRD.
 - `busybox-klogd` and `busybox-syslogd`
 - `busybox-watchdog`
 
-`procd` is intended to stay compatible with the existing format of `/etc/config/`; exceptions ...
+`procd` is intended to stay compatible with the existing format of `/etc/config/`; exceptions …
 
 ## Help with the development of procd
 
@@ -58,9 +58,9 @@ Before the real procd runs, a small init process is started. This process has th
 
 - bring up basic mounts such as /proc /sys/{,fs/cgroup} /dev/{,shm,pts}
 - create some required folder, /tmp/{run,lock,state}
-- bring up /dev/console and map the processes stdin/out/err to the console (this is the "Console is alive" message)
+- bring up /dev/console and map the processes stdin/out/err to the console (this is the “Console is alive” message)
 - setup the PATH environment variable
-- check if "init_debug=" is set in the kernel command line and apply the debug level if set
+- check if “init_debug=” is set in the kernel command line and apply the debug level if set
 - initialise the watchdog
 - start kmodloader and load the modules listed in /etc/modules-boot.d/
 - start hotplug with the preinit rules (/etc/hotplug-preinit.json)
@@ -85,8 +85,8 @@ Procd supports four commands inside inittab
 
 - respawn - this works just like you expect it. It starts a process and will respawn it once it has completed.
 - respawnlate - this works like the respawn but will start the process only when the procd init is completed.
-- askfirst - this works just like respawn but will print the line "Please press Enter to activate this console." before starting the process
-- askconsole - this works like askfirst but, instead of running on the tty passed as a parameter, it will look for the tty defined in the kernel command line using "console="
+- askfirst - this works just like respawn but will print the line “Please press Enter to activate this console.” before starting the process
+- askconsole - this works like askfirst but, instead of running on the tty passed as a parameter, it will look for the tty defined in the kernel command line using “console=”
 - askconsolelate - this works like the askconsole but will start the process only when the procd init is completed.
 - sysinit - this will trigger procd to run the command, given as a parameter, only once. This is usually used to trigger execution of /etc/rc.d/
 

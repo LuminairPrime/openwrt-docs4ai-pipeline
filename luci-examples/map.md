@@ -1,7 +1,7 @@
 # luci-examples Navigation Map
 
 > **Contains:** Headers and function signatures for luci-examples.
-> **Generated:** 2026-10-01T18:43:48.394133+00:00
+> **Generated:** 2026-11-01T18:18:06.554594+00:00
 
 ---
 
@@ -90,6 +90,8 @@
 > **Summary:** The `docker_socket.uc` module provides functions to retrieve the Docker socket path from UCI configuration in OpenWrt, ensuring backward compatibility. It includes two main functions: `get_socket_dest_compat`, which returns a socket address structure compatible with various protocols, and `get_socket_dest`, which simply retrieves the socket path as a string. The module supports both Unix and TCP/UDP socket formats, adapting to different configurations. It also handles IPv4 and IPv6 addresses, extracting the necessary details from the provided socket path.
 > **Use Case:** Use this module when you need to obtain the Docker socket path in OpenWrt applications, particularly when working with Docker configurations that may vary in format.
 # docker_socket.uc
+
+# file-jsonmap.js
 
 > **Summary:** The `form.js` module is a JavaScript file used in the LuCI framework for creating a user interface form that interacts with UCI configuration files in OpenWrt. It defines a form structure that includes multiple sections and various input types, such as text fields, flags, and dynamic lists. The form is mapped to a configuration file named 'example' located at `/etc/config/example`, allowing users to read and write configuration settings. Each section can contain different types of options, including a password input and a select dropdown with predefined values.
 > **Use Case:** Use this module when you need to create a custom configuration form in a LuCI application that interacts with UCI settings in OpenWrt.

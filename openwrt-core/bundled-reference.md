@@ -1,15 +1,15 @@
 ---
 module: openwrt-core
-total_token_count: 23895
+total_token_count: 24360
 section_count: 7
 is_monolithic: true
-generated: '2026-10-01T18:43:48.394133+00:00'
+generated: '2026-11-01T18:18:06.554594+00:00'
 ---
 
 # openwrt-core Bundled Reference
 
 > **Contains:** 7 documents concatenated
-> **Tokens:** ~23895 (cl100k_base)
+> **Tokens:** ~24360 (cl100k_base)
 
 ---
 
@@ -451,9 +451,8 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.10-rc5 |
+| Version | 2026.10 |
 | Maintainer | Robert Marko <robert.marko@sartura.hr> include $(INCLUDE_DIR)/u-boot.mk include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) include $(INCLUDE_DIR)/[kernel.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define U-Boot/Default BUILD_TARGET:=microchipsw HIDDEN:=1 UBO |
-| Source URL | https://git.u-boot-project.org/u-boot/u-boot.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-microchipsw
@@ -463,7 +462,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.04 |
+| Version | 2026.10 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-mvebu
@@ -503,7 +502,7 @@ $ git format-patch -p -k --no-renames --no-binary -o $OPENWRT_ROOT/package/boot/
 
 | Field | Value |
 |---|---|
-| Version | 2026.07 |
+| Version | 2026.10 |
 | Maintainer | Sarah Maedel <openwrt@tbspace.de> |
 
 
@@ -559,9 +558,9 @@ dumpimage lists and extracts data from U-Boot images. If -l is specified, dumpim
 
 | Field | Value |
 |---|---|
-| Version | 2026.07 |
+| Version | 2026.10 |
 | License | GPL-2.0 GPL-2.0+ |
-| Source URL | https://ftp.denx.de/pub/u-boot https://mirror.cyberbits.eu/u-boot |
+| Source URL | https://git.u-boot-project.org/u-boot/u-boot/-/releases/v$(PKG_VERSION)/downloads |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/boot/uboot-tools
@@ -655,8 +654,8 @@ Alternative ath10k firmware for QCA9887 from Candela Technologies. Enables [IBSS
 
 | Field | Value |
 |---|---|
-| Version | 20260227 |
-| Source URL | @DEBIAN/pool/non-free-firmware/i/intel-microcode/ |
+| Version | 20260925 |
+| Source URL | https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/archive/refs/tags/ |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/intel-microcode
@@ -674,7 +673,7 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 
 | Field | Value |
 |---|---|
-| Version | 20260910 |
+| Version | 20261019 |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
 | Source URL | @KERNEL/linux/kernel/firmware |
 
@@ -687,7 +686,8 @@ The $(2) requires board-specific, reference ("cal") data that is not yet present
 | Field | Value |
 |---|---|
 | License | GPL-2.0-or-later |
-| Maintainer | Matt Eaton <linux@divinehawk.com> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/mipi-dbi-default SECTION:=firmware CATEGORY:=Firmware endef define Build/Compile endef # From https://github.com/notr |
+| Maintainer | Matt Eaton <linux@divinehawk.com> |
+| Source URL | https://github.com/notro/panel-mipi-dbi.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/firmware/mipi-dbi
@@ -752,7 +752,7 @@ Firmware binaries for the microcontroller on the Turris Omnia router. These are 
 
 | Field | Value |
 |---|---|
-| Version | 2026.05.30 |
+| Version | 2026.09.03 |
 | License | ISC |
 | Maintainer | Felix Fietkau <nbd@nbd.name> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/wireless-regdb PKGARCH:=all SECTION:=firmware CATEGORY:=Firmware URL:=https://git.kernel.org/pub/scm/linux/kernel/git/wens |
 | Source URL | @KERNEL/software/network/wireless-regdb/ |
@@ -1041,18 +1041,6 @@ CFE RAM binaries for bcm63xx.
 > Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/rtc-rv5c386a
 ---
 
-## rtl8812au-ct
-
-| Field | Value |
-|---|---|
-| License | GPLv2 |
-| Maintainer | Ben Greear <greearb@candelatech.com> |
-| Source URL | https://github.com/greearb/rtl8812AU_8821AU_linux.git |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/rtl8812au-ct
----
-
 ## trelay
 
 
@@ -1160,9 +1148,9 @@ Jansson is a C library for encoding, decoding and manipulating JSON data
 
 | Field | Value |
 |---|---|
-| Version | 2.15.0 |
+| Version | 2.15.1 |
 | License | MIT |
-| Source URL | https://codeload.github.com/akheron/$(PKG_NAME)/tar.gz/v$(PKG_VERSION)? |
+| Source URL | https://github.com/akheron/$(PKG_NAME)/releases/download/v$(PKG_VERSION) |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/jansson
@@ -1174,7 +1162,7 @@ libbpf is a library for loading eBPF programs and reading and manipulating eBPF 
 
 | Field | Value |
 |---|---|
-| Version | 1.7.0 |
+| Version | 1.8.0 |
 | Maintainer | Tony Ambardar <itugrok@yahoo.com> |
 | Source URL | https://github.com/libbpf/libbpf |
 
@@ -1217,13 +1205,27 @@ $(call Package/libevent2/Default/description) This package contains the libevent
 
 | Field | Value |
 |---|---|
-| Version | 2.1.12 |
+| Version | 2.1.13 |
 | License | BSD-3-Clause |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
 | Source URL | https://github.com/libevent/libevent/releases/download/release-$(PKG_VERSION)-stable |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libevent2
+---
+
+## libffi
+
+The libffi library provides a portable, high level programming interface to various calling conventions. This allows a programmer to call any function specified by a call interface description at run-time. FFI stands for Foreign Function Interface. A foreign function interface is the popular name for the interface that allows code written in one language to call code written in another language. The libffi library really only provides the lowest, machine dependent layer of a fully featured foreign function interface. A layer must exist above libffi that handles type conversions for values passed between the two languages.
+
+| Field | Value |
+|---|---|
+| Version | 3.8.0 |
+| License | MIT |
+| Source URL | https://github.com/libffi/libffi/releases/download/v$(PKG_VERSION) |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libffi
 ---
 
 ## libiconv-full
@@ -1245,10 +1247,10 @@ This package contains a library for javascript object notation backends.
 
 | Field | Value |
 |---|---|
-| Version | 0.18 |
+| Version | 0.19 |
 | License | MIT |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
-| Source URL | https://s3.amazonaws.com/json-c_releases/releases/ |
+| Source URL | https://github.com/json-c/json-c/releases/download/json-c-$(PKG_VERSION)-20260627 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libjson-c
@@ -1289,7 +1291,7 @@ libnetfilter_conntrack is a userspace library providing a programming interface 
 
 | Field | Value |
 |---|---|
-| Version | 1.1.0 |
+| Version | 1.1.1 |
 | License | GPL-2.0-or-later |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
 | Source URL | https://www.netfilter.org/projects/libnetfilter_conntrack/files |
@@ -1319,7 +1321,7 @@ libnftnl is a userspace library providing a low-level netlink programming interf
 
 | Field | Value |
 |---|---|
-| Version | 1.3.1 |
+| Version | 1.3.2 |
 | License | GPL-2.0-or-later |
 | Maintainer | Steven Barth <steven@midlink.org> |
 | Source URL | https://netfilter.org/projects/$(PKG_NAME)/files |
@@ -1412,6 +1414,20 @@ Libsepol is the binary policy manipulation library. It doesn't depend upon or us
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libsepol
+---
+
+## libstd-rust
+
+The Rust standard library (libstd) for the target architecture. Required at runtime by all dynamically-linked Rust packages.
+
+| Field | Value |
+|---|---|
+| License | Apache-2.0 MIT |
+| Maintainer | Daniel Golle <daniel@makrotopia.org> |
+| Source URL | https://static.rust-lang.org/dist/ |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libstd-rust
 ---
 
 ## libtool
@@ -1517,7 +1533,7 @@ A library for manipulating XML and HTML resources.
 
 | Field | Value |
 |---|---|
-| Version | 2.15.3 |
+| Version | 2.15.4 |
 | License | MIT |
 | Source URL | @GNOME/libxml2/$(basename $(PKG_VERSION)) |
 
@@ -1598,7 +1614,7 @@ $(call Package/openssl/Default/description) This package contains the OpenSSL sh
 
 | Field | Value |
 |---|---|
-| Version | 3.5.8 |
+| Version | 3.5.9 |
 | License | Apache-2.0 |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://www.openssl.org/source/ https://www.openssl.org/source/old/$(PKG_BASE)/ https://github.com/openssl/openssl/relea |
@@ -1611,7 +1627,7 @@ $(call Package/openssl/Default/description) This package contains the OpenSSL sh
 
 | Field | Value |
 |---|---|
-| Version | 10.47 |
+| Version | 10.49 |
 | License | BSD-3-Clause |
 | Maintainer | Shane Peelar <lookatyouhacker@gmail.com> |
 | Source URL | https://github.com/PCRE2Project/pcre2/releases/download/$(PKG_NAME)-$(PKG_VERSION) |
@@ -1711,7 +1727,7 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 | Field | Value |
 |---|---|
-| Version | 5.9.2 |
+| Version | 5.9.4 |
 | License | GPL-3.0-or-later |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://github.com/wolfSSL/wolfssl/archive/v$(PKG_REAL_VERSION) |
@@ -1722,13 +1738,13 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 ## zlib
 
-zlib is a lossless data-compression library. This package includes the shared library.
+zlib is a lossless data-compression library. This package builds zlib-ng with the zlib-compatible API and ABI. This package includes the shared library.
 
 | Field | Value |
 |---|---|
-| Version | 1.3.2 |
+| Version | 2.3.3 |
 | License | Zlib |
-| Source URL | https://github.com/madler/zlib/releases/download/v$(PKG_VERSION) |
+| Source URL | https://github.com/zlib-ng/zlib-ng.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/zlib
@@ -2050,6 +2066,19 @@ CFE bootloader for BCM4908 uses custom image format. It consists of: 1. Optional
 > Source: https://github.com/openwrt/openwrt/tree/master/package/utils/bcm4908img
 ---
 
+## bluetooth-uart
+
+Supervised Bluetooth UART attachment using BlueZ btattach. The UART, protocol and speed are configured through UCI.
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-only |
+| Maintainer | Satoshi Ikeuchi <satosan.ikm@gmail.com> include $(INCLUDE_DIR)/[package.mk](../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/bluetooth-uart SECTION:=utils CATEGORY:=Utilities TITLE:=Bluetooth UART attachment service DEPENDS:=+kmod-hci-u |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/utils/bluetooth-uart
+---
+
 ## bsdiff
 
 | Field | Value |
@@ -2190,12 +2219,6 @@ This package contains essential ext2 filesystem utilities which consists of e2fs
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/utils/f2fs-tools
----
-
-## fbtest
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/utils/fbtest
 ---
 
 ## firmware-utils
@@ -2566,7 +2589,7 @@ ucode is a tiny script interpreter featuring an ECMAScript oriented script langu
 |---|---|
 | License | ISC |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
-| Source URL | https://github.com/jow-/ucode.git |
+| Source URL | https://github.com/ucode-lang/ucode.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/utils/ucode
@@ -3010,6 +3033,42 @@ Copyright (C) 2007-2020 OpenWrt.org
 
 
 > Source: https://github.com/openwrt/openwrt/blob/master/include/quilt.mk
+---
+
+## rust-host-build.mk
+
+# Documentation
+```text
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2023 Luca Barbato and Donald Hoskins
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/rust-host-build.mk
+---
+
+## rust-package.mk
+
+# Documentation
+```text
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2023 Luca Barbato and Donald Hoskins
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/rust-package.mk
+---
+
+## rust-values.mk
+
+# Documentation
+```text
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2023 Luca Barbato and Donald Hoskins
+```
+
+
+> Source: https://github.com/openwrt/openwrt/blob/master/include/rust-values.mk
 ---
 
 ## subdir.mk

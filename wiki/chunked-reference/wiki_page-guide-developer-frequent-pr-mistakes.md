@@ -1,10 +1,10 @@
 ---
-title: Frequent PR mistakes or "How to prevent my PR from getting delayed for sure"
+title: Frequent PR mistakes or “How to prevent my PR from getting delayed for sure”
 module: wiki
 origin_type: wiki_page
-token_count: 951
+token_count: 952
 source_file: L1-raw/wiki/wiki_page-guide-developer-frequent-pr-mistakes.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/frequent-pr-mistakes
 language: text
 ai_summary: This document outlines common mistakes that developers make when submitting Pull Requests (PRs) to OpenWrt, aiming to help them avoid delays in the review process. Key points include the necessity of a commit message, the importance of using a real name and email in the Signed-off-by line, and the distinction between a PR and its commits. Developers are also advised to respond to reviewer questions, avoid multi-posting PRs, and use the checkpatch.pl script for code quality checks.
@@ -18,13 +18,13 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/frequent-pr-mistakes](https://openwrt.org/docs/guide-developer/frequent-pr-mistakes)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
-# Frequent PR mistakes or "How to prevent my PR from getting delayed for sure"
+# Frequent PR mistakes or “How to prevent my PR from getting delayed for sure”
 
 A lot of PR initial reviews include the very same basic review comments each and every time again.
 
-In order to not have to write the very same things more than a few hundred times, this page is meant to serve as a collection of very frequent "mistakes", or things that you should avoid in order to get a quick(er) review.
+In order to not have to write the very same things more than a few hundred times, this page is meant to serve as a collection of very frequent “mistakes”, or things that you should avoid in order to get a quick(er) review.
 
 If you are pointed here and/or find yourself in the list below, you should probably read [Submitting patches](/submitting-patches) (again).
 
@@ -52,25 +52,25 @@ If you accidentally closed the PR, reopen it as described here: [Reopen closed P
 
 Simply posting another, new PR will invalidate all the previous discussion - your work so far - and annoy the reviewers, because they will have to do extra work.
 
-Just don't do it. Please.
+Just don’t do it. Please.
 
 ## 4. Know the difference between the PR (Pull Request) and the commit
 
 PR and commit are not same the same. *PR* is for preparation only, but the *commit(s) inside* the PR are the real thing. They will stay in the Git history. So, they are the important aspect.
 
-So, while keeping the PR up-to-date is not a bad thing, remember: If you are asked to change the *commit*, change the commit; not the PR's initial post or title.
+So, while keeping the PR up-to-date is not a bad thing, remember: If you are asked to change the *commit*, change the commit; not the PR’s initial post or title.
 
 ## 5. Answer questions
 
-If I ask questions in OpenWrt GitHub PRs, in about 90 % of the cases I do not get an answer. I don't fully understand why this is the case, but probably people think my question only implies the necessity to change something. Since without answering the initial question there has been no discussion, these changes might help - or they make it worse.
+If I ask questions in OpenWrt GitHub PRs, in about 90 % of the cases I do not get an answer. I don’t fully understand why this is the case, but probably people think my question only implies the necessity to change something. Since without answering the initial question there has been no discussion, these changes might help - or they make it worse.
 
-So, please, if you are asked a question, just answer it. Maybe the answer is enough, and you don't have to change anything at all. Maybe there is a need to change - but now the reviewers will probably be able to help you with what has to be done, since they have been given information.
+So, please, if you are asked a question, just answer it. Maybe the answer is enough, and you don’t have to change anything at all. Maybe there is a need to change - but now the reviewers will probably be able to help you with what has to be done, since they have been given information.
 
-Thus, if you are asked "Have you tested this?", please answer. "Yes" or "no", and some explanation. If someone wanted you to change anything already, they would simply have said so.
+Thus, if you are asked “Have you tested this?”, please answer. “Yes” or “no”, and some explanation. If someone wanted you to change anything already, they would simply have said so.
 
 ## 6. Do not resolve comment that are not resolved
 
-"Resolved" means the issue/question is dealt with completely and there is no doubt about the correct response.
+“Resolved” means the issue/question is dealt with completely and there is no doubt about the correct response.
 
 If you are not sure - keep it open.
 
@@ -80,7 +80,7 @@ If you have done nothing at all - keep it open.
 
 If it might be helpful for review - keep it open.
 
-Having all comments closed won't make the review process faster. Actually, if you have more than a few and they all are resolved it's quite suspicious. Ask yourself: If reviewers find that you closed something that is not resolved, will they trust you more - or less ...
+Having all comments closed won’t make the review process faster. Actually, if you have more than a few and they all are resolved it’s quite suspicious. Ask yourself: If reviewers find that you closed something that is not resolved, will they trust you more - or less …
 
 ## 7. Use checkpatch.pl
 
@@ -92,4 +92,4 @@ The OpenWrt core repository includes a script that is able to check most of the 
 
 Occasionally, people do 90 % of the requested changes and simply ignore the rest.
 
-Don't do that. It will waste the reviewer's life-time (since they have to come back for another round) and will have you waiting longer for a chance to be merged (since they have to come back for another round).
+Don’t do that. It will waste the reviewer’s life-time (since they have to come back for another round) and will have you waiting longer for a chance to be merged (since they have to come back for another round).

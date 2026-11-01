@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 1003
 source_file: L1-raw/wiki/wiki_page-guide-developer-buildserver-virtualbox.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/buildserver_virtualbox
 language: text
 ai_summary: This guide provides detailed instructions for setting up a build virtual machine (VM) for OpenWrt using VirtualBox on a Debian OS. It outlines the necessary prerequisites, including a 64-bit OS and at least 8 GB of free disk space. The steps include downloading VirtualBox, obtaining a Debian image, configuring the VM settings, and performing initial Debian setup tasks such as updating the system and installing required packages. Additionally, it covers configuring shared folders and enabling sudo access for the user, ensuring a functional development environment for OpenWrt.
@@ -19,7 +19,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/buildserver_virtualbox](https://openwrt.org/docs/guide-developer/buildserver_virtualbox)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Setting up a build VM in VirtualBox
 
@@ -42,7 +42,7 @@ Download the newest VirtualBox (VDI) 64-bit Debian image (currently 12 Bookworm)
 3.  Name: OpenWrtDev
 4.  Type: Linux
 5.  Version: Debian (64-bit). See [here](https://superuser.com/questions/866962/why-does-virtualbox-only-have-32-bit-option-no-64-bit-option-on-windows-7) if 64-bit is not available.
-6.  Hard Disk: Select "Use an existing virtual hard disk file" and choose the Debian .vdi file you just unpacked.
+6.  Hard Disk: Select “Use an existing virtual hard disk file” and choose the Debian .vdi file you just unpacked.
 7.  Click Create
 8.  Right click on the OpenWrtDev image and click Settings
 9.  Select General, Advanced, Shared Clipboard: Bidirectional
@@ -82,7 +82,7 @@ nano /etc/apt/sources.list
 
 You are now editing the list of servers to get updates from.
 
-- Delete the lines containing "deb cdrom". Lines can be deleted with ctrl-k.
+- Delete the lines containing “deb cdrom”. Lines can be deleted with ctrl-k.
 - From the last two lines, remove the leading \# and space, and the -updates after bullseye. They should now look like this:
 
     deb http://deb.debian.org/debian/ bullseye main contrib
@@ -100,7 +100,7 @@ reboot
 
 Log in and open the terminal again when it has rebooted.
 
-Click Devices (top line), select the last option (Install Guest Additions). The automatic install does not seem to work, so it doesn't matter if you select cancel or run.
+Click Devices (top line), select the last option (Install Guest Additions). The automatic install does not seem to work, so it doesn’t matter if you select cancel or run.
 
 ``` bash
 su -

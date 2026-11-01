@@ -2,9 +2,9 @@
 title: BusyBox
 module: wiki
 origin_type: wiki_page
-token_count: 676
+token_count: 677
 source_file: L1-raw/wiki/wiki_page-techref-busybox.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/busybox
 language: text
 ai_summary: BusyBox is a crucial component in OpenWrt that consolidates various system utilities into a single binary, providing lightweight alternatives to many standard Unix tools. It includes essential commands such as `ash`, `cp`, `ls`, `echo`, and `ping`, which are compiled as 'applets' within `/bin/busybox`. This allows for a more efficient use of system resources on embedded devices. Additionally, BusyBox helps identify the OpenWrt version through the Vendor-Class option in DHCP requests, which includes the BusyBox version number.
@@ -20,21 +20,21 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/busybox](https://openwrt.org/docs/techref/busybox)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # BusyBox
 
 [BusyBox](https://en.wikipedia.org/wiki/BusyBox) is used for several system utilities in OpenWrt like `ash` shell, `cp`, `ls`, `echo`, `ping` and many others. It provides tiny replacements with fewer options for most of the utilities from [GNU Core Utilities](https://en.wikipedia.org/wiki/GNU Core Utilities), [GNU Inetutils](https://www.gnu.org/software/inetutils/) and other essential tools like `gzip`.
 
-All this utilities are compiled as "applets" into a single binary file `/bin/busybox`.
+All this utilities are compiled as “applets” into a single binary file `/bin/busybox`.
 
 ## Identify OpenWrt version through udhcp
 
 When an OpenWrt system tries to obtain an IP using DHCP on its WAN interface, it adds a Vendor-Class option that contains the Busybox version:
 
-`Vendor-Class Option 60, length 12: "udhcp 1.28.3"`
+`Vendor-Class Option 60, length 12: “udhcp 1.28.3”`
 
-This can be used to estimate which OpenWrt version is running on a router if you don't have access to the router itself.
+This can be used to estimate which OpenWrt version is running on a router if you don’t have access to the router itself.
 
 | OpenWrt version | Busybox version |
 |:----------------|:----------------|

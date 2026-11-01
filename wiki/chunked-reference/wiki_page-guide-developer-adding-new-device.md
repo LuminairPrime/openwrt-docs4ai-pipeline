@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 3029
 source_file: L1-raw/wiki/wiki_page-guide-developer-adding-new-device.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/adding_new_device
 language: text
 ai_summary: The 'Adding a new device' module provides a comprehensive guide for developers looking to integrate new hardware into OpenWrt. It emphasizes the importance of examining recent commits and using local grep searches to identify necessary files for device integration. Key directories and their functions are outlined, including base-files for firmware integration, device tree source files, and image configuration. Additionally, it covers the process of making the new device visible in the make menuconfig and the organization of kernel patches.
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/adding_new_device](https://openwrt.org/docs/guide-developer/adding_new_device)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Adding a new device
 
@@ -108,7 +108,7 @@ After edit the files above, you need to touch the makefiles
 ## Patches
 
 The patches-\* subdirectories contain the kernel patches applied for every target.
-All patches should be named 'NNN-lowercase_shortname.patch' and sorted into the following categories:
+All patches should be named ‘NNN-lowercase_shortname.patch’ and sorted into the following categories:
 
 **0xx** - upstream backports
 **1xx** - code awaiting upstream merge
@@ -132,7 +132,7 @@ Test firmware images without writing them to flash by using ramdisk images.
 
 In **make menuconfig** select **Target Images** and then you can select the **ramdisk** option.
 
-This will create an image with kernel + initramfs, that will have **initramfs** in the name. The resulting image can be loaded in the device through the bootloader's tftp function and should boot to a prompt without relying on flash/filesystem support.
+This will create an image with kernel + initramfs, that will have **initramfs** in the name. The resulting image can be loaded in the device through the bootloader’s tftp function and should boot to a prompt without relying on flash/filesystem support.
 
 ## Tips and tricks
 
@@ -179,7 +179,7 @@ With [nmrpflash](https://github.com/jclehner/nmrpflash) many Netgear devices can
 
 ### Collecting relevant data
 
-On [WikiDevi](https://wikidevi.com/wiki/Main_Page) lots of information can be found, e.g. the FCC ID is very useful when searching for documentation, datasheets and internal photo's (to be able to distinguish used chips without having to open the casing).
+On [WikiDevi](https://wikidevi.com/wiki/Main_Page) lots of information can be found, e.g. the FCC ID is very useful when searching for documentation, datasheets and internal photo’s (to be able to distinguish used chips without having to open the casing).
 
 Typically one can use the following commands:
 

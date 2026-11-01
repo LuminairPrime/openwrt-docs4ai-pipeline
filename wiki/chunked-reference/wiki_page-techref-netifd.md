@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 1929
 source_file: L1-raw/wiki/wiki_page-techref-netifd.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/netifd
 language: text
 ai_summary: Documents netifd, the OpenWrt network interface daemon responsible for managing network interfaces based on UCI config. Explains the interface/device/proto handler model, the /etc/config/network schema (interface, device, bridge, route, rule sections), protocol handler shell scripts in /lib/netifd/proto/, ifup/ifdown/ifupdate hotplug event flow, and the ubus network API exposed by netifd.
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/netifd](https://openwrt.org/docs/techref/netifd)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # netifd (Network Interface Daemon) – Technical Reference
 
@@ -83,7 +83,7 @@ It boils down to the fact that the current network and interface setup mechanism
 `Netifd` will be able to manage even complex interface configurations with a mix of bonding, vlans, bridges, etc. and handle the dependencies between interfaces properly - and of course all that without adding unnecessary bloat.
 AFAIK there are no alternatives to netifd, e.g. [connman](https://connman.net/) seems to be centered around one specifific use case only: having a mobile device access the internet through multiple connections. Connman is based on dbus.
 
-The following is a brief conversation from IRC regarding hints on how netifd is involved with wifi interface startup and variables used. It 'documents' my frustration with trying to add a new uci variable (utf8_ssid), and I don't think the answers contained should be lost:
+The following is a brief conversation from IRC regarding hints on how netifd is involved with wifi interface startup and variables used. It ‘documents’ my frustration with trying to add a new uci variable (utf8_ssid), and I don’t think the answers contained should be lost:
 
     [20:20:06]  <jow> ldir: its complicated
     [20:20:29]  <jow>   ldir: upon start, netifd scans all wireless handlers in /lib/netifd/wireless/

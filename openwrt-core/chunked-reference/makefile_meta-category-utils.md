@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: utils packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 5820
+token_count: 5921
 source_file: L1-raw/openwrt-core/makefile_meta-category-utils.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/utils
 source_locator: package/utils
@@ -25,7 +25,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/utils](https://github.com/openwrt/openwrt/blob/unknown/package/utils)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # OpenWrt Buildroot: utils packages
 
@@ -81,6 +81,19 @@ CFE bootloader for BCM4908 uses custom image format. It consists of: 1. Optional
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/utils/bcm4908img
+---
+
+## bluetooth-uart
+
+Supervised Bluetooth UART attachment using BlueZ btattach. The UART, protocol and speed are configured through UCI.
+
+| Field | Value |
+|---|---|
+| License | GPL-2.0-only |
+| Maintainer | Satoshi Ikeuchi <satosan.ikm@gmail.com> include $(INCLUDE_DIR)/[package.mk](../../openwrt-core/chunked-reference/makefile_meta-include-mk.md) define Package/bluetooth-uart SECTION:=utils CATEGORY:=Utilities TITLE:=Bluetooth UART attachment service DEPENDS:=+kmod-hci-u |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/utils/bluetooth-uart
 ---
 
 ## bsdiff
@@ -223,12 +236,6 @@ This package contains essential ext2 filesystem utilities which consists of e2fs
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/utils/f2fs-tools
----
-
-## fbtest
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/utils/fbtest
 ---
 
 ## firmware-utils
@@ -599,7 +606,7 @@ ucode is a tiny script interpreter featuring an ECMAScript oriented script langu
 |---|---|
 | License | ISC |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
-| Source URL | https://github.com/jow-/ucode.git |
+| Source URL | https://github.com/ucode-lang/ucode.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/utils/ucode

@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 484
 source_file: L1-raw/wiki/wiki_page-guide-developer-embedding-files-in-image.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/embedding-files-in-image
 language: text
 ai_summary: The 'embedding-files-in-image' module describes a method for embedding custom files into OpenWrt images using buildroot features. Although this functionality was removed in April 2017, it previously allowed users to create overlay files that could modify package installations without altering source code. Users could create a Makefile fragment in the overlay directory to append custom installation commands to existing package recipes, such as adding a custom banner or inittab to the 'base-files' package. The documentation provides an example of how to structure the overlay and the necessary Makefile commands for this process.
@@ -15,7 +15,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/embedding-files-in-image](https://openwrt.org/docs/guide-developer/embedding-files-in-image)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # embedding-files-in-image
 
@@ -28,7 +28,7 @@ This is a plain copy-paste from mailing list, if you have some time to turn it i
 Hi Karl,
 let me introduce a not strictly new way but another heavily under documented buildroot feature which you can use to implement custom modifications to packages which do not require source code edits.
 For every processed package Makefile, the buildroot tries to include a a Makefile fragment in \$(TOPDIR)/overlay/\*/\$(PKG_DIR_NAME).mk which one can use to monkey-patch internals without directly touching the package recipes.
-For example to amend "base-files" to include a custom banner and inittab, you could create an overlay file called
+For example to amend “base-files” to include a custom banner and inittab, you could create an overlay file called
 
     "overlay/my-example-organization/base-files.mk"\\
 

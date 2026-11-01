@@ -2,9 +2,9 @@
 title: TRX vs. TRX2 vs. BIN
 module: wiki
 origin_type: wiki_page
-token_count: 1469
+token_count: 1470
 source_file: L1-raw/wiki/wiki_page-techref-headers.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/headers
 language: text
 ai_summary: The TRX, TRX2, and BIN firmware formats are used in various OpenWrt devices, each having distinct header structures despite containing similar content. TRX v1 and v2 both start with a magic number and include fields for header length, CRC value, flags, version, and multiple partition offsets, with TRX v2 adding an additional partition offset. The BIN header format is less defined, but it also begins with a magic number and includes reserved fields. Understanding these formats is crucial for firmware development and modification in OpenWrt.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/headers](https://openwrt.org/docs/techref/headers)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # TRX vs. TRX2 vs. BIN
 
@@ -104,16 +104,16 @@ FIXME (which bin header?)
      |           try3                |           res3                |
      +---------------------------------------------------------------+
 
-- magic: firmware magic depends on board etc. s.th. like '3G2V' or 'W54U'
+- magic: firmware magic depends on board etc. s.th. like ‘3G2V’ or ‘W54U’
 - res1: reserved for extra magic??
 - char fwdate\[3\]: fwdate\[0\]: Year, fwdate\[1\]: Month, fwdate\[2\]: Day
 - fwvern: version informations a.b.c.
-- ID: fix "U2ND"
+- ID: fix “U2ND”
 - hw_ver: depends on board
 - s/n: depends on board
 - flags:
 - stable: Marks the firmware stable, this is 0xFF in the image and will be written to 0x73 by the running system once it completed booting.
-- try1-3: 0xFF in firmware image. CFE will set try1 to 0x74 on first boot and continue with try2 and try3 unless "stable" was written by the running image. After writing try3 and the stable flag was not written yet, the CFE assumes that the image is broken and starts a [TFTP](../../wiki/chunked-reference/wiki_page-guide-developer-adding-new-device.md) server
+- try1-3: 0xFF in firmware image. CFE will set try1 to 0x74 on first boot and continue with try2 and try3 unless “stable” was written by the running image. After writing try3 and the stable flag was not written yet, the CFE assumes that the image is broken and starts a [TFTP](../../wiki/chunked-reference/wiki_page-guide-developer-adding-new-device.md) server
 - res3: unused?
 
 ## TP-LINK BIN Header

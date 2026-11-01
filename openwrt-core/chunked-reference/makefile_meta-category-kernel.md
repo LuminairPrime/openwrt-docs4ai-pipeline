@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: kernel packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 2733
+token_count: 2640
 source_file: L1-raw/openwrt-core/makefile_meta-category-kernel.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/kernel
 source_locator: package/kernel
@@ -27,7 +27,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/kernel](https://github.com/openwrt/openwrt/blob/unknown/package/kernel)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # OpenWrt Buildroot: kernel packages
 
@@ -305,18 +305,6 @@ CFE RAM binaries for bcm63xx.
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/rtc-rv5c386a
----
-
-## rtl8812au-ct
-
-| Field | Value |
-|---|---|
-| License | GPLv2 |
-| Maintainer | Ben Greear <greearb@candelatech.com> |
-| Source URL | https://github.com/greearb/rtl8812AU_8821AU_linux.git |
-
-
-> Source: https://github.com/openwrt/openwrt/tree/master/package/kernel/rtl8812au-ct
 ---
 
 ## trelay

@@ -2,9 +2,9 @@
 title: 'OpenWrt Buildroot: libs packages'
 module: openwrt-core
 origin_type: makefile_meta
-token_count: 5270
+token_count: 5569
 source_file: L1-raw/openwrt-core/makefile_meta-category-libs.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/openwrt/openwrt/blob/unknown/package/libs
 source_locator: package/libs
@@ -26,7 +26,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/openwrt/openwrt/blob/unknown/package/libs](https://github.com/openwrt/openwrt/blob/unknown/package/libs)
 > **Kind:** makefile_meta | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # OpenWrt Buildroot: libs packages
 
@@ -107,9 +107,9 @@ Jansson is a C library for encoding, decoding and manipulating JSON data
 
 | Field | Value |
 |---|---|
-| Version | 2.15.0 |
+| Version | 2.15.1 |
 | License | MIT |
-| Source URL | https://codeload.github.com/akheron/$(PKG_NAME)/tar.gz/v$(PKG_VERSION)? |
+| Source URL | https://github.com/akheron/$(PKG_NAME)/releases/download/v$(PKG_VERSION) |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/jansson
@@ -121,7 +121,7 @@ libbpf is a library for loading eBPF programs and reading and manipulating eBPF 
 
 | Field | Value |
 |---|---|
-| Version | 1.7.0 |
+| Version | 1.8.0 |
 | Maintainer | Tony Ambardar <itugrok@yahoo.com> |
 | Source URL | https://github.com/libbpf/libbpf |
 
@@ -164,13 +164,27 @@ $(call Package/libevent2/Default/description) This package contains the libevent
 
 | Field | Value |
 |---|---|
-| Version | 2.1.12 |
+| Version | 2.1.13 |
 | License | BSD-3-Clause |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
 | Source URL | https://github.com/libevent/libevent/releases/download/release-$(PKG_VERSION)-stable |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libevent2
+---
+
+## libffi
+
+The libffi library provides a portable, high level programming interface to various calling conventions. This allows a programmer to call any function specified by a call interface description at run-time. FFI stands for Foreign Function Interface. A foreign function interface is the popular name for the interface that allows code written in one language to call code written in another language. The libffi library really only provides the lowest, machine dependent layer of a fully featured foreign function interface. A layer must exist above libffi that handles type conversions for values passed between the two languages.
+
+| Field | Value |
+|---|---|
+| Version | 3.8.0 |
+| License | MIT |
+| Source URL | https://github.com/libffi/libffi/releases/download/v$(PKG_VERSION) |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libffi
 ---
 
 ## libiconv-full
@@ -192,10 +206,10 @@ This package contains a library for javascript object notation backends.
 
 | Field | Value |
 |---|---|
-| Version | 0.18 |
+| Version | 0.19 |
 | License | MIT |
 | Maintainer | Felix Fietkau <nbd@nbd.name> |
-| Source URL | https://s3.amazonaws.com/json-c_releases/releases/ |
+| Source URL | https://github.com/json-c/json-c/releases/download/json-c-$(PKG_VERSION)-20260627 |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libjson-c
@@ -236,7 +250,7 @@ libnetfilter_conntrack is a userspace library providing a programming interface 
 
 | Field | Value |
 |---|---|
-| Version | 1.1.0 |
+| Version | 1.1.1 |
 | License | GPL-2.0-or-later |
 | Maintainer | Jo-Philipp Wich <jo@mein.io> |
 | Source URL | https://www.netfilter.org/projects/libnetfilter_conntrack/files |
@@ -266,7 +280,7 @@ libnftnl is a userspace library providing a low-level netlink programming interf
 
 | Field | Value |
 |---|---|
-| Version | 1.3.1 |
+| Version | 1.3.2 |
 | License | GPL-2.0-or-later |
 | Maintainer | Steven Barth <steven@midlink.org> |
 | Source URL | https://netfilter.org/projects/$(PKG_NAME)/files |
@@ -359,6 +373,20 @@ Libsepol is the binary policy manipulation library. It doesn't depend upon or us
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libsepol
+---
+
+## libstd-rust
+
+The Rust standard library (libstd) for the target architecture. Required at runtime by all dynamically-linked Rust packages.
+
+| Field | Value |
+|---|---|
+| License | Apache-2.0 MIT |
+| Maintainer | Daniel Golle <daniel@makrotopia.org> |
+| Source URL | https://static.rust-lang.org/dist/ |
+
+
+> Source: https://github.com/openwrt/openwrt/tree/master/package/libs/libstd-rust
 ---
 
 ## libtool
@@ -464,7 +492,7 @@ A library for manipulating XML and HTML resources.
 
 | Field | Value |
 |---|---|
-| Version | 2.15.3 |
+| Version | 2.15.4 |
 | License | MIT |
 | Source URL | @GNOME/libxml2/$(basename $(PKG_VERSION)) |
 
@@ -545,7 +573,7 @@ $(call Package/openssl/Default/description) This package contains the OpenSSL sh
 
 | Field | Value |
 |---|---|
-| Version | 3.5.8 |
+| Version | 3.5.9 |
 | License | Apache-2.0 |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://www.openssl.org/source/ https://www.openssl.org/source/old/$(PKG_BASE)/ https://github.com/openssl/openssl/relea |
@@ -558,7 +586,7 @@ $(call Package/openssl/Default/description) This package contains the OpenSSL sh
 
 | Field | Value |
 |---|---|
-| Version | 10.47 |
+| Version | 10.49 |
 | License | BSD-3-Clause |
 | Maintainer | Shane Peelar <lookatyouhacker@gmail.com> |
 | Source URL | https://github.com/PCRE2Project/pcre2/releases/download/$(PKG_NAME)-$(PKG_VERSION) |
@@ -658,7 +686,7 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 | Field | Value |
 |---|---|
-| Version | 5.9.2 |
+| Version | 5.9.4 |
 | License | GPL-3.0-or-later |
 | Maintainer | Eneas U de Queiroz <cotequeiroz@gmail.com> |
 | Source URL | https://github.com/wolfSSL/wolfssl/archive/v$(PKG_REAL_VERSION) |
@@ -669,13 +697,13 @@ wolfSSL (formerly CyaSSL) is an SSL library optimized for small footprint, both 
 
 ## zlib
 
-zlib is a lossless data-compression library. This package includes the shared library.
+zlib is a lossless data-compression library. This package builds zlib-ng with the zlib-compatible API and ABI. This package includes the shared library.
 
 | Field | Value |
 |---|---|
-| Version | 1.3.2 |
+| Version | 2.3.3 |
 | License | Zlib |
-| Source URL | https://github.com/madler/zlib/releases/download/v$(PKG_VERSION) |
+| Source URL | https://github.com/zlib-ng/zlib-ng.git |
 
 
 > Source: https://github.com/openwrt/openwrt/tree/master/package/libs/zlib

@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 383
 source_file: L1-raw/wiki/wiki_page-guide-developer-build-mpd-full.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/build.mpd-full
 language: text
 ai_summary: The MPD-full building from source guide provides instructions for enabling the full version of the Music Player Daemon (MPD) in OpenWrt by modifying the Makefile. Users must edit the MPD Makefile located in the OpenWrt feeds directory to change the dependency from `+libffmpeg` to `+libffmpeg-full`. After saving the changes, the full MPD version will be available in the `make menuconfig` interface alongside the mini version. This process is particularly relevant for users building from source who want access to the full feature set of MPD.
@@ -17,7 +17,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/build.mpd-full](https://openwrt.org/docs/guide-developer/build.mpd-full)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # MPD-full building from source
 
@@ -26,7 +26,7 @@ More information about building from source: [OpenWrt Buildroot - Usage](/docs/g
 Based on the following reference:
 [Help on compiling MPD full](https://forum.openwrt.org/viewtopic.php?pid=158385#p158385)
 If you build from source you will only be able to select the MPD-mini from the make menuconfig interface.
-To display and enable the full version in the menuconfig interface, you'll have to edit the MPD Makefile.
+To display and enable the full version in the menuconfig interface, you’ll have to edit the MPD Makefile.
 
 ### Barrier Breaker and Chaos Calmer
 
@@ -55,4 +55,4 @@ Edited file:
       PROVIDES:=mpd
       VARIANT:=full
 
-Now if you start `make menuconfig`, you'll have the choice to build the full or the mini MPD version
+Now if you start `make menuconfig`, you’ll have the choice to build the full or the mini MPD version

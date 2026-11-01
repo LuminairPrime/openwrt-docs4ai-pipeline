@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 174
 source_file: L1-raw/wiki/wiki_page-guide-developer-working-with-git-email.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/working-with-git-email
 language: text
 ai_summary: The 'Sending patches by git send-email' module provides guidance on how to properly send patches to the OpenWrt development mailing list using the 'git send-email' command. It emphasizes the importance of adhering to the format specified on the patchwork site to ensure that patches are processed correctly. Additionally, it warns against using standard email clients due to potential formatting issues that could arise. The recommended command for sending a patch includes specifying the sender's email and the recipient mailing list.
@@ -17,11 +17,11 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/working-with-git-email](https://openwrt.org/docs/guide-developer/working-with-git-email)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Sending patches by git send-email
 
-Send an email to the [development mailing list](https://lists.openwrt.org/mailman/listinfo/openwrt-devel). All patches need to be sent in the same format as those that are listed on [patchwork](https://patchwork.ozlabs.org/project/openwrt/list/). If the patch does not get listed in patchwork then it won't get processed.
+Send an email to the [development mailing list](https://lists.openwrt.org/mailman/listinfo/openwrt-devel). All patches need to be sent in the same format as those that are listed on [patchwork](https://patchwork.ozlabs.org/project/openwrt/list/). If the patch does not get listed in patchwork then it won’t get processed.
 
 Using [git send-email](https://git-scm.com/docs/git-send-email) is warmly recommended, as email clients tend to add spaces and screw up the formatting or add non-printable characters.
 

@@ -273,6 +273,17 @@ declare module "math" {
     export function trunc(x: any, output_type: any): any;
 }
 
+declare module "netaddr" {
+    export function checkmac(address: any): any;
+    export function checkv4(address: any): any;
+    export function checkv6(address: any): any;
+    export function mac(address: any, _netmask_______range____module_netaddr_range: any): any;
+    export function new(address: any, _netmask_______range____module_netaddr_range: any): any;
+    export function range(): any;
+    export function v4(address: any, _netmask_______range____module_netaddr_range: any): any;
+    export function v6(address: any, netmask?: any, _scope_______range____module_netaddr_range: any): any;
+}
+
 declare module "nl80211" {
     export function listener(): any;
 }
@@ -309,6 +320,37 @@ declare module "process" {
     export function pid(): any;
 }
 
+declare module "range" {
+    export function (): any;
+    export function add(amount: any, _inplace_______range____module_netaddr_range: any): any;
+    export function broadcast(_mask_______range____module_netaddr_range: any): any;
+    export function contains(addr: any): any;
+    export function equal(addr: any): any;
+    export function higher(addr: any): any;
+    export function is4(): any;
+    export function is4linklocal(): any;
+    export function is4rfc1918(): any;
+    export function is6(): any;
+    export function is6linklocal(): any;
+    export function is6mapped4(): any;
+    export function ismac(): any;
+    export function ismaclocal(): any;
+    export function ismacmcast(): any;
+    export function lower(addr: any): any;
+    export function mask(_mask_______range____module_netaddr_range: any): any;
+    export function maxhost(______range____module_netaddr_range: any): any;
+    export function minhost(______range____module_netaddr_range: any): any;
+    export function network(_mask_______range____module_netaddr_range: any): any;
+    export function prefix(mask?: any): any;
+    export function scoped(______range____module_netaddr_range: any): any;
+    export function string(): any;
+    export function sub(amount: any, _inplace_______range____module_netaddr_range: any): any;
+    export function tolinklocal(______range____module_netaddr_range: any): any;
+    export function tomac(______range____module_netaddr_range: any): any;
+    export function tostring(): any;
+    export function unscoped(______range____module_netaddr_range: any): any;
+}
+
 declare module "request" {
     export function defer(): any;
     export function error(rcode?: any): any;
@@ -327,6 +369,30 @@ declare module "rtnl" {
     export function error(): any;
     export function listener(): any;
     export function request(cmd: any, flags: any, payload: any): any;
+}
+
+declare module "serial" {
+    export function attr(fd: any): any;
+    export function drain(fd: any): any;
+    export function dtr(fd: any, on: any): any;
+    export function error(): any;
+    export function flush(fd: any, queue?: any): any;
+    export function getinfo(fd: any): any;
+    export function input(): any;
+    export function isatty(fd: any): any;
+    export function lowlatency(fd: any, on: any): any;
+    export function mbic(fd: any, bits: any): any;
+    export function mbis(fd: any, bits: any): any;
+    export function mget(fd: any): any;
+    export function mset(fd: any, bits: any): any;
+    export function output(): any;
+    export function rts(fd: any, on: any): any;
+    export function sendbreak(fd: any, duration?: any): any;
+    export function setattr(fd: any, attrs: any, when?: any): any;
+    export function setblocking(fd: any, vmin: any, vtime: any, when?: any): any;
+    export function setinfo(fd: any, opts: any): any;
+    export function setraw(fd: any, when?: any): any;
+    export function setspeed(fd: any, speed: any, when?: any): any;
 }
 
 declare module "signal" {

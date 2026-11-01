@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 3087
 source_file: L1-raw/wiki/wiki_page-techref-flash.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/flash
 language: text
 ai_summary: The Flash memory module in OpenWrt provides comprehensive insights into the considerations and types of flash memory used in embedded devices. It discusses critical factors such as read/write cycles, the choice between NOR and NAND flash, and the implications of SLC versus MLC flash types. The module also explains the structure of flash storage, including erase blocks, pages, and the out-of-band area for metadata. Understanding these concepts is essential for making informed decisions about flash memory in various projects.
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/flash](https://openwrt.org/docs/techref/flash)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Flash memory
 
@@ -118,7 +118,7 @@ One may encounter syslog messages that can safely be ignored. These messages are
 
 Explanation: (quoted from [FS#1871, closing comment by Jonas Gorski](https://bugs.openwrt.org/index.php?do=details&task_id=1871))
 
-> The first few blocks of a NAND flash are guaranteed good to ensure that a bootloader stored there can never get corrupted, so it will get written without valid ECC data (the SoC won't check the ECC anyway).
+> The first few blocks of a NAND flash are guaranteed good to ensure that a bootloader stored there can never get corrupted, so it will get written without valid ECC data (the SoC won’t check the ECC anyway).
 
 \>
 
@@ -144,7 +144,7 @@ While reading or writing raw files on NAND flash you might encounter a similar o
     ECC: 1 corrected bitflip(s) at offset 0x01ddc800
     ....
 
-These lines with "ECC: 1 corrected bitflip blablabla" may sound like errors or issues but they are not.
+These lines with “ECC: 1 corrected bitflip blablabla” may sound like errors or issues but they are not.
 
 Note how it says “correctED bitflips”, and not “correctABLE bitflips”.
 

@@ -2,9 +2,9 @@
 title: 'jshn: a JSON parsing and generation library in for shell scripts'
 module: wiki
 origin_type: wiki_page
-token_count: 3692
+token_count: 3698
 source_file: L1-raw/wiki/wiki_page-guide-developer-jshn.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/jshn
 language: text
 ai_summary: The `jshn` module is a JSON parsing and generation library designed for use in shell scripts within OpenWrt. It provides functions to initialize JSON structures, add various data types (like integers, strings, booleans, arrays, and objects), and parse JSON data from variables or files. Key functions include `json_init`, `json_add_int`, `json_load`, and `json_get_var`, which facilitate the creation and manipulation of JSON data in shell scripts. This library is particularly useful for developers needing to handle JSON in environments lacking native JSON support.
@@ -29,13 +29,13 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/jshn](https://openwrt.org/docs/guide-developer/jshn)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # jshn: a JSON parsing and generation library in for shell scripts
 
 `jshn` (JSON SHell Notation), a small utility and shell library for parsing and generating [JSON](https://en.wikipedia.org/wiki/JSON) data.
 
-Shell scripts (ash, bash, zsh) doesn't have built-in functions to work with JSON or other hierarchical structures so OpenWrt provides a shell library [/usr/share/libubox/jshn.sh](https://git.openwrt.org/?p=project/libubox.git;a=blob;f=sh/jshn.sh;hb=HEAD) from `libubox` package. You need to include it into your scripts and then you can call it's functions:
+Shell scripts (ash, bash, zsh) doesn‘t have built-in functions to work with JSON or other hierarchical structures so OpenWrt provides a shell library [/usr/share/libubox/jshn.sh](https://git.openwrt.org/?p=project/libubox.git;a=blob;f=sh/jshn.sh;hb=HEAD) from ’‘libubox’’ package. You need to include it into your scripts and then you can call it’s functions:
 
 ``` bash
 #!/bin/sh
@@ -331,7 +331,7 @@ Then internally it will call `jshn -w` with the json obj passed via multiple env
     root@OpenWrt:/# JSON_CUR=J_V T_J_V_username=string K_J_V=username J_V_username=root jshn -w
     { "username": "root" }
 
-Here `J_V` stands for "JSON value":
+Here `J_V` stands for “JSON value”:
 
 - `JSON_CUR` means a name of var with root object to format
 - `K_J_V` is a key name i.e. `username`
@@ -493,7 +493,7 @@ The first jsonfilter call will output one radio JSON structure object per line, 
 
 ### jq
 
-[jq](https://stedolan.github.io/jq/) jq is a flexible command-line JSON processor that is very popular for scripting. It's not installed by default in OpenWRT because is too big (more than 200Kb) so to install use `opkg update; opkg install jq` By default it just colorize an output e.g. `cat /etc/board.json | jq`
+[jq](https://stedolan.github.io/jq/) jq is a flexible command-line JSON processor that is very popular for scripting. It‘s not installed by default in OpenWRT because is too big (more than 200Kb) so to install use ’‘opkg update; opkg install jq’’ By default it just colorize an output e.g. `cat /etc/board.json | jq`
 
 ### See also
 

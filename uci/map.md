@@ -1,7 +1,7 @@
 # uci Navigation Map
 
 > **Contains:** Headers and function signatures for uci.
-> **Generated:** 2026-10-01T18:43:48.394133+00:00
+> **Generated:** 2026-11-01T18:18:06.554594+00:00
 
 ---
 

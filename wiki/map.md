@@ -1,7 +1,7 @@
 # wiki Navigation Map
 
 > **Contains:** Headers and function signatures for wiki.
-> **Generated:** 2026-10-01T18:43:48.394133+00:00
+> **Generated:** 2026-11-01T18:18:06.554594+00:00
 
 ---
 
@@ -42,6 +42,16 @@
 ### Making binary drivers work
 ### Understanding the firmware format
 ### Writing a flash map driver
+#include <asm/io.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/mtd/map.h>
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/partitions.h>
+#include <linux/vmalloc.h>
+#define WINDOW_ADDR 0x1FC00000  /* Real address of the flash */
+#define WINDOW_SIZE 0x400000    /* Size of flash */
+#define BUSWIDTH 2      /* Buswidth */
 
 > **Summary:** The 'Adding a new device' module provides a comprehensive guide for developers looking to integrate new hardware into OpenWrt. It emphasizes the importance of examining recent commits and using local grep searches to identify necessary files for device integration. Key directories and their functions are outlined, including base-files for firmware integration, device tree source files, and image configuration. Additionally, it covers the process of making the new device visible in the make menuconfig and the organization of kernel patches.
 > **Use Case:** This module is useful when you need to add support for a new device in OpenWrt, particularly for custom or unsupported hardware.
@@ -298,7 +308,7 @@
 
 > **Summary:** This document outlines common mistakes that developers make when submitting Pull Requests (PRs) to OpenWrt, aiming to help them avoid delays in the review process. Key points include the necessity of a commit message, the importance of using a real name and email in the Signed-off-by line, and the distinction between a PR and its commits. Developers are also advised to respond to reviewer questions, avoid multi-posting PRs, and use the checkpatch.pl script for code quality checks.
 > **Use Case:** Refer to this guide when preparing a PR for OpenWrt to ensure a smooth review process and to avoid common pitfalls that can lead to delays.
-# Frequent PR mistakes or "How to prevent my PR from getting delayed for sure"
+# Frequent PR mistakes or “How to prevent my PR from getting delayed for sure”
 ## 1. Add a commit message
 ## 2. Add a Signed-off-by with your real name
 ## 3. Do not multi-post or re-post PRs
@@ -710,7 +720,7 @@
 #### Building a selinux-policy-myfork ipk package
 #### Deploying sysupgrade image with customized selinux-policy-myfork
 ## Policy development overview
-### Confining "Hello World"
+### Confining “Hello World”
 #### Creating and testing the script
 #### Extend selinux-policy-myfork with basic skeleton for helloworld
 ## In closing
@@ -779,7 +789,6 @@
 > **Summary:** OpenWrt's operating system architecture is designed to be lightweight and efficient, utilizing components like libubox, ubus, and procd instead of the larger libraries commonly found in desktop distributions. This architecture allows OpenWrt to function effectively on devices with limited resources, such as 32 MiB to 512 MiB of RAM. Key features include a custom init system (procd), a package management system (opkg), and a unique network configuration tool (netifd). The system is built on the Linux kernel, providing essential functionalities without the overhead of traditional desktop environments.
 > **Use Case:** This architecture is particularly useful for embedded network devices that require a minimal footprint while still delivering robust networking capabilities. Use OpenWrt when developing firmware for routers or IoT devices with constrained hardware resources.
 # OpenWrt – operating system architecture
-### What's the difference between ubus vs dbus?
 
 > **Summary:** The Mounting Block Devices module in OpenWrt provides advanced details on how block devices are managed through the `block-mount` package. This package includes functionalities for mounting devices at boot via `/etc/init.d/fstab` and handling hotplug events with `block-hotplug`. Key scripts included are `block.sh`, `mount.sh`, and `fsck.sh`, which facilitate various mounting operations. The `block` executable allows users to run commands such as `block info`, `block mount`, and `block detect` for managing block devices effectively.
 > **Use Case:** Use this module when you need to manage block device mounting in OpenWrt, especially for configuring devices to mount automatically on boot or when they are hotplugged.
@@ -1055,9 +1064,13 @@
 > **Summary:** Documents the OpenWrt /etc/init.d/ procd init script system, including the required START/STOP priority numbers, the USE_PROCD=1 flag, mandatory shell functions (start_service, stop_service, reload, status), and the boot sequence ordering enforced by procd. Covers how to enable/disable services via symlinks in /etc/rc.d/, reload semantics, and the difference between restart and reload.
 > **Use Case:** Reference when writing or debugging an /etc/init.d/ script: ensure the script sets USE_PROCD=1 and defines at minimum start_service(); use the START= and STOP= priority numbers to control boot ordering relative to netifd (START 20), dnsmasq (START 60), and other system services.
 # Init Scripts
+# Init Scripts
 ## Example Init Script
+#!/bin/sh /etc/rc.common|
 # Example script
 # Copyright (C) 2007 OpenWrt.org
+
+
 ### Other functions
 ### Custom commands
 ## Enable and disable
@@ -1105,7 +1118,7 @@
 > **Summary:** LuCI2 is an experimental web user interface for OpenWrt, designed to replace the older Lua-based LuCI. It utilizes static HTML and JavaScript XHR for client-side rendering, significantly reducing resource consumption on devices with limited CPU and RAM. Communication with OpenWrt subsystems is handled through `ubus`, and a custom `rpcd` plugin extends `ubus` namespaces for additional functionality. The menu and views are dynamically generated, allowing for a flexible and user-specific interface.
 > **Use Case:** Use LuCI2 when developing or testing web interfaces on OpenWrt devices, especially when resource efficiency is a concern. It is suitable for environments where the traditional LuCI interface may be too demanding.
 # LuCI2 (OpenWrt web user interface)
-### NOTE: This page currently mixes the five+ years old abandoned original "luci2" and the new JavaScript based standard LuCI implementation. Information on this page can be partially misleading
+### NOTE: This page currently mixes the five+ years old abandoned original “luci2” and the new JavaScript based standard LuCI implementation. Information on this page can be partially misleading
 ## Implementation details
 ### Menu
 ### Templates
@@ -1178,7 +1191,7 @@
 ### Common
 ### Sourced rather than executed
 ### Executed with no parameters
-### Executed with parameter 'switch2jffs'
+### Executed with parameter ‘switch2jffs’
 ### hook no_fo
 # Preinit Operation
 ## Main Preinit Script
@@ -1246,7 +1259,7 @@
 
 
 #### Notes
-### Must-do's
+### Must-do’s
 ### 0) Before failsafe
 
 
@@ -1344,7 +1357,7 @@
 ### procd
 ### netifd
 ### rpcd
-## What's the difference between ubus vs dbus?
+## What’s the difference between ubus vs dbus?
 ## Examples
 ### FHEM
 #### User mapping

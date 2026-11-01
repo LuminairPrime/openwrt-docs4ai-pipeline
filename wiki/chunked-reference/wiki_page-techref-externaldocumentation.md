@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 771
 source_file: L1-raw/wiki/wiki_page-techref-externaldocumentation.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/externaldocumentation
 language: text
 ai_summary: The External Documentation module for OpenWrt provides links to various upstream documentation relevant to the components used within the OpenWrt Linux distribution. It includes resources for bootloaders like Das U-Boot and RedBoot, as well as the Linux Kernel and GNU/Linux drivers. Additionally, it covers libraries such as µClibc and BusyBox, which are integral to the OpenWrt environment. Other topics include package management with Opkg, networking with Netfilter, and server options like µHTTPd and lighttpd.
@@ -32,7 +32,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/externaldocumentation](https://openwrt.org/docs/techref/externaldocumentation)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # External Documentation
 
@@ -105,7 +105,7 @@ Official documentation: <http://www.samba.org/samba/docs/>
 
 ### µHTTPd (New BSD License)
 
-Since 10.03 'Backfire' OpenWrt utilizes µHTTPd instead of httpd included in Busybox. <https://dev.openwrt.org/browser/trunk/package/uhttpd/> (install `uhttpd`)
+Since 10.03 ‘Backfire’ OpenWrt utilizes µHTTPd instead of httpd included in Busybox. <https://dev.openwrt.org/browser/trunk/package/uhttpd/> (install `uhttpd`)
 
 ### httpd (Busybox) (GPLv2)
 

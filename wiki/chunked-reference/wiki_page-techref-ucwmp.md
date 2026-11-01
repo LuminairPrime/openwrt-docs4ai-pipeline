@@ -2,9 +2,9 @@
 title: EasyCwmp (CPE WAN Management Protocol daemon)
 module: wiki
 origin_type: wiki_page
-token_count: 943
+token_count: 953
 source_file: L1-raw/wiki/wiki_page-techref-ucwmp.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/techref/ucwmp
 language: text
 ai_summary: 'EasyCwmp is a client implementation of the TR-069 CPE WAN Management Protocol for OpenWrt, developed by PIVA Software and licensed under GPL 2. It consists of two main components: the EasyCwmp core, which handles communication with the ACS server, and the EasyCwmp DataModel, which adheres to various TR-069 DataModel standards. The design allows for easy updates to DataModel parameters and supports multiple protocols including HTTP, HTTPS, and FTP, as well as SSL and IPv6. EasyCwmp is designed for flexibility, making it easy to install on Linux and POSIX systems while providing comprehensive documentation for users.'
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/techref/ucwmp](https://openwrt.org/docs/techref/ucwmp)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # EasyCwmp (CPE WAN Management Protocol daemon)
 
@@ -30,7 +30,7 @@ EasyCwmp is developed by PIVA Software.The aim of this project is to be fully co
 
 ## EasyCwmp Presentation in Broadban Worl Forum
 
-![](youtube>2dzLzk8I_So)
+![youtube>2dzLzk8I_So](youtube>2dzLzk8I_So)
 
 ## Compliant Standards
 
@@ -46,7 +46,7 @@ EasyCwmp is developed by PIVA Software.The aim of this project is to be fully co
 The EasyCwmp design includes 2 parts:
 
 -  EasyCwmp core: it includes the TR069 CWMP engine and it is in charge of communication with ACS server. It is developed with C.
--  EasyCwmp DataModel: it includes the DATAModel of TR-06 and it is compliant to some DataModel standards such as TR-098, TR-181, TR-104, ...
+-  EasyCwmp DataModel: it includes the DATAModel of TR-06 and it is compliant to some DataModel standards such as TR-098, TR-181, TR-104, …
 
 The key design goal is to separate the CWMP method execution from the CWMP engine. That makes easy to add and test new features.
 
@@ -110,7 +110,7 @@ or run it with:
 
       /etc/init.d/easycwmpd boot
 
-Note: If you run easycwmpd with start command then it will send inform to the ACS containing "2 PERIODIC" event and send GetRPCMethods to the ACS. And if you run easycwmpd with boot command then it will send inform to the ACS containing "1 BOOT" event.
+Note: If you run easycwmpd with start command then it will send inform to the ACS containing “2 PERIODIC” event and send GetRPCMethods to the ACS. And if you run easycwmpd with boot command then it will send inform to the ACS containing “1 BOOT” event.
 
 Note: A third party application could trigger EasyCwmp daemon to send notify (inform with value change event) by calling the command:
 

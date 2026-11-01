@@ -2,9 +2,9 @@
 title: Create Meson-based packages in OpenWrt
 module: wiki
 origin_type: wiki_page
-token_count: 1314
+token_count: 1316
 source_file: L1-raw/wiki/wiki_page-guide-developer-creating-a-meson-based-package.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/creating_a_meson_based_package
 language: text
 ai_summary: This tutorial outlines the process of creating and installing Meson-based packages in OpenWrt, providing a comprehensive guide for developers. It details the necessary steps, including including `$(INCLUDE_DIR)/meson.mk` in the `Makefile`, and using `MESON_ARGS` to pass configuration options. Additionally, it covers how to define environment variables with `MESON_VARS` and provides a simple example of a 'Hello World' application. By following these instructions, developers can efficiently build and customize their software packages within the OpenWrt environment.
@@ -18,7 +18,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/creating_a_meson_based_package](https://openwrt.org/docs/guide-developer/creating_a_meson_based_package)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Create Meson-based packages in OpenWrt
 
@@ -69,7 +69,7 @@ touch main.c  meson.build
 
 ### main.c
 
-To demonstrate a basic scenario, we will be populating the `main.c` file with a straightforward yet classic `"Hello World!"` message.
+To demonstrate a basic scenario, we will be populating the `main.c` file with a straightforward yet classic `“Hello World!”` message.
 
 ``` c
 // main.c
@@ -153,6 +153,6 @@ To finish building the package, we need to execute the build command. Running th
 make package/helloworld/compile
 ```
 
-If everything goes smoothly, the package that is built will be located in ''\<BIN_DIR\>/packages/\<target\>/mesonpackages/packages'. For instance:
+If everything goes smoothly, the package that is built will be located in ’‘\<BIN_DIR\>/packages/\<target\>/mesonpackages/packages’. For instance:
 
     helloworld_1.0-1_arm_cortex-a7_neon-vfpv4.ipk

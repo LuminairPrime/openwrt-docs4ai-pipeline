@@ -1,7 +1,7 @@
 # openwrt-core Navigation Map
 
 > **Contains:** Headers and function signatures for openwrt-core.
-> **Generated:** 2026-10-01T18:43:48.394133+00:00
+> **Generated:** 2026-11-01T18:18:06.554594+00:00
 
 ---
 
@@ -107,7 +107,6 @@
 ## r8127
 ## r8168
 ## rtc-rv5c386a
-## rtl8812au-ct
 ## trelay
 ## ubnt-ledbar
 ## ubootenv-nvram
@@ -125,6 +124,7 @@
 ## libbsd
 ## libcap
 ## libevent2
+## libffi
 ## libiconv-full
 ## libjson-c
 ## libmd
@@ -138,6 +138,7 @@
 ## libselinux
 ## libsemanage
 ## libsepol
+## libstd-rust
 ## libtool
 ## libtraceevent
 ## libtracefs
@@ -195,6 +196,7 @@
 ## audit
 ## bcm27xx-utils
 ## bcm4908img
+## bluetooth-uart
 ## bsdiff
 ## busybox
 ## bzip2
@@ -206,7 +208,6 @@
 ## dtc
 ## e2fsprogs
 ## f2fs-tools
-## fbtest
 ## firmware-utils
 ## fitblk
 ## fritz-tools
@@ -299,6 +300,12 @@
 ## prereq.mk
 # Documentation
 ## quilt.mk
+# Documentation
+## rust-host-build.mk
+# Documentation
+## rust-package.mk
+# Documentation
+## rust-values.mk
 # Documentation
 ## subdir.mk
 # Documentation

@@ -2,9 +2,9 @@
 title: 'ucode module: uloop'
 module: ucode
 origin_type: c_source
-token_count: 7482
+token_count: 8184
 source_file: L1-raw/ucode/c_source-api-module-uloop.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/uloop.c
 source_locator: lib/uloop.c
@@ -22,7 +22,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/uloop.c](https://github.com/nicowillis/ucode/blob/unknown/lib/uloop.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # ucode module: uloop
 
@@ -228,6 +228,11 @@ instance.
 
 A callback function must be provided to be executed when the timer expires.
 
+While the timer is armed, the event loop keeps it alive. Once it expired
+and the callback did not rearm it, the timer is freed as soon as the script
+no longer refers to it; a retained instance can be rearmed with
+`.set(timeout)`.
+
 **Kind**: instance method of [`uloop`](#module_uloop)  
 **Returns**: [`timer`](#module_uloop.timer) - Returns a timer instance for scheduling callbacks.
 Returns `null` when the timeout or callback arguments are invalid.  
@@ -254,8 +259,12 @@ Creates a handle instance for monitoring file descriptor events.
 This function creates a handle instance for monitoring events on a file
 descriptor, file, or socket. It takes the file or socket handle, a callback
 function to be invoked when the specified IO events occur, and bitwise OR-ed
-flags of IO events (`ULOOP_READ`, `ULOOP_WRITE`) that the callback should be
-invoked for.
+flags of IO events (`ULOOP_READ`, `ULOOP_WRITE`, `ULOOP_PRIORITY`) that the
+callback should be invoked for.
+
+Unless `ULOOP_ERROR_CB` is given, the event loop removes the descriptor on
+an error or hangup and invokes the callback a last time. The handle is
+then freed as soon as the script no longer refers to it.
 
 **Kind**: instance method of [`uloop`](#module_uloop)  
 **Returns**: [`handle`](#module_uloop.handle) - Returns a handle instance for monitoring file descriptor events.
@@ -265,7 +274,7 @@ Returns `null` when the handle, callback or signal arguments are invalid.
 | --- | --- | --- |
 | handle | `number` \| `module:fs.file` \| `module:fs.proc` \| `module:socket.socket` \| `module:io.handle` | The file handle (descriptor number, file or socket instance). |
 | callback | `function` | The callback function to be invoked when the specified IO events occur. |
-| events | `number` | Bitwise OR-ed flags of IO events (`ULOOP_READ`, `ULOOP_WRITE`) that the callback should be invoked for. |
+| events | `number` | Bitwise OR-ed flags of IO events (`ULOOP_READ`, `ULOOP_WRITE`, `ULOOP_PRIORITY`) that the callback should be invoked for. At least one IO event is required; mode flags such as `ULOOP_ERROR_CB` alone are rejected. |
 
 **Example**  
 ```ucode
@@ -290,14 +299,29 @@ It takes the executable path string, an optional string array as the argument
 vector, an optional dictionary describing environment variables, and a
 callback function to be invoked when the invoked process ends.
 
+When a function is given instead of the executable path, it is invoked in
+the child process after fork(), receiving the argument vector and the
+environment dictionary as parameters. It may perform any preparatory work,
+such as setting up file descriptors, and must return the complete argument
+vector to execute, with the executable path as first element. Changes made
+to the environment dictionary by the function apply to the environment of
+the executed program; the executable is searched in the `PATH` of the
+calling process. If the function calls `exit()`, the child process exits
+with the given code. If it throws an exception or does not return a
+non-empty array, the child process exits with code 255.
+
+The function runs outside of the event loop: signals received by the child
+process do not invoke the signal callbacks of the event loop.
+
 **Kind**: instance method of [`uloop`](#module_uloop)  
 **Returns**: [`process`](#module_uloop.process) - Returns a process instance for executing external programs.
-Returns `null` on error, e.g. due to `exec()` failure or invalid arguments.  
+Returns `null` on invalid arguments or `fork()` failure. If the program
+cannot be executed, the callback receives the exit code 255.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| executable | `string` | The path to the executable program. |
-| [args] | `Array.<string>` | Optional. An array of strings representing the arguments passed to the executable. |
+| executable | `string` \| `function` | The path to the executable program, or a function returning the argument vector to execute. |
+| [args] | `Array.<string>` | Optional. An array of strings representing the arguments passed to the executable, or to the function. |
 | [env] | `Object.<string, \*>` | Optional. A dictionary describing environment variables for the process. |
 | callback | `function` | The callback function to be invoked when the invoked process ends. Receives the exit code for a normally exited process, or the negative signal number if the process was terminated by a signal. |
 
@@ -305,6 +329,18 @@ Returns `null` on error, e.g. due to `exec()` failure or invalid arguments.
 ```ucode
 // Create a process instance for executing 'ls' command
 const myProcess = uloop.process("/bin/ls", ["-l", "/tmp"], null, (code) => {
+    printf(`Process exited with code ${code}\n`);
+});
+
+// Redirect stderr in the child process before executing 'ls'
+const myProcess = uloop.process((args, env) => {
+    const fs = require('fs');
+    const errlog = fs.open('/tmp/error.log', 'w');
+    fs.dup2(errlog.fileno(), 2);
+    errlog.close();
+
+    return ["/bin/ls", ...args];
+}, ["-l", "/tmp"], null, (code) => {
     printf(`Process exited with code ${code}\n`);
 });
 ```
@@ -364,7 +400,7 @@ Returns `null` when the timeout or callback arguments are invalid.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [timeout] | `number` | `-1` | Optional. The interval duration in milliseconds. Defaults to -1, indicating the interval is not initially armed. |
+| [timeout] | `number` | `-1` | Optional. The interval duration in milliseconds. Defaults to -1, indicating the interval is not initially armed. A zero or negative value also leaves the interval unarmed. |
 | callback | `function` |  | The callback function to be executed when the interval expires. |
 
 **Example**  
@@ -416,16 +452,17 @@ const mySignal = uloop.signal("SIGINT", () => {
 Rearms the uloop timer with the specified timeout.
 
 This method rearms the uloop timer with the specified timeout value,
-allowing it to trigger after the specified amount of time. If no timeout
-value is provided or if the provided value is negative, the timer remains
-disabled until rearmed with a positive timeout value.
+allowing it to trigger after the specified amount of time. A zero or
+negative timeout expires the timer on the next event loop iteration. If no
+timeout value or `null` is provided, the timer is disarmed and keeps its
+callback, so that a later call can rearm it.
 
 **Kind**: instance method of [`timer`](#module_uloop.timer)  
 **Returns**: `boolean` - Returns `true` on success, `null` on error, such as an invalid timeout argument.  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [timeout] | `number` | `-1` | Optional. The timeout value in milliseconds until the timer expires. Defaults to -1, which disables the timer until rearmed with a positive timeout. |
+| Param | Type | Description |
+| --- | --- | --- |
+| [timeout] | `number` | Optional. The timeout value in milliseconds until the timer expires. Without a value, the timer is disarmed. |
 
 **Example**  
 ```text
@@ -460,6 +497,8 @@ else
 Cancels the uloop timer, disarming it and removing it from the event loop.
 
 This method destroys the uloop timer and releases its associated resources.
+Calling it on a timer that already fired is not required; the timer then
+only drops its callback and returns `false`.
 
 **Kind**: instance method of [`timer`](#module_uloop.timer)  
 **Returns**: `boolean` - Returns `true` on success.  
@@ -514,6 +553,20 @@ Unregisters the uloop handle.
 This method unregisters the uloop handle from the uloop event loop and frees
 any associated resources. After calling this method, the handle instance
 should no longer be used.
+
+Call this method before closing the underlying descriptor. The event loop
+does not notice a closed descriptor and keeps the handle alive until it
+is deleted.
+
+A handle knows its descriptor only by number, device and inode, and checks
+them when it is deleted. A handle whose descriptor was closed is disabled
+for good once the check fails, once uloop rejects the removal, or once
+another handle is created on the same number. It then stays allocated and
+ignores events. If the number was reused for the same file opened anew, for
+example the same path or device node, and a watcher outside of this module,
+such as the application that embeds ucode, watches it, the check cannot
+tell the two files apart, and deleting the old handle removes the other
+watcher's entry.
 
 **Kind**: instance method of [`handle`](#module_uloop.handle)  
 **Returns**: `void` - This function does not return a value.  
@@ -746,15 +799,16 @@ Rearms the uloop interval timer with the specified interval.
 
 This method rearms the interval timer with the specified interval value,
 allowing it to trigger repeatedly after the specified amount of time. If no
-interval value is provided or if the provided value is negative, the interval
-remains disabled until rearmed with a positive interval value.
+interval value or `null` is provided, the interval is disarmed and keeps
+its callback, so that a later call can rearm it.
 
 **Kind**: instance method of [`interval`](#module_uloop.interval)  
-**Returns**: `boolean` - Returns `true` on success, `null` on error, such as an invalid interval argument.  
+**Returns**: `boolean` - Returns `true` on success, `null` on error, such as a zero or negative
+interval.  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [interval] | `number` | `-1` | Optional. The interval value in milliseconds specifying when the interval triggers again. Defaults to -1, which disables the interval until rearmed with a positive interval value. |
+| Param | Type | Description |
+| --- | --- | --- |
+| [interval] | `number` | Optional. The interval value in milliseconds specifying when the interval triggers again. Without a value, the interval is disarmed. |
 
 **Example**  
 ```ucode
@@ -877,3 +931,5 @@ events that should be monitored on the given handle.
 | ULOOP_WRITE | `number` | File or socket is writable. |
 | ULOOP_EDGE_TRIGGER | `number` | Enable edge-triggered event mode. |
 | ULOOP_BLOCKING | `number` | Do not make descriptor non-blocking. |
+| ULOOP_ERROR_CB | `number` | Deliver the error state to the callback instead of removing the descriptor from the event loop. |
+| ULOOP_PRIORITY | `number` | Priority data is readable, e.g. TCP urgent data (epoll only, requires a libubox with `ULOOP_PRIORITY` support). |

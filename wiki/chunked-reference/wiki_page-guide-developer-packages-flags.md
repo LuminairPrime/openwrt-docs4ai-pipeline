@@ -4,7 +4,7 @@ module: wiki
 origin_type: wiki_page
 token_count: 695
 source_file: L1-raw/wiki/wiki_page-guide-developer-packages-flags.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/packages.flags
 language: text
 ai_summary: The Overriding Build Options module in OpenWrt provides developers with the ability to customize build configurations for packages, particularly when cross-compiling. It details how to use various configuration variables such as **CONFIGURE_VARS** and **CONFIGURE_ARGS** to adjust settings during the autoconf process, as well as how to manage compiler flags through **TARGET_CFLAGS** and related variables. Additionally, it covers the use of **MAKE_VARS** for Makefile configurations and options for CMake and Scons. This flexibility allows developers to specify additional options and flags to meet specific package requirements.
@@ -20,7 +20,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/packages.flags](https://openwrt.org/docs/guide-developer/packages.flags)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # Overriding Build Options
 
@@ -61,7 +61,7 @@ Typically you should only add additional options to compile flags.
 
     TARGET_CFLAGS+= -Wall
 
-Example: Support multiple library versions via .../usr/lib/libname-v1/ or .../usr/lib/libname-v2/ and select them.
+Example: Support multiple library versions via …/usr/lib/libname-v1/ or …/usr/lib/libname-v2/ and select them.
 
 :!: BUG CXXFLAGS can contain wrong options because GCC/G++ accept different ones.
 

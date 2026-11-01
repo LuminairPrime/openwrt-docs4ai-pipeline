@@ -1,18 +1,18 @@
 ---
 module: luci-examples
-total_token_count: 99526
+total_token_count: 99286
 section_count: 24
 is_monolithic: false
 is_sharded_part: true
 part_number: 1
 part_count: 2
-generated: '2026-10-01T18:43:48.394133+00:00'
+generated: '2026-11-01T18:18:06.554594+00:00'
 ---
 
 # luci-examples Bundled Reference (Part 1 of 2)
 
 > **Contains:** 24 documents
-> **Tokens:** ~99526 (cl100k_base)
+> **Tokens:** ~99286 (cl100k_base)
 > **Index:** [./bundled-reference.md](./bundled-reference.md)
 
 ---
@@ -688,7 +688,7 @@ return view.extend({
 			o.titleref = L.url("admin", "system", "package-manager")
 			o.rawhtml  = true;
 			o.title = '<b>' + _("DNS requests via TCP not supported") + '</b>';
-			o.cfgvalue = function() { return _("BusyBox's nslookup and hostip do not support TCP " +
+			o.cfgvalue = function() { return _("BusyBox's nslookup does not support TCP " +
 				"instead of the default UDP when sending requests to the DNS server!") +
 				"<br />- " +
 				_("Install 'bind-host' or 'knot-host' or 'drill' package if you know you need TCP for DNS requests.")};
@@ -702,7 +702,7 @@ return view.extend({
 			o.cfgvalue = function() { return _("BusyBox's nslookup in the current compiled version " +
 			"does not handle given DNS Servers correctly!") +
 			"<br />- " +
-			_("You should install 'bind-host' or 'knot-host' or 'drill' or 'hostip' package, " +
+			_("You should install 'bind-host' or 'knot-host' or 'drill' package, " +
 			"if you need to specify a DNS server to detect your registered IP.")};
 		}
 
@@ -1557,7 +1557,7 @@ return baseclass.extend({
 
 'use strict';
 
-import { readfile, popen, stat, glob } from 'fs';
+import { readfile, writefile, mkdir, popen, stat, glob } from 'fs';
 import { init_enabled } from 'luci.sys';
 import { isnan } from 'math';
 import { cursor } from 'uci';
@@ -1670,8 +1670,12 @@ const methods = {
 				if (section == '.anonymous')
 					return;
 
-				if (stat(`${rundir}/${section}.ip`)?.type == 'file') {
-					ip = readfile(`${rundir}/${section}.ip`);
+				// ddns-scripts runs a service only if it is enabled; it is disabled by default
+				const enabled = s['enabled'] in [ '1', 'on', 'true', 'yes', 'enabled' ];
+				const ipFile = `${rundir}/${section}.ip`;
+
+				if (stat(ipFile)?.type == 'file') {
+					ip = readfile(ipFile);
 				} else {
 					const dnsServer = s['dns_server'] || '';
 					const forceIpVersion = int(s['force_ipversion'] || 0);
@@ -1691,7 +1695,14 @@ const methods = {
 					if (length(dnsServer) > 0) push(command, '-d', shellquote(dnsServer));
 					push(command, '-- get_registered_ip');
 
-					const result = system(`${join(' ', command)}`);
+					/* Without a working DNS the lookup takes 10 s or more, and LuCI fetches
+					this status together with the rest of a page such as the Overview. So the
+					lookup runs in the background, and the helper writes its result to the IP
+					file for a later call. The file is created empty first, so that the calls
+					in between do not start the lookup again. */
+					mkdir(rundir);
+					writefile(ipFile, '');
+					system(`${join(' ', command)} >/dev/null 2>&1 &`);
 				}
 
 				lastUpdate = int(readfile(`${rundir}/${section}.update`) || 0);
@@ -1733,9 +1744,9 @@ const methods = {
 					nextUpdate = 'Verify';
 				} else if (forcedUpdateInterval === 0) {
 					nextUpdate = 'Run once';
-				} else if (pid == 0 && s['enabled'] == '0') {
+				} else if (pid == 0 && !enabled) {
 					nextUpdate = 'Disabled';
-				} else if (pid == 0 && s['enabled'] != '0') {
+				} else if (pid == 0) {
 					nextUpdate = 'Stopped';
 				}
 
@@ -1842,15 +1853,11 @@ const methods = {
 
 			res['has_bindhost'] = cache['has_bindhost'] || hasBindHost();
 
-			const hasHostIp = () => {
-				return hasCommand('hostip');
-			};
-
 			const hasNslookup = () => {
 				return hasCommand('nslookup');
 			};
 
-			res['has_dnsserver'] = cache['has_bindhost'] || hasNslookup() || hasHostIp() || hasBindHost();
+			res['has_dnsserver'] = cache['has_bindhost'] || hasNslookup() || hasBindHost();
 
 			const checkCerts = () => {
 				let present = false;
@@ -10867,6 +10874,110 @@ export function get_socket_dest() {
 
 ---
 
+# file-jsonmap.js
+```javascript
+'use strict';
+'require form';
+'require fs';
+'require view';
+
+/*
+A JSONMap backed by a JSON file, with saving.
+
+form.JSONMap keeps its data in memory: its save() does nothing, and the
+form stores every value as a string. To persist changes, handleSave() calls
+map.save() with a callback. The callback runs after the form has been parsed
+and validated, reads the sections back from map.data, converts values to the
+types the file should hold, and writes the file with fs.write().
+
+Reading and writing the file must be granted in the "file" scope of
+/usr/share/rpcd/acl.d/luci-app-example.json. The UCI defaults script
+(80_example) creates /etc/example.json on install.
+*/
+const FILE = '/etc/example.json';
+
+return view.extend({
+	load: function () {
+		return L.resolveDefault(fs.read(FILE), '{}');
+	},
+
+	render: function (content) {
+		let data, m, s, o;
+
+		try {
+			data = JSON.parse(content);
+		}
+		catch (e) {
+			data = {};
+		}
+
+		/*
+		JSONMap takes { section_type: object or array of objects }. An object
+		becomes a named section; each array entry becomes an anonymous section
+		of that type, which is what lets a TypedSection add and remove them.
+		*/
+		m = new form.JSONMap({
+			animals: L.isObject(data.animals) ? data.animals : {},
+			pet: Array.isArray(data.pets) ? data.pets : []
+		}, _('File JSONMap Sample'), _('Edits %s; changes are written back on Save.').format(FILE));
+
+		s = m.section(form.NamedSection, 'animals', 'animals', _('Animals'));
+		o = s.option(form.Value, 'num_cats', _('Number of cats'));
+		o.datatype = 'uinteger';
+		o = s.option(form.Value, 'num_dogs', _('Number of dogs'));
+		o.datatype = 'uinteger';
+
+		s = m.section(form.TypedSection, 'pet', _('Pets'));
+		s.anonymous = true;
+		s.addremove = true;
+		o = s.option(form.Value, 'name', _('Name'));
+		o.rmempty = false;
+		o = s.option(form.ListValue, 'species', _('Species'));
+		o.value('cat', _('Cat'));
+		o.value('dog', _('Dog'));
+		o.value('parakeet', _('Parakeet'));
+
+		this.map = m;
+		this.file = data;
+		return m.render();
+	},
+
+	handleSave: function (ev) {
+		const m = this.map;
+		const file = this.file;
+
+		return m.save(function () {
+			// Sections are the objects loaded from the file, unknown keys included;
+			// keep everything except the '.name'-style bookkeeping JSONMap adds.
+			const fields = (s) => Object.fromEntries(Object.entries(s).filter(([ k ]) => k.charAt(0) != '.'));
+
+			// Start from the file as loaded, so keys the form does not edit survive.
+			const out = Object.assign({}, file);
+			const animals = fields(m.data.get('json', 'animals') || {});
+
+			// Values come back as strings; restore numbers, drop emptied fields.
+			for (const key of [ 'num_cats', 'num_dogs' ]) {
+				if (animals[key] != null && animals[key] !== '')
+					animals[key] = parseInt(animals[key], 10);
+				else
+					delete animals[key];
+			}
+
+			out.animals = animals;
+			out.pets = m.data.sections('json', 'pet').map(fields);
+
+			return fs.write(FILE, JSON.stringify(out, null, '\t') + '\n');
+		});
+	},
+
+	// There is nothing to apply; the file is the whole state.
+	handleSaveApply: null
+});
+
+```
+
+---
+
 # form.js
 ```javascript
 'use strict';
@@ -10975,157 +11086,4 @@ return view.extend({
 		return body;
 	}
 });
-```
-
----
-
-# rpc.js
-```javascript
-'use strict';
-'require form';
-'require rpc';
-'require view';
-
-/*
-Declare the RPC calls that are needed. The object value maps to the name
-listed by the shell command
-
-$ ubus list
-
-Custom ucode scripts can be placed in /usr/share/rpcd/ucode, and must emit JSON.
-
-Permissions to make these calls must be granted in /usr/share/rpcd/acl.d
-via a file named the same as the application package name (luci-app-example)
-*/
-const load_sample1 = rpc.declare({
-	object: 'luci.example',
-	method: 'get_sample1'
-});
-// Out of the box, this one will be blocked by the framework because there is
-// no ACL granting permission.
-const load_sample3 = rpc.declare({
-	object: 'luci.example',
-	method: 'get_sample3'
-});
-
-
-return view.extend({
-	generic_failure: function (message) {
-		// Map an error message into a div for rendering
-		return E('div', {
-			'class': 'error'
-		}, [_('RPC call failure: '), message])
-	},
-	render_sample1_using_array: function (sample) {
-		console.log('render_sample1_using_array()');
-		console.log(sample);
-		/*
-		Some simple error handling. If the RPC APIs return a JSON structure of the 
-		form {"error": "Some error message"} when there's a failure, then the UI
-		can check for the presence of the error attribute, and render a failure
-		widget instead of breaking completely.
-		*/
-		if (sample.error) {
-			return this.generic_failure(sample.error)
-		}
-
-		/*
-		Approach 1 for mapping JSON data to a simple table for display. The listing looks
-		a bit like key/value pairs, but is actually just an array. The loop logic later
-		on must iterate by 2 to get the labels.
-		*/
-		const fields = [
-			_('Cats'), sample.num_cats,
-			_('Dogs'), sample.num_dogs,
-			_('Parakeets'), sample.num_parakeets,
-			_('Should be "Not found"'), sample.not_found,
-			_('Is this real?'), sample.is_this_real ? _('Yes') : _('No'),
-		];
-
-		/*
-		Declare a table element using an automatically available function - E(). E() 
-		produces a DOM node, where the first argument is the type of node to produce,
-		the second argument is an object of attributes for that node, and the third
-		argument is an array of child nodes (which can also be E() calls).
-		*/
-		var table = E('table', {
-			'class': 'table',
-			'id': 'approach-1'
-		});
-
-		// Loop over the array, starting from index 0. Every even-indexed second element is
-		// the label (left column) and the odd-indexed elements are the value (right column)
-		for (var i = 0; i < fields.length; i += 2) {
-			table.appendChild(
-				E('tr', {
-					'class': 'tr'
-				}, [
-					E('td', {
-						'class': 'td left',
-						'width': '33%'
-					}, [fields[i]]),
-					E('td', {
-						'class': 'td left'
-					}, [(fields[i + 1] != null) ? fields[i + 1] : _('Not found')])
-				]));
-		}
-		return table;
-	},
-
-	/*
-	load() is called on first page load, and the results of each promise are
-	placed in an array in the call order. This array is passed to the render()
-	function as the first argument.
-	*/
-	load: function () {
-		return Promise.all([
-			load_sample1()
-		]);
-	},
-	// render() is called by the LuCI framework to do any data manipulation, and the
-	// return is used to modify the DOM that the browser shows.
-	render: function (data) {
-		// data[0] will be the result from load_sample1
-		const sample1 = data[0] || {};
-
-		// Render the tables as individual sections.
-		return E('div', {}, [
-			E('div', {
-				'class': 'cbi-section warning'
-			}, _('See browser console for raw data')),
-			E('div', {
-				'class': 'cbi-map',
-				'id': 'map'
-			}, [
-				E('div', {
-					'class': 'cbi-section',
-					'id': 'cbi-sample-js'
-				}, [
-					E('div', {
-						'class': 'left'
-					}, [
-						// _() notation on strings is used for translation detection
-						E('h3', _('Sample JS via RPC')),
-						E('div', {}), _(
-							"JSON converted to table via array building and loop"
-							),
-						this.render_sample1_using_array(sample1)
-					]),
-				]),
-			]),
-		]);
-	},
-	/*
-	Since this is a view-only screen, the handlers are disabled
-	Normally, when using something like Map or JSONMap, you would 
-	not null out these handlers, so that the form can be saved/applied.
-    
-	With a RPC data source, you would need to define custom handlers
-	that verify the changes, and make RPC calls to a backend that can
-	process the request.
-	*/
-	handleSave: null,
-	handleSaveApply: null,
-	handleReset: null
-})
 ```

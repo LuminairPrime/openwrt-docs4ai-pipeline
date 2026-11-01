@@ -2,9 +2,9 @@
 title: 'ucode module: rtnl'
 module: ucode
 origin_type: c_source
-token_count: 8016
+token_count: 8408
 source_file: L1-raw/ucode/c_source-api-module-rtnl.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_commit: unknown
 source_url: https://github.com/nicowillis/ucode/blob/unknown/lib/rtnl.c
 source_locator: lib/rtnl.c
@@ -21,7 +21,7 @@ ai_related_topics:
 
 > **Source:** [https://github.com/nicowillis/ucode/blob/unknown/lib/rtnl.c](https://github.com/nicowillis/ucode/blob/unknown/lib/rtnl.c)
 > **Kind:** c_source | **Commit:** unknown | **Method:** normalized
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # ucode module: rtnl
 
@@ -83,13 +83,19 @@ request('invalid_command', {}, {});
 print(error(), "\n");
 ```
 
-### rtnl.request(cmd, flags, payload) ⇒ `\*`
+### rtnl.request(cmd, flags, payload) ⇒ `Object` \| `Array.<Object>` \| `boolean`
 Send a netlink request.
 
 Sends a netlink request with the specified command, flags, and payload.
 
 **Kind**: instance method of [`rtnl`](#module_rtnl)  
-**Returns**: `\*` - - The response data or null on error  
+**Returns**: `Object` \| `Array.<Object>` \| `boolean` - - The response data, true for a
+                                        successful acknowledgement without
+                                        data, false when the kernel refuses
+                                        the request or the reply cannot be
+                                        received, or null for a dump
+                                        without entries and when the
+                                        request cannot be sent  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -132,6 +138,7 @@ let routeListener = listener((msg) => {
 
 * [.listener](#module_rtnl.listener)
     * [.set_commands(commands)](#module_rtnl.listener+set_commands) ⇒ `boolean`
+    * [.set_overrun_handler(handler)](#module_rtnl.listener+set_overrun_handler) ⇒ `boolean`
     * [.close()](#module_rtnl.listener+close) ⇒ `boolean`
 
 #### listener.set\_commands(commands) ⇒ `boolean`
@@ -150,6 +157,46 @@ Updates the set of netlink commands that the listener will receive.
 ```ucode
 // Update listener to only receive route messages
 listener.set_commands([RTM_NEWROUTE, RTM_DELROUTE]);
+```
+
+#### listener.set\_overrun\_handler(handler) ⇒ `boolean`
+Set the overrun handler of a netlink listener.
+
+The kernel drops event messages when the receive buffer of the event
+socket is full. The module then enlarges the buffer and calls the
+overrun handler of each listener without arguments.
+
+Events of every joined group can be lost, including deletions. The
+handler must dump each table that the script keeps state for. It must
+treat every entry of the dump as new or changed, and every cached entry
+that is missing from the dump as deleted.
+
+**Kind**: instance method of [`listener`](#module_rtnl.listener)  
+**Returns**: `boolean` - - true if successful, null if the listener is closed  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| handler | `function` | The function to call after an overrun, or `null` to remove it |
+
+**Example**  
+```ucode
+// Rebuild the link cache after lost events
+listener.set_overrun_handler(() => {
+    let dump = request(RTM_GETLINK, NLM_F_DUMP, {});
+    let seen = {};
+
+    if (dump === false)
+        return;
+
+    for (let link in dump ?? []) {
+        seen[link.ifname] = true;
+        links[link.ifname] = link;
+    }
+
+    for (let name in keys(links))
+        if (!seen[name])
+            delete links[name];
+});
 ```
 
 #### listener.close() ⇒ `boolean`

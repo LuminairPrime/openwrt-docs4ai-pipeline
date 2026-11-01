@@ -2,9 +2,9 @@
 title: umdns for Local Device Discovery
 module: wiki
 origin_type: wiki_page
-token_count: 2298
+token_count: 2303
 source_file: L1-raw/wiki/wiki_page-guide-developer-mdns.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/mdns
 language: text
 ai_summary: The umdns package provides local DNS name resolution for OpenWrt routers, allowing services to be accessed via *hostname.local* instead of an IP address. It utilizes mDNS (multicast DNS), enabling automatic discovery of devices and services on the local network without requiring complex configuration. Installation is straightforward, available through the LuCI web interface or via `opkg install umdns`. Configuration options include setting the hostname, local domain, and specifying network interfaces for mDNS advertisement.
@@ -20,21 +20,21 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/mdns](https://openwrt.org/docs/guide-developer/mdns)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # umdns for Local Device Discovery
 
-The [umdns](/packages/pkgdata/umdns) package creates a local DNS name for your router. When `umdns` is installed, the router and all its services are available using the name *hostname.local* instead of requiring the router's IP address.
+The [umdns](/packages/pkgdata/umdns) package creates a local DNS name for your router. When `umdns` is installed, the router and all its services are available using the name *hostname.local* instead of requiring the router’s IP address.
 
-`umdns` relies on mDNS ("multicast DNS") also known as Bonjour, zero-configuration networking (ZeroConf) or DNS Service Discovery (DNS-SD). mDNS enables automatic discovery of computers, devices, and services on the local network. It is an internet standard documented in [RFC6762](https://tools.ietf.org/html/rfc6762).
+`umdns` relies on mDNS (“multicast DNS”) also known as Bonjour, zero-configuration networking (ZeroConf) or DNS Service Discovery (DNS-SD). mDNS enables automatic discovery of computers, devices, and services on the local network. It is an internet standard documented in [RFC6762](https://tools.ietf.org/html/rfc6762).
 
 ## Installation
 
-The [umdns](/packages/pkgdata/umdns) package provides a compact implementation of this standard, well integrated with the OpenWrt system environment. It requires no configuration to work "right out of the box". `umdns` is available using LuCI web interface, or with `opkg install umdns` (OpenWRT 17 and later).
+The [umdns](/packages/pkgdata/umdns) package provides a compact implementation of this standard, well integrated with the OpenWrt system environment. It requires no configuration to work “right out of the box”. `umdns` is available using LuCI web interface, or with `opkg install umdns` (OpenWRT 17 and later).
 
 ### Configuration
 
-**I NEED HELP NAILING DOWN THE DEFAULT, AND THE [CORRECT](../../cookbook/chunked-reference/uci-read-write-from-ucode.md) DESCRIPTION OF ALL THE FOLLOWING LINES**
+**I NEED HELP NAILING DOWN THE DEFAULT, AND THE [CORRECT](../../cookbook/chunked-reference/ucode-rpcd-service-pattern.md) DESCRIPTION OF ALL THE FOLLOWING LINES**
 
 **Hostname:** `umdns` advertises the hostname that is present in `/etc/config/system`.
 
@@ -86,7 +86,7 @@ config rule
         option proto 'udp'
 ```
 
-To configure from GUI see "Firewall rules" section of [Resolving mDNS across VLANs with Avahi on OpenWRT](https://blog.christophersmart.com/2020/03/30/resolving-mdns-across-vlans-with-avahi-on-openwrt/)
+To configure from GUI see “Firewall rules” section of [Resolving mDNS across VLANs with Avahi on OpenWRT](https://blog.christophersmart.com/2020/03/30/resolving-mdns-across-vlans-with-avahi-on-openwrt/)
 
 ### mDNS Alternatives
 
@@ -147,9 +147,7 @@ Almost all interaction with the daemon is via [ubus](/docs/guide-developer/ubus)
 ### Issues/Bugs
 
 - IP addresses are missing.
-- TXT records aren't valid json in the dump, so jsonfilter can't be used.
-- How long is data cached? What causes it to update? No idea.
-- You may not see locally advertised services with `ubus call umdns browse`. See the [discussion](https://forum.openwrt.org/t/how-to-announce-service-with-umdns/5029/7)
+- TXT records aren‘t valid json in the dump, so jsonfilter can’t be used. \* How long is data cached? What causes it to update? No idea. \* You may not see locally advertised services with ’‘ubus call umdns browse’’. See the [discussion](https://forum.openwrt.org/t/how-to-announce-service-with-umdns/5029/7)
 
 ### Announcing local services
 
@@ -174,15 +172,15 @@ As an example, the following call
 procd_add_mdns "webdav" "tcp" "80" "path=/nextcloud/remote.php/dav/files/YOUR_USER/" "u=YOUR_USER"
 ```
 
-advertises `_webdav._tcp.local` with two text records. In the example we published a WebDAV folder from Nextcloud and now it can be seen in Network folder of a file manager in GNOME and KDE and can be [discovered from a Kodi media player](https://kodi.wiki/view/Avahi_Zeroconf). The service names may be taken from the [IANA register](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml) and the txt-records may be taken from the official DNS-SD keys (see [ServiceTypes](http://www.dns-sd.org/ServiceTypes.html) under "Defined TXT keys".
+advertises `_webdav._tcp.local` with two text records. In the example we published a WebDAV folder from Nextcloud and now it can be seen in Network folder of a file manager in GNOME and KDE and can be [discovered from a Kodi media player](https://kodi.wiki/view/Avahi_Zeroconf). The service names may be taken from the [IANA register](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml) and the txt-records may be taken from the official DNS-SD keys (see [ServiceTypes](http://www.dns-sd.org/ServiceTypes.html) under “Defined TXT keys”.
 
-If you wish to create a more complicated mdns information block, see `procd_add_mdns_service` in `/lib/functions/procd.sh` but be warned that umdns probably can't automatically support everything you can represent in json.
+If you wish to create a more complicated mdns information block, see `procd_add_mdns_service` in `/lib/functions/procd.sh` but be warned that umdns probably can’t automatically support everything you can represent in json.
 
 ### Service description files in /etc/umdns
 
 umdns advertises the services whose `*.json` files are found in `/etc/umdns`. This is similar to how Avahi advertises `*.service` files in `/etc/avahi/services/`.
 
-**IMPORTANT!** Keep the json formating as in the following examples, i.e. the service definition needs to be a one-liner, otherwise it won't work!
+**IMPORTANT!** Keep the json formating as in the following examples, i.e. the service definition needs to be a one-liner, otherwise it won’t work!
 
 For example the same WebDAV service description:
 
@@ -207,7 +205,7 @@ The reload the umdns service with: `ubus call umdns reload` or `service umdns re
 
 ### Testing
 
-To see that service was advertised you may use `avahi-discover` GUI application. To see from a command line use `avahi-browse --all`. To find a specific service use: `avahi-browse -d local _webdav._tcp`.
+To see that service was advertised you may use `avahi-discover` GUI application. To see from a command line use `avahi-browse –all`. To find a specific service use: `avahi-browse -d local _webdav._tcp`.
 
 ### Links
 

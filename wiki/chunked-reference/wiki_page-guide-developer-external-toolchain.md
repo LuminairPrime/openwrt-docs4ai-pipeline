@@ -2,9 +2,9 @@
 title: External Toolchain
 module: wiki
 origin_type: wiki_page
-token_count: 408
+token_count: 406
 source_file: L1-raw/wiki/wiki_page-guide-developer-external-toolchain.md
-last_pipeline_run: '2026-10-01T18:43:26.586825+00:00'
+last_pipeline_run: '2026-11-01T18:17:43.472245+00:00'
 source_url: https://openwrt.org/docs/guide-developer/external_toolchain
 language: text
 ai_summary: The External Toolchain module allows developers to use an external toolchain to reduce build time when compiling OpenWrt from a cleaned-up source tree. This is particularly beneficial when integrating with automated build systems like Hudson or Tinderbox. To utilize this feature, developers must first build the toolchain by selecting 'Package the OpenWrt-based Toolchain' in the `make menuconfig` interface or by downloading a precompiled toolchain from the OpenWrt download page. After setting up the toolchain, developers can configure their buildroot and compile their firmware using standard OpenWrt build commands.
@@ -16,7 +16,7 @@ ai_related_topics:
 
 > **Source:** [https://openwrt.org/docs/guide-developer/external_toolchain](https://openwrt.org/docs/guide-developer/external_toolchain)
 > **Kind:** wiki_page | **Method:** scraped
-> **Normalized:** 2026-10-01
+> **Normalized:** 2026-11-01
 
 # External Toolchain
 
@@ -34,13 +34,14 @@ Alternatively you can download precompiled toolchain from openwrt download page 
 
 1.  Checkout OpenWrt into directory **openwrt**
 2.  Follow normal instruction for openwrt prereq
-3.  Use the utility script to setup your buildroot `   ./scripts/ext-toolchain.sh \
-                --toolchain TOOLCHAIN_FILE_LOCATION \
-                --config TARGET_NAME (example ipq806x/generic)
-      `
+3.  Use the utility script to setup your buildroot
+           ./scripts/ext-toolchain.sh \
+                    --toolchain TOOLCHAIN_FILE_LOCATION \
+                    --config TARGET_NAME (example ipq806x/generic)
+
 4.  Use your buildroot like a normal one. Edit your config with `make menuconfig` and run `make` to compile your image
 
-If you want to update a .config to use an external toolchain you can use the `--overwrite-config`. For example:
+If you want to update a .config to use an external toolchain you can use the `–overwrite-config`. For example:
 
        ./scripts/ext-toolchain.sh \
                 --toolchain TOOLCHAIN_FILE_LOCATION \
